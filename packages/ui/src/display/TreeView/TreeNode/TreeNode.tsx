@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react'
-import { useClearProps } from '../../../uses/use-clear-props'
+import { useClearProps } from '@yomtor/hooks'
 import { TreeNodeProps } from './TreeNode.props'
 import { TreeNodeStyles } from './TreeNode.style'
 

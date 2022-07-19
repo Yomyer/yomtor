@@ -3,7 +3,7 @@ import { TreeObjectNodeStyles } from './TreeObjectNode.styles'
 import { TreeObjectProps } from './TreeObjectNode.props'
 import { LockIcon } from '../../icon/Lock'
 import { ArtboardIcon } from '../../icon/Artboard'
-import { useClearProps } from '../../uses/use-clear-props'
+import { useClearProps } from '@yomtor/hooks'
 
 /**
  * Description

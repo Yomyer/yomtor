@@ -3,7 +3,7 @@ import { TextFieldStyles } from './TextField.styles'
 import { TextFieldProps } from './TextField.props'
 import { Field } from '../Field'
 import { Input } from '../Input'
-import { useClearProps } from '../../uses/use-clear-props'
+import { useClearProps } from '@yomtor/hooks'
 
 /**
  * Description

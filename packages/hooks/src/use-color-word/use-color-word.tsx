@@ -1,4 +1,4 @@
-export default (
+export const useColorWorld = (
     word: string
 ): { hue: number; saturation: number; lightness: number } => {
     let hash = 0

@@ -17,7 +17,7 @@ import { PlayIcon } from '../../icon/Play'
 import { useNodeTree } from './use-node-tree'
 import { Draggable as DraggableUtil } from '../../utils/Draggable/Draggable'
 import { Droppable } from '../../utils/Droppable/Droppable'
-import { DropEvent } from 'src/utils/Droppable/Droppable.props'
+import { DropEvent } from 'react-dropzone'
 
 /**
  * Description
@@ -229,7 +229,10 @@ export const TreeView: React.FC<TreeViewProps> = ({
         return stack
     }
 
-    const dropMoveHandler = ({ target, props }: DropEvent, index: number) => {
+    const dropMoveHandler = (
+        { target, props }: DropEvent & { props: never },
+        index: number
+    ) => {
         setTarget(target)
 
         const node = nodes[index]

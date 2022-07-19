@@ -16,10 +16,9 @@ import Draggable, {
     DraggableEventHandler
 } from 'react-draggable'
 import { Input } from '../Input'
-import { useLongPress } from '../../uses/use-long-press'
+import { useLongPress, useClearProps } from '@yomtor/hooks'
 import { ArrowIcon } from '../../icon/Arrow'
 import { useValid } from './useValid'
-import { useClearProps } from '../../uses/use-clear-props'
 import { isUndefined } from 'lodash'
 import { Button } from '../Button'
 

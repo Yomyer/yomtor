@@ -8,7 +8,7 @@ import React, {
 import { ScrollAreaStyles } from './ScrollArea.styles'
 import { ScrollAreaProps } from './ScrollArea.props'
 import * as RadixScrollArea from '@radix-ui/react-scroll-area'
-import { useDebouncedValue } from '../../uses/use-debounced-value'
+import { useDebouncedValue } from '@yomtor/hooks'
 
 export const ScrollArea = forwardRef<HTMLDivElement, ScrollAreaProps>(
     (

@@ -29,6 +29,7 @@
         "react-ink": "^6.4.0",
         "react-virtual": "^2.10.4",
         "rimraf": "~3.0.2",
-        "@yomtor/styles": "*"
+        "@yomtor/styles": "*",
+        "@yomtor/hooks": "*"
     }
 }
