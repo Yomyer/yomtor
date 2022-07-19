@@ -5,7 +5,7 @@ export const mergeObjects = (...objects: any[]) => {
         objects.push(cloneDeep(objects[0]))
     }
 
-    return mergeWith({}, ...objects, (obj: any, src: any): any => {
+    return mergeWith({}, ...objects, (obj: object, src: object): object => {
         if (isArray(obj)) {
             return uniqWith(obj.concat(src), isEqual)
         }

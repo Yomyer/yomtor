@@ -7,7 +7,7 @@ export type ScrollAreaProps = DefaultProps & {
     scrollHideDelay?: number
     dir?: 'ltr' | 'rtl'
     offsetScrollbars?: boolean
-    viewportRef?: any // React.forwardRef<HTMLDivElement>
+    viewportRef?: React.ForwardedRef<HTMLDivElement>
     onScroll?: (event: SyntheticEvent<HTMLDivElement>) => void
     onScrollStop?: (event: SyntheticEvent<HTMLDivElement>) => void
     onClick?: (event: MouseEvent) => void

@@ -9,7 +9,7 @@ export type DropzoneStatus = {
     dragged: boolean
 }
 
-export type DropEvent<D = any> = {
+export type DropEvent<D = never | undefined> = {
     type: string
     fileRejections?: FileRejection[]
     props: D
@@ -24,7 +24,7 @@ export type DroppableProps = DefaultProps & {
     onMove?: (event: DropEvent) => void | false
     onLeave?: (event: DropEvent) => void | false
     onReject?(fileRejections: FileRejection[]): void
-    children?: ((status: DropzoneStatus) => ReactNode) | ReactNode
+    children?: ReactNode
     accept?: (string | ((event: DropEvent) => boolean))[]
     multiple?: boolean
     maxSize?: number

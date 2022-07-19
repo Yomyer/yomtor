@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { toRgba } from '../utils/to-rgba'
 
 export function rgba(

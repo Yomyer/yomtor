@@ -1,14 +1,13 @@
-import { isNumber } from 'lodash'
 import { YomtorSizes } from '../../constants'
 
 export type Size = (args: {
     size: YomtorSizes | number
-    sizes: Record<YomtorSizes, any>
+    sizes: Record<YomtorSizes, string | number>
 }) => number
 
 export const size = (args: {
     size: YomtorSizes | number
-    sizes: Record<YomtorSizes, any>
+    sizes: Record<YomtorSizes, string | number>
 }) => {
     if (!isNaN(+args.size)) {
         return +args.size

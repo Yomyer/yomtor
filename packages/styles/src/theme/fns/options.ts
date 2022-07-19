@@ -2,7 +2,7 @@ import { isArray } from 'lodash'
 
 export type YomtorOptions = {
     label: string
-    value: any
+    value: unknown
 }[]
 
 export const toKeyValue = (

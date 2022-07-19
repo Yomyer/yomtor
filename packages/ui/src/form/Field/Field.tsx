@@ -5,6 +5,7 @@ import { setGlobalCursor, clearGlobalCursor } from '../../utils/cursorUtils'
 import { Resize } from '../../cursor'
 import Draggable, {
     DraggableData,
+    DraggableEvent,
     DraggableEventHandler
 } from 'react-draggable'
 
@@ -23,7 +24,7 @@ export const Field = <T extends HTMLElement>({
     const [dragging, setDraggin] = useState(false)
     const { classes } = FieldStyles({ position, align })
 
-    const dragHandler = (e: DragEvent<T>, data?: DraggableData) => {
+    const dragHandler = (e: DraggableEvent, data?: DraggableData) => {
         props.onDrag && props.onDrag(e, data)
     }
 
@@ -33,7 +34,7 @@ export const Field = <T extends HTMLElement>({
                 <div className={classes.wrapper}>
                     <Draggable
                         axis='x'
-                        onDrag={(e, data) => dragHandler(e as any, data)}
+                        onDrag={(e, data) => dragHandler(e, data)}
                         onStart={() => {
                             setGlobalCursor(Resize)
                             setDraggin(true)

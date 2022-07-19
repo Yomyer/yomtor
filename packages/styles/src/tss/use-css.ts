@@ -9,8 +9,8 @@ import { useEmotionCache } from './use-emotion-cache'
 
 const refPropertyName = 'ref' as const
 
-function getRef(args: any[]) {
-    let ref: string
+function getRef(...args: any[]) {
+    let ref: string = null
 
     if (args.length !== 1) {
         return { args, ref }
@@ -52,16 +52,16 @@ export const { cssFactory } = (() => {
     function _cssFactory(params: { cache: EmotionCache }) {
         const { cache } = params
 
-        const css: CSS = (...styles: any) => {
+        const css: CSS = (...styles: any[]) => {
             const { ref, args } = getRef(styles)
             const serialized = serializeStyles(args, cache.registered)
-            insertStyles(cache as any, serialized, false)
+            insertStyles(cache as EmotionCache, serialized, false)
             return `${cache.key}-${serialized.name}${
                 ref === undefined ? '' : ` ${ref}`
             }`
         }
 
-        const cx = (...args: any) => merge(cache.registered, css, clsx(args))
+        const cx = (...args: any[]) => merge(cache.registered, css, clsx(args))
 
         return { css, cx }
     }

@@ -1,9 +1,9 @@
 import * as CSSType from 'csstype'
 
 export type ClassNames<
-    T extends (...args: any) => {
-        classes: Record<string, any>
-        cx: (...cx: any) => string
+    T extends (...args: any[]) => {
+        classes: Record<string, never>
+        cx: (...cx: any[]) => string
     }
 > = keyof ReturnType<T>['classes']
 
@@ -27,10 +27,10 @@ export type CSSPropertiesWithMultiValues = {
 
 export type CSSPseudos = { [K in CSSType.Pseudos]?: CSSObject }
 
-export interface ArrayCSSInterpolation extends Array<CSSInterpolation> {}
+export type ArrayCSSInterpolation = Array<CSSInterpolation>
 
 export interface ComponentSelector {
-    __emotion_styles: any
+    __emotion_styles: never
 }
 
 export type Keyframes = {

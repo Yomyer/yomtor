@@ -1,4 +1,5 @@
-import { isString } from 'lodash'
+/* eslint-disable prefer-const */
+import { isNumber, isString } from 'lodash'
 import { YomtorTheme } from './types'
 import { YomtorLevels } from '../constants'
 import { getContrastRatio, lighten, darken } from './colorManipulation'
@@ -76,10 +77,13 @@ export type YomtorColor = {
 function addLightOrDark(
     intent: YomtorPaletteColor,
     direction: keyof YomtorPaletteColor,
-    tonalOffset: any
+    tonalOffset: { dark: number; light: number } | number
 ) {
-    const tonalOffsetLight = tonalOffset.light || tonalOffset
-    const tonalOffsetDark = tonalOffset.dark || tonalOffset * 1.5
+    const tonalOffsetLight =
+        (!isNumber(tonalOffset) && tonalOffset.light) || +tonalOffset
+
+    const tonalOffsetDark =
+        (!isNumber(tonalOffset) && tonalOffset.dark) || +tonalOffset * 1.5
 
     if (!intent[direction]) {
         if (direction === 'lightest') {
@@ -113,22 +117,27 @@ export function getContrastText(
 }
 
 export const augmentColor = (
-    color: any,
+    color: YomtorPaletteColor | string,
     tonalOffset = 0.2,
     contrastThreshold = 2
 ): YomtorPaletteColor => {
-    color = isString(color) ? { main: color } : { ...color }
+    const palette = isString(color)
+        ? ({ main: color } as YomtorPaletteColor)
+        : ({ ...color } as YomtorPaletteColor)
 
-    addLightOrDark(color, 'lightest', tonalOffset)
-    addLightOrDark(color, 'light', tonalOffset)
-    addLightOrDark(color, 'strong', tonalOffset)
-    addLightOrDark(color, 'strongest', tonalOffset)
+    addLightOrDark(palette, 'lightest', tonalOffset)
+    addLightOrDark(palette, 'light', tonalOffset)
+    addLightOrDark(palette, 'strong', tonalOffset)
+    addLightOrDark(palette, 'strongest', tonalOffset)
 
-    if (!color.text && dark && light) {
-        color.text = getContrastText.bind(null)(color.main, contrastThreshold)
+    if (!palette.text && dark && light) {
+        palette.text = getContrastText.bind(null)(
+            palette.main,
+            contrastThreshold
+        )
     }
 
-    return color
+    return palette
 }
 
 light = {

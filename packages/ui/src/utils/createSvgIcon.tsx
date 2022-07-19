@@ -1,8 +1,8 @@
-import React, { memo, forwardRef } from 'react'
+import React, { memo, forwardRef, ReactNode } from 'react'
 import { SvgIcon, SvgIconProps } from '../icon/SvgIcon'
 
 export const createSvgIcon = (path: JSX.Element, displayName: string) => {
-    const Component = (props: any, ref: any) => (
+    const Component = (props: never, ref: never) => (
         <SvgIcon {...props} ref={ref}>
             {path}
         </SvgIcon>

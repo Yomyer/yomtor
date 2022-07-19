@@ -1,11 +1,12 @@
 {
-  "extends": "./tsconfig.build.json",
+    "extends": "./tsconfig.build.json",
 
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@yomtor/*": ["packages/*/src"]
-    },
-    "noEmit": true
-  }
+    "compilerOptions": {
+        "baseUrl": ".",
+        "lib": ["dom", "es2015"],
+        "paths": {
+            "@yomtor/*": ["packages/*/src"]
+        },
+        "noEmit": true
+    }
 }

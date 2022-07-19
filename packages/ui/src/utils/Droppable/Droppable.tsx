@@ -148,10 +148,10 @@ export const Droppable: React.FC<DroppableProps> = ({
     const externalDisabled = disabled || loading || !external
     const { getRootProps, getInputProps, isDragAccept, isDragReject } =
         useDropzone({
-            onDropAccepted: (files, event: any) => drop(event, files),
+            onDropAccepted: (files, event: never) => drop(event, files),
             onDropRejected: (fileRejections) => onReject(fileRejections),
-            onDragEnter: (event: any) => enterHandler(event, true),
-            onDragLeave: (event: any) => leaveHandler(event, true),
+            onDragEnter: (event: never) => enterHandler(event, true),
+            onDragLeave: (event: never) => leaveHandler(event, true),
             disabled: externalDisabled,
             accept:
                 accept && (accept.filter((item) => isString(item)) as string[]),
@@ -169,8 +169,8 @@ export const Droppable: React.FC<DroppableProps> = ({
                 [classes.error]: isDragReject || isDropReject
             })}
             ref={element}
-            onMouseEnter={(event: any) => enterHandler(event)}
-            onMouseLeave={(event: any) => leaveHandler(event)}
+            onMouseEnter={(event: never) => enterHandler(event)}
+            onMouseLeave={(event: never) => leaveHandler(event)}
             {...getRootProps({ ref: element })}
             data-droppable
         >

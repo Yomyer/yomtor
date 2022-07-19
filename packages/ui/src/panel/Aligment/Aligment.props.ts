@@ -6,5 +6,5 @@ export type AligmentClickEvent = {
 }
 
 export type AligmentProps = {
-    onClick?: (event: AligmentClickEvent) => {}
+    onClick?: (event: AligmentClickEvent) => void
 }

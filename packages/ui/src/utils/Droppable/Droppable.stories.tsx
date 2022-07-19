@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react'
 import { Droppable } from './Droppable'
 import { ComponentStory, ComponentMeta } from '@storybook/react'
@@ -79,7 +80,7 @@ Playground.args = {
     name: 'acceptme',
     accept: [
         'image/png',
-        (event: DropEvent) => event.props.data?.name === 'acceptme'
+        (event: DropEvent<any>) => event.props.data?.name === 'acceptme'
     ],
     multiple: true,
     external: true

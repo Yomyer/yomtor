@@ -13,7 +13,7 @@ import createTypography from './createTypography'
 import createShadows from './createShadows'
 import { YomtorTheme } from './types'
 
-const generateVars = (params: any = {}): { [key: string]: string } => {
+const generateVars = (params: object = {}): { [key: string]: string } => {
     const vars: { [key: string]: string } = {}
     Object.keys(params).forEach((property) => {
         let value = params[property].toString()
@@ -30,12 +30,12 @@ const generateVars = (params: any = {}): { [key: string]: string } => {
     return vars
 }
 
-const getVars = (tree: any, preffix = '-', replace = false) => {
-    const leaves: any = {}
-    const walk = (obj: any, path: any) => {
+const getVars = (tree: object, preffix = '-', replace = false) => {
+    const leaves: object = {}
+    const walk = (obj: object, path: string) => {
         path = path || ''
-        for (var n in obj) {
-            if (obj.hasOwnProperty(n)) {
+        for (const n in obj) {
+            if (n in obj) {
                 if (typeof obj[n] === 'object' || obj[n] instanceof Array) {
                     walk(obj[n], path + '-' + n)
                 } else if (isString(obj[n]) || isNumber(obj[n])) {

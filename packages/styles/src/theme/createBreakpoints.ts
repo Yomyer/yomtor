@@ -91,7 +91,7 @@ export default function createBreakpoints(breakpoints: BreakpointsOptions) {
         down
     }
     const breaks: Breakpoint[] = ['xs', 'sm', 'md', 'lg', 'xl']
-    const media: any = {}
+    const media: object = {}
 
     ;(['up', 'down'] as Methods[]).forEach((method) => {
         breaks.forEach((bre) => {

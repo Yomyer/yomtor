@@ -77,7 +77,7 @@ function GlobalStyles() {
                     fontFamily: theme.typography.fontFamily,
                     fontSize: theme.typography.fontSizes.md,
                     lineHeight: theme.typography.lineHeight
-                } as any
+                }
             }}
         />
     )
@@ -109,4 +109,4 @@ export function YomtorProvider({
     )
 }
 
-YomtorProvider.displayName = '@yomyer/core/YomtorProvider'
+YomtorProvider.displayName = 'YomtorProvider'

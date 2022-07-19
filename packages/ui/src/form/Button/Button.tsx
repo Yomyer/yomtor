@@ -15,6 +15,7 @@ export const Button: ButtonComponent = forwardRef(
             classNames,
             styles,
             children,
+            fullWidth,
             ...props
         }: ButtonProps<C>,
         ref: PolymorphicRef<C>
@@ -25,13 +26,14 @@ export const Button: ButtonComponent = forwardRef(
             {
                 hovered,
                 hoverOpacity,
+                fullWidth,
                 ...props
             },
             { classNames, styles, name: 'Button' }
         )
 
         return (
-            <Box<any>
+            <Box<string>
                 component={component}
                 ref={(node) => useSetRef(node, button, ref)}
                 className={classes.root}

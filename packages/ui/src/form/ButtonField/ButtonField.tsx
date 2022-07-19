@@ -10,6 +10,7 @@ import { useClearProps } from '../../uses/use-clear-props'
  */
 export const ButtonField: React.FC<ButtonFieldProps> = ({
     children,
+    draggable,
     ...props
 }) => {
     const { classes } = ButtonFieldStyles({ ...props })

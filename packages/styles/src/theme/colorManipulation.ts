@@ -1,4 +1,6 @@
-function clamp(value: any, min = 0, max = 1) {
+import { isString } from 'lodash'
+
+function clamp(value: number, min = 0, max = 1) {
     return Math.min(Math.max(min, value), max)
 }
 
@@ -9,12 +11,12 @@ export function hexToRgb(color: string): string {
     let colors = color.match(re)
 
     if (colors && colors[0].length === 1) {
-        colors = colors.map((n: any) => n + n)
+        colors = colors.map((n: string) => n + n)
     }
 
     return colors
         ? `rgb${colors.length === 4 ? 'a' : ''}(${colors
-              .map((n: any, index: number) => {
+              .map((n: string, index: number) => {
                   return index < 3
                       ? parseInt(n, 16)
                       : Math.round((parseInt(n, 16) / 255) * 1000) / 1000
@@ -37,14 +39,14 @@ export function rgbToHex(color: string): string {
     return `#${(values || []).map((n: number) => intToHex(n)).join('')}`
 }
 
-export function hslToRgb(color: any): string {
+export function hslToRgb(color: DecomposedColor | string): string {
     color = decomposeColor(color)
     const { values } = color
     const h = values[0]
-    const s = values[1] / 100
-    const l = values[2] / 100
+    const s = +values[1] / 100
+    const l = +values[2] / 100
     const a = s * Math.min(l, 1 - l)
-    const f = (n: number, k = (n + h / 30) % 12) =>
+    const f = (n: number, k = (n + +h / 30) % 12) =>
         l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1)
 
     let type = 'rgb'
@@ -56,7 +58,7 @@ export function hslToRgb(color: any): string {
 
     if (color.type === 'hsla') {
         type += 'a'
-        rgb.push(values[3])
+        rgb.push(+values[3])
     }
 
     return recomposeColor({ type, values: rgb })
@@ -64,14 +66,14 @@ export function hslToRgb(color: any): string {
 
 export type DecomposedColor = {
     type?: string
-    values?: number[]
-    colorSpace?: any
+    values?: (number | string)[]
+    colorSpace?: string
 }
 
-export function decomposeColor(color: DecomposedColor): DecomposedColor
-export function decomposeColor(color: string): DecomposedColor
-export function decomposeColor(color: any): DecomposedColor {
-    if (color.type) {
+export function decomposeColor(
+    color: DecomposedColor | string
+): DecomposedColor {
+    if (!isString(color)) {
         return color
     }
 
@@ -88,14 +90,15 @@ export function decomposeColor(color: any): DecomposedColor {
         )
     }
 
-    let values = color.substring(marker + 1, color.length - 1)
+    const value = color.substring(marker + 1, color.length - 1)
+    let parts!: string[]
     let colorSpace
 
     if (type === 'color') {
-        values = values.split(' ')
-        colorSpace = values.shift()
-        if (values.length === 4 && values[3].charAt(0) === '/') {
-            values[3] = values[3].substr(1)
+        parts = value.split(' ')
+        colorSpace = parts.shift()
+        if (parts.length === 4 && parts[3].charAt(0) === '/') {
+            parts[3] = parts[3].substr(1)
         }
         if (
             [
@@ -111,34 +114,35 @@ export function decomposeColor(color: any): DecomposedColor {
             )
         }
     } else {
-        values = values.split(',')
+        parts = value.split(',')
     }
-    values = values.map((value: string) => parseFloat(value))
+    const values = parts.map((value: string) => parseFloat(value))
 
     return { type, values, colorSpace }
 }
 
-export function recomposeColor(color: DecomposedColor): string
-export function recomposeColor(color: any): string {
+export function recomposeColor(color: DecomposedColor): string {
     const { type, colorSpace } = color
     let { values } = color
+    let parts: string[]
+    let response: string
 
     if (type.indexOf('rgb') !== -1) {
         // Only convert the first 3 values to int (i.e. not alpha)
-        values = values.map((n: string, i: number) =>
-            i < 3 ? parseInt(n, 10) : n
+        values = values.map((n: number, i: number) =>
+            i < 3 ? parseInt(n.toString(), 10) : n
         )
     } else if (type.indexOf('hsl') !== -1) {
-        values[1] = `${values[1]}%`
-        values[2] = `${values[2]}%`
+        parts[1] = `${values[1]}%`
+        parts[2] = `${values[2]}%`
     }
     if (type.indexOf('color') !== -1) {
-        values = `${colorSpace} ${values.join(' ')}`
+        response = `${colorSpace} ${values.join(' ')}`
     } else {
-        values = `${values.join(', ')}`
+        response = `${values.join(', ')}`
     }
 
-    return `${type}(${values})`
+    return `${type}(${response})`
 }
 
 export function getContrastRatio(
@@ -150,9 +154,7 @@ export function getContrastRatio(
     return (Math.max(lumA, lumB) + 0.05) / (Math.min(lumA, lumB) + 0.05)
 }
 
-export function getLuminance(color: string): number
-export function getLuminance(color: DecomposedColor): number
-export function getLuminance(color: any): number {
+export function getLuminance(color: DecomposedColor | string): number {
     color = decomposeColor(color)
 
     let rgb =
@@ -160,14 +162,14 @@ export function getLuminance(color: any): number {
             ? decomposeColor(hslToRgb(color)).values
             : color.values
     rgb = rgb.map((val: number) => {
-        if (color.type !== 'color') {
+        if (!isString(color) && color.type !== 'color') {
             val /= 255
         }
         return val <= 0.03928 ? val / 12.92 : ((val + 0.055) / 1.055) ** 2.4
     })
 
     return Number(
-        (0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2]).toFixed(3)
+        (0.2126 * +rgb[0] + 0.7152 * +rgb[1] + 0.0722 * +rgb[2]).toFixed(3)
     )
 }
 
@@ -177,9 +179,7 @@ export function emphasize(color: string, coefficient = 0.15): string {
         : lighten(color, coefficient)
 }
 
-export function alpha(color: string, value: number): string
-export function alpha(color: DecomposedColor, value: number): string
-export function alpha(color: any, value: number): string {
+export function alpha(color: string | DecomposedColor, value: number): string {
     color = decomposeColor(color)
     value = clamp(value)
 
@@ -195,40 +195,45 @@ export function alpha(color: any, value: number): string {
     return recomposeColor(color)
 }
 
-export function darken(color: string, coefficient?: number): string
-export function darken(color: DecomposedColor, coefficient?: number): string
-export function darken(color: any, coefficient = 0.2 * 1.5): string {
+export function darken(
+    color: string | DecomposedColor,
+    coefficient = 0.2 * 1.5
+): string {
     color = decomposeColor(color)
     coefficient = clamp(coefficient)
 
     if (color.type.indexOf('hsl') !== -1) {
-        color.values[2] *= 1 - coefficient
+        color.values[2] = +color.values[2] * 1 - coefficient
     } else if (
         color.type.indexOf('rgb') !== -1 ||
         color.type.indexOf('color') !== -1
     ) {
         for (let i = 0; i < 3; i += 1) {
-            color.values[i] *= 1 - coefficient
+            color.values[i] = +color.values[i] * 1 - coefficient
         }
     }
     return recomposeColor(color)
 }
 
-export function lighten(color: string, coefficient?: number): string
-export function lighten(color: DecomposedColor, coefficient?: number): string
-export function lighten(color: any, coefficient = 0.2): string {
+export function lighten(
+    color: string | DecomposedColor,
+    coefficient = 0.2
+): string {
     color = decomposeColor(color)
     coefficient = clamp(coefficient)
 
     if (color.type.indexOf('hsl') !== -1) {
-        color.values[2] += (100 - color.values[2]) * coefficient
+        color.values[2] =
+            +color.values[2] + (100 - +color.values[2]) * coefficient
     } else if (color.type.indexOf('rgb') !== -1) {
         for (let i = 0; i < 3; i += 1) {
-            color.values[i] += (255 - color.values[i]) * coefficient
+            color.values[i] =
+                +color.values[i] + (255 - +color.values[i]) * coefficient
         }
     } else if (color.type.indexOf('color') !== -1) {
         for (let i = 0; i < 3; i += 1) {
-            color.values[i] += (1 - color.values[i]) * coefficient
+            color.values[i] =
+                +color.values[i] + (1 - +color.values[i]) * coefficient
         }
     }
 

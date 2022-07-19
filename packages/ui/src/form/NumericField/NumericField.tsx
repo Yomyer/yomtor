@@ -1,10 +1,20 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, {
+    useState,
+    useRef,
+    useEffect,
+    KeyboardEvent,
+    FormEventHandler
+} from 'react'
 import { NumericFieldStyles } from './NumericField.styles'
 import { NumericFieldProps } from './NumericField.props'
 import { clearGlobalCursor, setGlobalCursor } from '../../utils/cursorUtils'
 import { Resize } from '../../cursor'
 import { Field } from '../Field'
-import Draggable from 'react-draggable'
+import Draggable, {
+    DraggableData,
+    DraggableEvent,
+    DraggableEventHandler
+} from 'react-draggable'
 import { Input } from '../Input'
 import { useLongPress } from '../../uses/use-long-press'
 import { ArrowIcon } from '../../icon/Arrow'
@@ -49,7 +59,7 @@ export const NumericField: React.FC<NumericFieldProps> = ({
         input.current.value = multiple ? '' : defaultValue.toString()
     }, [multiple])
 
-    const update = (e: any, offset = 0) => {
+    const update = (e: React.KeyboardEvent<HTMLInputElement>, offset = 0) => {
         if (e.altKey && !integrer) {
             offset /= 10
         }
@@ -77,14 +87,14 @@ export const NumericField: React.FC<NumericFieldProps> = ({
             value = +min
         }
 
-        e.target.value = Number(value)
+        e.target.value = Number(value).toString()
 
         onChange && onChange(e)
-        setDefatulValue(e.target.value)
+        setDefatulValue(+e.target.value)
     }
 
-    props.onBlur = (e: any) => {
-        update(e)
+    props.onBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+        update(e as unknown as React.KeyboardEvent<HTMLInputElement>)
         setFocused(false)
         origin.onBlur && origin.onBlur(e)
     }
@@ -95,7 +105,7 @@ export const NumericField: React.FC<NumericFieldProps> = ({
         origin.onFocus && origin.onFocus(e)
     }
 
-    props.onInput = (e: any) => {
+    props.onInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (useValid(validatorProps, e.target.value)) {
             setDefatulValue(e.target.value)
         }
@@ -117,16 +127,16 @@ export const NumericField: React.FC<NumericFieldProps> = ({
         origin.onKeyDown && origin.onKeyDown(e)
     }
 
-    const onDrag = (e: any, ui: any) => {
-        if (!ui.deltaX) return
+    const onDrag = (e: DraggableEvent, data: DraggableData) => {
+        if (!data.deltaX) return
 
         update(
             {
                 shiftKey: e.shiftKey,
                 altKey: e.altKey,
                 target: input.current
-            },
-            ui.deltaX
+            } as React.KeyboardEvent<HTMLInputElement>,
+            data.deltaX
         )
         input.current.focus()
     }
@@ -136,7 +146,7 @@ export const NumericField: React.FC<NumericFieldProps> = ({
         setDragging(true)
     }
 
-    const onDragStop = (e: any) => {
+    const onDragStop = (e: DraggableEvent) => {
         clearGlobalCursor(Resize)
 
         setDragging(false)
@@ -144,7 +154,7 @@ export const NumericField: React.FC<NumericFieldProps> = ({
             onChange({
                 ...e,
                 target: input.current
-            })
+            } as unknown as React.KeyboardEvent<HTMLInputElement>)
     }
 
     const setResizeCursor = () => {
@@ -158,14 +168,14 @@ export const NumericField: React.FC<NumericFieldProps> = ({
         }
     }
 
-    const handleIncrease = useLongPress((e: any) => {
+    const handleIncrease = useLongPress((e: React.MouseEvent) => {
         e.target = input.current
-        update(e, 1)
+        update(e as unknown as React.KeyboardEvent<HTMLInputElement>, 1)
     })
 
-    const handleDecrease = useLongPress((e: any) => {
+    const handleDecrease = useLongPress((e: React.MouseEvent) => {
         e.target = input.current
-        update(e, -1)
+        update(e as unknown as React.KeyboardEvent<HTMLInputElement>, -1)
     })
 
     return (

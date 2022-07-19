@@ -1,7 +1,7 @@
 import React from 'react'
 import { DraggableEventHandler } from 'react-draggable'
 
-export type FieldProps<T = any> = {
+export type FieldProps<T = never> = {
     multiple?: boolean
     label?: string
     position?: 'above' | 'below'

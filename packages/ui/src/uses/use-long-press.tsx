@@ -1,11 +1,15 @@
 import { useEffect, useState } from 'react'
 
-export const useLongPress = (callback: (e: any) => void) => {
-    const [mouseEvent, setMouseEvent] = useState<any | null>(null)
-    const [keyEvent, setKeyEvent] = useState<any | null>(null)
+export const useLongPress = (
+    callback: (e: React.MouseEvent | React.TouchEvent) => void
+) => {
+    const [mouseEvent, setMouseEvent] = useState<
+        React.MouseEvent | React.TouchEvent | null
+    >(null)
+    const [keyEvent, setKeyEvent] = useState<KeyboardEvent | null>(null)
 
     useEffect(() => {
-        const keyDown = (e: any) => {
+        const keyDown = (e: KeyboardEvent) => {
             if (
                 ['Shift', 'Control', 'Meta', 'Alt'].includes(e.key) &&
                 mouseEvent
@@ -13,7 +17,7 @@ export const useLongPress = (callback: (e: any) => void) => {
                 setKeyEvent(e)
             }
         }
-        const keyUp = (e: any) => {
+        const keyUp = (e: KeyboardEvent) => {
             if (
                 ['Shift', 'Control', 'Meta', 'Alt'].includes(e.key) &&
                 mouseEvent
@@ -34,8 +38,8 @@ export const useLongPress = (callback: (e: any) => void) => {
     }, [mouseEvent])
 
     useEffect(() => {
-        let interval: any
-        let timeout: any
+        let interval: NodeJS.Timeout
+        let timeout: NodeJS.Timeout
 
         if (mouseEvent) {
             if (keyEvent) {
@@ -66,10 +70,10 @@ export const useLongPress = (callback: (e: any) => void) => {
     }, [keyEvent, mouseEvent])
 
     return {
-        onMouseDown: (e: any) => setMouseEvent(e),
+        onMouseDown: (e: React.MouseEvent) => setMouseEvent(e),
         onMouseUp: () => setMouseEvent(null),
         onMouseLeave: () => setMouseEvent(null),
-        onTouchStart: (e: any) => setMouseEvent(e),
+        onTouchStart: (e: React.TouchEvent) => setMouseEvent(e),
         onTouchEnd: () => setMouseEvent(null)
     }
 }

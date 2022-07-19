@@ -1,7 +1,7 @@
-node_modules
-!.*
-dist
-build
-
-
-examples/cra-ejected-babel
+build/
+dist/
+node_modules/
+.snapshots/
+*.min.js
+**/*.json
+**/*.md

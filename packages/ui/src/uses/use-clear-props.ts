@@ -149,7 +149,7 @@ const standarHTMLPrps = {
     wmode: 'wmode',
     wrap: 'wrap'
 }
-export const useClearProps = (props: any) => {
+export const useClearProps = (props: object) => {
     if (
         process.env.NODE_ENV &&
         ['development', 'test'].indexOf(process.env.NODE_ENV) === -1

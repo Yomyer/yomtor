@@ -1,5 +1,5 @@
-export function fromEntries(entries: any) {
-    const o: any = {}
+export function fromEntries(entries: object) {
+    const o: object = {}
 
     Object.keys(entries).forEach((key) => {
         const [k, v] = entries[key]

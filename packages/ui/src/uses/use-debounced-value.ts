@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
 
-export function useDebouncedValue<T = any>(
+export function useDebouncedValue<T = unknown>(
     value: T,
     wait: number,
     options = { leading: false }

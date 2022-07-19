@@ -21,5 +21,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 )
 
 Input.defaultProps = {
-    onChange: () => {}
+    onChange: () => {
+        //
+    }
 }

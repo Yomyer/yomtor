@@ -6,7 +6,7 @@ type Classes = 'root' | 'hover' | 'content'
 export const ButtonStyles = createStyles<
     Classes,
     ButtonProps & { hovered: boolean }
->((theme, { fullWidth, hovered, hoverOpacity }) => {
+>((theme, { fullWidth, color, hovered, variant, hoverOpacity }) => {
     return {
         root: {
             minHeight: 22,

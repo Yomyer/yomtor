@@ -5,7 +5,7 @@ export type { DraggableEvent, DraggableData } from 'react-draggable'
 export type DraggableProps = Partial<ReactDraggableProps> & {
     phantom?: boolean
     move?: boolean
-    data?: any
+    data?: object
     disabled?: boolean
     throttle?: number
     start?: number

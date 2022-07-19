@@ -1,6 +1,9 @@
 import { NumericFieldProps } from './NumericField.props'
 
-export const useValid = ({ abs, integrer }: NumericFieldProps, value: any) => {
+export const useValid = (
+    { abs, integrer }: NumericFieldProps,
+    value: number | string
+) => {
     let pattern = '^'
     pattern += !abs ? '-?' : ''
     pattern += '\\d*'
@@ -8,5 +11,5 @@ export const useValid = ({ abs, integrer }: NumericFieldProps, value: any) => {
     pattern += '$'
 
     const regexp = new RegExp(pattern)
-    return regexp.exec(value)
+    return regexp.exec(value.toString())
 }

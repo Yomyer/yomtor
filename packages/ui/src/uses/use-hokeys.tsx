@@ -1,12 +1,21 @@
 import hotkeys, { HotkeysEvent } from 'hotkeys-js'
 import React, { useCallback, useEffect, useRef } from 'react'
 import { intersectionWith } from 'lodash'
-import { Point } from '@yomtor/paper'
+
 type AvailableTags = 'INPUT' | 'TEXTAREA' | 'SELECT'
+type Point = { x: number; y: number }
 
 export type HotKeysEvent = HotkeysEvent & {
     delta: Point
-    isPressed: (keyCode: any) => boolean
+    isPressed: (keyCode: string) => boolean
+}
+
+export type HotKeysOptions = {
+    keys: string
+    callbackDown?: HotKeyHandler
+    callbackUp?: HotKeyHandler
+    options?: Options
+    deps?: React.DependencyList
 }
 
 export interface HotKeyHandler {
@@ -34,7 +43,7 @@ const isKeyboardEventTriggeredByInput = (ev: KeyboardEvent) => {
 }
 
 const getDeltaArrow = (ev: KeyboardEvent) => {
-    const point = new Point(0, 0)
+    const point: Point = { x: 0, y: 0 }
     switch (ev.code) {
         case 'ArrowUp':
             point.y = -1
@@ -65,66 +74,13 @@ export type Options = {
     keydown?: boolean
 }
 
-export function useHotkeys<T extends Element>(
-    keys: string,
-    callbackDown: HotKeyHandler,
-    options?: Options
-): React.MutableRefObject<T | null>
-export function useHotkeys<T extends Element>(
-    keys: string,
-    callbackDown: HotKeyHandler,
-    deps?: any[]
-): React.MutableRefObject<T | null>
-export function useHotkeys<T extends Element>(
-    keys: string,
-    callbackDown: HotKeyHandler,
-    options?: Options,
-    deps?: any[]
-): React.MutableRefObject<T | null>
-
-export function useHotkeys<T extends Element>(
-    keys: string,
-    callbackDown: HotKeyHandler,
-    callbackUp?: HotKeyHandler,
-    options?: Options
-): React.MutableRefObject<T | null>
-export function useHotkeys<T extends Element>(
-    keys: string,
-    callbackDown: HotKeyHandler,
-    callbackUp?: HotKeyHandler,
-    deps?: any[]
-): React.MutableRefObject<T | null>
-export function useHotkeys<T extends Element>(
-    keys: string,
-    callbackDown: HotKeyHandler,
-    callbackUp?: HotKeyHandler,
-    options?: Options,
-    deps?: any[]
-): React.MutableRefObject<T | null>
-export function useHotkeys<T extends Element>(
-    keys: string,
-    callbackDown: HotKeyHandler,
-    callbackUp?: any[] | Options | HotKeyHandler,
-    options: any[] | Options = {},
-    deps?: any[]
-): React.MutableRefObject<T | null> {
-    if (callbackUp && typeof callbackUp !== 'function') {
-        if (callbackUp instanceof Array) {
-            deps = callbackUp
-            options = {}
-        } else {
-            if (options instanceof Array) {
-                deps = options
-            }
-            options = callbackUp
-        }
-    }
-
-    if (options instanceof Array) {
-        deps = options
-        options = {}
-    }
-
+export function useHotkeys<T extends Element>({
+    keys,
+    callbackDown,
+    callbackUp,
+    options,
+    deps
+}: HotKeysOptions): React.MutableRefObject<T | null> {
     const {
         enableOnTags,
         filter,
@@ -162,7 +118,7 @@ export function useHotkeys<T extends Element>(
     }
 
     const memoisedCallback = useCallback(
-        (keyboardEvent: KeyboardEvent, hotkeysEvent: HotKeysEvent & any) => {
+        (keyboardEvent: KeyboardEvent, hotkeysEvent: HotKeysEvent) => {
             hotkeysEvent.isPressed = hotkeys.isPressed
 
             if (filter && !filter(keyboardEvent)) {
@@ -254,14 +210,14 @@ export function useHotkeys<T extends Element>(
         if (!enabled) return null
 
         if (keyup && keydown !== true) {
-            ;(options as Options).keydown = false
+            options.keydown = false
         }
 
         if (callbackDown) {
-            ;(options as Options).keydown = true
+            options.keydown = true
         }
         if (typeof callbackUp === 'function') {
-            ;(options as Options).keyup = true
+            options.keyup = true
         }
         hotkeys(keys, (options as Options) || {}, memoisedCallback)
 
