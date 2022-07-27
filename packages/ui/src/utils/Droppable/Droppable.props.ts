@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import React from 'react'
 import { DefaultProps } from '@yomtor/styles'
 import { FileRejection } from 'react-dropzone'
 
@@ -9,7 +9,7 @@ export type DropzoneStatus = {
     dragged: boolean
 }
 
-export type DropEvent<D = never | undefined> = {
+export type DropEvent<D = { [key: string]: unknown }> = {
     type: string
     fileRejections?: FileRejection[]
     props: D
@@ -24,7 +24,14 @@ export type DroppableProps = DefaultProps & {
     onMove?: (event: DropEvent) => void | false
     onLeave?: (event: DropEvent) => void | false
     onReject?(fileRejections: FileRejection[]): void
-    children?: ReactNode
+    children?:
+        | React.ReactNode
+        | ((args?: {
+              accepted: boolean
+              rejected: boolean
+              overed: boolean
+              dragged: boolean
+          }) => React.ReactNode)
     accept?: (string | ((event: DropEvent) => boolean))[]
     multiple?: boolean
     maxSize?: number

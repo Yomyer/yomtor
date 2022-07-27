@@ -3,7 +3,7 @@ import { TreeNodeData, TreeNodeProps } from './TreeNode/TreeNode.props'
 
 export type TreeViewPositions = 'below' | 'above' | 'in'
 
-export type TreeViewProps<T = never> = DefaultProps & {
+export type TreeViewProps<T = TreeNodeData> = DefaultProps & {
     data?: TreeNodeData<T>[]
     nodeComponent?: React.FC<TreeNodeProps>
     nodeHeight?: number

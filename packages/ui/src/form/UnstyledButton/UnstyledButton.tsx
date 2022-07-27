@@ -32,7 +32,6 @@ export const UnstyledButton: UnstyledButtonComponent = forwardRef(
         )
 
         return (
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             <Box<string>
                 component={component}
                 ref={ref}

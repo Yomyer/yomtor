@@ -17,7 +17,7 @@ import { PlayIcon } from '../../icon/Play'
 import { useNodeTree } from './use-node-tree'
 import { Draggable as DraggableUtil } from '../../utils/Draggable/Draggable'
 import { Droppable } from '../../utils/Droppable/Droppable'
-import { DropEvent } from 'react-dropzone'
+import { DropEvent } from '../../utils/Droppable/Droppable.props'
 
 /**
  * Description
@@ -48,7 +48,7 @@ export const TreeView: React.FC<TreeViewProps> = ({
 
     const distanceX = useRef<number>(0)
     const dropInfo = useRef<{
-        drag: TreeNodeData
+        drag: TreeNodeData[]
         drop: TreeNodeData
         position: TreeViewPositions
     }>()
@@ -230,7 +230,7 @@ export const TreeView: React.FC<TreeViewProps> = ({
     }
 
     const dropMoveHandler = (
-        { target, props }: DropEvent & { props: never },
+        { target, props }: DropEvent<{ mouseEvent?: MouseEvent }>,
         index: number
     ) => {
         setTarget(target)

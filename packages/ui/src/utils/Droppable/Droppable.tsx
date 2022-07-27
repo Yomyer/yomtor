@@ -174,15 +174,17 @@ export const Droppable: React.FC<DroppableProps> = ({
             {...getRootProps({ ref: element })}
             data-droppable
         >
-            {!externalDisabled && <input {...getInputProps()} />}
-            {(isFunction(children) &&
-                children({
-                    accepted: isDragAccept || isDropAccept,
-                    rejected: isDragReject || isDropReject,
-                    overed: over,
-                    dragged: dragging
-                })) ||
-                children}
+            <>
+                {!externalDisabled && <input {...getInputProps()} />}
+                {(isFunction(children) &&
+                    children({
+                        accepted: isDragAccept || isDropAccept,
+                        rejected: isDragReject || isDropReject,
+                        overed: over,
+                        dragged: dragging
+                    })) ||
+                    children}
+            </>
         </div>
     )
 }

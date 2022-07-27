@@ -15,11 +15,7 @@ import { Button } from '../../form/Button'
 /**
  * Description
  */
-export const Aligment: React.FC<AligmentProps> = ({
-    children,
-    onClick,
-    ...props
-}) => {
+export const Aligment: React.FC<AligmentProps> = ({ onClick, ...props }) => {
     const { classes } = AligmentStyles({ ...props })
 
     const changeHandler = (
