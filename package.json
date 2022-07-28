@@ -12,7 +12,8 @@
         "build": "pnpm run -r build",
         "test": "pnpm run -r test",
         "lint": "eslint --ext js,ts,tsx .",
-        "storybook": "yarn --cwd ./examples/storybook run storybook"
+        "storybook": "yarn --cwd ./examples/storybook run storybook",
+        "generate": "node ./scripts/generate.js"
     },
     "devDependencies": {
         "doctoc": "~2.2.0",
