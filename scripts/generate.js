@@ -1,4 +1,5 @@
 const { generateTemplateFiles } = require('generate-template-files')
+const { updateCursors } = require('./libs/update-cursors');
 
 generateTemplateFiles([
     {
@@ -23,6 +24,20 @@ generateTemplateFiles([
             pathAndFileNameDefaultCase: '(pascalCase)',
             overwrite: false
         }
+    },
+    {
+        option: 'Update Icon Crusors',
+        entry: {
+          folderPath: './packages/icons/source/cursors',
+        },
+        dynamicReplacers: [{ slot: '__name__', slotValue: 'test' }],
+        output: {
+          path: './packages/icons/src/cursors',
+          overwrite: true,
+        },
+        onComplete: async (results) => {
+          updateCursors('./projects/ui/src/icon', results.output.files);
+        },
     },
     {
         option: 'Create UI Icon',
