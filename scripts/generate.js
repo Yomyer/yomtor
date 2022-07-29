@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const { generateTemplateFiles } = require('generate-template-files')
-const { updateCursors } = require('./libs/update-cursors');
+const { updateCursors } = require('./libs/update-cursors')
 
 generateTemplateFiles([
     {
@@ -28,16 +29,16 @@ generateTemplateFiles([
     {
         option: 'Update Icon Crusors',
         entry: {
-          folderPath: './packages/icons/source/cursors',
+            folderPath: './packages/icons/source/cursors'
         },
         dynamicReplacers: [{ slot: '__name__', slotValue: 'test' }],
         output: {
-          path: './packages/icons/src/cursors',
-          overwrite: true,
+            path: './packages/icons/src/cursors',
+            overwrite: true
         },
         onComplete: async (results) => {
-          updateCursors('./projects/ui/src/icon', results.output.files);
-        },
+            updateCursors(results.output.files)
+        }
     },
     {
         option: 'Create UI Icon',

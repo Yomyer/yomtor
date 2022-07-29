@@ -205,7 +205,7 @@ const generateSVGCursor = (
 }
 
 const generateStyle = async (className: string, cursor: Props) => {
-    const data = { x: '8', y: '8', ...cursor.action }
+    const data = { x: '16', y: '16', ...cursor.action }
     const svg64 = toBase64SVG(generateSVGCursor(cursor, 0.5))
     const png64 = toBase64SVG(generateSVGCursor(cursor))
 

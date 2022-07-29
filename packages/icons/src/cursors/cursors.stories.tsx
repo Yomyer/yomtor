@@ -6,37 +6,43 @@ import Cursor, {
     cursorWithScope,
     setCursor,
     setGlobalCursor
-} from './utils/cursorUtils'
-import Buti from './cursors/Buti'
-import Default from './cursors/Default'
-import Test from './cursors/Test'
+} from '../utils/cursorUtils'
+import Buti from './Buti'
+import Default from './Default'
+import Grab from './Grab'
+import Grabbing from './Grabbing'
+import Resize from './Resize'
+import Rotate from './Rotate'
 
-const cursors = { Buti, Default, Test }
+const cursors = { Buti, Default, Grab, Grabbing, Resize, Rotate }
 
 type Props = {
     cursor?: Cursor
+    rotate?: number
 }
 
-const Canvas: React.FC<Props> = ({ cursor }) => {
+const Canvas: React.FC<Props> = ({ cursor, rotate }) => {
     const ref = useRef<HTMLDivElement>()
 
     const enterHandler = () => {
-        setGlobalCursor(cursor)
+        setGlobalCursor(cursor, rotate)
     }
 
     const leaveHandler = () => {
-        clearGlobalCursor(cursor)
+        clearGlobalCursor(cursor, rotate)
     }
 
     useEffect(() => {
-        //cursorWithScope(ref.current)
+        // cursorWithScope(ref.current)
     }, [])
 
     useEffect(() => {
-        /*setCursor(cursor)
+        /*
+        setCursor(cursor)
         return () => {
             clearCursor(cursor)
-        }*/
+        }
+        */
     }, [cursor])
 
     return (
@@ -44,7 +50,6 @@ const Canvas: React.FC<Props> = ({ cursor }) => {
             ref={ref}
             style={{
                 background: 'rgba(0,0,0,0.1)',
-                width: 100,
                 height: 100,
                 display: 'flex',
                 alignItems: 'center',
@@ -74,16 +79,24 @@ export default {
     }
 } as ComponentMeta<typeof Canvas>
 
-const Template: ComponentStory<typeof Canvas> = ({ ...props }) => {
+const Template: ComponentStory<typeof Canvas> = ({ rotate, ...props }) => {
     return (
-        <>
+        <div
+            style={{
+                display: 'grid',
+                gap: 10,
+                gridTemplateColumns: 'repeat(6, 1fr)'
+            }}
+        >
             {Object.keys(cursors).map((key) => (
-                <Canvas key={key} cursor={cursors[key]} />
+                 <Canvas key={key} cursor={cursors[key]} rotate={rotate} />
             ))}
-        </>
+        </div>
     )
 }
 
 export const Playground = Template.bind({})
 
-Playground.args = {}
+Playground.args = {
+    rotate: 0
+}
