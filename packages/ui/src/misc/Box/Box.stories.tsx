@@ -10,16 +10,15 @@ export default {
     }
 } as ComponentMeta<typeof Box>
 
-const Template: ComponentStory<typeof Box> = ({ children, ...props }) => {
+const Template: ComponentStory<typeof Box> = ({ ...props }) => {
     return (
         <Box
             {...props}
+            mt={10}
             sx={(theme) => ({
                 color: theme.palette.primary.main
             })}
-        >
-            {children}
-        </Box>
+        ></Box>
     )
 }
 

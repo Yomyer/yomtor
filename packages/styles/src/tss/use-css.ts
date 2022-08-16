@@ -10,7 +10,7 @@ import { useEmotionCache } from './use-emotion-cache'
 const refPropertyName = 'ref' as const
 
 function getRef(...args: any[]) {
-    let ref: string = null
+    let ref: string
 
     if (args.length !== 1) {
         return { args, ref }
@@ -56,6 +56,7 @@ export const { cssFactory } = (() => {
             const { ref, args } = getRef(styles)
             const serialized = serializeStyles(args, cache.registered)
             insertStyles(cache as EmotionCache, serialized, false)
+
             return `${cache.key}-${serialized.name}${
                 ref === undefined ? '' : ` ${ref}`
             }`

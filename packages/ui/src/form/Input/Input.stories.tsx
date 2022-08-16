@@ -5,19 +5,15 @@ import { ComponentStory, ComponentMeta } from '@storybook/react'
 export default {
     title: 'Atoms/Form/Input',
     component: Input,
-    argTypes: {
-        onChange: { action: 'Changed' }
-    }
+    argTypes: {}
 } as ComponentMeta<typeof Input>
 
-const Template: ComponentStory<typeof Input> = ({ children, ...props }) => {
-    return (
-        <Input {...props} defaultValue='value'>
-            {children}
-        </Input>
-    )
+const Template: ComponentStory<typeof Input> = ({ ...props }) => {
+    return <Input></Input>
 }
 
 export const Playground = Template.bind({})
 
-Playground.args = {}
+Playground.args = {
+    color: 'red'
+}

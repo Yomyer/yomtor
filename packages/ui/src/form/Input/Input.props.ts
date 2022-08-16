@@ -1,6 +1,5 @@
-export type InputProps = {
-    fullWidth?: boolean
-} & React.DetailedHTMLProps<
-    React.InputHTMLAttributes<HTMLInputElement>,
-    HTMLInputElement
->
+import { DefaultProps } from '@yomtor/styles'
+
+export type InputProps = DefaultProps & {
+    children?: React.ReactNode
+}

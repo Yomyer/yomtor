@@ -1,8 +1,7 @@
 import React from 'react'
 import { TreeObjectNodeStyles } from './TreeObjectNode.styles'
 import { TreeObjectProps } from './TreeObjectNode.props'
-import { LockIcon } from '../../icon/Lock'
-import { ArtboardIcon } from '../../icon/Artboard'
+import { LockIcon, ArtboardIcon } from '@yomtor/icons'
 import { useClearProps } from '@yomtor/hooks'
 
 /**

@@ -30,6 +30,8 @@
         "react-virtual": "^2.10.4",
         "rimraf": "~3.0.2",
         "@yomtor/styles": "*",
-        "@yomtor/hooks": "*"
+        "@yomtor/hooks": "*",
+        "@yomtor/icons": "*",
+        "@yomtor/cursors": "*"
     }
 }

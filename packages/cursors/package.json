@@ -1,0 +1,35 @@
+{
+    "name": "@yomtor/cursors",
+    "version": "1.0.0",
+    "description": "Yomtor library cursors",
+    "author": "Yomyer",
+    "license": "MIT",
+    "repository": "https://github.com/Yomyer/yomtor.git",
+    "main": "dist/index",
+    "types": "dist/index",
+    "scripts": {
+        "build": "pnpm run clean && pnpm run compile",
+        "clean": "rimraf -rf ./dist",
+        "compile": "tsc -p tsconfig.build.json",
+        "prepublishOnly": "pnpm run build",
+        "test": "jest --watchAll"
+    },
+    "peerDependencies": {
+        "react": "~16.8.0"
+    },
+    "dependencies": {
+        "@radix-ui/react-scroll-area": "^0.1.4",
+        "hotkeys-js": "^3.8.5",
+        "lodash": "^4.17.21",
+        "microbundle": "^0.15.0",
+        "react": "^16.8.0",
+        "react-dom": "^16.8.0",
+        "react-draggable": "^4.4.4",
+        "react-dropzone": "^12.0.4",
+        "react-ink": "^6.4.0",
+        "react-virtual": "^2.10.4",
+        "rimraf": "~3.0.2",
+        "@yomtor/styles": "*",
+        "@yomtor/hooks": "*"
+    }
+}

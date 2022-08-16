@@ -1,3 +1,5 @@
 export * from './is-numeric'
 export * from './merge-objects'
 export * from './to-rgba'
+export * from './extract-system-styles'
+export * from './get-system-styles'

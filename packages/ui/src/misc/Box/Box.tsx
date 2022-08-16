@@ -1,25 +1,26 @@
 import React, { forwardRef } from 'react'
-import { BoxComponent, BoxProps } from './Box.props'
-import { PolymorphicRef, useSx } from '@yomtor/styles'
+import { BoxProps } from './Box.props'
+import {
+    createPolymorphicComponent,
+    extractSystemStyles,
+    useSx
+} from '@yomtor/styles'
 
-export const Box: BoxComponent = forwardRef(
-    <C extends React.ElementType = 'div'>(
-        {
-            className,
-            sx,
-            style,
-            component: Element = 'div',
-            ...props
-        }: BoxProps<C>,
-        ref: PolymorphicRef<C>
-    ) => {
+export const _Box = forwardRef<HTMLDivElement, BoxProps & { component: any }>(
+    ({ className, component, style, sx, ...others }, ref) => {
+        const { systemStyles, rest } = extractSystemStyles(others)
+        const Element = component || 'div'
         return (
             <Element
                 ref={ref}
-                className={useSx(sx, className)}
+                className={useSx(sx, systemStyles, className)}
                 style={style}
-                {...props}
+                {...rest}
             />
         )
     }
 )
+
+_Box.displayName = 'Box'
+
+export const Box = createPolymorphicComponent<'div', BoxProps>(_Box)

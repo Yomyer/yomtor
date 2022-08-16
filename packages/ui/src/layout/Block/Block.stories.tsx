@@ -1,8 +1,8 @@
 import React from 'react'
 import { Block } from './Block'
 import { ComponentStory, ComponentMeta } from '@storybook/react'
-import { NumericField } from '../../form/NumericField'
-import { LockIcon } from '../../icon/Lock/Lock'
+import { NumericField } from '../../form_old/NumericField'
+import { LockIcon } from '@yomtor/icons'
 
 export default {
     title: 'Atoms/Layout/Block',

@@ -1,4 +1,6 @@
 import React from 'react'
+import { MoreIcon, DistributeIcon, ArrageIcon, CenterIcon } from '@yomtor/icons'
+
 import { AligmentStyles } from './Aligment.styles'
 import {
     AligmentDirectionTypes,
@@ -6,11 +8,7 @@ import {
     AligmentTypes
 } from './Aligment.props'
 import { Block } from '../../layout/Block'
-import { MoreIcon } from '../../icon/More'
-import { DistributeIcon } from '../../icon/Distribute'
-import { ArrageIcon } from '../../icon/Arrage'
-import { CenterIcon } from '../../icon/Center'
-import { Button } from '../../form/Button'
+import { Button } from '../../form_old/Button'
 
 /**
  * Description

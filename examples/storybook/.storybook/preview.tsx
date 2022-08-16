@@ -11,14 +11,33 @@ export const parameters = {
     }
 }
 
-export const argTypes = {
-    sx: { table: { disable: true } },
-    style: { table: { disable: true } },
-    styles: { table: { disable: true } },
-    className: { table: { disable: true } },
-    classNames: { table: { disable: true } },
-    component: { control: 'text' }
-}
+const disables = [
+    'm',
+    'mx',
+    'my',
+    'mt',
+    'mb',
+    'ml',
+    'mr',
+    'p',
+    'px',
+    'py',
+    'pt',
+    'pb',
+    'pl',
+    'pr',
+    'sx',
+    'style',
+    'styles',
+    'className',
+    'classNames',
+    'unstyled'
+]
+
+export const argTypes = disables.reduce((stash, current) => {
+    stash[current] = { table: { disable: true } }
+    return stash
+}, {})
 
 export const decorators = [
     (Story) => (

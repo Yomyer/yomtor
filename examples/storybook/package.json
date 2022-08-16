@@ -18,6 +18,8 @@
   "dependencies": {
     "@yomtor/ui": "*",
     "@yomtor/styles": "*",
+    "@yomtor/icons": "*",
+    "@yomtor/cursors": "*",
     "react": "~17.0.2",
     "react-dom": "~17.0.2",
     "storybook-dark-mode": "^1.0.8"
