@@ -13,8 +13,20 @@ const {
     StringUtility,
     CaseConverterEnum
 } = require('generate-template-files')
+const Offsets = require('./offsets')
 
-const generate = ({ d, stroke, fill, name, path, cursors, imports, exports }) => {
+const generate = ({
+    d,
+    stroke,
+    fill,
+    offset,
+    name,
+    path,
+    paths,
+    cursors,
+    imports,
+    exports
+}) => {
     return new Promise((resolve, reject) => {
         generateTemplateFilesBatch([
             {
@@ -26,8 +38,11 @@ const generate = ({ d, stroke, fill, name, path, cursors, imports, exports }) =>
                 dynamicReplacers: [
                     { slot: '__name__', slotValue: name },
                     { slot: '__path__', slotValue: d },
+                    { slot: '__paths__', slotValue: paths },
                     { slot: '__stroke__', slotValue: stroke },
                     { slot: '__fill__', slotValue: fill },
+                    { slot: '__x__', slotValue: offset.y || '' },
+                    { slot: '__y__', slotValue: offset.x || '' },
                     { slot: '__cursors__', slotValue: cursors },
                     { slot: '__imports__', slotValue: imports },
                     { slot: '__exports__', slotValue: exports }
@@ -60,7 +75,7 @@ const generateCursors = async (files) => {
 
     for (let x = 0; x < files.length; x++) {
         const file = files[x]
-
+        const name = path.parse(file).name
         /*
         await SVGFixer(file, path.dirname(file), {
             showProgressBar: false
@@ -69,10 +84,19 @@ const generateCursors = async (files) => {
 
         const svg = await readFile(file, 'utf8')
 
-        const d = Array.from(
-            svg.matchAll(/<path.*\sd="([^"]*)"/g),
-            (m) => m[1]
-        )[0]
+        const d = [
+            ...new Set(
+                Array.from(svg.matchAll(/<path.*\sd="([^"]*)"/g), (m) => m[1])
+            )
+        ].join(' ')
+
+        const paths =
+            Array.from(
+                svg.matchAll(/<path.*\sd="([^"]*)"([^>]*)\/>/g),
+                (m) => m[0]
+            )
+                .map((p) => `\n        '${p}'`)
+                .join(',') + '\n    '
         let stroke =
             Array.from(
                 svg.matchAll(/<path.*\sstroke="([^"]*)"/g),
@@ -92,18 +116,15 @@ const generateCursors = async (files) => {
             stroke = ['#FFFFFF', 'white'].includes(fill) ? '#000000' : '#FFFFFF'
         }
 
-        names.push(
-            StringUtility.toCase(
-                path.parse(file).name,
-                CaseConverterEnum.PascalCase
-            )
-        )
+        names.push(StringUtility.toCase(name, CaseConverterEnum.PascalCase))
 
         generate({
             d,
             stroke,
+            paths,
             fill,
-            name: path.parse(file).name,
+            offset: Offsets[name] ? Offsets[name] : {},
+            name: name,
             path: path.dirname(file),
             cursors: names.join(', '),
             imports: names
@@ -115,7 +136,7 @@ const generateCursors = async (files) => {
                 .map((name) => {
                     return `export { default as ${name} } from './${name}'`
                 })
-                .join('\n'),
+                .join('\n')
         })
 
         await unlink(file)
@@ -125,7 +146,6 @@ const generateCursors = async (files) => {
 
     bar.stop()
 }
-
 
 exports.cursors = {
     option: 'Generate Cursors',

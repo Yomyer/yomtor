@@ -98,8 +98,8 @@ export default {
             control: {
                 type: 'select'
             },
-            options: Object.keys(cursors),
-            mapping: cursors
+            options: ['NoCursor', ...Object.keys(cursors)],
+            mapping: { NoCursor: null, ...cursors }
         }
         // myBooleanProp: { control: { type: 'boolean' } },
         // mySelectProp: { options: ['Hello', 'World'], control: { type: 'select' } },

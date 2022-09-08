@@ -10,16 +10,21 @@ import Cursor, {
 } from '../utils/cursorUtils'
 import Buti from './Buti'
 import Clone from './Clone'
+import Comment from './Comment'
 import Cross from './Cross'
 import Default from './Default'
+import Feather from './Feather'
 import Grab from './Grab'
 import Grabbing from './Grabbing'
+import Maximize from './Maximize'
+import Minimize from './Minimize'
+import Picker from './Picker'
 import Rectangle from './Rectangle'
 import Remove from './Remove'
 import Resize from './Resize'
 import Rotate from './Rotate'
 
-const cursors = { Buti, Clone, Cross, Default, Grab, Grabbing, Rectangle, Remove, Resize, Rotate }
+const cursors = { Buti, Clone, Comment, Cross, Default, Feather, Grab, Grabbing, Maximize, Minimize, Picker, Rectangle, Remove, Resize, Rotate }
 
 type Props = {
     cursor?: Cursor
@@ -107,8 +112,8 @@ export default {
             control: {
                 type: 'select'
             },
-            options: Object.keys(cursors),
-            mapping: cursors
+            options: ['NoCursor', ...Object.keys(cursors)],
+            mapping: { NoCursor: null, ...cursors }
         }
         // myBooleanProp: { control: { type: 'boolean' } },
         // mySelectProp: { options: ['Hello', 'World'], control: { type: 'select' } },

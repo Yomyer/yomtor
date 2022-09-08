@@ -1,8 +1,10 @@
+import { isNil, isNumber, omitBy } from 'lodash'
 import { Default } from '../list'
 
 export type Cursor = {
     id: string
     d: string
+    paths: string[]
     fill?: string
     x?: string
     y?: string
@@ -170,19 +172,15 @@ export const generateSVGCursor = (
         const subCrusor = createNode('g', {
             'transform-origin': 'center',
             stroke: 'none',
-            'stroke-width': '1',
+            'stroke-width': '2',
             fill: 'none',
             'fill-rule': 'evenodd',
             'stroke-linecap': 'round',
             'stroke-linejoin': 'round',
             transform: 'translate(10, 10)'
         })
-        subCrusor.appendChild(
-            createNode('path', {
-                ...actionData,
-                'stroke-width': '2'
-            })
-        )
+        generatePath(subCrusor, actionData)
+
         g.appendChild(subCrusor)
     }
 
@@ -190,17 +188,16 @@ export const generateSVGCursor = (
         transform: `rotate(${rotation || 0}) ${
             actionData ? 'translate(-10, -10)' : ''
         }`,
-        'transform-origin': 'center',
+        'transform-origin': actionData ? '22px 22px' : 'center',
         stroke: 'none',
-        'stroke-width': '1',
+        'stroke-width': '2',
         fill: 'none',
         'fill-rule': 'evenodd',
         'stroke-linecap': 'round',
         'stroke-linejoin': 'round'
     })
-    cursor.appendChild(
-        createNode('path', { ...cursorData, 'stroke-width': '2' })
-    )
+    generatePath(cursor, cursorData)
+
     g.appendChild(cursor)
 
     svg.appendChild(g)
@@ -208,11 +205,19 @@ export const generateSVGCursor = (
     return svg
 }
 
-const generateStyle = async (className: string, props: Props) => {
-    let data = { x: '16', y: '16', ...props.cursor }
+const generatePath = (svg: SVGElement, { paths, ...others }: Cursor) => {
+    if (paths.length > 1) {
+        svg.innerHTML = paths.join('')
+    } else {
+        svg.appendChild(createNode('path', { ...others }))
+    }
+}
 
-    if (props.cursor === Default) {
-        data = { ...data, x: '9', y: '9' }
+const generateStyle = async (className: string, props: Props) => {
+    let data = {
+        x: '16',
+        y: '16',
+        ...omitBy(props.cursor, (val) => !val && !isNumber(val))
     }
 
     if (props.action) {
