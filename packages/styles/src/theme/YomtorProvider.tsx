@@ -6,6 +6,7 @@ import { YomtorTheme } from './types'
 import { NormalizeCSS } from './NormalizeCSS'
 import { createTheme } from './theme'
 import { Modes } from '.'
+import { ThemeProvider } from '@emotion/react'
 
 type ProviderStyles = Record<
     string,
@@ -31,6 +32,21 @@ export function useYomtorTheme() {
     return useContext(YomtorThemeContext)?.theme
 }
 
+export function useYomtorProviderStyles(component: string | string[]) {
+    const theme = useYomtorTheme()
+
+    const getStyles = (name: string) => ({
+        styles: theme.components[name]?.styles || {},
+        classNames: theme.components[name]?.classNames || {}
+    })
+
+    if (Array.isArray(component)) {
+        return component.map(getStyles)
+    }
+
+    return [getStyles(component)]
+}
+
 export function useYomtorThemeStyles() {
     return useContext(YomtorThemeContext)?.styles || {}
 }
@@ -49,7 +65,7 @@ export function useYomtorEmotionOptions(): EmotionCacheOptions {
 }
 
 export interface YomtorProviderProps {
-    theme?: YomtorTheme
+    theme?: Partial<YomtorTheme>
     styles?: ProviderStyles
     emotionOptions?: EmotionCacheOptions
     withNormalizeCSS?: boolean
@@ -91,21 +107,23 @@ export function YomtorProvider({
     withGlobalStyles = true,
     children
 }: YomtorProviderProps) {
-    theme = theme.vars ? theme : createTheme(theme)
+    theme = theme && theme.vars ? theme : createTheme(theme)
 
     return (
-        <YomtorThemeContext.Provider
-            value={{
-                theme,
-                styles,
-                mode: theme.type,
-                emotionOptions
-            }}
-        >
-            {withNormalizeCSS && <NormalizeCSS />}
-            {withGlobalStyles && <GlobalStyles />}
-            {children}
-        </YomtorThemeContext.Provider>
+        <ThemeProvider theme={theme}>
+            <YomtorThemeContext.Provider
+                value={{
+                    theme: theme as YomtorTheme,
+                    styles,
+                    mode: theme.type,
+                    emotionOptions
+                }}
+            >
+                {withNormalizeCSS && <NormalizeCSS />}
+                {withGlobalStyles && <GlobalStyles />}
+                {children}
+            </YomtorThemeContext.Provider>
+        </ThemeProvider>
     )
 }
 

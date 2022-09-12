@@ -115,6 +115,7 @@ export const createTheme = (
                 headings,
                 typography,
                 type: mode,
+                components: {},
                 fn: {
                     size,
                     rgba: rgba.bind(Object.assign({ vars: theme.vars })),
@@ -125,7 +126,7 @@ export const createTheme = (
             },
             other
         )
-    )
+    ) as YomtorTheme
 
     theme.vars = Object.assign(theme.vars, getCssVars(theme))
 

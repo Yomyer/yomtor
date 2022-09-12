@@ -1,12 +1,5 @@
 import * as CSSType from 'csstype'
 
-export type ClassNames<
-    T extends (...args: any[]) => {
-        classes: Record<string, never>
-        cx: (...cx: any[]) => string
-    }
-> = keyof ReturnType<T>['classes']
-
 export interface CSSObject
     extends CSSPropertiesWithMultiValues,
         CSSPseudos,

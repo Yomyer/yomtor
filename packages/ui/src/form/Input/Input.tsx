@@ -9,36 +9,30 @@ import {
     useSx
 } from '@yomtor/styles'
 
-export const _Input = forwardRef<
-    HTMLInputElement,
-    InputProps & { component: any }
->(({ className, classNames, component, style, styles, ...others }, ref) => {
-    const { classes, cx } = InputStyles(
-        {
-            classNames,
-            styles,
-            ...others
-        },
-        { classNames, styles, name: 'Input' }
-    )
+export const _Input = forwardRef<HTMLInputElement, InputProps>(
+    ({ className, classNames, style, unstyled, styles, ...others }, ref) => {
+        const { classes, cx } = InputStyles(
+            {
+                classNames,
+                styles,
+                ...others
+            },
+            { classNames, styles, name: 'Input', unstyled }
+        )
+        const { systemStyles, rest } = extractSystemStyles(others)
 
-    const { systemStyles, rest } = extractSystemStyles(others)
-
-    return (
-        <Box
-            className={cx(classes.root, className)}
-            style={style}
-            {...systemStyles}
-        >
-            <Box
-                component={'input'}
-                ref={ref}
-                className={classes.root}
-                {...rest}
-            />
-        </Box>
-    )
-})
+        return (
+            <Box className={cx(className)} style={style} {...systemStyles}>
+                <Box
+                    component='input'
+                    ref={ref}
+                    className={classes.input}
+                    {...rest}
+                />
+            </Box>
+        )
+    }
+) as any
 
 _Input.displayName = 'Input'
 

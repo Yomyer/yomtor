@@ -1,14 +1,11 @@
 {
-  "compilerOptions": {
-    "baseUrl": ".",
+    "compilerOptions": {
+        "baseUrl": ".",
 
-    "paths": {
-      "@nighttrax/components/*": ["../../packages/components/src/*"],
-      "@nighttrax/*": ["../../packages/*/src"],
-      "@yomtor/*": ["../../yomtor/*/src"],
-
-      "@components/*": ["./src/components/*"],
-      "@hooks/*": ["./src/hooks/*"]
+        "paths": {
+            "@yomtor/*": ["../../packages/*/src"],
+            "@components/*": ["./src/components/*"],
+            "@hooks/*": ["./src/hooks/*"]
+        }
     }
-  }
 }

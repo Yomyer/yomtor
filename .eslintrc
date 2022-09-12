@@ -38,7 +38,7 @@
         "@typescript-eslint/no-unused-vars": "off",
         "@typescript-eslint/no-explicit-any": [
             "error",
-            { "ignoreRestArgs": true }
+            { "ignoreRestArgs": true, "ignoreGenericConstraints": true }
         ],
         "no-empty": ["error", { "allowEmptyCatch": true }]
     }

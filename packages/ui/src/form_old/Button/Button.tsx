@@ -34,7 +34,7 @@ export const Button: ButtonComponent = forwardRef(
         return (
             <Box<string>
                 component={component}
-                ref={(node) => assignRef(node, ref, button)}
+                ref={(node) => assignRef<HTMLButtonElement>(node, ref, button)}
                 className={classes.root}
                 {...props}
             >

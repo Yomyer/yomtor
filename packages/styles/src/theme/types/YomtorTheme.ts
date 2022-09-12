@@ -1,3 +1,4 @@
+import { CSSObject } from '../../tss'
 import { BreakpointsOptions } from '../createBreakpoints'
 import { HeadingOptions } from '../createHeadings'
 import { YomtorPalette, YomtorPaletteColor } from '../createPalete'
@@ -7,6 +8,8 @@ import { SizesOptions } from '../createSizes'
 import { SpacingOptions } from '../createSpacing'
 import { TypographyOptions } from '../createTypography'
 import { rgba, Size, YomtorColorVariant } from '../fns'
+
+export type YomtorThemeComponents = Record<string, ThemeComponent>
 
 export type Modes = 'light' | 'dark'
 
@@ -22,6 +25,7 @@ export type YomtorTheme = {
     headings: HeadingOptions
     typography: TypographyOptions
     vars: { [key: string]: string }
+    components: YomtorThemeComponents
     fn: {
         size: Size
         rgba: typeof rgba
@@ -36,4 +40,12 @@ export type YomtorTheme = {
             contrastThreshold?: number
         ) => YomtorPaletteColor
     }
+}
+
+interface ThemeComponent {
+    defaultProps?: Record<string, any>
+    classNames?: Record<string, string>
+    styles?:
+        | Record<string, CSSObject>
+        | ((theme: YomtorTheme, params: any) => Record<string, CSSObject>)
 }

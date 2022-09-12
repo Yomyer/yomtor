@@ -1,15 +1,24 @@
-import React from "react";
-import { Button } from "@nighttrax/components/button";
-import { meaningOfLife } from "@nighttrax/foo";
-import { useTest } from "@hooks/test";
+import React from 'react'
+import { Input, InputProps } from '@yomtor/ui'
+import { createPolymorphicComponent, YomtorProvider } from '@yomtor/styles'
+import styled from '@emotion/styled'
+
+const _StyledInput = styled(Input)`
+& .yomtor-Input-input {
+    border-color: ${({ theme }) => {
+        return 'blue'
+    }}
+`
+
+const StyledInput = createPolymorphicComponent<'input', InputProps>(
+    _StyledInput
+)
 
 export const App = () => {
-  useTest();
-
-  return (
-    <div>
-      {meaningOfLife}
-      <Button />
-    </div>
-  );
-};
+    return (
+        <YomtorProvider>
+            <Input></Input>
+            <StyledInput unstyled={true}></StyledInput>
+        </YomtorProvider>
+    )
+}

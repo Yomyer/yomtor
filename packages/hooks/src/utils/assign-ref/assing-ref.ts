@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { ForwardedRef } from 'react'
 
-export function assignRef<T = never>(
+export function assignRef<T = any>(
     ref: React.ForwardedRef<T>,
     value: T | null,
     nodeRef?: React.ForwardedRef<T>

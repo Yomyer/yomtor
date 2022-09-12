@@ -23,16 +23,14 @@
         "prepublishOnly": "pnpm run build"
     },
     "peerDependencies": {
-        "react": "~16.8.0",
-        "react-dom": "~16.8.0"
+        "react": "~17.0.2",
+        "react-dom": "~17.0.2"
     },
     "dependencies": {
         "@emotion/cache": "^11.7.1",
         "@emotion/react": "^11.7.1",
         "@emotion/serialize": "^1.0.2",
         "@emotion/utils": "^1.0.0",
-        "react": "~16.8.0",
-        "react-dom": "~16.8.0",
         "rimraf": "~3.0.2",
         "clsx": "^1.1.1",
         "csstype": "^3.0.9",

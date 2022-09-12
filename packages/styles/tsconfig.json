@@ -2,7 +2,7 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": {
         "jsx": "react",
-        "lib": ["es2016"],
+        "lib": ["DOM", "ESNext"],
         "esModuleInterop": true
     }
 }
