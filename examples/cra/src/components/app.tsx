@@ -1,24 +1,16 @@
 import React from 'react'
-import { Input, InputProps } from '@yomtor/ui'
-import { createPolymorphicComponent, YomtorProvider } from '@yomtor/styles'
+// import { Input, InputProps } from '@yomtor/ui'
 import styled from '@emotion/styled'
-
-const _StyledInput = styled(Input)`
-& .yomtor-Input-input {
-    border-color: ${({ theme }) => {
-        return 'blue'
-    }}
-`
-
-const StyledInput = createPolymorphicComponent<'input', InputProps>(
-    _StyledInput
-)
+import { YomtorProvider } from '@yomtor/styles'
+import { Button } from '@yomtor/ui'
+import { ArtboardIcon } from '@yomtor/icons'
 
 export const App = () => {
     return (
-        <YomtorProvider>
-            <Input></Input>
-            <StyledInput unstyled={true}></StyledInput>
+        <YomtorProvider theme={{ colorScheme: 'dark' }}>
+            <Button>
+                <ArtboardIcon />
+            </Button>
         </YomtorProvider>
     )
 }

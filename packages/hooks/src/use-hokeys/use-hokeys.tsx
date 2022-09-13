@@ -209,6 +209,8 @@ export function useHotkeys<T extends Element>({
     useEffect(() => {
         if (!enabled) return null
 
+        options = options || {}
+
         if (keyup && keydown !== true) {
             options.keydown = false
         }

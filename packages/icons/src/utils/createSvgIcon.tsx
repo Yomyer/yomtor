@@ -3,9 +3,7 @@ import { SvgIcon, SvgIconProps } from '../SvgIcon'
 
 export const createSvgIcon = (path: ReactNode, displayName: string) => {
     const Component = (props: SvgIconProps, ref: never) => (
-        <SvgIcon ref={ref} {...props}>
-            {path}
-        </SvgIcon>
+        <SvgIcon {...props}>{path}</SvgIcon>
     )
 
     if (process.env.NODE_ENV !== 'production') {

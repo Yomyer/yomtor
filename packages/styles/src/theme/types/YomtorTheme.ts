@@ -1,51 +1,26 @@
-import { CSSObject } from '../../tss'
-import { BreakpointsOptions } from '../createBreakpoints'
-import { HeadingOptions } from '../createHeadings'
-import { YomtorPalette, YomtorPaletteColor } from '../createPalete'
-import { RadiusOptions } from '../createRadius'
-import { ShadowOptions } from '../createShadows'
-import { SizesOptions } from '../createSizes'
-import { SpacingOptions } from '../createSpacing'
-import { TypographyOptions } from '../createTypography'
-import { rgba, Size, YomtorColorVariant } from '../fns'
+import { MantineTheme, MantineThemeColors } from '@mantine/styles'
+import { MantinePrimaryShade } from '@mantine/styles/lib/theme/types/MantineTheme'
 
-export type YomtorThemeComponents = Record<string, ThemeComponent>
+type Shade = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 
-export type Modes = 'light' | 'dark'
-
-export type YomtorTheme = {
-    palette: YomtorPalette
-    breakpoints: BreakpointsOptions
-    type: Modes
-    shadows: ShadowOptions
-    spacing: SpacingOptions
-    sizes: SizesOptions
-    radius: RadiusOptions
-    debug: boolean
-    headings: HeadingOptions
-    typography: TypographyOptions
-    vars: { [key: string]: string }
-    components: YomtorThemeComponents
-    fn: {
-        size: Size
-        rgba: typeof rgba
-        colorVariant: YomtorColorVariant
-        getContrastText?: (
-            background: string,
-            contrastThreshold?: number
-        ) => string
-        augmentColor?: (
-            color: YomtorPaletteColor | string,
-            tonalOffset?: number,
-            contrastThreshold?: number
-        ) => YomtorPaletteColor
-    }
+export type DeepPartial<T> = {
+    [P in keyof T]?: DeepPartial<T[P]>
 }
 
-interface ThemeComponent {
-    defaultProps?: Record<string, any>
-    classNames?: Record<string, string>
-    styles?:
-        | Record<string, CSSObject>
-        | ((theme: YomtorTheme, params: any) => Record<string, CSSObject>)
+export interface YomtorTheme extends MantineTheme {
+    secondaryColor: keyof MantineThemeColors
+    warningColor: keyof MantineThemeColors
+    errorColor: keyof MantineThemeColors
+    successColor: keyof MantineThemeColors
+    secondaryShade: Shade | MantinePrimaryShade
+    warningShade: Shade | MantinePrimaryShade
+    errorShade: Shade | MantinePrimaryShade
+    successShade: Shade | MantinePrimaryShade
 }
+
+export type YomtorThemeBase = Omit<YomtorTheme, 'fn'>
+
+export type YomtorThemeOverride = DeepPartial<
+    Omit<YomtorThemeBase, 'other' | 'components'>
+> &
+    Partial<Pick<YomtorThemeBase, 'other' | 'components'>>
