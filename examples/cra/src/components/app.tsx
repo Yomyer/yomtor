@@ -8,9 +8,14 @@ import { ArtboardIcon } from '@yomtor/icons'
 export const App = () => {
     return (
         <YomtorProvider theme={{ colorScheme: 'dark' }}>
-            <Button>
-                <ArtboardIcon />
-            </Button>
+            <Button.Group>
+                <Button>
+                    <ArtboardIcon />
+                </Button>
+                <Button>
+                    <ArtboardIcon />
+                </Button>
+            </Button.Group>
         </YomtorProvider>
     )
 }

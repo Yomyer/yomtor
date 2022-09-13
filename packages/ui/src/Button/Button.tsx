@@ -16,16 +16,23 @@ const defaultProps: Partial<ButtonProps> = {
     compact: true
 }
 
-const _Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
-    const { ...others } = useComponentDefaultProps(
-        'button',
-        defaultProps,
-        props
-    )
+export const _Button = forwardRef<HTMLButtonElement, ButtonProps>(
+    (props, ref) => {
+        const { ...others } = useComponentDefaultProps(
+            'button',
+            defaultProps,
+            props
+        )
 
-    return <BaseButton {...others} ref={ref} />
-})
+        return <BaseButton {...others} ref={ref} />
+    }
+) as any
 
 _Button.displayName = '@yomtor/ui/Button'
+_Button.Group = BaseButton.Group
 
-export const Button = createPolymorphicComponent<'button', ButtonProps>(_Button)
+export const Button = createPolymorphicComponent<
+    'button',
+    ButtonProps,
+    { Group: typeof BaseButton.Group }
+>(_Button)

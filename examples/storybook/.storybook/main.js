@@ -1,32 +1,45 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
+const path = require('path')
+const { argv } = require('yargs')
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin')
+
+const storiesPath = !argv._[0]
+    ? path
+          .resolve(__dirname, '../../../packages/**/*.stories.@(ts|tsx)')
+          .replace(/\\/g, '/')
+    : path
+          .resolve(
+              __dirname,
+              `../../../packages/${argv._[0].replace(
+                  '@yomtor/',
+                  ''
+              )}/**/*.stories.@(ts|tsx)`
+          )
+          .replace(/\\/g, '/')
 
 module.exports = {
-  stories: [
-    "../stories/**/*.stories.mdx",
-    "../stories/**/*.stories.@(js|jsx|ts|tsx)",
-    "../../../packages/**/src/**/*.stories.mdx",
-    "../../../packages/**/src/**/*.stories.@(js|jsx|ts|tsx)",
-  ],
-  addons: [
-    "@storybook/addon-links",
-    "@storybook/addon-essentials",
-    "@storybook/addon-interactions",
-    "storybook-dark-mode/register",
-  ],
-  framework: "@storybook/react",
-  core: {
-    builder: "@storybook/builder-webpack5",
-  },
-  webpackFinal: async (config) => {
-    // eslint-disable-next-line no-param-reassign
-    config.resolve.plugins = [
-      ...(config.resolve.plugins || []),
-      new TsconfigPathsPlugin({
-        extensions: config.resolve.extensions,
-      }),
-    ];
+    stories: [storiesPath],
+    addons: [
+        '@storybook/addon-links',
+        '@storybook/addon-essentials',
+        '@storybook/addon-interactions',
+        'storybook-dark-mode/register'
+    ],
+    webpackFinal: async (config) => {
+        config.resolve = {
+            ...config.resolve,
+            plugins: [
+                ...(config.resolve.plugins || []),
+                new TsconfigPathsPlugin({
+                    extensions: ['.ts', '.tsx', '.js'],
+                    configFile: path.join(__dirname, '../../../tsconfig.json')
+                })
+            ]
+        }
 
-    return config;
-  },
-};
+        // Turn off docgen plugin as it breaks bundle with displayName
+        config.plugins.pop()
+
+        return config
+    }
+}
