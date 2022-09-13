@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import { ComponentStory, ComponentMeta } from '@storybook/react'
-import { HotKeysEvent, useHotkeys } from './use-hokeys'
+import { HotKeysEvent, useHotkeys } from './use-hotkeys'
 
 type Props = {
     children: React.ReactNode
