@@ -1,21 +1,21 @@
 {
-    "name": "@yomtor/hooks",
-    "version": "1.0.0",
-    "scripts": {
-        "build": "pnpm run clean && pnpm run compile",
-        "clean": "rimraf -rf ./dist",
-        "compile": "tsc -p tsconfig.build.json",
-        "prepublishOnly": "pnpm run build",
-        "test": "jest --watchAll"
-    },
-    "peerDependencies": {
-        "react": "~17.0.2",
-        "react-dom": "~17.0.2"
-    },
-    "dependencies": {
-        "@mantine/hooks": "^5.3.0",
-        "hotkeys-js": "^3.8.5",
-        "lodash": "^4.17.21",
-        "rimraf": "~3.0.2"
-    }
+  "name": "@yomtor/hooks",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "pnpm run clean && pnpm run compile",
+    "clean": "rimraf -rf ./dist",
+    "compile": "tsc -p tsconfig.build.json",
+    "prepublishOnly": "pnpm run build",
+    "test": "jest --watchAll"
+  },
+  "peerDependencies": {
+    "react": "~17.0.2",
+    "react-dom": "~17.0.2"
+  },
+  "dependencies": {
+    "@mantine/hooks": "^5.3.0",
+    "hotkeys-js": "^3.8.5",
+    "lodash": "^4.17.21",
+    "rimraf": "~3.0.2"
+  }
 }

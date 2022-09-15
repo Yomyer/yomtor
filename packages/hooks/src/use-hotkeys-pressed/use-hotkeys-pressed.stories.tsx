@@ -1,27 +1,17 @@
 import React from 'react'
 import { ComponentStory, ComponentMeta } from '@storybook/react'
-import { HotKeysEvent, useHotkeys } from './use-hotkeys'
+import { useIsHotkeyPressed } from './use-hotkeys-pressed'
 
 type Props = {
   children: React.ReactNode
 }
 
 const Demo: React.FC<Props> = ({ children }) => {
-  useHotkeys({
-    keys: 'arrows',
-    callbackDown: (event: KeyboardEvent, ui: HotKeysEvent) => {
-      console.log(ui)
-    },
-    callbackUp: () => {
-      console.log('up')
-    },
-    options: {}
-  })
   return <>{children}</>
 }
 
 export default {
-  title: 'Hooks/useHotkeys',
+  title: 'Hooks/useIsHotkeysPressed',
   component: Demo,
   argTypes: {}
 } as ComponentMeta<typeof Demo>
@@ -29,7 +19,7 @@ export default {
 const Template: ComponentStory<typeof Demo> = ({ ...props }) => {
   return (
     <Demo>
-      <input />
+      <input onChange={() => console.log(useIsHotkeyPressed('a'))} />
     </Demo>
   )
 }
