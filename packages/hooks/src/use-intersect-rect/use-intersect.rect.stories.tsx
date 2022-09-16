@@ -1,42 +1,83 @@
-import React, { useRef, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { ComponentStory, ComponentMeta } from '@storybook/react'
 import { useIntersectRect } from './use-intersect-rect'
+import { useLongPress } from '../use-long-press/use-long-press'
 
 type Props = {
-  children: React.ReactNode
+    children: React.ReactNode
 }
 
 const Demo: React.FC<Props> = ({ children }) => {
-  return <>{children}</>
+    return <>{children}</>
 }
 
 export default {
-  title: 'Hooks/useIntersectRect',
-  component: Demo,
-  argTypes: {}
+    title: 'Hooks/useIntersectRect',
+    component: Demo,
+    argTypes: {}
 } as ComponentMeta<typeof Demo>
 
 const Template: ComponentStory<typeof Demo> = ({ ...props }) => {
-  const [aX, setAX] = useState<number>(100)
-  const [aY, setAY] = useState<number>(50)
-  const a = new DOMRect(aX, aY, 40, 40);
-  const b = new DOMRect(50, 50, 40, 40);
-  const isIntersecting = useIntersectRect(a, b);
+    const [aX, setAX] = useState<number>(100)
+    const [aY, setAY] = useState<number>(50)
+    const a = new DOMRect(aX, aY, 40, 40)
+    const b = new DOMRect(50, 50, 40, 40)
+    const isIntersecting = useIntersectRect(a, b)
+    const onLongPress = (dir: string) => {
+        switch (dir) {
+            case 'up':
+                setAY(aY - 5)
+                break
+            case 'down':
+                setAY(aY + 5)
+                break
+            case 'right':
+                setAX(aX + 5)
+                break
+            case 'left':
+                setAX(aX - 5)
+                break
+        }
+    }
+    const longPressEventUp = useLongPress(() => onLongPress('up'), [aY])
+    const longPressEventDown = useLongPress(() => onLongPress('down'), [aY])
+    const longPressEventRight = useLongPress(() => onLongPress('right'), [aX])
+    const longPressEventLeft = useLongPress(() => onLongPress('left'), [aX])
 
-  return (
-    <Demo>
-      <svg width="500" height="300" id="svg">
-        <rect width={a.width} height={a.height} x={a.x} y={a.y} style={{ fill: isIntersecting ? 'red' : 'green' }} />
-        <rect width={b.width} height={b.height} x={b.x} y={b.y} style={{ fill: 'blue' }} />
-      </svg>
-      <div>
-        <button onClick={() => setAX(aX + 5)}>RIGHT</button>
-        <button onClick={() => setAX(aX - 5)}>LEFT</button>
-        <button onClick={() => setAY(aY - 5)}>UP</button>
-        <button onClick={() => setAY(aY + 5)}>DOWN</button>
-      </div>
-    </Demo>
-  )
+    return (
+        <Demo>
+            <svg width='500' height='300' id='svg'>
+                <rect
+                    width={a.width}
+                    height={a.height}
+                    x={a.x}
+                    y={a.y}
+                    style={{ fill: isIntersecting ? 'red' : 'green' }}
+                />
+                <rect
+                    width={b.width}
+                    height={b.height}
+                    x={b.x}
+                    y={b.y}
+                    style={{ fill: 'blue' }}
+                />
+            </svg>
+            <div>
+                <button {...longPressEventRight} style={{ margin: '5px' }}>
+                    RIGHT
+                </button>
+                <button {...longPressEventLeft} style={{ margin: '5px' }}>
+                    LEFT
+                </button>
+                <button {...longPressEventUp} style={{ margin: '5px' }}>
+                    UP
+                </button>
+                <button {...longPressEventDown} style={{ margin: '5px' }}>
+                    DOWN
+                </button>
+            </div>
+        </Demo>
+    )
 }
 
 export const Playground = Template.bind({})
