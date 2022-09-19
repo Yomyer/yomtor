@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 export const useLongPress = (
     callback: (e: React.MouseEvent | React.TouchEvent) => void,
@@ -8,10 +8,6 @@ export const useLongPress = (
         React.MouseEvent | React.TouchEvent | null
     >(null)
     const [keyEvent, setKeyEvent] = useState<KeyboardEvent | null>(null)
-    let clicksCount = 0
-    const memoizedCallback = useCallback(() => {
-        callback(mouseEvent)
-    }, [deps, clicksCount])
 
     useEffect(() => {
         const keyDown = (e: KeyboardEvent) => {
@@ -53,13 +49,11 @@ export const useLongPress = (
                 mouseEvent.shiftKey = keyEvent.shiftKey
                 mouseEvent.ctrlKey = keyEvent.ctrlKey
             }
-            memoizedCallback()
+            callback(mouseEvent)
             timeout = setTimeout(
                 () => {
                     interval = setInterval(() => {
-                        console.log('aqui')
-                        memoizedCallback()
-                        clicksCount++
+                        callback(mouseEvent)
                     }, 100)
                 },
                 keyEvent ? 0 : 700

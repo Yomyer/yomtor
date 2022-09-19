@@ -52,14 +52,14 @@ const Template: ComponentStory<typeof Demo> = ({ ...props }) => {
                     height={a.height}
                     x={a.x}
                     y={a.y}
-                    style={{ fill: isIntersecting ? 'red' : 'green' }}
+                    style={{ fill: isIntersecting ? '#f7735c' : '#97d164' }}
                 />
                 <rect
                     width={b.width}
                     height={b.height}
                     x={b.x}
                     y={b.y}
-                    style={{ fill: 'blue' }}
+                    style={{ fill: '#84c5e3' }}
                 />
             </svg>
             <div>
