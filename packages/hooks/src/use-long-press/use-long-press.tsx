@@ -1,79 +1,44 @@
-import { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 export const useLongPress = (
     callback: (e: React.MouseEvent | React.TouchEvent) => void,
-    deps: React.DependencyList = []
+    delays = {
+        short: 100,
+        long: 700
+    }
 ) => {
-    const [mouseEvent, setMouseEvent] = useState<
-        React.MouseEvent | React.TouchEvent | null
-    >(null)
-    const [keyEvent, setKeyEvent] = useState<KeyboardEvent | null>(null)
+    const [start, setStart] = useState<boolean>(false)
+    const [event, setEvent] = useState<React.MouseEvent | React.TouchEvent>()
+    const delay = useRef(0)
+
+    const setter = (start: boolean, e: React.MouseEvent | React.TouchEvent) => {
+        setStart(start)
+        setEvent(e)
+    }
 
     useEffect(() => {
-        const keyDown = (e: KeyboardEvent) => {
-            if (
-                ['Shift', 'Control', 'Meta', 'Alt'].includes(e.key) &&
-                mouseEvent
-            ) {
-                setKeyEvent(e)
-            }
-        }
-        const keyUp = (e: KeyboardEvent) => {
-            if (
-                ['Shift', 'Control', 'Meta', 'Alt'].includes(e.key) &&
-                mouseEvent
-            ) {
-                setKeyEvent(e)
-            } else {
-                setKeyEvent(null)
-            }
-        }
+        let timer
 
-        document.addEventListener('keydown', keyDown)
-        document.addEventListener('keyup', keyUp)
-
-        return () => {
-            document.removeEventListener('keydown', keyDown)
-            document.removeEventListener('keyup', keyUp)
-        }
-    }, [mouseEvent])
-
-    useEffect(() => {
-        let interval: NodeJS.Timeout
-        let timeout: NodeJS.Timeout
-
-        if (mouseEvent) {
-            if (keyEvent) {
-                mouseEvent.altKey = keyEvent.altKey
-                mouseEvent.metaKey = keyEvent.metaKey
-                mouseEvent.shiftKey = keyEvent.shiftKey
-                mouseEvent.ctrlKey = keyEvent.ctrlKey
-            }
-            callback(mouseEvent)
-            timeout = setTimeout(
-                () => {
-                    interval = setInterval(() => {
-                        callback(mouseEvent)
-                    }, 100)
-                },
-                keyEvent ? 0 : 700
-            )
+        if (start) {
+            timer = setTimeout(() => {
+                callback(event)
+            }, delay.current)
+            delay.current = !delay.current ? delays.long : delays.short
         } else {
-            clearInterval(interval)
-            clearTimeout(timeout)
+            clearTimeout(timer)
+            delay.current = 0
         }
 
         return () => {
-            clearInterval(interval)
-            clearTimeout(timeout)
+            clearTimeout(timer)
         }
-    }, [keyEvent, mouseEvent])
+    }, [callback, event, start])
 
     return {
-        onMouseDown: (e: React.MouseEvent) => setMouseEvent(e),
-        onMouseUp: () => setMouseEvent(null),
-        onMouseLeave: () => setMouseEvent(null),
-        onTouchStart: (e: React.TouchEvent) => setMouseEvent(e),
-        onTouchEnd: () => setMouseEvent(null)
+        onMouseDown: (event: React.MouseEvent) => setter(true, event),
+        onTouchStart: (event: React.TouchEvent) => setter(true, event),
+        onMouseUp: (event: React.MouseEvent) => setter(false, event),
+        onMouseLeave: (event: React.MouseEvent) => setter(false, event),
+        onTouchEnd: (event: React.TouchEvent) => setter(false, event)
     }
 }

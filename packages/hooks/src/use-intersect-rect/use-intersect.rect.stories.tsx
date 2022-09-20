@@ -39,10 +39,10 @@ const Template: ComponentStory<typeof Demo> = ({ ...props }) => {
                 break
         }
     }
-    const longPressEventUp = useLongPress(() => onLongPress('up'), [aY])
-    const longPressEventDown = useLongPress(() => onLongPress('down'), [aY])
-    const longPressEventRight = useLongPress(() => onLongPress('right'), [aX])
-    const longPressEventLeft = useLongPress(() => onLongPress('left'), [aX])
+    const longPressEventUp = useLongPress(() => onLongPress('up'))
+    const longPressEventDown = useLongPress(() => onLongPress('down'))
+    const longPressEventRight = useLongPress(() => onLongPress('right'))
+    const longPressEventLeft = useLongPress(() => onLongPress('left'))
 
     return (
         <Demo>
