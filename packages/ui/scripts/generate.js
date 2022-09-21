@@ -8,18 +8,18 @@ exports.ui = [
         },
         stringReplacers: [
             {
-                question: 'Insert folder name (inside ./packages/ui/src)',
+                question: 'Story Group Name',
                 slot: '__folder__'
             },
             { question: 'Mantine Component', slot: '__mantine__' },
             { question: 'Insert your component name', slot: '__name__' }
         ],
         output: {
-            path: './packages/ui/src/__folder__(kebabCase)/__name__(pascalCase)',
+            path: './packages/ui/src/__name__(pascalCase)',
             pathAndFileNameDefaultCase: '(pascalCase)',
             overwrite: false
         }
-    }
+    },
     {
         option: 'Create Mantine UI PolymorphicComponent',
         defaultCase: '(pascalCase)',
@@ -28,14 +28,14 @@ exports.ui = [
         },
         stringReplacers: [
             {
-                question: 'Insert folder name (inside ./packages/ui/src)',
+                question: 'Story Group Name',
                 slot: '__folder__'
             },
             { question: 'Mantine Component', slot: '__mantine__' },
             { question: 'Insert your component name', slot: '__name__' }
         ],
         output: {
-            path: './packages/ui/src/__folder__(kebabCase)/__name__(pascalCase)',
+            path: './packages/ui/src/__name__(pascalCase)',
             pathAndFileNameDefaultCase: '(pascalCase)',
             overwrite: false
         }

@@ -20,14 +20,13 @@ export function YomtorProvider({
     ...others
 }: YomtorProviderProps) {
     theme = mergeDeep(DEFAULT_THEME, theme)
-
     return (
         <MantineProvider
             theme={theme}
             withGlobalStyles
             withNormalizeCSS
-            {...others}
             emotionCache={YomtorCache}
+            {...others}
         >
             {children}
         </MantineProvider>

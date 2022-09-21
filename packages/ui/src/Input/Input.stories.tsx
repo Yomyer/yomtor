@@ -1,6 +1,6 @@
 import React from 'react'
 import { Input } from './Input'
-import { Button } from '../../Button'
+import { Button } from '../Button'
 import { ArtboardIcon } from '@yomtor/icons'
 import { Group } from '@mantine/core'
 
