@@ -1,7 +1,7 @@
-const itemToHex = (item: string): string => {
+const itemToHex = (item: number): string => {
   let hex = '00'
-  if (item) {
-    hex = parseInt(item).toString(16).split('.')[0]
+  if (item && !isNaN(item)) {
+    hex = item.toString(16).split('.')[0]
   }
   return hex.length === 1 ? '0' + hex : hex
 }
@@ -10,8 +10,8 @@ export const useRgbToHex = (rgb): string => {
   const rgbArray = rgb.split(', ')
   return (
     `#` +
-    itemToHex(rgbArray[0]) +
-    itemToHex(rgbArray[1]) +
-    itemToHex(rgbArray[2])
+    itemToHex(parseInt(rgbArray[0])) +
+    itemToHex(parseInt(rgbArray[1])) +
+    itemToHex(parseInt(rgbArray[2]))
   )
 }
