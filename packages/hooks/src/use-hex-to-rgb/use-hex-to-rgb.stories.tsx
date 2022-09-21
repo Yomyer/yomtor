@@ -22,30 +22,43 @@ const Template: ComponentStory<typeof Demo> = ({ ...props }) => {
 
   return (
     <Demo>
-      <input
-        style={{
-          padding: '10px 20px',
-          fontSize: '20px',
-          borderRadius: '10px',
-          border: 0
-        }}
-        type='text'
-        value={hex}
-        onChange={(e) => setHex(e.target.value)}
-        placeholder={'Enter an HEX color...'}
-      />
-      {rgb && (
-        <span
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <input
           style={{
-            marginLeft: '20px',
-            padding: '5px',
-            fontSize: '30px',
-            backgroundColor: rgb ?? ''
+            padding: '10px 20px',
+            fontSize: '20px',
+            borderRadius: '10px',
+            border: 0
           }}
-        >
-          {rgb}
-        </span>
-      )}
+          type='text'
+          value={hex}
+          onChange={(e) => setHex(e.target.value)}
+          placeholder={'Enter an HEX color...'}
+        />
+        {rgb && (
+          <>
+            <span
+              style={{
+                marginLeft: '20px',
+                padding: '5px',
+                fontSize: '30px',
+                color: rgb ?? ''
+              }}
+            >
+              {rgb}
+            </span>
+            <div
+              style={{
+                backgroundColor: rgb ?? '',
+                width: '30px',
+                height: '30px',
+                display: 'inline-block',
+                margin: '10px'
+              }}
+            ></div>
+          </>
+        )}
+      </div>
     </Demo>
   )
 }
