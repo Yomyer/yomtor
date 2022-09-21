@@ -5,7 +5,7 @@ const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin')
 
 const storiesPath = !argv._[0]
     ? path
-          .resolve(__dirname, '../../../packages/**/*.stories.@(ts|tsx)')
+          .resolve(__dirname, '../../../packages/*/src/**/*.stories.@(ts|tsx)')
           .replace(/\\/g, '/')
     : path
           .resolve(
@@ -13,7 +13,7 @@ const storiesPath = !argv._[0]
               `../../../packages/${argv._[0].replace(
                   '@yomtor/',
                   ''
-              )}/**/*.stories.@(ts|tsx)`
+              )}/src/**/*.stories.@(ts|tsx)`
           )
           .replace(/\\/g, '/')
 

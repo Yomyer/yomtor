@@ -7,16 +7,7 @@ export type DeepPartial<T> = {
     [P in keyof T]?: DeepPartial<T[P]>
 }
 
-export interface YomtorTheme extends MantineTheme {
-    secondaryColor: keyof MantineThemeColors
-    warningColor: keyof MantineThemeColors
-    errorColor: keyof MantineThemeColors
-    successColor: keyof MantineThemeColors
-    secondaryShade: Shade | MantinePrimaryShade
-    warningShade: Shade | MantinePrimaryShade
-    errorShade: Shade | MantinePrimaryShade
-    successShade: Shade | MantinePrimaryShade
-}
+export interface YomtorTheme extends MantineTheme {}
 
 export type YomtorThemeBase = Omit<YomtorTheme, 'fn'>
 

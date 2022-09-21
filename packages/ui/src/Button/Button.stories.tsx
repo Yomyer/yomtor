@@ -1,12 +1,17 @@
 import React from 'react'
 import { YOMTOR_COLORS } from '@yomtor/styles'
 import { Button } from './Button'
+import { Group } from '@mantine/core'
 
-export default { title: 'Button' }
+export default { title: 'UI/Button' }
+
+export function Primary() {
+    return <Button variant='filled'>Filled</Button>
+}
 
 export function Colors() {
     const items = YOMTOR_COLORS.map((color) => (
-        <div key={color}>
+        <Group mt='xl' key={color}>
             <Button color={color} variant='filled'>
                 Filled
             </Button>
@@ -24,7 +29,7 @@ export function Colors() {
             <Button color={color} variant='gradient'>
                 Gradient
             </Button>
-        </div>
+        </Group>
     ))
 
     return <div>{items}</div>
