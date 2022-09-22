@@ -3,15 +3,18 @@ import { ComponentStory, ComponentMeta } from '@storybook/react'
 import ArrageIcon from './Arrage'
 import ArrowIcon from './Arrow'
 import ArtboardIcon from './Artboard'
+import Artboard2Icon from './Artboard2'
 import CenterIcon from './Center'
+import CodeIcon from './Code'
 import DistributeIcon from './Distribute'
+import DotsVerticalIcon from './DotsVertical'
 import GroupIcon from './Group'
 import HideIcon from './Hide'
 import LockIcon from './Lock'
 import MoreIcon from './More'
 import PlayIcon from './Play'
 
-const icons = { ArrageIcon, ArrowIcon, ArtboardIcon, CenterIcon, DistributeIcon, GroupIcon, HideIcon, LockIcon, MoreIcon, PlayIcon }
+const icons = { ArrageIcon, ArrowIcon, ArtboardIcon, Artboard2Icon, CenterIcon, CodeIcon, DistributeIcon, DotsVerticalIcon, GroupIcon, HideIcon, LockIcon, MoreIcon, PlayIcon }
 
 
 type Props = {

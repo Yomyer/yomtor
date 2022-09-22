@@ -19,12 +19,7 @@ const storiesPath = !argv._[0]
 
 module.exports = {
     stories: [storiesPath],
-    addons: [
-        '@storybook/addon-links',
-        '@storybook/addon-essentials',
-        '@storybook/addon-interactions',
-        'storybook-dark-mode/register'
-    ],
+    addons: ['storybook-addon-turbo-build', 'storybook-dark-mode'],
     webpackFinal: async (config) => {
         config.resolve = {
             ...config.resolve,

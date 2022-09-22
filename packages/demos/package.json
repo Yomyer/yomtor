@@ -16,8 +16,9 @@
         "@yomtor/hooks": "*",
         "@yomtor/icons": "*",
         "@yomtor/styles": "*",
-        "@mantine/demos": "5.4.0",
+        "@mantine/prism": "5.4.0",
         "lodash": "^4.17.21",
-        "rimraf": "~3.0.2"
+        "rimraf": "~3.0.2",
+        "prism-react-renderer": "*"
     }
 }

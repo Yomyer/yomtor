@@ -14,7 +14,17 @@ const {
     CaseConverterEnum
 } = require('generate-template-files')
 
-const generate = ({ d, stroke, fill, name, path, icons, imports, exports }) => {
+const generate = ({
+    d,
+    stroke,
+    fill,
+    name,
+    path,
+    icons,
+    imports,
+    exports,
+    viewbox
+}) => {
     return new Promise((resolve, reject) => {
         generateTemplateFilesBatch([
             {
@@ -30,7 +40,8 @@ const generate = ({ d, stroke, fill, name, path, icons, imports, exports }) => {
                     { slot: '__fill__', slotValue: fill },
                     { slot: '__icons__', slotValue: icons },
                     { slot: '__imports__', slotValue: imports },
-                    { slot: '__exports__', slotValue: exports }
+                    { slot: '__exports__', slotValue: exports },
+                    { slot: '__viewbox__', slotValue: viewbox }
                 ],
                 output: {
                     path: path,
@@ -50,7 +61,7 @@ const generateIcons = async (files) => {
         //
     }
 
-    let error = '';
+    let error = ''
     const names = []
     const bar = new cliProgress.SingleBar(
         { format: '{bar} {percentage}%| "{file}" | {value}/{total}' },
@@ -61,7 +72,7 @@ const generateIcons = async (files) => {
 
     for (let x = 0; x < files.length; x++) {
         const file = files[x]
-        
+
         try {
             await SVGFixer(file, path.dirname(file), {
                 showProgressBar: false
@@ -74,6 +85,10 @@ const generateIcons = async (files) => {
 
         const d = Array.from(
             svg.matchAll(/<path.*\sd="([^"]*)"/g),
+            (m) => m[1]
+        )[0]
+        const viewbox = Array.from(
+            svg.matchAll(/<svg.*\sview[B|b]ox="([^"]*)"/g),
             (m) => m[1]
         )[0]
         let stroke =
@@ -108,7 +123,9 @@ const generateIcons = async (files) => {
             fill,
             name: path.parse(file).name,
             path: path.dirname(file),
-            icons: names.map((name) => {
+            viewbox,
+            icons: names
+                .map((name) => {
                     return `${name}Icon`
                 })
                 .join(', '),
@@ -121,7 +138,7 @@ const generateIcons = async (files) => {
                 .map((name) => {
                     return `export { default as ${name}Icon } from './${name}'`
                 })
-                .join('\n'),
+                .join('\n')
         })
 
         await unlink(file)
@@ -131,11 +148,10 @@ const generateIcons = async (files) => {
 
     bar.stop()
 
-    if(error){
+    if (error) {
         console.log(error)
     }
 }
-
 
 exports.icons = {
     option: 'Generate Icons',

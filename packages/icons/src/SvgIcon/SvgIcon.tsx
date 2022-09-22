@@ -4,7 +4,7 @@ import { SvgIconStyles } from './SvgIcon.styles'
 
 export const SvgIcon: React.FC<SvgIconProps> = ({
     children,
-    viewport,
+    viewbox,
     rotate,
     hidden,
     ...props
@@ -12,7 +12,7 @@ export const SvgIcon: React.FC<SvgIconProps> = ({
     const { classes } = SvgIconStyles({ hidden, rotate })
 
     return (
-        <svg viewBox={viewport} className={classes.root} {...props}>
+        <svg viewBox={viewbox} className={classes.root} {...props}>
             {children}
         </svg>
     )
@@ -20,6 +20,6 @@ export const SvgIcon: React.FC<SvgIconProps> = ({
 
 SvgIcon.defaultProps = {
     rotate: null,
-    viewport: '0 0 32 32',
+    viewbox: '0 0 32 32',
     hidden: false
 }

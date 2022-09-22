@@ -1,9 +1,15 @@
 import React, { memo, forwardRef, ReactNode } from 'react'
 import { SvgIcon, SvgIconProps } from '../SvgIcon'
 
-export const createSvgIcon = (path: ReactNode, displayName: string) => {
+export const createSvgIcon = (
+    path: ReactNode,
+    displayName: string,
+    viewbox = '0 0 32 32'
+) => {
     const Component = (props: SvgIconProps, ref: never) => (
-        <SvgIcon {...props}>{path}</SvgIcon>
+        <SvgIcon {...props} viewbox={viewbox}>
+            {path}
+        </SvgIcon>
     )
 
     if (process.env.NODE_ENV !== 'production') {
