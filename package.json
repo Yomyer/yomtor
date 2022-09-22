@@ -15,6 +15,9 @@
         "storybook": "yarn --cwd ./examples/storybook run storybook",
         "generate": "node ./scripts/generate.js"
     },
+    "dependencies": {
+        "@emotion/react": "11.9.3"
+    },
     "devDependencies": {
         "doctoc": "~2.2.0",
         "eslint": "~8.18.0",

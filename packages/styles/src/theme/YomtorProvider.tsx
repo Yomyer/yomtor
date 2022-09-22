@@ -27,6 +27,7 @@ export function YomtorProvider({
             withGlobalStyles
             withNormalizeCSS
             emotionCache={YomtorCache}
+            {...others}
         >
             {children}
         </MantineProvider>
