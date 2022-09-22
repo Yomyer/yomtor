@@ -22,8 +22,6 @@ export function ColorControl({
 }: ColorControlProps) {
   const theme = useMantineTheme()
 
-  console.log(theme)
-
   const colors = Object.keys(theme.colors).map((color) => (
     <ColorSwatch
       color={
