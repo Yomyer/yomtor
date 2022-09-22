@@ -9,21 +9,21 @@ function Demo() {
 `
 
 function Demo() {
-    return (
-        <Group position='center'>
-            <Button compact>Compact filled button</Button>
-            <Button compact variant='light'>
-                Compact light button
-            </Button>
-            <Button compact variant='outline'>
-                Compact outline button
-            </Button>
-        </Group>
-    )
+  return (
+    <Group position='center'>
+      <Button compact>Compact filled button</Button>
+      <Button compact variant='light'>
+        Compact light button
+      </Button>
+      <Button compact variant='outline'>
+        Compact outline button
+      </Button>
+    </Group>
+  )
 }
 
 export const compact: MantineDemo = {
-    type: 'demo',
-    code,
-    component: Demo
+  type: 'demo',
+  code,
+  component: Demo
 }

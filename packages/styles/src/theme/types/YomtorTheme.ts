@@ -1,7 +1,4 @@
-import { MantineTheme, MantineThemeColors } from '@mantine/styles'
-import { MantinePrimaryShade } from '@mantine/styles/lib/theme/types/MantineTheme'
-
-type Shade = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+import { MantineTheme } from '@mantine/styles'
 
 export type DeepPartial<T> = {
     [P in keyof T]?: DeepPartial<T[P]>
