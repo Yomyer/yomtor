@@ -1,12 +1,12 @@
 {
-    "extends": "./tsconfig.build.json",
-
-    "compilerOptions": {
-        "baseUrl": ".",
-        "lib": ["DOM", "es2016"],
-        "paths": {
-            "@yomtor/*": ["packages/*/src"]
-        },
-        "noEmit": true
-    }
+  "extends": "./tsconfig.build.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "lib": ["DOM", "es2016"],
+    "types": ["node", "jest", "@testing-library/jest-dom"],
+    "paths": {
+      "@yomtor/*": ["packages/*/src"]
+    },
+    "noEmit": true
+  }
 }
