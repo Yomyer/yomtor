@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { ComponentStory, ComponentMeta } from '@storybook/react'
 import { HotKeysEvent, useHotkeys } from './use-hotkeys'
-import hotkeys from 'hotkeys-js'
 
 type Props = {
   children: React.ReactNode
