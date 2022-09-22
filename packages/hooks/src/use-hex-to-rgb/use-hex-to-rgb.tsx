@@ -1,4 +1,4 @@
-export const useHexToRGB = (hex: string): string => {
+export const useHexToRgb = (hex: string): string => {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
   return result
     ? `rgb(

@@ -1,8 +1,6 @@
-import React, { useRef, useState } from 'react'
+import React, { useState } from 'react'
 import { ComponentStory, ComponentMeta } from '@storybook/react'
 import { useColorWord } from './use-color-word'
-import { useHotkeys } from '../use-hotkeys/use-hotkeys'
-import { HotkeysEvent } from 'hotkeys-js'
 
 type Props = {
   children: React.ReactNode

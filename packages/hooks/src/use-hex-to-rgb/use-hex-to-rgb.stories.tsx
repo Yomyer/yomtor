@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { ComponentStory, ComponentMeta } from '@storybook/react'
-import { useHexToRGB } from './use-hex-to-rgb'
+import { useHexToRgb } from './use-hex-to-rgb'
 type Props = {
   children: React.ReactNode
 }
@@ -17,7 +17,7 @@ export default {
 
 const Template: ComponentStory<typeof Demo> = ({ ...props }) => {
   const [hex, setHex] = useState<string>('')
-  const rgb = useHexToRGB(hex)
+  const rgb = useHexToRgb(hex)
   console.log(rgb)
 
   return (

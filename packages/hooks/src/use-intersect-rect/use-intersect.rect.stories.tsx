@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { ComponentStory, ComponentMeta } from '@storybook/react'
 import { useIntersectRect } from './use-intersect-rect'
 import { useLongPress } from '../use-long-press/use-long-press'
