@@ -8,7 +8,6 @@ export {
     useContextStylesApi,
     useMantineColorScheme as useYomtorColorScheme,
     useMantineTheme as useYomtorTheme,
-    MANTINE_COLORS as YOMTOR_COLORS,
     MANTINE_SIZES as YOMTOR_SIZES
 } from '@mantine/styles'
 

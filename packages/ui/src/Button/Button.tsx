@@ -1,13 +1,9 @@
 import React, { forwardRef } from 'react'
-import { createPolymorphicComponent } from '@mantine/utils'
+import { createPolymorphicComponent } from '@mantine/core'
 import { useComponentDefaultProps } from '@yomtor/styles'
 
-import {
-    Button as BaseButton,
-    ButtonProps as BaseButtonProps
-} from '@mantine/core'
-
-export interface ButtonProps extends BaseButtonProps {}
+import { Button as BaseButton } from '@mantine/core'
+import { ButtonProps } from './Button.props'
 
 const defaultProps: Partial<ButtonProps> = {
     size: 'xs',
@@ -19,7 +15,7 @@ const defaultProps: Partial<ButtonProps> = {
 export const _Button = forwardRef<HTMLButtonElement, ButtonProps>(
     (props, ref) => {
         const { ...others } = useComponentDefaultProps(
-            'button',
+            'Button',
             defaultProps,
             props
         )
