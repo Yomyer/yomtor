@@ -1,48 +1,54 @@
 {
-    "name": "ts-monorepo",
-    "description": "Template for setting up a TypeScript monorepo",
-    "private": true,
-    "workspaces": [
-        "packages/*",
-        "examples/*"
-    ],
-    "scripts": {
-        "docs": "doctoc --title '**Table of content**' README.md",
-        "clean": "pnpm run -r clean",
-        "build": "pnpm run -r build",
-        "test": "pnpm run -r test",
-        "lint": "eslint --ext js,ts,tsx .",
-        "storybook": "yarn --cwd ./examples/storybook run storybook",
-        "generate": "node ./scripts/generate.js"
-    },
-    "dependencies": {
-        "@emotion/react": "11.9.3"
-    },
-    "devDependencies": {
-        "doctoc": "~2.2.0",
-        "eslint": "~8.18.0",
-        "eslint-plugin-import": "~2.26.0",
-        "eslint-config-prettier": "^6.7.0",
-        "eslint-config-standard": "^14.1.0",
-        "eslint-config-standard-react": "^9.2.0",
-        "eslint-plugin-node": "^11.0.0",
-        "eslint-plugin-prettier": "^3.1.1",
-        "eslint-plugin-promise": "^4.2.1",
-        "eslint-plugin-react": "^7.17.0",
-        "eslint-plugin-standard": "^4.0.1",
-        "typescript": "~4.7.0",
-        "prettier": "^2.0.4",
-        "@typescript-eslint/eslint-plugin": "^5.30.7",
-        "@typescript-eslint/parser": "^5.30.7",
-        "generate-template-files": "^3.2.0",
-        "oslllo-svg-fixer": "^2.1.0",
-        "cli-progress": "^3.11.2"
-    },
-    "pnpm": {
-        "peerDependencyRules": {
-            "allowedVersions": {
-                "react-scripts": "^5.0.0"
-            }
-        }
+  "name": "ts-monorepo",
+  "description": "Template for setting up a TypeScript monorepo",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "examples/*"
+  ],
+  "scripts": {
+    "docs": "doctoc --title '**Table of content**' README.md",
+    "clean": "pnpm run -r clean",
+    "build": "pnpm run -r build",
+    "lint": "eslint --ext js,ts,tsx .",
+    "jest": "jest",
+    "test": "yarn jest",
+    "storybook": "yarn --cwd ./examples/storybook run storybook",
+    "generate": "node ./scripts/generate.js"
+  },
+  "dependencies": {
+    "@emotion/react": "11.9.3"
+  },
+  "devDependencies": {
+    "doctoc": "~2.2.0",
+    "eslint": "~8.18.0",
+    "eslint-plugin-import": "~2.26.0",
+    "eslint-config-prettier": "^6.7.0",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-config-standard-react": "^9.2.0",
+    "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-react": "^7.17.0",
+    "eslint-plugin-standard": "^4.0.1",
+    "typescript": "~4.7.0",
+    "prettier": "^2.0.4",
+    "jest": "^27.4.5",
+    "glob": "^8.0.3",
+    "@testing-library/react": "13.2.0",
+    "@sucrase/jest-plugin": "^2.1.1",
+    "@testing-library/jest-dom": "5.16.4",
+    "@typescript-eslint/eslint-plugin": "^5.30.7",
+    "@typescript-eslint/parser": "^5.30.7",
+    "generate-template-files": "^3.2.0",
+    "oslllo-svg-fixer": "^2.1.0",
+    "cli-progress": "^3.11.2"
+  },
+  "pnpm": {
+    "peerDependencyRules": {
+      "allowedVersions": {
+        "react-scripts": "^5.0.0"
+      }
     }
+  }
 }

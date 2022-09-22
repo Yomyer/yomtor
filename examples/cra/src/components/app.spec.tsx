@@ -1,10 +1,8 @@
-import React from "react";
-import { render } from "react-dom";
-import { App } from "./app";
+import React from 'react'
+import { App } from './app'
+import { render, screen } from '@testing-library/react'
 
-describe("App", () => {
-  it("should render without crashing", () => {
-    const div = document.createElement("div");
-    render(<App />, div);
-  });
-});
+test('App', () => {
+  render(<App />)
+  expect(screen.getByRole('button')).toHaveAttribute('type', 'button')
+})

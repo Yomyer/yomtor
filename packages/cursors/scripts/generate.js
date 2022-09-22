@@ -4,9 +4,7 @@ const { generateTemplateFiles } = require('generate-template-files')
 const SVGFixer = require('oslllo-svg-fixer')
 const cliProgress = require('cli-progress')
 const path = require('path')
-const {
-    promises: { readdir, rmdir }
-} = require('fs')
+
 const { readFile, unlink } = require('fs/promises')
 const {
     generateTemplateFilesBatch,

@@ -1,0 +1,14 @@
+{
+  "name": "@yomtor/utils",
+  "version": "1.0.0",
+  "description": "Made with create-react-library",
+  "author": "Yomyer",
+  "license": "MIT",
+  "repository": "https://github.com/Yomyer/yomtor.git",
+  "main": "dist/index",
+  "types": "dist/index",
+  "dependencies": {
+    "lodash": "^4.17.21",
+    "rimraf": "~3.0.2"
+  }
+}
