@@ -2,7 +2,8 @@ import { Box } from '@yomtor/ui'
 import React from 'react'
 
 const code = `
-import { Button } from '@mantine/core';
+import { Button } from '@yomtor/ui';
+
 function Demo() {
     <Box
       sx={(theme) => ({

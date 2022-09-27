@@ -2,7 +2,8 @@ import React from 'react'
 import { Button, StackProps, Stack } from '@yomtor/ui'
 
 const codeTemplate = (props: string) => `
-import { Tooltip, Button } from '@mantine/core';
+import { Button, Stack } from '@yomtor/ui'
+
 function Demo() {
   return (
     <Stack${props} style={{ height: '300px' }}>

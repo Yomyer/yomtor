@@ -1,8 +1,9 @@
 import React from 'react'
-import { TooltipProps, Paper, Text } from '@yomtor/ui'
+import { Paper, Text, PaperProps } from '@yomtor/ui'
 
 const codeTemplate = (props: string) => `
-import { Tooltip, Button } from '@mantine/core';
+import { Paper, Text } from '@yomtor/ui'
+
 function Demo() {
   return (
  <Paper${props}>
@@ -14,13 +15,13 @@ function Demo() {
     </Paper>
 }
 `
-function Wrapper(props: TooltipProps) {
+function Wrapper(props: PaperProps) {
   return (
     <Paper {...props}>
       <Text>Paper is the most basic ui component</Text>
       <Text>
-        Use it to create cards, dropdowns, modals and other components that require background
-        with shadow
+        Use it to create cards, dropdowns, modals and other components that
+        require background with shadow
       </Text>
     </Paper>
   )
@@ -33,24 +34,24 @@ export const configurator: MantineDemo = {
     {
       name: 'shadow',
       type: 'size',
-      initialValue: 'md',
+      initialValue: 'md'
     },
     {
       name: 'radius',
       type: 'size',
-      initialValue: 'sm',
+      initialValue: 'sm'
     },
     {
       name: 'p',
       label: 'padding',
       type: 'size',
-      initialValue: 'md',
+      initialValue: 'md'
     },
     {
       name: 'withBorder',
       type: 'boolean',
       defaultValue: false,
       initialValue: false
-    },
+    }
   ]
 }

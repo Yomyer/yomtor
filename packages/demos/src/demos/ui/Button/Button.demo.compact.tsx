@@ -2,7 +2,8 @@ import React from 'react'
 import { Button, Group } from '@yomtor/ui'
 
 const code = `
-import { Button } from '@mantine/core';
+import { Button } from '@yomtor/ui';
+
 function Demo() {
   return <Button compact>My compact button</Button>;
 }

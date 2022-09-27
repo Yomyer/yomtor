@@ -1,8 +1,9 @@
 import React from 'react'
-import { Button, Group, Paper, Text, Tooltip } from '@yomtor/ui'
+import { Paper, Text } from '@yomtor/ui'
 
 const code = `
-import { Tooltip, Button } from '@mantine/core';
+import { Paper, Text } from '@yomtor/ui'
+
 function Demo() {
   return (
  <Paper>
@@ -17,11 +18,11 @@ function Demo() {
 
 function Demo() {
   return (
-    <Paper shadow="md" p="md">
+    <Paper shadow='md' p='md'>
       <Text>Paper is the most basic ui component</Text>
       <Text>
-        Use it to create cards, dropdowns, modals and other components that require background
-        with shadow
+        Use it to create cards, dropdowns, modals and other components that
+        require background with shadow
       </Text>
     </Paper>
   )

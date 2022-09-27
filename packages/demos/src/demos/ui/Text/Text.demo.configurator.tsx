@@ -2,7 +2,8 @@ import React from 'react'
 import { Text, TextProps } from '@yomtor/ui'
 
 const codeTemplate = (props: string) => `
-import { Button } from '@mantine/core';
+import { Text } from '@yomtor/ui'
+
 function Demo() {
   return (
     <Text${props}>
@@ -22,11 +23,7 @@ function Wrapper(props: TextProps) {
       convallis laoreet ridiculus sollicitudin. Commodo in magnis quis volutpat
       et felis accumsan aliquet, praesent non aenean turpis fermentum taciti
       pulvinar. Viverra interdum justo vivamus nunc consequat montes id congue
-      metus, sociis vehicula hendrerit leo nec egestas sapien. Eleifend integer
-      donec viverra risus faucibus neque hac tempor pulvinar, aliquet id curae
-      porttitor imperdiet nisl fringilla. Fusce litora bibendum nunc urna
-      gravida libero metus parturient ad, vel quisque neque odio in mi auctor
-      dui dignissim, risus primis eu erat nam ac viverra sed.
+      metus, sociis vehicula hendrerit leo nec egestas sapien.
     </Text>
   )
 }

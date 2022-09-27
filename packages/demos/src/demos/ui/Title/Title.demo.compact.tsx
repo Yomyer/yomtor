@@ -2,7 +2,8 @@ import { Title } from '@yomtor/ui'
 import React from 'react'
 
 const code = `
-import { Button } from '@mantine/core';
+import { Title } from '@yomtor/ui'
+
 function Demo() {
     <>
       <Title order={1}>This is h1 title</Title>

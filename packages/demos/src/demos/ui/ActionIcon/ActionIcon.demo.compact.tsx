@@ -3,7 +3,9 @@ import { ActionIcon, Group } from '@yomtor/ui'
 import React from 'react'
 
 const code = `
-import { ActionIcon, ArtboardIcon } from '@mantine/core';
+import { ArtboardIcon } from '@yomtor/icons'
+import { ActionIcon } from '@yomtor/ui'
+
 function Demo() {
   return (
     <ActionIcon>

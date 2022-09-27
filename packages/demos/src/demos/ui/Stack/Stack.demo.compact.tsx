@@ -2,7 +2,8 @@ import React from 'react'
 import { Button, Stack } from '@yomtor/ui'
 
 const code = `
-import { Stack, Button } from '@mantine/core';
+import { Button, Stack } from '@yomtor/ui'
+
 function Demo() {
   return (
     <Stack>

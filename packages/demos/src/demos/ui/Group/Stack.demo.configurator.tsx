@@ -1,9 +1,11 @@
 import React from 'react'
-import { Button, StackProps, Stack, GroupProps, Group, ActionIcon } from '@yomtor/ui'
+import { GroupProps, Group, ActionIcon } from '@yomtor/ui'
 import { ArtboardIcon } from '@yomtor/icons'
 
 const codeTemplate = (props: string) => `
-import { Tooltip, Button } from '@mantine/core';
+import { ActionIcon, Group } from '@yomtor/ui'
+import { ArtboardIcon } from '@yomtor/icons'
+
 function Demo() {
   return (
     <Group${props}>

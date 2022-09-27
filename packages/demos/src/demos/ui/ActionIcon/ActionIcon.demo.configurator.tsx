@@ -3,11 +3,13 @@ import { ActionIconProps, ActionIcon, Group } from '@yomtor/ui'
 import { ArtboardIcon } from '@yomtor/icons'
 
 const codeTemplate = (props: string) => `
-import { ActionIcon, ArtboardIcon } from '@mantine/core';
+import { ArtboardIcon } from '@yomtor/icons'
+import { ActionIcon } from '@yomtor/ui'
+
 function Demo() {
   return (
     <ActionIcon${props}>
-      <ArtboardIcon/>
+      <ArtboardIcon size={props.size}/>
     </ActionIcon>
   );
 }
@@ -16,7 +18,7 @@ function Wrapper(props: ActionIconProps) {
   return (
     <Group position='center'>
       <ActionIcon {...props}>
-        <ArtboardIcon />
+        <ArtboardIcon size={props.size} />
       </ActionIcon>
     </Group>
   )

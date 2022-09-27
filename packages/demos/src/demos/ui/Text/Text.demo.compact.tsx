@@ -1,8 +1,9 @@
 import React from 'react'
-import { Button, Group, Text, Tooltip } from '@yomtor/ui'
+import { Text } from '@yomtor/ui'
 
 const code = `
-import { Text } from '@mantine/core';
+import { Text } from '@yomtor/ui'
+
 function Demo() {
   return (
     <Text align='center' weight={700}>This is a text</Text>

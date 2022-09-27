@@ -7,26 +7,24 @@ import { InputProps } from './Input.props'
 import useStyles from './Input.styles'
 
 const defaultProps: Partial<InputProps> = {
-    size: 'xs',
-    radius: 'xs',
-    compact: true
+  size: 'xs',
+  radius: 'xs',
+  compact: true
 }
 
 export const _Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
-    const { unstyled, compact, ...others } = useComponentDefaultProps(
-        'Input',
-        defaultProps,
-        props
-    )
+  const { unstyled, compact, ...others } = useComponentDefaultProps(
+    'Input',
+    defaultProps,
+    props
+  )
 
-    const { classes, cx } = useStyles(
-        { compact, ...others },
-        { name: 'Input', unstyled }
-    )
+  const { classes, cx } = useStyles(
+    { compact, ...others },
+    { name: 'Input', unstyled }
+  )
 
-    console.log(classes)
-
-    return <BaseInput {...others} ref={ref} classNames={classes} />
+  return <BaseInput {...others} ref={ref} classNames={classes} />
 }) as any
 
 _Input.displayName = '@yomtor/ui/Input'
@@ -36,12 +34,12 @@ _Input.Description = BaseInput.Description
 _Input.Error = BaseInput.Error
 
 export const Input = createPolymorphicComponent<
-    'input',
-    InputProps,
-    {
-        Wrapper: typeof BaseInput.Wrapper
-        Label: typeof BaseInput.Label
-        Description: typeof BaseInput.Description
-        Error: typeof BaseInput.Error
-    }
+  'input',
+  InputProps,
+  {
+    Wrapper: typeof BaseInput.Wrapper
+    Label: typeof BaseInput.Label
+    Description: typeof BaseInput.Description
+    Error: typeof BaseInput.Error
+  }
 >(_Input)
