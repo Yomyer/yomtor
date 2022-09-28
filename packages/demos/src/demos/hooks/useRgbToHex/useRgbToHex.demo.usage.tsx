@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useHexToRgb, useRgbToHex } from '@yomtor/hooks'
+import { useRgbToHex } from '@yomtor/hooks'
 
 const code = `
 import { useState } form 'react'
@@ -10,23 +10,23 @@ const hex = rgb.length > 1 && useRgbToHex(rgb)
 
 function Demo() {
   return (
-  <div
-    style={{
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      backgroundColor: hex ? hex : '',
-      padding: '10px'
-    }}
-  >
-    <input
-      type='text'
-      value={rgb}
-      onChange={(e) => setRgb(e.target.value)}
-      placeholder={'Enter a color name...'}
-    />
-    {hex && <span>{hex}</span>}
-  </div>
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        backgroundColor: hex ? hex : '',
+        padding: '10px'
+      }}
+    >
+      <input
+        type='text'
+        value={rgb}
+        onChange={(e) => setRgb(e.target.value)}
+        placeholder={'Enter a color name...'}
+      />
+      {hex && <span>{hex}</span>}
+    </div>
   );
 }
 `

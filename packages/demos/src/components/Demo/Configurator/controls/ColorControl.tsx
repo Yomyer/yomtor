@@ -24,8 +24,6 @@ export function ColorControl({
 }: ColorControlProps) {
   const theme = useYomtorTheme()
 
-  console.log(theme.colors['warning'][5], theme.colors['warning'][7])
-
   const colors = YOMTOR_COLORS.map((color) => (
     <ColorSwatch
       color={

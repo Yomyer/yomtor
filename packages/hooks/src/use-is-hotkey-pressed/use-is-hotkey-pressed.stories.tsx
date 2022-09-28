@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { ComponentStory, ComponentMeta } from '@storybook/react'
-import { useIsHotkeyPressed } from './use-hotkeys-pressed'
+import { useIsHotkeyPressed } from './use-is-hotkey-pressed'
 import { useHotkeys } from '../use-hotkeys/use-hotkeys'
 
 type Props = {
@@ -12,7 +12,7 @@ const Demo: React.FC<Props> = ({ children }) => {
 }
 
 export default {
-  title: 'Hooks/useIsHotkeysPressed',
+  title: 'Hooks/useIsHotkeyPressed',
   component: Demo,
   argTypes: {}
 } as ComponentMeta<typeof Demo>
@@ -24,9 +24,10 @@ const Template: ComponentStory<typeof Demo> = ({ ...props }) => {
   })
   return (
     <Demo>
-      <p>Try typing A</p>
+      <p style={{ color: isHotKeyPressed ? 'blue' : null }}>
+        Try typing A
+      </p>
       <input onChange={() => setIsHotKeyPressed(useIsHotkeyPressed('a'))} />
-      {isHotKeyPressed && <p>You added an A</p>}
     </Demo>
   )
 }

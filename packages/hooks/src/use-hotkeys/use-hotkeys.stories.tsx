@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { ComponentStory, ComponentMeta } from '@storybook/react'
-import { HotKeysEvent, useHotkeys } from './use-hotkeys'
+import { useHotkeys } from './use-hotkeys'
 
 type Props = {
   children: React.ReactNode
@@ -16,11 +16,11 @@ export default {
   argTypes: {}
 } as ComponentMeta<typeof Demo>
 
-const Template: ComponentStory<typeof Demo> = ({ ...props }) => {
+const Template: ComponentStory<typeof Demo> = () => {
   const [key, setKey] = useState<string>()
   useHotkeys({
     keys: 'arrows',
-    down: (event: KeyboardEvent, ui: HotKeysEvent) => {
+    down: (event: KeyboardEvent) => {
       setKey(event.key)
     },
     up: () => {

@@ -9,13 +9,13 @@ const matchWidth = useMediaQuery('(min-width: 600px)')
 
 function Demo() {
   return (
-  <>
-      <p
-        style={{ color: matchOrientation ? '#304683' : '#228850' }}
-      >{`Orientation is ${matchOrientation ? 'landscape' : ' portrait'}`}</p>
-      <p style={{ color: matchWidth ? '#304683' : '#228850' }}>{`Width is ${
-        matchWidth ? 'larger' : 'smaller'
-      } than 600px`}</p>
+    <>
+      <p style={{ color: matchOrientation ? '#304683' : '#228850' }}>
+        Orientation is {matchOrientation ? 'landscape' : ' portrait'}
+      </p>
+      <p style={{ color: matchWidth ? '#304683' : '#228850' }}>
+        Width is { matchWidth ? 'larger' : 'smaller' } than 600px
+      </p>
     </>
   );
 }
@@ -26,12 +26,13 @@ function Demo() {
   const matchWidth = useMediaQuery('(min-width: 600px)')
   return (
     <>
-      <p
-        style={{ color: matchOrientation ? '#304683' : '#228850' }}
-      >{`Orientation is ${matchOrientation ? 'landscape' : ' portrait'}`}</p>
-      <p style={{ color: matchWidth ? '#304683' : '#228850' }}>{`Width is ${
-        matchWidth ? 'larger' : 'smaller'
-      } than 600px`}</p>
+      <p style={{ color: matchOrientation ? '#304683' : '#228850' }}>
+        {`Orientation is ${matchOrientation ? 'landscape' : ' portrait'}`}
+      </p>
+      <p style={{ color: matchWidth ? '#304683' : '#228850' }}>
+        {`Width is ${matchWidth ? 'larger' : 'smaller'
+          } than 600px`}
+      </p>
     </>
   )
 }
