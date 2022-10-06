@@ -2,7 +2,6 @@
   "name": "@yomtor/hooks",
   "version": "1.0.0",
   "scripts": {
-    "build": "pnpm run clean && pnpm run compile",
     "clean": "rimraf -rf ./dist",
     "compile": "tsc -p tsconfig.build.json",
     "prepublishOnly": "pnpm run build",
