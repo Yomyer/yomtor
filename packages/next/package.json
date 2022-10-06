@@ -8,8 +8,12 @@
   "main": "src/index.ts",
   "module": "esm/index.js",
   "types": "lib/index.d.ts",
+  "peerDependencies": {
+    "react": "~17.0.2",
+    "react-dom": "~17.0.2",
+    "next": "*"
+  },
   "dependencies": {
-    "next": "*",
     "@mantine/next": "^5.4.0",
     "@mantine/ssr": "^5.4.0",
     "@emotion/server": ">=11.4.0",
