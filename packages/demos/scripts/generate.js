@@ -1,43 +1,65 @@
-exports.ui = [
+const {
+  updateBarrel
+} = require('@yomtor/utils/src/update-barrel/update-barrel')
+
+exports.demos = [
   {
-    option: 'Generate Demo',
+    option: '[Demos] UI',
     defaultCase: '(pascalCase)',
     entry: {
-      folderPath: './packages/ui/scripts/templates/mantine'
+      folderPath: './packages/demos/scripts/templates/demo'
     },
     stringReplacers: [
       {
         question: 'Story Group Name',
         slot: '__folder__'
       },
-      { question: 'Mantine Component', slot: '__mantine__' },
-      { question: 'Insert your component name', slot: '__name__' }
+      { question: 'Component', slot: '__component__' },
+      { question: 'Name', slot: '__name__' }
     ],
     output: {
-      path: './packages/ui/src/__name__(pascalCase)',
+      path: './packages/demos/src/demos/ui/__component__(pascalCase)',
       pathAndFileNameDefaultCase: '(pascalCase)',
-      overwrite: false
+      overwrite: true
+    },
+    onComplete: async (results) => {
+      updateBarrel(results.output.path, { ignore: '*.stories.*' })
     }
   },
   {
-    option: 'Generate Configurator',
+    option: '[Demos] Global',
     defaultCase: '(pascalCase)',
     entry: {
-      folderPath: './packages/ui/scripts/templates/polymorphic'
+      folderPath: './packages/demos/scripts/templates/demo'
     },
     stringReplacers: [
-      {
-        question: 'Story Group Name',
-        slot: '__folder__'
-      },
-      { question: 'Mantine Component', slot: '__mantine__' },
-      { question: 'HTML Component', slot: '__html__' },
-      { question: 'Insert your component name', slot: '__name__' }
+      { question: 'Package', slot: '__package__' },
+      { question: 'Component', slot: '__component__' },
+      { question: 'Name', slot: '__name__' }
     ],
     output: {
-      path: './packages/ui/src/__name__(pascalCase)',
+      path: './packages/demos/src/demos/__package__(pascalCase)/__component__(pascalCase)',
       pathAndFileNameDefaultCase: '(pascalCase)',
-      overwrite: false
+      overwrite: true
+    },
+    onComplete: async (results) => {
+      updateBarrel(results.output.path, { ignore: '*.stories.*' })
+    }
+  },
+  {
+    option: '[Demos] UI Configurator',
+    defaultCase: '(pascalCase)',
+    entry: {
+      folderPath: './packages/demos/scripts/templates/configurator'
+    },
+    stringReplacers: [
+      { question: 'Package', slot: '__package__' },
+      { question: 'Component', slot: '__component__' }
+    ],
+    output: {
+      path: './packages/demos/src/demos/__package__(pascalCase)/__component__(pascalCase)',
+      pathAndFileNameDefaultCase: '(pascalCase)',
+      overwrite: true
     }
   }
 ]

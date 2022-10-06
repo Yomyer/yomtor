@@ -5,8 +5,9 @@
   "author": "Yomyer",
   "license": "MIT",
   "repository": "https://github.com/Yomyer/yomtor.git",
-  "main": "dist/index",
-  "types": "dist/index",
+  "main": "src/index.ts",
+  "module": "esm/index.js",
+  "types": "lib/index.d.ts",
   "dependencies": {
     "lodash": "^4.17.21",
     "rimraf": "~3.0.2"

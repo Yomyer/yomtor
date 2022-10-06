@@ -1,6 +1,6 @@
 exports.ui = [
   {
-    option: 'Create Mantine UI Component',
+    option: '[UI] Create Mantine Component',
     defaultCase: '(pascalCase)',
     entry: {
       folderPath: './packages/ui/scripts/templates/mantine'
@@ -20,7 +20,7 @@ exports.ui = [
     }
   },
   {
-    option: 'Create Mantine UI PolymorphicComponent',
+    option: '[UI] Create Mantine PolymorphicComponent',
     defaultCase: '(pascalCase)',
     entry: {
       folderPath: './packages/ui/scripts/templates/polymorphic'
