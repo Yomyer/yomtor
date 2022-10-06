@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react'
-import { createPolymorphicComponent } from '@mantine/core'
+import { createPolymorphicComponent } from '@mantine/utils'
 import { useComponentDefaultProps } from '@yomtor/styles'
 
 import { __mantine__ as Base__mantine__ } from '@mantine/core'

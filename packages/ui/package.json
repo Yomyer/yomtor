@@ -1,29 +1,29 @@
 {
-    "name": "@yomtor/ui",
-    "version": "1.0.0",
-    "description": "Made with create-react-library",
-    "author": "Yomyer",
-    "license": "MIT",
-    "repository": "https://github.com/Yomyer/yomtor.git",
-    "main": "dist/index",
-    "types": "dist/index",
-    "scripts": {
-        "build": "pnpm run clean && pnpm run compile",
-        "clean": "rimraf -rf ./dist",
-        "compile": "tsc -p tsconfig.build.json",
-        "prepublishOnly": "pnpm run build",
-        "test": "jest --watchAll"
-    },
-    "peerDependencies": {
-        "react": "~17.0.2",
-        "react-dom": "~17.0.2"
-    },
-    "dependencies": {
-        "@mantine/core": "^5.4.0",
-        "@mantine/hooks": "^5.4.0",
-        "@yomtor/icons": "*",
-        "@yomtor/styles": "*",
-        "lodash": "^4.17.21",
-        "rimraf": "~3.0.2"
-    }
+  "name": "@yomtor/ui",
+  "version": "1.0.0",
+  "description": "Made with create-react-library",
+  "author": "Yomyer",
+  "license": "MIT",
+  "repository": "https://github.com/Yomyer/yomtor.git",
+  "main": "dist/index",
+  "types": "dist/index",
+  "scripts": {
+    "clean": "rimraf -rf ./dist",
+    "compile": "tsc -p tsconfig.build.json",
+    "prepublishOnly": "pnpm run build",
+    "test": "jest --watchAll"
+  },
+  "peerDependencies": {
+    "react": "~17.0.2",
+    "react-dom": "~17.0.2"
+  },
+  "dependencies": {
+    "@mantine/core": "^5.4.0",
+    "@mantine/hooks": "^5.4.0",
+    "@yomtor/utils": "*",
+    "@yomtor/icons": "*",
+    "@yomtor/styles": "*",
+    "lodash": "^4.17.21",
+    "rimraf": "~3.0.2"
+  }
 }

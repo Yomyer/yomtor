@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react'
-import { createPolymorphicComponent } from '@mantine/core'
+import { createPolymorphicComponent } from '@yomtor/utils'
 import { useComponentDefaultProps } from '@yomtor/styles'
 
 import { Input as BaseInput } from '@mantine/core'

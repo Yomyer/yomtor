@@ -1,7 +1,7 @@
 import { MantineTheme } from '@mantine/styles'
 
 export type DeepPartial<T> = {
-    [P in keyof T]?: DeepPartial<T[P]>
+    [P in keyof T]?: T[P] extends Function ? T[P] : DeepPartial<T[P]>
 }
 
 export interface YomtorTheme extends MantineTheme {}

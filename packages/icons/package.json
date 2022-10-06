@@ -1,28 +1,27 @@
 {
-    "name": "@yomtor/icons",
-    "version": "1.0.0",
-    "description": "Yomtor library icons",
-    "author": "Yomyer",
-    "license": "MIT",
-    "repository": "https://github.com/Yomyer/yomtor.git",
-    "main": "dist/index",
-    "types": "dist/index",
-    "scripts": {
-        "build": "pnpm run clean && pnpm run compile",
-        "clean": "rimraf -rf ./dist",
-        "compile": "tsc -p tsconfig.build.json",
-        "prepublishOnly": "pnpm run build",
-        "test": "jest --watchAll"
-    },
-    "peerDependencies": {
-        "react": "~17.0.2",
-        "react-dom": "~17.0.2"
-    },
-    "dependencies": {
-        "@radix-ui/react-scroll-area": "^0.1.4",
-        "lodash": "^4.17.21",
-        "rimraf": "~3.0.2",
-        "@yomtor/styles": "*",
-        "@yomtor/hooks": "*"
-    }
+  "name": "@yomtor/icons",
+  "version": "1.0.0",
+  "description": "Yomtor library icons",
+  "author": "Yomyer",
+  "license": "MIT",
+  "repository": "https://github.com/Yomyer/yomtor.git",
+  "main": "dist/index",
+  "types": "dist/index",
+  "scripts": {
+    "clean": "rimraf -rf ./dist",
+    "compile": "tsc -p tsconfig.build.json",
+    "prepublishOnly": "pnpm run build",
+    "test": "jest --watchAll"
+  },
+  "peerDependencies": {
+    "react": "~17.0.2",
+    "react-dom": "~17.0.2"
+  },
+  "dependencies": {
+    "@radix-ui/react-scroll-area": "^0.1.4",
+    "lodash": "^4.17.21",
+    "rimraf": "~3.0.2",
+    "@yomtor/styles": "*",
+    "@yomtor/hooks": "*"
+  }
 }

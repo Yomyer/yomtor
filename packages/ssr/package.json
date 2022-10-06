@@ -1,5 +1,5 @@
 {
-  "name": "@yomtor/utils",
+  "name": "@yomtor/ssr",
   "version": "1.0.0",
   "description": "Made with create-react-library",
   "author": "Yomyer",
@@ -9,8 +9,6 @@
   "module": "esm/index.js",
   "types": "lib/index.d.ts",
   "dependencies": {
-    "lodash": "^4.17.21",
-    "rimraf": "~3.0.2",
-    "@mantine/utils": "^5.4.0"
+    "@yomtor/styles": "*"
   }
 }

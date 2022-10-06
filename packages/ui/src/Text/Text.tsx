@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react'
-import { createPolymorphicComponent } from '@mantine/core'
+import { createPolymorphicComponent } from '@yomtor/utils'
 import { useComponentDefaultProps } from '@yomtor/styles'
 
 import { Text as BaseText } from '@mantine/core'
@@ -8,25 +8,18 @@ import useStyles from './Text.styles'
 
 const defaultProps: Partial<TextProps> = {}
 
-export const _Text = forwardRef<HTMLdivElement, TextProps>(
-  (props, ref) => {
-    const { unstyled, ...others } = useComponentDefaultProps(
-      'Text',
-      defaultProps,
-      props
-    )
+export const _Text = forwardRef<HTMLDivElement, TextProps>((props, ref) => {
+  const { unstyled, ...others } = useComponentDefaultProps(
+    'Text',
+    defaultProps,
+    props
+  )
 
-    const { classes, cx } = useStyles(
-      { ...others },
-      { name: 'Text', unstyled }
-    )
+  const { classes, cx } = useStyles({ ...others }, { name: 'Text', unstyled })
 
-    return <BaseText {...others} ref={ref} className={classes.root} />
-  }
-) as any
+  return <BaseText {...others} ref={ref} className={classes.root} />
+}) as any
 
 _Text.displayName = '@yomtor/ui/Text'
 
-export const Text = createPolymorphicComponent<'div', TextProps>(
-  _Text
-)
+export const Text = createPolymorphicComponent<'div', TextProps>(_Text)
