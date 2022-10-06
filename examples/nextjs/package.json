@@ -8,11 +8,11 @@
     "build": "next build"
   },
   "peerDependencies": {
+    "next": "*",
     "react": "~18.2.0",
     "react-dom": "~18.2.0"
   },
   "dependencies": {
-    "next": "*",
     "@yomtor/ui": "*",
     "@yomtor/styles": "*",
     "@yomtor/next": "*"
