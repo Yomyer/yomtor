@@ -30,13 +30,17 @@ importers:
       oslllo-svg-fixer: ^2.1.0
       pnpm: ^7.13.2
       prettier: ^2.0.4
+      react: 18.1.0
+      react-dom: 18.1.0
       typescript: ~4.7.0
     dependencies:
-      '@emotion/react': 11.9.3
+      '@emotion/react': 11.9.3_react@18.1.0
+      react: 18.1.0
+      react-dom: 18.1.0_react@18.1.0
     devDependencies:
       '@sucrase/jest-plugin': 2.2.1
       '@testing-library/jest-dom': 5.16.4
-      '@testing-library/react': 13.2.0
+      '@testing-library/react': 13.2.0_ef5jwxihqo6n7gxfmzogljlgcm
       '@typescript-eslint/eslint-plugin': 5.39.0_xlt7f5kr33plmaf6b3afwxccp4
       '@typescript-eslint/parser': 5.39.0_b5e7v2qnwxfo6hmiq56u52mz3e
       cli-progress: 3.11.2
@@ -55,7 +59,7 @@ importers:
       generate-template-files: 3.2.1
       glob: 8.0.3
       jest: 27.5.1
-      next: 12.3.1
+      next: 12.3.1_ef5jwxihqo6n7gxfmzogljlgcm
       oslllo-svg-fixer: 2.1.2
       pnpm: 7.13.2
       prettier: 2.7.1
@@ -3336,7 +3340,7 @@ packages:
     resolution: {integrity: sha512-G/YwXTkv7Den9mXDO7AhLWkE3q+I92B+VqAE+dYG4NGPaHZGvt3G8Q0p9vmE+sq7rTGphUbAvmQ9YpbfMQGGlA==}
     dev: false
 
-  /@emotion/react/11.9.3:
+  /@emotion/react/11.9.3_react@18.1.0:
     resolution: {integrity: sha512-g9Q1GcTOlzOEjqwuLF/Zd9LC+4FljjPjDfxSM7KmEakm+hsHXk+bYZ2q+/hTJzr0OUNkujo72pXLQvXj6H+GJQ==}
     peerDependencies:
       '@babel/core': ^7.0.0
@@ -3355,6 +3359,7 @@ packages:
       '@emotion/utils': 1.2.0
       '@emotion/weak-memoize': 0.2.5
       hoist-non-react-statics: 3.3.2
+      react: 18.1.0
     dev: false
 
   /@emotion/serialize/0.11.16:
@@ -6924,7 +6929,7 @@ packages:
       redent: 3.0.0
     dev: true
 
-  /@testing-library/react/13.2.0:
+  /@testing-library/react/13.2.0_ef5jwxihqo6n7gxfmzogljlgcm:
     resolution: {integrity: sha512-Bprbz/SZVONCJy5f7hcihNCv313IJXdYiv0nSJklIs1SQCIHHNlnGNkosSXnGZTmesyGIcBGNppYhXcc11pb7g==}
     engines: {node: '>=12'}
     peerDependencies:
@@ -6934,6 +6939,8 @@ packages:
       '@babel/runtime': 7.19.0
       '@testing-library/dom': 8.18.1
       '@types/react-dom': 18.0.6
+      react: 18.1.0
+      react-dom: 18.1.0_react@18.1.0
     dev: true
 
   /@textlint/ast-node-types/12.2.2:
@@ -15219,7 +15226,6 @@ packages:
     hasBin: true
     dependencies:
       js-tokens: 4.0.0
-    dev: true
 
   /loud-rejection/1.6.0:
     resolution: {integrity: sha512-RPNliZOFkqFumDhvYqOaNY4Uz9oJM2K9tC6JWsJJsNdhuONW4LQHRBpb0qf4pJApVffI5N39SwzWZJuEhfd7eQ==}
@@ -15912,7 +15918,7 @@ packages:
     resolution: {integrity: sha512-9iN1ka/9zmX1ZvLV9ewJYEk9h7RyRRtqdK0woXcqohu8EWIerfPUjYJPg0ULy0UqP7cslmdGc8xKDJcojlKiaw==}
     dev: true
 
-  /next/12.3.1:
+  /next/12.3.1_ef5jwxihqo6n7gxfmzogljlgcm:
     resolution: {integrity: sha512-l7bvmSeIwX5lp07WtIiP9u2ytZMv7jIeB8iacR28PuUEFG5j0HGAPnMqyG5kbZNBG2H7tRsrQ4HCjuMOPnANZw==}
     engines: {node: '>=12.22.0'}
     hasBin: true
@@ -15934,8 +15940,10 @@ packages:
       '@swc/helpers': 0.4.11
       caniuse-lite: 1.0.30001416
       postcss: 8.4.14
-      styled-jsx: 5.0.7
-      use-sync-external-store: 1.2.0
+      react: 18.1.0
+      react-dom: 18.1.0_react@18.1.0
+      styled-jsx: 5.0.7_react@18.1.0
+      use-sync-external-store: 1.2.0_react@18.1.0
     optionalDependencies:
       '@next/swc-android-arm-eabi': 12.3.1
       '@next/swc-android-arm64': 12.3.1
@@ -17995,7 +18003,6 @@ packages:
       loose-envify: 1.4.0
       react: 18.1.0
       scheduler: 0.22.0
-    dev: true
 
   /react-element-to-jsx-string/14.3.4_ef5jwxihqo6n7gxfmzogljlgcm:
     resolution: {integrity: sha512-t4ZwvV6vwNxzujDQ+37bspnLwA4JlgUPWhLjBJWsNIDceAf6ZKUTCjdm08cN6WeZ5pTMKiCJkmAYnpmR4Bm+dg==}
@@ -18224,7 +18231,6 @@ packages:
     engines: {node: '>=0.10.0'}
     dependencies:
       loose-envify: 1.4.0
-    dev: true
 
   /read-cache/1.0.0:
     resolution: {integrity: sha512-Owdv/Ft7IjOgm/i0xvNDZ1LrRANRfew4b2prF3OWMQLxLfu3bS8FVhCsrSCMK4lR56Y9ya+AThoTpDCTxCmpRA==}
@@ -18821,7 +18827,6 @@ packages:
     resolution: {integrity: sha512-6QAm1BgQI88NPYymgGQLCZgvep4FyePDWFpXVK+zNSUgHwlqpJy8VEh8Et0KxTACS4VWwMousBElAZOH9nkkoQ==}
     dependencies:
       loose-envify: 1.4.0
-    dev: true
 
   /schema-utils/1.0.0:
     resolution: {integrity: sha512-i27Mic4KovM/lnGsy8whRCHhc7VicJajAjTrYg11K9zfZXnYIt4k5F+kZkwjnrhKzLic/HLU4j11mjsz2G/75g==}
@@ -19603,7 +19608,7 @@ packages:
     dependencies:
       inline-style-parser: 0.1.1
 
-  /styled-jsx/5.0.7:
+  /styled-jsx/5.0.7_react@18.1.0:
     resolution: {integrity: sha512-b3sUzamS086YLRuvnaDigdAewz1/EFYlHpYBP5mZovKEdQQOIIYq8lApylub3HHZ6xFjV051kkGU7cudJmrXEA==}
     engines: {node: '>= 12.0.0'}
     peerDependencies:
@@ -19615,6 +19620,8 @@ packages:
         optional: true
       babel-plugin-macros:
         optional: true
+    dependencies:
+      react: 18.1.0
     dev: true
 
   /stylehacks/5.1.0_postcss@8.4.17:
@@ -20666,10 +20673,12 @@ packages:
       use-isomorphic-layout-effect: 1.1.2_react@18.1.0
     dev: true
 
-  /use-sync-external-store/1.2.0:
+  /use-sync-external-store/1.2.0_react@18.1.0:
     resolution: {integrity: sha512-eEgnFxGQ1Ife9bzYs6VLi8/4X6CObHMw9Qr9tPY43iKwsPw8xE8+EFsf/2cFZ5S3esXgpWgtSCtLNS41F+sKPA==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      react: 18.1.0
     dev: true
 
   /use/3.1.1:
