@@ -18,9 +18,8 @@ export default {
 
 const Template: ComponentStory<typeof Demo> = ({ ...props }) => {
   const [longPressCount, setLongPressCount] = useState(0)
-  const onLongPress = (e) => {
+  const onLongPress = () => {
     setLongPressCount(longPressCount + 1)
-    console.log(e)
   }
 
   const longPressEvent = useLongPress(onLongPress)

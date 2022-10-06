@@ -2,7 +2,4 @@ import { storiesOf } from '@storybook/react'
 import { attachDemos } from '../../../attach-demos'
 import * as demos from './index'
 
-attachDemos(
-  storiesOf('UI/Buttons/ActionIcon', module),
-  demos
-)
+attachDemos(storiesOf('UI/Buttons/ActionIcon', module), demos)

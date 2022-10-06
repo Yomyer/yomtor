@@ -1,3 +1,4 @@
+import { ArtboardIcon } from '@yomtor/icons'
 import React from 'react'
 import { ActionIcon } from './ActionIcon'
 
@@ -6,5 +7,9 @@ export default {
 }
 
 export function Default() {
-  return <ActionIcon></ActionIcon>
+  return (
+    <ActionIcon>
+      <ArtboardIcon />
+    </ActionIcon>
+  )
 }

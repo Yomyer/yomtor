@@ -48,7 +48,7 @@ const Template: ComponentStory<typeof Demo> = ({ ...props }) => {
 
   useHotkeys({
     keys: 'arrows',
-    callbackDown: (_event: KeyboardEvent, ui: HotkeysEvent) => {
+    down: (_event: KeyboardEvent, ui: HotkeysEvent) => {
       onLongPress(ui.shortcut)
     }
   })

@@ -24,12 +24,10 @@ const Template: ComponentStory<typeof Demo> = ({ ...props }) => {
     <Demo>
       <p
         style={{ color: matchOrientation ? '#304683' : '#228850' }}
-      >{`La orientacion es ${
-        matchOrientation ? 'horizontal' : ' vertical'
-      }`}</p>
-      <p
-        style={{ color: matchWidth ? '#304683' : '#228850' }}
-      >{`La vista es de ${matchWidth ? 'mas' : ' menos'} de 600px`}</p>
+      >{`Orientation is ${matchOrientation ? 'landscape' : ' portrait'}`}</p>
+      <p style={{ color: matchWidth ? '#304683' : '#228850' }}>{`Width is ${
+        matchWidth ? 'larger' : 'smaller'
+      } than 600px`}</p>
     </Demo>
   )
 }

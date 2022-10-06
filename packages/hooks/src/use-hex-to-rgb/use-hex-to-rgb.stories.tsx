@@ -18,7 +18,6 @@ export default {
 const Template: ComponentStory<typeof Demo> = ({ ...props }) => {
   const [hex, setHex] = useState<string>('')
   const rgb = useHexToRgb(hex)
-  console.log(rgb)
 
   return (
     <Demo>
