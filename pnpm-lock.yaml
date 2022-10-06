@@ -5,6 +5,8 @@ importers:
   .:
     specifiers:
       '@emotion/react': 11.9.3
+      '@emotion/server': 11.4.0
+      '@emotion/styled': ^11.10.0
       '@sucrase/jest-plugin': ^2.1.1
       '@testing-library/jest-dom': 5.16.4
       '@testing-library/react': 13.2.0
@@ -35,6 +37,8 @@ importers:
       typescript: ~4.7.0
     dependencies:
       '@emotion/react': 11.9.3_react@18.1.0
+      '@emotion/server': 11.4.0
+      '@emotion/styled': 11.10.4_uzzswosywrszcv3hc4v7x7otmi
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
     devDependencies:
@@ -3398,6 +3402,20 @@ packages:
       through: 2.3.8
     dev: false
 
+  /@emotion/server/11.4.0:
+    resolution: {integrity: sha512-IHovdWA3V0DokzxLtUNDx4+hQI82zUXqQFcVz/om2t44O0YSc+NHB+qifnyAOoQwt3SXcBTgaSntobwUI9gnfA==}
+    peerDependencies:
+      '@emotion/css': ^11.0.0-rc.0
+    peerDependenciesMeta:
+      '@emotion/css':
+        optional: true
+    dependencies:
+      '@emotion/utils': 1.2.0
+      html-tokenize: 2.0.1
+      multipipe: 1.0.2
+      through: 2.3.8
+    dev: false
+
   /@emotion/sheet/0.9.4:
     resolution: {integrity: sha512-zM9PFmgVSqBw4zL101Q0HrBVTGmpAxFZH/pYx/cjJT5advXguvcgjHFTCaIO3enL/xr89vK2bh0Mfyj9aa0ANA==}
     dev: true
@@ -3455,6 +3473,29 @@ packages:
       '@types/react': 18.0.21
     dev: false
 
+  /@emotion/styled/11.10.4_uzzswosywrszcv3hc4v7x7otmi:
+    resolution: {integrity: sha512-pRl4R8Ez3UXvOPfc2bzIoV8u9P97UedgHS4FPX594ntwEuAMA114wlaHvOK24HB48uqfXiGlYIZYCxVJ1R1ttQ==}
+    peerDependencies:
+      '@babel/core': ^7.0.0
+      '@emotion/react': ^11.0.0-rc.0
+      '@types/react': '*'
+      react: '>=16.8.0'
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
+      '@types/react':
+        optional: true
+    dependencies:
+      '@babel/runtime': 7.19.0
+      '@emotion/babel-plugin': 11.10.2
+      '@emotion/is-prop-valid': 1.2.0
+      '@emotion/react': 11.9.3_react@18.1.0
+      '@emotion/serialize': 1.1.0
+      '@emotion/use-insertion-effect-with-fallbacks': 1.0.0_react@18.1.0
+      '@emotion/utils': 1.2.0
+      react: 18.1.0
+    dev: false
+
   /@emotion/stylis/0.8.5:
     resolution: {integrity: sha512-h6KtPihKFn3T9fuIrwvXXUOwlx3rfUvfZIcP5a6rh8Y7zjE3O06hT5Ss4S/YI1AYhuZ1kjaE/5EaOOI2NqSylQ==}
     dev: true
@@ -3471,6 +3512,14 @@ packages:
     resolution: {integrity: sha512-1eEgUGmkaljiBnRMTdksDV1W4kUnmwgp7X9G8B++9GYwl1lUdqSndSriIrTJ0N7LQaoauY9JJ2yhiOYK5+NI4A==}
     peerDependencies:
       react: '>=16.8.0'
+    dev: false
+
+  /@emotion/use-insertion-effect-with-fallbacks/1.0.0_react@18.1.0:
+    resolution: {integrity: sha512-1eEgUGmkaljiBnRMTdksDV1W4kUnmwgp7X9G8B++9GYwl1lUdqSndSriIrTJ0N7LQaoauY9JJ2yhiOYK5+NI4A==}
+    peerDependencies:
+      react: '>=16.8.0'
+    dependencies:
+      react: 18.1.0
     dev: false
 
   /@emotion/utils/0.11.3:
