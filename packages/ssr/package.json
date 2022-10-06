@@ -8,6 +8,12 @@
   "main": "src/index.ts",
   "module": "esm/index.js",
   "types": "lib/index.d.ts",
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0",
+    "@emotion/react": ">=11.9.0",
+    "@emotion/server": ">=11.4.0"
+  },
   "dependencies": {
     "@yomtor/styles": "*"
   }

@@ -14,7 +14,7 @@ Platform:
   darwin arm64
 
 Trace: 
-  Error: EINVAL: invalid argument, mkdir '/private/var/www/@yomyer/yomtor/node_modules/@emotion/react/node_modules/@emotion'
+  Error: ENOENT: no such file or directory, copyfile '/Users/yomyer/Library/Caches/Yarn/v6/npm-eslint-utils-3.0.0-8aebaface7345bb33559db0a1f13a1d2d48c3672-integrity/node_modules/eslint-utils/README.md' -> '/private/var/www/@yomyer/yomtor/node_modules/@typescript-eslint/utils/node_modules/eslint-utils/README.md'
 
 npm manifest: 
   {
@@ -36,7 +36,9 @@ npm manifest:
       "generate": "node ./scripts/generate.js"
     },
     "dependencies": {
-      "@emotion/react": "11.9.3"
+      "@emotion/react": "11.9.3",
+      "react": "18.1.0",
+      "react-dom": "18.1.0"
     },
     "devDependencies": {
       "doctoc": "~2.2.0",
