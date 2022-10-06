@@ -1,29 +1,34 @@
-import React from 'react';
-import { useMantineTheme } from '@mantine/core';
-import CodeDemo from './CodeDemo/CodeDemo';
-import Configurator from './Configurator/Configurator';
+import React from 'react'
+import { useMantineTheme } from '@mantine/core'
+import CodeDemo from './CodeDemo/CodeDemo'
+import Configurator from './Configurator/Configurator'
 
-export { CodeDemo, Configurator };
+export { CodeDemo, Configurator }
 
-type ConfiguratorProps = React.ComponentProps<typeof Configurator>;
-type CodeDemoProps = React.ComponentProps<typeof CodeDemo>;
+type ConfiguratorProps = React.ComponentProps<typeof Configurator>
+type CodeDemoProps = React.ComponentProps<typeof CodeDemo>
 
 interface DemoProps {
-  toggle?: boolean;
-  demoProps?: CodeDemoProps;
-  configuratorProps?: Omit<ConfiguratorProps, 'props' | 'codeTemplate' | 'component'>;
-  data: MantineDemo;
+  toggle?: boolean
+  demoProps?: CodeDemoProps
+  configuratorProps?: Omit<
+    ConfiguratorProps,
+    'props' | 'codeTemplate' | 'component'
+  >
+  data: MantineDemo
 }
 
 export function Demo({ data, demoProps, configuratorProps }: DemoProps) {
-  const theme = useMantineTheme();
+  const theme = useMantineTheme()
   const background =
-    typeof data.background === 'function' ? data.background(theme.colorScheme) : undefined;
+    typeof data.background === 'function'
+      ? data.background(theme.colorScheme)
+      : undefined
 
   if (data.type === 'demo') {
     return (
       <CodeDemo
-        language="tsx"
+        language='tsx'
         code={data.code || null}
         demoBackground={background}
         {...data.demoProps}
@@ -37,7 +42,7 @@ export function Demo({ data, demoProps, configuratorProps }: DemoProps) {
           <data.component />
         )}
       </CodeDemo>
-    );
+    )
   }
 
   if (data.type === 'configurator') {
@@ -58,8 +63,8 @@ export function Demo({ data, demoProps, configuratorProps }: DemoProps) {
         {...data.configuratorProps}
         {...configuratorProps}
       />
-    );
+    )
   }
 
-  return null;
+  return null
 }

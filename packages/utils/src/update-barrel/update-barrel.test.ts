@@ -1,4 +1,5 @@
 import { updateBarrel } from './update-barrel'
+import path from 'path'
 
 test('update-barrel', async () => {
   const be = [
@@ -8,7 +9,7 @@ test('update-barrel', async () => {
     './Sub.demo.configurator'
   ]
   expect(
-    await updateBarrel(__dirname + '/mocks', {
+    await updateBarrel(path.join(__dirname, 'mocks'), {
       ignore: '*.stories.*',
       find: '*'
     })

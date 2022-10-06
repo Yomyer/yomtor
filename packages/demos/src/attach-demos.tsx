@@ -1,6 +1,6 @@
-import React from 'react';
-import { Container } from '@mantine/core';
-import { Demo } from './components/Demo/Demo';
+import React from 'react'
+import { Container } from '@mantine/core'
+import { Demo } from './components/Demo/Demo'
 
 export function attachDemos(stories: any, demos: Record<string, MantineDemo>) {
   Object.keys(demos).forEach((key) => {
@@ -8,6 +8,6 @@ export function attachDemos(stories: any, demos: Record<string, MantineDemo>) {
       <Container sx={{ paddingTop: 40, paddingBottom: 40 }} size={820}>
         <Demo data={demos[key]} />
       </Container>
-    ));
-  });
+    ))
+  })
 }

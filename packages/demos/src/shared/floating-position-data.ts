@@ -10,5 +10,5 @@ export const FLOATING_POSITION_DATA = [
   { label: 'right-end', value: 'right-end' },
   { label: 'bottom', value: 'bottom' },
   { label: 'bottom-start', value: 'bottom-start' },
-  { label: 'bottom-end', value: 'bottom-end' },
-];
+  { label: 'bottom-end', value: 'bottom-end' }
+]

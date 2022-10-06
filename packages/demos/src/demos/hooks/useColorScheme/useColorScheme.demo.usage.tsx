@@ -21,7 +21,9 @@ function Demo() {
   return (
     <>
       <p>Preferred color scheme:</p>
-      <p>{preferedColorScheme} {preferedColorScheme === 'light' ? '☀' : '☾'}</p>
+      <p>
+        {preferedColorScheme} {preferedColorScheme === 'light' ? '☀' : '☾'}
+      </p>
     </>
   )
 }

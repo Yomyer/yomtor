@@ -5,29 +5,29 @@ import { ArtboardIcon } from '@yomtor/icons'
 import { Group } from '@mantine/core'
 
 export default {
-    title: 'UI/Inputs/Input'
+  title: 'UI/Inputs/Input'
 }
 
 export function Default() {
-    return <Input />
+  return <Input />
 }
 
 export function InlineForm() {
-    return (
-        <Group>
-            <Button compact={false}>
-                <ArtboardIcon></ArtboardIcon>
-            </Button>
-            <Button>
-                <ArtboardIcon></ArtboardIcon>
-            </Button>
-            <Input.Wrapper label='test' size='xs'>
-                <Input />
-            </Input.Wrapper>
+  return (
+    <Group>
+      <Button compact={false}>
+        <ArtboardIcon />
+      </Button>
+      <Button>
+        <ArtboardIcon />
+      </Button>
+      <Input.Wrapper label='test' size='xs'>
+        <Input />
+      </Input.Wrapper>
 
-            <Input.Wrapper label='test'>
-                <Input />
-            </Input.Wrapper>
-        </Group>
-    )
+      <Input.Wrapper label='test'>
+        <Input />
+      </Input.Wrapper>
+    </Group>
+  )
 }

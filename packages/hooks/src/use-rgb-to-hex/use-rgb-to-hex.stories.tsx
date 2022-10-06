@@ -33,7 +33,7 @@ const Template: ComponentStory<typeof Demo> = ({ ...props }) => {
           type='text'
           value={rgb}
           onChange={(e) => setRgb(e.target.value)}
-          placeholder={'Enter an RGB color...'}
+          placeholder='Enter an RGB color...'
         />
         {hex && (
           <>
@@ -55,7 +55,7 @@ const Template: ComponentStory<typeof Demo> = ({ ...props }) => {
                 display: 'inline-block',
                 margin: '10px'
               }}
-            ></div>
+            />
           </>
         )}
       </div>

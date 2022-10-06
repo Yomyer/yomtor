@@ -18,10 +18,7 @@ export const _Tooltip = forwardRef<HTMLElement, TooltipProps>((props, ref) => {
     props
   )
 
-  const { classes, cx } = useStyles(
-    { ...others },
-    { name: 'Tooltip', unstyled }
-  )
+  const { classes } = useStyles({ ...others }, { name: 'Tooltip', unstyled })
 
   return <BaseTooltip {...others} className={classes.root} />
 }) as any

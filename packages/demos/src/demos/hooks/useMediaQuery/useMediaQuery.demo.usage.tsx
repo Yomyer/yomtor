@@ -30,8 +30,7 @@ function Demo() {
         {`Orientation is ${matchOrientation ? 'landscape' : ' portrait'}`}
       </p>
       <p style={{ color: matchWidth ? '#304683' : '#228850' }}>
-        {`Width is ${matchWidth ? 'larger' : 'smaller'
-          } than 600px`}
+        {`Width is ${matchWidth ? 'larger' : 'smaller'} than 600px`}
       </p>
     </>
   )

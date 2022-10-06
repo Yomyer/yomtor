@@ -50,7 +50,7 @@ function Demo() {
         type='text'
         value={text}
         onChange={(e) => setText(e.target.value)}
-        placeholder={'Enter text...'}
+        placeholder='Enter text...'
       />
       <span>{color}</span>
     </div>

@@ -24,9 +24,7 @@ const Template: ComponentStory<typeof Demo> = ({ ...props }) => {
   })
   return (
     <Demo>
-      <p style={{ color: isHotKeyPressed ? 'blue' : null }}>
-        Try typing A
-      </p>
+      <p style={{ color: isHotKeyPressed ? 'blue' : null }}>Try typing A</p>
       <input onChange={() => setIsHotKeyPressed(useIsHotkeyPressed('a'))} />
     </Demo>
   )

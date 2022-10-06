@@ -4,7 +4,7 @@ export type DeepPartial<T> = {
     [P in keyof T]?: T[P] extends Function ? T[P] : DeepPartial<T[P]>
 }
 
-export interface YomtorTheme extends MantineTheme {}
+export type YomtorTheme = MantineTheme
 
 export type YomtorThemeBase = Omit<YomtorTheme, 'fn'>
 

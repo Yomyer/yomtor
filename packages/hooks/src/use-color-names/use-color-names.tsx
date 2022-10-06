@@ -143,7 +143,7 @@ export const useColorNames = (colorName: string): string | false => {
     yellowgreen: '#9acd32'
   }
 
-  if (typeof colours[colorName.toLowerCase()] != 'undefined')
+  if (typeof colours[colorName.toLowerCase()] !== 'undefined')
     return colours[colorName.toLowerCase()]
 
   return false

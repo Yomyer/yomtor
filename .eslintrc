@@ -36,17 +36,16 @@
     "import/export": "off",
     "no-use-before-define": "off",
     "no-new": "off",
+    "no-empty-pattern": "off",
     "no-case-declarations": "off",
+    "@typescript-eslint/no-empty-function": "off",
     "@typescript-eslint/no-unused-vars": "off",
     "jest/no-export": "off",
     "jest/expect-expect": "off",
     "react/jsx-pascal-case": "off",
-    /*
-    "@typescript-eslint/no-explicit-any": [
-      "error",
-      { "ignoreRestArgs": true, "ignoreGenericConstraints": true }
-    ],
-    */
+    "@typescript-eslint/ban-types": "off",
+
+    "@typescript-eslint/no-explicit-any": ["warn", { "ignoreRestArgs": true }],
     "no-empty": ["error", { "allowEmptyCatch": true }]
   }
 }

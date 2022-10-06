@@ -49,21 +49,33 @@ function Demo() {
         height={a.height}
         x={a.x}
         y={a.y}
-        style={{ fill: useIntersectRect(a, b) ? '#f7735c' : '#97d164', stroke: 'black' }}
+        style={{
+          fill: useIntersectRect(a, b) ? '#f7735c' : '#97d164',
+          stroke: 'black'
+        }}
       />
       <rect
         width={b.width}
         height={b.height}
         x={b.x}
         y={b.y}
-        style={{ fill: (useIntersectRect(a, b) || useIntersectRect(b, c)) ? '#f7735c' : '#97d164', stroke: 'black' }}
+        style={{
+          fill:
+            useIntersectRect(a, b) || useIntersectRect(b, c)
+              ? '#f7735c'
+              : '#97d164',
+          stroke: 'black'
+        }}
       />
       <rect
         width={c.width}
         height={c.height}
         x={c.x}
         y={c.y}
-        style={{ fill: useIntersectRect(b, c) ? '#f7735c' : '#97d164', stroke: 'black' }}
+        style={{
+          fill: useIntersectRect(b, c) ? '#f7735c' : '#97d164',
+          stroke: 'black'
+        }}
       />
     </svg>
   )

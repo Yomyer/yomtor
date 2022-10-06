@@ -44,7 +44,7 @@ const Template: ComponentStory<typeof Demo> = ({ ...props }) => {
           type='text'
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder={'Enter text...'}
+          placeholder='Enter text...'
         />
       </div>
     </Demo>

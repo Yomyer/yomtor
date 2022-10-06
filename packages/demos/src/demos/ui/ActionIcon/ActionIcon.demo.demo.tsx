@@ -9,9 +9,7 @@ function function Demo() {() {
 `
 
 function Demo() {
-  return (
-      <ActionIcon>Compact filled button</ActionIcon>
-  )
+  return <ActionIcon>Compact filled button</ActionIcon>
 }
 
 export const compact: MantineDemo = {

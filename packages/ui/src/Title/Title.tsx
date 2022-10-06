@@ -7,23 +7,16 @@ import useStyles from './Title.styles'
 
 const defaultProps: Partial<TitleProps> = {}
 
-export const Title = forwardRef<HTMLDivElement, TitleProps>(
-  (props, ref) => {
-    const { unstyled, ...others } = useComponentDefaultProps(
-      'Title',
-      defaultProps,
-      props
-    )
+export const Title = forwardRef<HTMLDivElement, TitleProps>((props, ref) => {
+  const { unstyled, ...others } = useComponentDefaultProps(
+    'Title',
+    defaultProps,
+    props
+  )
 
-    const { classes, cx } = useStyles(
-      { ...others },
-      { name: 'Title', unstyled }
-    )
+  const { classes, cx } = useStyles({ ...others }, { name: 'Title', unstyled })
 
-    return (
-      <BaseTitle {...others} ref={ref} className={classes.root} />
-    )
-  }
-) as any
+  return <BaseTitle {...others} ref={ref} className={classes.root} />
+}) as any
 
 Title.displayName = '@yomtor/ui/Title'

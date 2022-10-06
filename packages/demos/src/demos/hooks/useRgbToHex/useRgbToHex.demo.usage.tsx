@@ -40,7 +40,7 @@ function Demo() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        backgroundColor: hex ? hex : '',
+        backgroundColor: hex || '',
         padding: '10px'
       }}
     >
@@ -48,7 +48,7 @@ function Demo() {
         type='text'
         value={rgb}
         onChange={(e) => setRgb(e.target.value)}
-        placeholder={'Enter a color name...'}
+        placeholder='Enter a color name...'
       />
       {hex && <span>{hex}</span>}
     </div>

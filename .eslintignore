@@ -1,7 +1,11 @@
 build/
 dist/
 node_modules/
+old/
+configuration/
+scripts/
 .snapshots/
 *.min.js
 **/*.json
 **/*.md
+**/*.js

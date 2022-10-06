@@ -1,1 +1,1 @@
-export const whatIsTheMeaningOfLife = () => 33;
+export const whatIsTheMeaningOfLife = () => 33
