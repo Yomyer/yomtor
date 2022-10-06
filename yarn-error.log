@@ -14,7 +14,7 @@ Platform:
   darwin arm64
 
 Trace: 
-  Error: ENOENT: no such file or directory, copyfile '/Users/yomyer/Library/Caches/Yarn/v6/npm-eslint-utils-3.0.0-8aebaface7345bb33559db0a1f13a1d2d48c3672-integrity/node_modules/eslint-utils/README.md' -> '/private/var/www/@yomyer/yomtor/node_modules/@typescript-eslint/utils/node_modules/eslint-utils/README.md'
+  Error: ENOENT: no such file or directory, copyfile '/Users/yomyer/Library/Caches/Yarn/v6/npm-eslint-utils-3.0.0-8aebaface7345bb33559db0a1f13a1d2d48c3672-integrity/node_modules/eslint-utils/LICENSE' -> '/private/var/www/@yomyer/yomtor/node_modules/@typescript-eslint/utils/node_modules/eslint-utils/LICENSE'
 
 npm manifest: 
   {

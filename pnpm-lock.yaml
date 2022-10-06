@@ -291,8 +291,10 @@ importers:
 
   packages/ssr:
     specifiers:
+      '@emotion/cache': ^11.10.3
       '@yomtor/styles': '*'
     dependencies:
+      '@emotion/cache': 11.10.3
       '@yomtor/styles': link:../styles
 
   packages/styles:

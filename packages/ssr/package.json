@@ -15,6 +15,7 @@
     "@emotion/server": ">=11.4.0"
   },
   "dependencies": {
+    "@emotion/cache": "^11.10.3",
     "@yomtor/styles": "*"
   }
 }
