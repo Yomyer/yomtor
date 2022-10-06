@@ -14,7 +14,7 @@ Platform:
   darwin arm64
 
 Trace: 
-  Error: ENOENT: no such file or directory, copyfile '/Users/yomyer/Library/Caches/Yarn/v6/npm-eslint-utils-3.0.0-8aebaface7345bb33559db0a1f13a1d2d48c3672-integrity/node_modules/eslint-utils/LICENSE' -> '/private/var/www/@yomyer/yomtor/node_modules/@typescript-eslint/utils/node_modules/eslint-utils/LICENSE'
+  Error: EEXIST: file already exists, mkdir '/private/var/www/@yomyer/yomtor/node_modules/glob/node_modules'
 
 npm manifest: 
   {
@@ -37,6 +37,8 @@ npm manifest:
     },
     "dependencies": {
       "@emotion/react": "11.9.3",
+      "@emotion/server": "11.4.0",
+      "@emotion/styled": "^11.10.0",
       "react": "18.1.0",
       "react-dom": "18.1.0"
     },
