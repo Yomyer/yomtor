@@ -7,6 +7,7 @@ importers:
       '@emotion/react': 11.9.3
       '@emotion/server': 11.4.0
       '@emotion/styled': ^11.10.0
+      '@mantine/utils': ^5.4.0
       '@sucrase/jest-plugin': ^2.1.1
       '@testing-library/jest-dom': 5.16.4
       '@testing-library/react': 13.2.0
@@ -39,6 +40,7 @@ importers:
       '@emotion/react': 11.9.3_react@18.1.0
       '@emotion/server': 11.4.0
       '@emotion/styled': 11.10.4_uzzswosywrszcv3hc4v7x7otmi
+      '@mantine/utils': 5.5.4_react@18.1.0
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
     devDependencies:
@@ -333,11 +335,9 @@ importers:
 
   packages/utils:
     specifiers:
-      '@mantine/utils': ^5.4.0
       lodash: ^4.17.21
       rimraf: ~3.0.2
     dependencies:
-      '@mantine/utils': 5.5.4
       lodash: 4.17.21
       rimraf: 3.0.2
 
@@ -4683,6 +4683,14 @@ packages:
     resolution: {integrity: sha512-EO0iD99wfvKC09WHpCXrqb5ewTmuYf4GeNR3xOtecNaXNbFUVxmlV6wwhsJ61YScy+7bM1lplwNvkGz5CF0v7Q==}
     peerDependencies:
       react: '>=16.8.0'
+    dev: false
+
+  /@mantine/utils/5.5.4_react@18.1.0:
+    resolution: {integrity: sha512-EO0iD99wfvKC09WHpCXrqb5ewTmuYf4GeNR3xOtecNaXNbFUVxmlV6wwhsJ61YScy+7bM1lplwNvkGz5CF0v7Q==}
+    peerDependencies:
+      react: '>=16.8.0'
+    dependencies:
+      react: 18.1.0
     dev: false
 
   /@mdx-js/mdx/1.6.22:
