@@ -1,9 +1,9 @@
-name: tests
+name: Pull request workflow
 
 on:
-  push:
   pull_request:
-    branches: [ $default-branch ]
+    branches:
+      - '**'
 
 jobs:
   test_pull_request:
