@@ -8,7 +8,6 @@ import {
 } from '@mantine/core'
 import { upperFirst } from '@mantine/hooks'
 import { useYomtorTheme, YOMTOR_COLORS } from '@yomtor/styles'
-import { DEFAULT_COLORS } from 'packages/styles/src/theme/default-colors'
 
 interface ColorControlProps {
   value: string

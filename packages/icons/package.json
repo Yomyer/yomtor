@@ -5,8 +5,9 @@
   "author": "Yomyer",
   "license": "MIT",
   "repository": "https://github.com/Yomyer/yomtor.git",
-  "main": "dist/index",
-  "types": "dist/index",
+  "main": "cjs/index.js",
+  "module": "esm/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
     "clean": "rimraf -rf ./dist",
     "compile": "tsc -p tsconfig.build.json",

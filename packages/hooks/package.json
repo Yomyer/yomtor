@@ -1,6 +1,9 @@
 {
   "name": "@yomtor/hooks",
   "version": "1.0.0",
+  "main": "cjs/index.js",
+  "module": "esm/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
     "clean": "rimraf -rf ./dist",
     "compile": "tsc -p tsconfig.build.json",

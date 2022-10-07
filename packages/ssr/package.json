@@ -5,7 +5,7 @@
   "author": "Yomyer",
   "license": "MIT",
   "repository": "https://github.com/Yomyer/yomtor.git",
-  "main": "src/index.ts",
+  "main": "cjs/index.js",
   "module": "esm/index.js",
   "types": "lib/index.d.ts",
   "peerDependencies": {

@@ -1,8 +1,27 @@
+# os
+.DS_Store
+
 node_modules
-**/dist
 results
 .nyc_output
 *.tsbuildinfo
 
 .DS_Store
 yarn.lock
+
+# env
+.env.test
+.env*.local
+
+# build
+lib/
+cjs/
+esm/
+docs/.docgen/
+
+# project
+.eslintcache
+docs/.cache
+docs/public
+storybook-static
+.next

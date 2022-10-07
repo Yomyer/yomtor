@@ -1,5 +1,17 @@
 {
-  "extends": "./tsconfig.base.json",
+  "exclude": [
+    "node_modules",
+    "jest-config.js",
+    "configuration/storybook/main.js",
+    "**/*.test.*",
+    "**/*.stories.*",
+    "lib/**/*",
+    "esm/**/*",
+    "cjs/**/*",
+    "lib",
+    "esm",
+    "cjs"
+  ],
   "compilerOptions": {
     "target": "ES2015",
     "lib": ["DOM", "ESNext"],
@@ -11,14 +23,6 @@
     "skipLibCheck": true,
     "noEmitOnError": true,
     "allowJs": true,
-    "baseUrl": ".",
-    "sourceMap": true,
-    "declaration": true,
-    "declarationMap": true,
-    "outDir": "lib",
-    "types": ["node", "jest", "@testing-library/jest-dom"],
-    "paths": {
-      "@yomtor/*": ["packages/*/src"]
-    }
+    "baseUrl": "."
   }
 }

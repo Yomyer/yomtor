@@ -17,6 +17,7 @@
     "@mantine/next": "^5.4.0",
     "@mantine/ssr": "^5.4.0",
     "@emotion/server": ">=11.4.0",
-    "@yomtor/styles": "*"
+    "@yomtor/styles": "*",
+    "@yomtor/ssr": "*"
   }
 }
