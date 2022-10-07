@@ -9,6 +9,7 @@
   "scripts": {
     "build": "esno scripts/build",
     "build:all": "npm run build all && npm run build:private",
+    "build:private": "npm run build @yomtor/demos",
     "clean": "rimraf packages/*/{esm,cjs,lib,dist} packages/**/*.tsbuildinfo",
     "docs": "doctoc --title '**Table of content**' README.md",
     "lint": "eslint --ext js,ts,tsx .",
