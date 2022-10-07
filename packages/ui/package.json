@@ -15,11 +15,11 @@
   },
   "peerDependencies": {
     "react": "~17.0.2",
-    "react-dom": "~17.0.2"
+    "react-dom": "~17.0.2",
+    "@mantine/core": "^5.4.0",
+    "@mantine/hooks": "^5.4.0"
   },
   "dependencies": {
-    "@mantine/core": "^5.4.0",
-    "@mantine/hooks": "^5.4.0",
     "@yomtor/utils": "*",
     "@yomtor/icons": "*",
     "@yomtor/styles": "*",

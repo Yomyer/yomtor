@@ -14,7 +14,7 @@ Platform:
   darwin arm64
 
 Trace: 
-  Error: ENOENT: no such file or directory, copyfile '/Users/yomyer/Library/Caches/Yarn/v6/npm-eslint-utils-3.0.0-8aebaface7345bb33559db0a1f13a1d2d48c3672-integrity/node_modules/eslint-utils/README.md' -> '/private/var/www/@yomyer/yomtor/node_modules/@typescript-eslint/utils/node_modules/eslint-utils/README.md'
+  Error: EINVAL: invalid argument, mkdir '/private/var/www/@yomyer/yomtor/node_modules/eslint-utils/node_modules'
 
 npm manifest: 
   {
@@ -40,6 +40,11 @@ npm manifest:
       "@emotion/server": "11.4.0",
       "@emotion/styled": "^11.10.0",
       "@mantine/utils": "^5.4.0",
+      "@mantine/core": "^5.4.0",
+      "@mantine/hooks": "^5.4.0",
+      "@mantine/styles": "^5.3.0",
+      "@mantine/ssr": "^5.4.0",
+      "@emotion/cache": "^11.10.3",
       "react": "18.1.0",
       "react-dom": "18.1.0"
     },
@@ -4652,7 +4657,7 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/@types/node/-/node-16.9.1.tgz#0611b37db4246c937feef529ddcc018cf8e35708"
     integrity sha512-QpLcX9ZSsq3YYUUnD3nFDY8H7wctAhQj/TFKL8Ya8v5fMm3CFXxo8zStsLAl780ltoYoo1WvKUVGBQK+1ifr7g==
   
-  "@types/node@^14.0.10 || ^16.0.0", "@types/node@^14.14.20 || ^16.0.0", "@types/node@~16.11.0":
+  "@types/node@^14.0.10 || ^16.0.0", "@types/node@^14.14.20 || ^16.0.0":
     version "16.11.64"
     resolved "https://registry.yarnpkg.com/@types/node/-/node-16.11.64.tgz#9171f327298b619e2c52238b120c19056415d820"
     integrity sha512-z5hPTlVFzNwtJ2LNozTpJcD1Cu44c4LNuzaq1mwxmiHWQh2ULdR6Vjwo1UGldzRpzL0yUEdZddnfqGW2G70z6Q==
@@ -4724,7 +4729,7 @@ Lockfile:
     dependencies:
       "@types/react" "*"
   
-  "@types/react-dom@^18.0.0", "@types/react-dom@~18.0.0":
+  "@types/react-dom@^18.0.0":
     version "18.0.6"
     resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-18.0.6.tgz#36652900024842b74607a17786b6662dd1e103a1"
     integrity sha512-/5OFZgfIPSwy+YuIBP/FgJnQnsxhZhjjrnxudMddeblOouIodEQ75X14Rr4wGSG/bknL+Omy9iWlLo1u/9GzAA==
@@ -4738,7 +4743,7 @@ Lockfile:
     dependencies:
       "@types/react" "*"
   
-  "@types/react@*", "@types/react@~18.0.0":
+  "@types/react@*":
     version "18.0.21"
     resolved "https://registry.yarnpkg.com/@types/react/-/react-18.0.21.tgz#b8209e9626bb00a34c76f55482697edd2b43cc67"
     integrity sha512-7QUCOxvFgnD5Jk8ZKlUAhVcRj7GuJRjnjjiY/IUBWKgOlnvDvTMLD4RTF7NPyVmbRhNrbomZiOepg7M/2Kj1mA==
