@@ -7,7 +7,6 @@
   "scripts": {
     "clean": "rimraf -rf ./dist",
     "compile": "tsc -p tsconfig.build.json",
-    "prepublishOnly": "pnpm run build",
     "test": "jest --watchAll"
   },
   "peerDependencies": {

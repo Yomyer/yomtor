@@ -19,8 +19,7 @@
     ],
     "scripts": {
         "clean": "rimraf -rf ./dist",
-        "compile": "tsc -p tsconfig.build.json",
-        "prepublishOnly": "pnpm run build"
+        "compile": "tsc -p tsconfig.build.json"
     },
     "peerDependencies": {
         "react": "~17.0.2",
