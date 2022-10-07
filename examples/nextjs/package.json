@@ -4,8 +4,7 @@
   "version": "1.0.0",
   "scripts": {
     "clean": "rimraf .next",
-    "start": "next dev",
-    "build": "next build"
+    "start": "next dev"
   },
   "peerDependencies": {
     "next": "*",
