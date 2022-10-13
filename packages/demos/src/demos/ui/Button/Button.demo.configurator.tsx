@@ -1,5 +1,6 @@
 import React from 'react'
 import { Button, ButtonProps, Group } from '@yomtor/ui'
+import { MantineDemo } from '@yomtor/ds'
 
 const codeTemplate = (props: string, children: string) => `
 import { Button } from '@yomtor/ui';

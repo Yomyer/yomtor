@@ -17,7 +17,13 @@ export const _Box = forwardRef<HTMLDivElement, BoxProps>((props, ref) => {
 
   const { classes, cx } = useStyles({ ...others }, { name: 'Box', unstyled })
 
-  return <BaseBox {...others} ref={ref} className={classes.root} />
+  return (
+    <BaseBox
+      {...others}
+      ref={ref}
+      className={cx(classes.root, others.className)}
+    />
+  )
 }) as any
 
 _Box.displayName = '@yomtor/ui/Box'

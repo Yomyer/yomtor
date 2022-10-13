@@ -1,5 +1,6 @@
 {
   "extends": "../../tsconfig.json",
+  "include": ["./src", "../../configuration/types"],
   "compilerOptions": {
     "rootDir": "src",
     "baseUrl": ".",
@@ -7,6 +8,22 @@
     "declaration": true,
     "declarationMap": true,
     "declarationDir": "lib",
-    "composite": true
-  }
+    "composite": true,
+    "paths": {
+      "@yomtor/ui": ["../ui/src"],
+      "@yomtor/hooks": ["../hooks/src"],
+      "@yomtor/utils": ["../utils/src"],
+      "@yomtor/icons": ["../icons/src"],
+      "@yomtor/styles": ["../styles/src"],
+      "@yomtor/ds": ["../styles/ds"]
+    }
+  },
+  "references": [
+    { "path": "../ui" },
+    { "path": "../hooks" },
+    { "path": "../utils" },
+    { "path": "../icons" },
+    { "path": "../styles" },
+    { "path": "../ds" }
+  ]
 }

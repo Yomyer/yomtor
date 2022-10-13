@@ -1,5 +1,6 @@
 import React from 'react'
 import { __component__ } from '@yomtor/ui'
+import { MantineDemo } from '@yomtor/ds'
 
 const code = `
 import { __component__ } from '@yomtor/ui';

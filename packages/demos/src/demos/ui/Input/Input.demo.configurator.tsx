@@ -1,6 +1,7 @@
 import React from 'react'
 import { Input, InputProps } from '@yomtor/ui'
 import { ArtboardIcon } from '@yomtor/icons'
+import { MantineDemo } from '@yomtor/ds'
 
 const codeTemplate = (props: string) => `
 import { Input } from '@yomtor/ui'

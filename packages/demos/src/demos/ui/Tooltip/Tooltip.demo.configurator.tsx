@@ -1,5 +1,6 @@
 import React from 'react'
 import { Button, TooltipProps, Group, Tooltip } from '@yomtor/ui'
+import { MantineDemo } from '@yomtor/ds'
 
 const codeTemplate = (props: string) => `
 import { Tooltip, Button } from '@yomtor/ui';

@@ -1,5 +1,6 @@
 import React from 'react'
 import { ActionIcon } from '@yomtor/ui'
+import { MantineDemo } from '@yomtor/ds'
 
 const code = `
 import { ActionIcon } from '@yomtor/ui';

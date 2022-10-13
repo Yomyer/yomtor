@@ -1,5 +1,6 @@
 import React from 'react'
 import { useIntersectRect } from '@yomtor/hooks'
+import { MantineDemo } from '@yomtor/ds'
 
 const code = `
 import { useIntersectRect } from '@yomtor/hooks'

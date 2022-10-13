@@ -27,8 +27,9 @@ export const _Button = forwardRef<HTMLButtonElement, ButtonProps>(
 _Button.displayName = '@yomtor/ui/Button'
 _Button.Group = BaseButton.Group
 
-export const Button = createPolymorphicComponent<
-  'button',
-  ButtonProps,
-  { Group: typeof BaseButton.Group }
->(_Button)
+export const Button =
+  createPolymorphicComponent<
+    'button',
+    ButtonProps,
+    { Group: typeof BaseButton.Group }
+  >(_Button)

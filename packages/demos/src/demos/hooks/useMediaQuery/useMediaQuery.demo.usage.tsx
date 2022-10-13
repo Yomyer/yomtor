@@ -1,5 +1,6 @@
 import React from 'react'
 import { useMediaQuery } from '@yomtor/hooks'
+import { MantineDemo } from '@yomtor/ds'
 
 const code = `
 import { useMediaQuery } from '@yomtor/hooks'

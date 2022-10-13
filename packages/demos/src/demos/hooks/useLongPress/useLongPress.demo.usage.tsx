@@ -1,5 +1,6 @@
 import { useLongPress } from '@yomtor/hooks'
 import React, { useState } from 'react'
+import { MantineDemo } from '@yomtor/ds'
 
 const code = `
 import { useState } from 'react'

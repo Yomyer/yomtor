@@ -19,6 +19,7 @@
     "@yomtor/utils": "*",
     "@yomtor/icons": "*",
     "@yomtor/styles": "*",
+    "@yomtor/ds": "*",
     "@mantine/prism": "5.4.0",
     "lodash": "^4.17.21",
     "rimraf": "~3.0.2",

@@ -1,5 +1,6 @@
 import { Box } from '@yomtor/ui'
 import React from 'react'
+import { MantineDemo } from '@yomtor/ds'
 
 const code = `
 import { Button } from '@yomtor/ui';

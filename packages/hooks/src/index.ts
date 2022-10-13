@@ -1,6 +1,11 @@
 export * from './utils'
 
-export { useDebouncedValue, useEventListener, useHover } from '@mantine/hooks'
+export {
+  useDebouncedValue,
+  useEventListener,
+  useHover,
+  useMergedRef
+} from '@mantine/hooks'
 
 export { useClearProps } from './use-clear-props/use-clear-props'
 export { useColorScheme } from './use-color-scheme/use-color-scheme'

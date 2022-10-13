@@ -17,7 +17,7 @@ export const _Paper = forwardRef<HTMLDivElement, PaperProps>((props, ref) => {
 
   const { classes, cx } = useStyles({ ...others }, { name: 'Paper', unstyled })
 
-  return <BasePaper {...others} ref={ref} className={classes.root} />
+  return <BasePaper {...others} ref={ref} />
 }) as any
 
 _Paper.displayName = '@yomtor/ui/Paper'

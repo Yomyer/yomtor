@@ -1,5 +1,6 @@
 import React from 'react'
 import { Text, TextProps } from '@yomtor/ui'
+import { MantineDemo } from '@yomtor/ds'
 
 const codeTemplate = (props: string) => `
 import { Text } from '@yomtor/ui'

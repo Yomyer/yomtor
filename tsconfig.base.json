@@ -5,9 +5,11 @@
     "configuration/storybook/main.js",
     "**/*.test.*",
     "**/*.stories.*",
+    "scripts/**/*",
     "lib/**/*",
     "esm/**/*",
     "cjs/**/*",
+    "scripts",
     "lib",
     "esm",
     "cjs"

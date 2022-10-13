@@ -1,6 +1,7 @@
 import { ArtboardIcon } from '@yomtor/icons'
 import { ActionIcon, Group } from '@yomtor/ui'
 import React from 'react'
+import { MantineDemo } from '@yomtor/ds'
 
 const code = `
 import { ArtboardIcon } from '@yomtor/icons'

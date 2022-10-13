@@ -24,7 +24,7 @@ export function SelectControl({
         value: item.value,
         label: capitalizeItems ? upperFirst(item.label) : item.label
       }))}
-      value={value}
+      // value={value}
       label={upperFirst(label)}
       onChange={(event) => onChange(event.currentTarget.value)}
       {...others}

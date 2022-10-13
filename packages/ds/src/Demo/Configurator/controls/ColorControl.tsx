@@ -7,7 +7,6 @@ import {
   CheckIcon
 } from '@mantine/core'
 import { upperFirst } from '@mantine/hooks'
-import { useYomtorTheme, YOMTOR_COLORS } from '@yomtor/styles'
 
 interface ColorControlProps {
   value: string
@@ -21,9 +20,9 @@ export function ColorControl({
   onChange,
   ...others
 }: ColorControlProps) {
-  const theme = useYomtorTheme()
+  const theme = useMantineTheme()
 
-  const colors = YOMTOR_COLORS.map((color) => (
+  const colors = Object.keys(theme.colors).map((color) => (
     <ColorSwatch
       color={
         theme.colorScheme === 'dark'
@@ -39,7 +38,8 @@ export function ColorControl({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        color: theme.colorScheme === 'dark' ? theme.colors[2] : theme.white,
+        color:
+          theme.colorScheme === 'dark' ? theme.colors[color][2] : theme.white,
         flex: '1 0 calc(15% - 4px)'
       }}
     >

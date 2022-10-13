@@ -1,5 +1,6 @@
 import React from 'react'
 import { Button, Group } from '@yomtor/ui'
+import { MantineDemo } from '@yomtor/ds'
 
 const code = `
 import { Button } from '@yomtor/ui';

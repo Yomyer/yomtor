@@ -1,5 +1,6 @@
 import React from 'react'
 import { Button, Stack } from '@yomtor/ui'
+import { MantineDemo } from '@yomtor/ds'
 
 const code = `
 import { Button, Stack } from '@yomtor/ui'

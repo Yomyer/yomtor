@@ -1,0 +1,19 @@
+{
+  "name": "@yomtor/ds",
+  "version": "1.0.0",
+  "description": "Made with create-react-library",
+  "author": "Yomyer",
+  "license": "MIT",
+  "repository": "https://github.com/Yomyer/yomtor.git",
+  "main": "cjs/index.js",
+  "module": "esm/index.js",
+  "types": "lib/index.d.ts",
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
+  },
+  "dependencies": {
+    "@mantine/ds": "^5.5.5",
+    "@yomtor/icons": "*"
+  }
+}

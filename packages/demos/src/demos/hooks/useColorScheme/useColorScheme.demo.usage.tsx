@@ -1,5 +1,6 @@
 import React from 'react'
 import { useColorScheme } from '@yomtor/hooks'
+import { MantineDemo } from '@yomtor/ds'
 
 const code = `
 import { useColorScheme } from '@yomtor/hooks'

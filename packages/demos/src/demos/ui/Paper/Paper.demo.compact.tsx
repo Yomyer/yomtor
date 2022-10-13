@@ -1,5 +1,6 @@
 import React from 'react'
 import { Paper, Text } from '@yomtor/ui'
+import { MantineDemo } from '@yomtor/ds'
 
 const code = `
 import { Paper, Text } from '@yomtor/ui'

@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useRgbToHex } from '@yomtor/hooks'
+import { MantineDemo } from '@yomtor/ds'
 
 const code = `
 import { useState } form 'react'

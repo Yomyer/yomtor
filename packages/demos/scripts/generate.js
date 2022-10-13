@@ -20,7 +20,7 @@ exports.demos = [
     output: {
       path: './packages/demos/src/demos/ui/__component__(pascalCase)',
       pathAndFileNameDefaultCase: '(pascalCase)',
-      overwrite: true
+      overwrite: false
     },
     onComplete: async (results) => {
       updateBarrel(results.output.path, { ignore: '*.stories.*' })
@@ -40,7 +40,7 @@ exports.demos = [
     output: {
       path: './packages/demos/src/demos/__package__(pascalCase)/__component__(pascalCase)',
       pathAndFileNameDefaultCase: '(pascalCase)',
-      overwrite: true
+      overwrite: false
     },
     onComplete: async (results) => {
       updateBarrel(results.output.path, { ignore: '*.stories.*' })
@@ -53,13 +53,19 @@ exports.demos = [
       folderPath: './packages/demos/scripts/templates/configurator'
     },
     stringReplacers: [
-      { question: 'Package', slot: '__package__' },
+      {
+        question: 'Story Group Name',
+        slot: '__folder__'
+      },
       { question: 'Component', slot: '__component__' }
     ],
     output: {
-      path: './packages/demos/src/demos/__package__(pascalCase)/__component__(pascalCase)',
+      path: './packages/demos/src/demos/ui/__component__(pascalCase)',
       pathAndFileNameDefaultCase: '(pascalCase)',
-      overwrite: true
+      overwrite: false
+    },
+    onComplete: async (results) => {
+      updateBarrel(results.output.path, { ignore: '*.stories.*' })
     }
   }
 ]

@@ -8,25 +8,20 @@ import useStyles from './__name__.styles'
 
 const defaultProps: Partial<__name__Props> = {}
 
-export const ___name__ = forwardRef<HTML__html__(camelCase)Element, __name__Props>(
-  (props, ref) => {
-    const { unstyled, ...others } = useComponentDefaultProps(
-      '__name__',
-      defaultProps,
-      props
-    )
+export const ___name__ = forwardRef<HTML__html__(pascalCase)Element, __name__Props>((props, ref) => {
+  const { unstyled, className, ...others } = useComponentDefaultProps(
+    '__name__',
+    defaultProps,
+    props
+  )
 
-    const { classes, cx } = useStyles(
-      { ...others },
-      { name: '__name__', unstyled }
-    )
+  const { classes, cx } = useStyles({ ...others }, { name: '__name__', unstyled })
 
-    return <Base__mantine__ {...others} ref={ref} className={classes.root} />
-  }
-) as any
+  return (
+    <Base__mantine__ {...others} ref={ref} className={cx(className, classes.root)} />
+  )
+}) as any
 
 ___name__.displayName = '@yomtor/ui/__name__'
 
-export const __name__ = createPolymorphicComponent<'__html__(lowerCase)', __name__Props>(
-  ___name__
-)
+export const __name__ = createPolymorphicComponent<'__html__(lowerCase)', __name__Props>(___name__)

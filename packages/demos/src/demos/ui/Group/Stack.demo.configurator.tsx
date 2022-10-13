@@ -1,6 +1,7 @@
 import React from 'react'
 import { GroupProps, Group, ActionIcon } from '@yomtor/ui'
 import { ArtboardIcon } from '@yomtor/icons'
+import { MantineDemo } from '@yomtor/ds'
 
 const codeTemplate = (props: string) => `
 import { ActionIcon, Group } from '@yomtor/ui'
