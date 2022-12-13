@@ -44,7 +44,7 @@
     "jest/expect-expect": "off",
     "react/jsx-pascal-case": "off",
     "@typescript-eslint/ban-types": "off",
-
+    "@typescript-eslint/no-empty-interface": "off",
     "@typescript-eslint/no-explicit-any": ["warn", { "ignoreRestArgs": true }],
     "no-empty": ["error", { "allowEmptyCatch": true }]
   }
