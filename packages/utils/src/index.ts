@@ -1,1 +1,4 @@
-export { createPolymorphicComponent } from '@mantine/utils'
+export {
+  createPolymorphicComponent,
+  ForwardRefWithStaticComponents
+} from '@mantine/utils'

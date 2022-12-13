@@ -4,4 +4,6 @@ import useStyles from './ResizePanel.styles'
 type ResizePanelStylesNames = Selectors<typeof useStyles>
 
 export interface ResizePanelProps
-  extends Omit<DefaultProps<ResizePanelStylesNames>, YomtorStyleSystemSize> {}
+  extends Omit<DefaultProps<ResizePanelStylesNames>, YomtorStyleSystemSize> {
+  children: React.ReactNode
+}

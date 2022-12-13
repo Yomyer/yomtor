@@ -8,18 +8,16 @@ const defaultProps: Partial<ResizePanelProps> = {}
 
 export const ResizePanel = forwardRef<HTMLDivElement, ResizePanelProps>(
   (props, ref) => {
-    const { unstyled, className, ...others } = useComponentDefaultProps(
-      'ResizePanel',
-      defaultProps,
-      props
-    )
+    const { unstyled, className, children, ...others } =
+      useComponentDefaultProps('ResizePanel', defaultProps, props)
 
     const { classes, cx } = useStyles(
       { ...others },
       { name: 'ResizePanel', unstyled }
     )
 
-    return <div {...others} ref={ref} className={cx(className, classes.root)} />
+    // return <div {...others} ref={ref} className={cx(className, classes.root)} />
+    return <>{children}</>
   }
 )
 

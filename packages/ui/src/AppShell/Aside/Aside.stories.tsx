@@ -1,11 +1,11 @@
 import React from 'react'
-import { AppShell } from './AppShell'
+import { Aside } from './Aside'
 
 export default {
-  title: 'UI/Layout/AppShell',
+  title: 'UI/Layout/Aside',
   parameters: { layout: 'fullscreen' }
 }
 
 export function Default() {
-  return <AppShell>test</AppShell>
+  return <Aside></Aside>
 }
