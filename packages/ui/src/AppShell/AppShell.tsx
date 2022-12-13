@@ -1,27 +1,27 @@
 import React, { forwardRef } from 'react'
 import { useComponentDefaultProps } from '@yomtor/styles'
 
-import { __mantine__ as Base__mantine__ } from '@mantine/core'
-import { __name__Props } from './__name__.props'
-import useStyles from './__name__.styles'
+import { AppShell as BaseAppShell } from '@mantine/core'
+import { AppShellProps } from './AppShell.props'
+import useStyles from './AppShell.styles'
 
-const defaultProps: Partial<__name__Props> = {}
+const defaultProps: Partial<AppShellProps> = {}
 
-export const __name__ = forwardRef<HTMLDivElement, __name__Props>(
+export const AppShell = forwardRef<HTMLDivElement, AppShellProps>(
   (props, ref) => {
     const { unstyled, className, ...others } = useComponentDefaultProps(
-      '__name__',
+      'AppShell',
       defaultProps,
       props
     )
 
     const { classes, cx } = useStyles(
       { ...others },
-      { name: '__name__', unstyled }
+      { name: 'AppShell', unstyled }
     )
 
     return (
-      <Base__mantine__
+      <BaseAppShell
         {...others}
         ref={ref}
         className={cx(className, classes.root)}
@@ -30,4 +30,4 @@ export const __name__ = forwardRef<HTMLDivElement, __name__Props>(
   }
 )
 
-__name__.displayName = '@yomtor/ui/__name__'
+AppShell.displayName = '@yomtor/ui/AppShell'
