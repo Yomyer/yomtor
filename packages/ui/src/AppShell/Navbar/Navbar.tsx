@@ -5,6 +5,8 @@ import { Navbar as BaseNavbar } from '@mantine/core'
 import { NavbarProps } from './Navbar.props'
 import useStyles from './Navbar.styles'
 import { ForwardRefWithStaticComponents } from '@yomtor/utils'
+import { Draggable } from '../../Draggable'
+import { setGlobalCursor, ResizePanel } from '@yomtor/cursors'
 
 const defaultProps: Partial<NavbarProps> = {}
 
@@ -23,7 +25,11 @@ export const Navbar: NavbarComponent = forwardRef<HTMLDivElement, NavbarProps>(
       { name: 'Navbar', unstyled }
     )
 
-    width.base = 400
+    const startHandler = () => {
+      setGlobalCursor(ResizePanel)
+    }
+
+    // width.base = 400
 
     return (
       <BaseNavbar
@@ -33,7 +39,9 @@ export const Navbar: NavbarComponent = forwardRef<HTMLDivElement, NavbarProps>(
         className={cx(className, classes.root)}
       >
         {children}
-        <div className={classes.handler} />
+        <Draggable axis='x' onStart={startHandler}>
+          <div className={classes.handler} />
+        </Draggable>
       </BaseNavbar>
     )
   }

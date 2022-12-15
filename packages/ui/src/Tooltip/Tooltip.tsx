@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react'
-import { ForwardRefWithStaticComponents } from '@mantine/utils'
+import { ForwardRefWithStaticComponents } from '@yomtor/utils'
 import { useComponentDefaultProps } from '@yomtor/styles'
 
 import { Tooltip as BaseTooltip } from '@mantine/core'
