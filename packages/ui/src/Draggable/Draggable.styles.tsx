@@ -17,12 +17,13 @@ export default createStyles<Classes, Partial<DraggableStyeProps>>(
         position: 'absolute !important' as 'absolute',
         top: 0,
         left: 0,
-        zIndex: 10,
-        opacity: '1 !important'
+        zIndex: 100000,
+        visibility: 'visible !important' as 'visible'
       },
       handler: {
         pointerEvents: (move && (dragging || animated) && 'none') || 'all',
-        opacity: move && !phantom && (animated || dragging) && 0,
+        visibility:
+          (move && !phantom && (animated || dragging) && 'hidden') || 'visible',
         userSelect: !disabled ? 'none' : null
       },
       start: {}

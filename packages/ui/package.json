@@ -24,6 +24,7 @@
     "@yomtor/icons": "*",
     "@yomtor/styles": "*",
     "@yomtor/utils": "*",
+    "@yomtor/cursors": "*",
     "lodash": "^4.17.21",
     "react-draggable": "^4.4.5",
     "react-dropzone": "^14.2.2",

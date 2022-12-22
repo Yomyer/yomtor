@@ -3,7 +3,7 @@ export {
     ColorSchemeProvider,
     GlobalStyles,
     NormalizeCSS,
-    extractSystemStyles,
+    //extractSystemStyles,
     StylesApiProvider,
     useContextStylesApi,
     useMantineColorScheme as useYomtorColorScheme,

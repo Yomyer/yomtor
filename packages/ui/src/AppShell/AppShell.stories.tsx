@@ -2,7 +2,8 @@ import React from 'react'
 import { AppShell } from './AppShell'
 
 export default {
-  title: 'UI/Layout/AppShell'
+  title: 'UI/Layout/AppShell',
+  parameters: { layout: 'fullscreen' }
 }
 
 export function Default() {
