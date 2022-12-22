@@ -186,7 +186,7 @@ export const Draggable = forwardRef<HTMLDivElement, DraggableProps>(
 
     useEffect(() => {
       if (dragging) {
-        createPhantom()
+        move && createPhantom()
       } else {
         !phantom && destroyPhantom()
       }

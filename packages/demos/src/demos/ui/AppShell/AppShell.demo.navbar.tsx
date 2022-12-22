@@ -21,7 +21,7 @@ function Demo() {
 
 function Demo() {
   return (
-    <Navbar height={600} p='xs' width={{ base: 300 }}>
+    <Navbar height={600} p='xs'>
       <Navbar.Section mt='xs'>
         <Brand />
       </Navbar.Section>

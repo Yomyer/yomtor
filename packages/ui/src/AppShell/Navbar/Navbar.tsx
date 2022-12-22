@@ -1,12 +1,12 @@
-import React, { forwardRef } from 'react'
+import React, { forwardRef, useRef } from 'react'
 import { useComponentDefaultProps } from '@yomtor/styles'
 
 import { Navbar as BaseNavbar } from '@mantine/core'
 import { NavbarProps } from './Navbar.props'
 import useStyles from './Navbar.styles'
 import { ForwardRefWithStaticComponents } from '@yomtor/utils'
-import { Draggable } from '../../Draggable'
-import { setGlobalCursor, ResizePanel } from '@yomtor/cursors'
+
+import { ResizePanel } from '../ResizePanel'
 
 const defaultProps: Partial<NavbarProps> = {}
 
@@ -17,32 +17,25 @@ type NavbarComponent = ForwardRefWithStaticComponents<
 
 export const Navbar: NavbarComponent = forwardRef<HTMLDivElement, NavbarProps>(
   (props, ref) => {
-    const { unstyled, className, children, width, ...others } =
-      useComponentDefaultProps('Navbar', defaultProps, props)
+    const { unstyled, width, ...others } = useComponentDefaultProps(
+      'Navbar',
+      defaultProps,
+      props
+    )
 
     const { classes, cx } = useStyles(
-      { ...others, children },
+      { ...others },
       { name: 'Navbar', unstyled }
     )
 
-    const startHandler = () => {
-      setGlobalCursor(ResizePanel)
-    }
-
-    // width.base = 400
-
     return (
-      <BaseNavbar
+      <ResizePanel
         {...others}
+        sizes={width}
+        direction='e'
         ref={ref}
-        width={width}
-        className={cx(className, classes.root)}
-      >
-        {children}
-        <Draggable axis='x' onStart={startHandler}>
-          <div className={classes.handler} />
-        </Draggable>
-      </BaseNavbar>
+        panel={BaseNavbar}
+      />
     )
   }
 ) as any
