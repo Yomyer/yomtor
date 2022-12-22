@@ -3,7 +3,7 @@ import { __component__, __component__Props, Group } from '@yomtor/ui'
 import { MantineDemo } from '@yomtor/ds'
 
 const codeTemplate = (props: string, children: string) => `
-import { __component__ } from '@mantine/core';
+import { __component__ } from '@yomtor/ui';
 function Demo() {
   return (
     <__component__${props}>

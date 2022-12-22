@@ -8,6 +8,7 @@ export const App = () => {
     <YomtorProvider theme={{ colorScheme: 'dark' }}>
       <Button.Group>
         <Button>
+          asda
           <ArtboardIcon />
         </Button>
       </Button.Group>

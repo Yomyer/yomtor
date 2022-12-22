@@ -1,6 +1,6 @@
 import React from 'react'
 import { Navbar } from '@yomtor/ui'
-import { MantineDemo } from '@yomtor/ds'
+import { YomtorDemo } from '@yomtor/ds'
 
 import { User } from './_user'
 import { Brand } from './_brand'
@@ -35,7 +35,7 @@ function Demo() {
   )
 }
 
-export const navbar: MantineDemo = {
+export const navbar: YomtorDemo = {
   type: 'demo',
   code,
   demoProps: { spacing: false },

@@ -14,7 +14,8 @@
       "@yomtor/hooks": ["../hooks/src"],
       "@yomtor/utils": ["../utils/src"],
       "@yomtor/icons": ["../icons/src"],
-      "@yomtor/styles": ["../styles/src"]
+      "@yomtor/styles": ["../styles/src"],
+      "@yomtor/ds": ["../ds/src"]
     }
   },
   "references": [
@@ -22,6 +23,7 @@
     { "path": "../hooks" },
     { "path": "../utils" },
     { "path": "../icons" },
-    { "path": "../styles" }
+    { "path": "../styles" },
+    { "path": "../ds" }
   ]
 }

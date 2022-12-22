@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useHexToRgb } from '@yomtor/hooks'
-import { MantineDemo } from '@yomtor/ds'
+import { YomtorDemo } from '@yomtor/ds'
 
 const code = `
 import { useState } form 'react'
@@ -57,7 +57,7 @@ function Demo() {
   )
 }
 
-export const compact: MantineDemo = {
+export const compact: YomtorDemo = {
   type: 'demo',
   code,
   component: Demo

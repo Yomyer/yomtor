@@ -17,6 +17,6 @@ export const Group = forwardRef<HTMLDivElement, GroupProps>((props, ref) => {
   const { classes, cx } = useStyles({ ...others }, { name: 'Group', unstyled })
 
   return <BaseGroup {...others} ref={ref} className={classes.root} />
-}) as any
+})
 
 Group.displayName = '@yomtor/ui/Group'

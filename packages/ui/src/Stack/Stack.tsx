@@ -17,6 +17,6 @@ export const Stack = forwardRef<HTMLDivElement, StackProps>((props, ref) => {
   const { classes, cx } = useStyles({ ...others }, { name: 'Stack', unstyled })
 
   return <BaseStack {...others} ref={ref} className={classes.root} />
-}) as any
+})
 
 Stack.displayName = '@yomtor/ui/Stack'

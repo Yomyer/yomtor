@@ -1,6 +1,6 @@
 import React from 'react'
 import { useColorScheme } from '@yomtor/hooks'
-import { MantineDemo } from '@yomtor/ds'
+import { YomtorDemo } from '@yomtor/ds'
 
 const code = `
 import { useColorScheme } from '@yomtor/hooks'
@@ -29,7 +29,7 @@ function Demo() {
   )
 }
 
-export const compact: MantineDemo = {
+export const compact: YomtorDemo = {
   type: 'demo',
   code,
   component: Demo

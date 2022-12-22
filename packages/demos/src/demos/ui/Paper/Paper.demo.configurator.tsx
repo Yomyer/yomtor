@@ -1,6 +1,6 @@
 import React from 'react'
 import { Paper, Text, PaperProps } from '@yomtor/ui'
-import { MantineDemo } from '@yomtor/ds'
+import { YomtorDemo } from '@yomtor/ds'
 
 const codeTemplate = (props: string) => `
 import { Paper, Text } from '@yomtor/ui'
@@ -27,7 +27,7 @@ function Wrapper(props: PaperProps) {
     </Paper>
   )
 }
-export const configurator: MantineDemo = {
+export const configurator: YomtorDemo = {
   type: 'configurator',
   codeTemplate,
   component: Wrapper,

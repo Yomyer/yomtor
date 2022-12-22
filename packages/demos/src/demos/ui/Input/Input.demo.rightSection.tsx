@@ -1,7 +1,7 @@
 import React from 'react'
 import { Input, Tooltip } from '@yomtor/ui'
 import { ArtboardIcon, HideIcon } from '@yomtor/icons'
-import { MantineDemo } from '@yomtor/ds'
+import { YomtorDemo } from '@yomtor/ds'
 
 const code = `
 import { Input, Tooltip } from '@yomtor/ui'
@@ -39,7 +39,7 @@ function Demo() {
   )
 }
 
-export const rightSection: MantineDemo = {
+export const rightSection: YomtorDemo = {
   type: 'demo',
   code,
   component: Demo
