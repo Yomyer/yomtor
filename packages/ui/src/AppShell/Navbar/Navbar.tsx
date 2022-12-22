@@ -10,35 +10,32 @@ import { ResizePanel } from '../ResizePanel'
 
 const defaultProps: Partial<NavbarProps> = {}
 
-type NavbarComponent = ForwardRefWithStaticComponents<
+export const _Navbar = forwardRef<HTMLDivElement, NavbarProps>((props, ref) => {
+  const { unstyled, width, ...others } = useComponentDefaultProps(
+    'Navbar',
+    defaultProps,
+    props
+  )
+
+  const { classes, cx } = useStyles({ ...others }, { name: 'Navbar', unstyled })
+
+  return (
+    <ResizePanel
+      {...others}
+      sizes={width}
+      direction='e'
+      ref={ref}
+      panel={BaseNavbar}
+    />
+  )
+}) as any
+
+_Navbar.Section = BaseNavbar.Section
+_Navbar.displayName = '@yomtor/ui/Navbar'
+
+export const Navbar: ForwardRefWithStaticComponents<
   NavbarProps,
-  { Section: typeof BaseNavbar.Section }
->
-
-export const Navbar: NavbarComponent = forwardRef<HTMLDivElement, NavbarProps>(
-  (props, ref) => {
-    const { unstyled, width, ...others } = useComponentDefaultProps(
-      'Navbar',
-      defaultProps,
-      props
-    )
-
-    const { classes, cx } = useStyles(
-      { ...others },
-      { name: 'Navbar', unstyled }
-    )
-
-    return (
-      <ResizePanel
-        {...others}
-        sizes={width}
-        direction='e'
-        ref={ref}
-        panel={BaseNavbar}
-      />
-    )
+  {
+    Section: typeof BaseNavbar.Section
   }
-) as any
-
-Navbar.Section = BaseNavbar.Section
-Navbar.displayName = '@yomtor/ui/Navbar'
+> = _Navbar

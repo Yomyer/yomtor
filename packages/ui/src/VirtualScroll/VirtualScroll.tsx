@@ -85,5 +85,7 @@ export const _VirtualScroll = forwardRef<HTMLDivElement, VirtualScrollProps>(
 
 _VirtualScroll.displayName = '@yomtor/ui/VirtualScroll'
 
-export const VirtualScroll =
-  createPolymorphicComponent<'div', VirtualScrollProps>(_VirtualScroll)
+export const VirtualScroll = createPolymorphicComponent<
+  'div',
+  VirtualScrollProps
+>(_VirtualScroll)

@@ -6,7 +6,7 @@ import {
   Group,
   Button
 } from '@yomtor/ui'
-import { MantineDemo } from '@yomtor/ds'
+import { YomtorDemo } from '@yomtor/ds'
 import { Virtualizer } from '@yomtor/hooks'
 
 const codeTemplate = (props: string, children: string) => `
@@ -87,7 +87,7 @@ function Wrapper(props: VirtualScrollProps) {
     </Stack>
   )
 }
-export const scrollTo: MantineDemo = {
+export const scrollTo: YomtorDemo = {
   type: 'configurator',
   codeTemplate,
   component: Wrapper,

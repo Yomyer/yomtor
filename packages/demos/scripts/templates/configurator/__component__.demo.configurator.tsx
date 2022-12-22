@@ -1,6 +1,6 @@
 import React from 'react'
 import { __component__, __component__Props, Group } from '@yomtor/ui'
-import { MantineDemo } from '@yomtor/ds'
+import { YomtorDemo } from '@yomtor/ds'
 
 const codeTemplate = (props: string, children: string) => `
 import { __component__ } from '@yomtor/ui';
@@ -19,7 +19,7 @@ function Wrapper(props: __component__Props) {
     </Group>
   )
 }
-export const configurator: MantineDemo = {
+export const configurator: YomtorDemo = {
   type: 'configurator',
   codeTemplate,
   component: Wrapper,
