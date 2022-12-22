@@ -1,6 +1,6 @@
 import React from 'react'
 import { useMantineTheme } from '@mantine/core'
-import { MantineDemo } from './types'
+import { YomtorDemo } from './types'
 import CodeDemo from './CodeDemo/CodeDemo'
 import Configurator from './Configurator/Configurator'
 
@@ -16,7 +16,7 @@ interface DemoProps {
     ConfiguratorProps,
     'props' | 'codeTemplate' | 'component'
   >
-  data: MantineDemo
+  data: YomtorDemo
 }
 
 export function Demo({ data, demoProps, configuratorProps }: DemoProps) {

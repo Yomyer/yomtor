@@ -1,4 +1,4 @@
-type MantineDemoControlType =
+type YomtorDemoControlType =
   | 'boolean'
   | 'color'
   | 'select'
@@ -8,7 +8,7 @@ type MantineDemoControlType =
   | 'segmented'
 
 interface MantineDemoControlProps {
-  type: MantineDemoControlType
+  type: YomtorDemoControlType
   name: string
   label?: string
   initialValue?: any
@@ -20,14 +20,14 @@ interface MantineDemoControlProps {
   step?: number
 }
 
-interface MantineDemoBase {
+interface YomtorDemoBase {
   component?: React.FC
   wrapper?: React.FC<{ children: React.ReactNode }>
   code?: string
   background?: (colorScheme: 'light' | 'dark') => string
 }
 
-interface MantineCodeDemo extends MantineDemoBase {
+interface YomtorCodeDemo extends YomtorDemoBase {
   type: 'demo'
   demoProps?: {
     spacing?: boolean
@@ -38,7 +38,7 @@ interface MantineCodeDemo extends MantineDemoBase {
   }
 }
 
-interface MantineConfiguratorDemo extends MantineDemoBase {
+interface YomtorConfiguratorDemo extends YomtorDemoBase {
   type: 'configurator'
   codeTemplate(props: string, children?: string): string
   configurator?: MantineDemoControlProps[]
@@ -51,4 +51,4 @@ interface MantineConfiguratorDemo extends MantineDemoBase {
   }
 }
 
-export type MantineDemo = MantineCodeDemo | MantineConfiguratorDemo
+export type YomtorDemo = YomtorCodeDemo | YomtorConfiguratorDemo

@@ -1,7 +1,7 @@
 import { ArtboardIcon } from '@yomtor/icons'
 import { ActionIcon, Group } from '@yomtor/ui'
 import React from 'react'
-import { MantineDemo } from '@yomtor/ds'
+import { YomtorDemo } from '@yomtor/ds'
 
 const code = `
 import { ArtboardIcon } from '@yomtor/icons'
@@ -25,7 +25,7 @@ function Demo() {
   )
 }
 
-export const compact: MantineDemo = {
+export const compact: YomtorDemo = {
   type: 'demo',
   code,
   component: Demo

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button, StackProps, Stack } from '@yomtor/ui'
-import { MantineDemo } from '@yomtor/ds'
+import { YomtorDemo } from '@yomtor/ds'
 
 const codeTemplate = (props: string) => `
 import { Button, Stack } from '@yomtor/ui'
@@ -24,7 +24,7 @@ function Wrapper(props: StackProps) {
     </Stack>
   )
 }
-export const configurator: MantineDemo = {
+export const configurator: YomtorDemo = {
   type: 'configurator',
   codeTemplate,
   component: Wrapper,

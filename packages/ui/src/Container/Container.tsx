@@ -1,5 +1,4 @@
 import React, { forwardRef } from 'react'
-import { createPolymorphicComponent } from '@mantine/core'
 import { useComponentDefaultProps } from '@yomtor/styles'
 
 import { Container as BaseContainer } from '@mantine/core'
@@ -10,7 +9,7 @@ const defaultProps: Partial<ContainerProps> = {}
 
 export const Container = forwardRef<HTMLDivElement, ContainerProps>(
   (props, ref) => {
-    const { unstyled, classsName, ...others } = useComponentDefaultProps(
+    const { unstyled, className, ...others } = useComponentDefaultProps(
       'Container',
       defaultProps,
       props
@@ -25,7 +24,7 @@ export const Container = forwardRef<HTMLDivElement, ContainerProps>(
       <BaseContainer
         {...others}
         ref={ref}
-        className={cx(classsName, classes.root)}
+        className={cx(className, classes.root)}
       />
     )
   }

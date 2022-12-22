@@ -1,2 +1,2 @@
 export { Demo, CodeDemo, Configurator } from './Demo'
-export type { MantineDemo } from './types'
+export type { YomtorDemo } from './types'

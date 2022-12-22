@@ -1,6 +1,6 @@
 import React from 'react'
 import { Badge, DraggableProps, Group, Draggable } from '@yomtor/ui'
-import { MantineDemo } from '@yomtor/ds'
+import { YomtorDemo } from '@yomtor/ds'
 
 const codeTemplate = (props: string, children: string) => `
 import { Draggable, Badge } from '@yomtor/ui';
@@ -22,7 +22,7 @@ function Wrapper(props: DraggableProps) {
     </Group>
   )
 }
-export const configurator: MantineDemo = {
+export const configurator: YomtorDemo = {
   type: 'configurator',
   codeTemplate,
   component: Wrapper,

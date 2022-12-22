@@ -1,6 +1,6 @@
 import { useLongPress } from '@yomtor/hooks'
 import React, { useState } from 'react'
-import { MantineDemo } from '@yomtor/ds'
+import { YomtorDemo } from '@yomtor/ds'
 
 const code = `
 import { useState } from 'react'
@@ -38,7 +38,7 @@ function Demo() {
   )
 }
 
-export const compact: MantineDemo = {
+export const compact: YomtorDemo = {
   type: 'demo',
   code,
   component: Demo

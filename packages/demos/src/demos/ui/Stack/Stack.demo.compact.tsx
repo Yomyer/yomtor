@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button, Stack } from '@yomtor/ui'
-import { MantineDemo } from '@yomtor/ds'
+import { YomtorDemo } from '@yomtor/ds'
 
 const code = `
 import { Button, Stack } from '@yomtor/ui'
@@ -25,7 +25,7 @@ function Demo() {
   )
 }
 
-export const compact: MantineDemo = {
+export const compact: YomtorDemo = {
   type: 'demo',
   code,
   component: Demo

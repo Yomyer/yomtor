@@ -1,7 +1,7 @@
 import React from 'react'
 import { GroupProps, Group, ActionIcon } from '@yomtor/ui'
 import { ArtboardIcon } from '@yomtor/icons'
-import { MantineDemo } from '@yomtor/ds'
+import { YomtorDemo } from '@yomtor/ds'
 
 const codeTemplate = (props: string) => `
 import { ActionIcon, Group } from '@yomtor/ui'
@@ -38,7 +38,7 @@ function Wrapper(props: GroupProps) {
     </Group>
   )
 }
-export const configurator: MantineDemo = {
+export const configurator: YomtorDemo = {
   type: 'configurator',
   codeTemplate,
   component: Wrapper,

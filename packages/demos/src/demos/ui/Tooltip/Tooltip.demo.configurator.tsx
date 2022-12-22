@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button, TooltipProps, Group, Tooltip } from '@yomtor/ui'
-import { MantineDemo } from '@yomtor/ds'
+import { YomtorDemo } from '@yomtor/ds'
 
 const codeTemplate = (props: string) => `
 import { Tooltip, Button } from '@yomtor/ui';
@@ -22,7 +22,7 @@ function Wrapper(props: TooltipProps) {
     </Group>
   )
 }
-export const configurator: MantineDemo = {
+export const configurator: YomtorDemo = {
   type: 'configurator',
   codeTemplate,
   component: Wrapper,

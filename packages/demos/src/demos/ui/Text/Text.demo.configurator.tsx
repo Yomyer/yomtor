@@ -1,6 +1,6 @@
 import React from 'react'
 import { Text, TextProps } from '@yomtor/ui'
-import { MantineDemo } from '@yomtor/ds'
+import { YomtorDemo } from '@yomtor/ds'
 
 const codeTemplate = (props: string) => `
 import { Text } from '@yomtor/ui'
@@ -29,7 +29,7 @@ function Wrapper(props: TextProps) {
   )
 }
 
-export const configurator: MantineDemo = {
+export const configurator: YomtorDemo = {
   type: 'configurator',
   codeTemplate,
   component: Wrapper,
