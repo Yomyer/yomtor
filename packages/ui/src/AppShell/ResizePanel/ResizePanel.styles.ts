@@ -4,6 +4,7 @@ import { ResizeDirections, ResizePanelProps } from './ResizePanel.props'
 export interface ResizePanelStylesParams {
   isH: boolean
   direction: ResizeDirections
+  dragging: boolean
 }
 const getPosition = (direction: ResizeDirections) => {
   switch (direction) {
@@ -39,15 +40,23 @@ const getPosition = (direction: ResizeDirections) => {
 }
 
 export default createStyles(
-  (theme, { isH, direction }: ResizePanelStylesParams) => ({
+  (theme, { isH, direction, dragging }: ResizePanelStylesParams) => ({
     root: {},
     handler: {
       position: 'absolute',
       width: isH && 10,
       height: !isH && 10,
-      background: 'red',
-      opacity: 0.2,
-      ...getPosition(direction)
+      ...getPosition(direction),
+      '&:before': {
+        content: '""',
+        position: 'absolute',
+        top: 0,
+        left: '50%',
+        bottom: 0,
+        width: 5,
+        transform: 'translateX(-50%)',
+        background: theme.colors.cyan[5]
+      }
     }
   })
 )

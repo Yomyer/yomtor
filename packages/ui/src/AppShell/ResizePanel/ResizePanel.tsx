@@ -11,8 +11,12 @@ import {
 } from '@yomtor/cursors'
 
 import { useMergedRef } from '@mantine/hooks'
+import { flushSync } from 'react-dom'
 
-const defaultProps: Partial<ResizePanelProps> = {}
+const defaultProps: Partial<ResizePanelProps> = {
+  resize: false,
+  min: 0
+}
 
 export const ResizePanel = forwardRef<HTMLDivElement, ResizePanelProps>(
   (props, ref) => {
@@ -29,12 +33,14 @@ export const ResizePanel = forwardRef<HTMLDivElement, ResizePanelProps>(
       panel: Panel,
       ...others
     } = useComponentDefaultProps('ResizePanel', defaultProps, props)
+    const [internalSize, setInternalSize] = useState<ResizeSizes>(defaultSizes)
     const [sizes, setSizes] = useState<ResizeSizes>(defaultSizes)
     const [dragging, setDragging] = useState(false)
+    const [stop, setStop] = useState(false)
     const isH = ['e', 'w'].includes(direction)
 
     const { classes, cx } = useStyles(
-      { isH, direction, ...others },
+      { isH, direction, dragging, ...others },
       { name: 'ResizePanel' }
     )
 
@@ -51,15 +57,41 @@ export const ResizePanel = forwardRef<HTMLDivElement, ResizePanelProps>(
     }
 
     const stopHandler = () => {
+      setSizeRange(getSize())
       setDragging(false)
     }
 
+    const getSize = () => {
+      return isH ? elRef.current?.offsetWidth : elRef.current.offsetHeight
+    }
+
+    const getParentSize = () => {
+      return isH
+        ? elRef.current?.parentElement?.offsetWidth
+        : elRef.current?.parentElement?.offsetHeight
+    }
+
     const dragHandler = (event: any, ui: any) => {
-      const s = sizes || {
-        base: isH ? elRef.current?.clientWidth : elRef.current.clientHeight
+      const s = internalSize ||
+        sizes || {
+          base: getSize()
+        }
+
+      setSizeRange(s.base + (isH ? ui.deltaX : ui.deltaY))
+    }
+
+    const setSizeRange = (size: number) => {
+      setInternalSize({ ...sizes, base: size })
+
+      if (size <= min || size <= 1) {
+        size = min || 1
       }
 
-      setSizes({ ...s, base: s.base + (isH ? ui.deltaX : ui.deltaY) })
+      if (size >= max || size >= getParentSize()) {
+        size = max || getParentSize()
+      }
+
+      setSizes({ ...sizes, base: size })
     }
 
     return (
@@ -75,21 +107,24 @@ export const ResizePanel = forwardRef<HTMLDivElement, ResizePanelProps>(
         })}
       >
         {children}
-        <Draggable
-          axis={isH ? 'x' : 'y'}
-          onDrag={dragHandler}
-          onStart={startDragging}
-          onStop={stopHandler}
-          distance={0}
-          move={false}
-          phantom={true}
-        >
-          <div
-            className={classes.handler}
-            onMouseEnter={enterHandler}
-            onMouseLeave={leaveHandler}
-          />
-        </Draggable>
+        {resize && (
+          <Draggable
+            axis={isH ? 'x' : 'y'}
+            onDrag={dragHandler}
+            onStart={startDragging}
+            onStop={stopHandler}
+            distance={0}
+            move={false}
+            stop={stop}
+            phantom
+          >
+            <div
+              className={classes.handler}
+              onMouseEnter={enterHandler}
+              onMouseLeave={leaveHandler}
+            />
+          </Draggable>
+        )}
       </Panel>
     )
   }

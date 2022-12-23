@@ -31,6 +31,7 @@ export const Draggable = forwardRef<HTMLDivElement, DraggableProps>(
       distance,
       phantom,
       throttle,
+      stop,
       onDrag,
       onStart,
       onStop,

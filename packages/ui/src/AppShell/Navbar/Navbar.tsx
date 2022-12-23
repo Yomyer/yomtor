@@ -4,7 +4,7 @@ import { useComponentDefaultProps } from '@yomtor/styles'
 import { Navbar as BaseNavbar } from '@mantine/core'
 import { NavbarProps } from './Navbar.props'
 import useStyles from './Navbar.styles'
-import { ForwardRefWithStaticComponents } from '@yomtor/utils'
+import { ForwardRefWithStaticComponents } from '@mantine/utils'
 
 import { ResizePanel } from '../ResizePanel'
 

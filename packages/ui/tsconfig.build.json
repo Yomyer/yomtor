@@ -13,13 +13,15 @@
       "@yomtor/hooks": ["../hooks/src"],
       "@yomtor/icons": ["../icons/src"],
       "@yomtor/styles": ["../styles/src"],
-      "@yomtor/utils": ["../utils/src"]
+      "@yomtor/utils": ["../utils/src"],
+      "@yomtor/cursors": ["../cursors/src"]
     }
   },
   "references": [
     { "path": "../hooks" },
     { "path": "../icons" },
     { "path": "../utils" },
-    { "path": "../styles" }
+    { "path": "../styles" },
+    { "path": "../cursors" }
   ]
 }

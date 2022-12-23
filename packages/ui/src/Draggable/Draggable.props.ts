@@ -10,4 +10,5 @@ export type DraggableProps = Partial<ReactDraggableProps> & {
   throttle?: number
   distance?: number
   children: ReactElement
+  stop?: boolean
 }
