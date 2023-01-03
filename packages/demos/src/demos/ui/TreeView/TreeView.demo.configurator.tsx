@@ -1,12 +1,15 @@
 import React from 'react'
 import { TreeView, TreeViewProps, Group } from '@yomtor/ui'
 import { YomtorDemo } from '@yomtor/ds'
+import { Data } from './_data'
 
 const codeTemplate = (props: string, children: string) => `
 import { TreeView } from '@mantine/core';
+import { Data } from './_data'
+
 function Demo() {
   return (
-    <TreeView${props}>
+    <TreeView${props} data={Data}>
       ${children}
     </TreeView>
   );
@@ -15,7 +18,7 @@ function Demo() {
 function Wrapper(props: TreeViewProps) {
   return (
     <Group position='center'>
-      <TreeView {...props} />
+      <TreeView {...props} data={Data} />
     </Group>
   )
 }

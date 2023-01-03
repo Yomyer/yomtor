@@ -1,16 +1,17 @@
+import React from 'react'
+import { VirtualItem } from '@yomtor/hooks'
 import { DefaultProps } from '@yomtor/styles'
-import { TreeNodeData, TreeNodeProps } from './TreeNode/TreeNode.props'
+import { NodeData, NodeProps } from './Node/Node.props'
 
 export type TreeViewPositions = 'below' | 'above' | 'in'
 
-export interface TreeViewProps<T = TreeNodeData> extends DefaultProps {
-  data?: TreeNodeData<T>[]
-  nodeComponent?: React.FC<TreeNodeProps>
-  nodeHeight?: number
+export interface TreeViewProps<T = NodeData> extends DefaultProps {
+  data?: NodeData<T>[]
+  component?:
+    | React.ReactNode
+    | ((node: NodeData, row: VirtualItem<Element>) => React.ReactNode)
+  size?: number
   collapsed?: boolean
-  highlightedProp?: string
-  activedProp?: string
-  collapsedProp?: string
   indentWitdh?: number
   sortable?: boolean
   draggable?: boolean

@@ -1,6 +1,7 @@
 import { createStyles } from '@yomtor/styles'
-import { AsideProps } from './Node.props'
 
-export default createStyles((theme, {}: AsideProps) => ({
+export interface NodeStylesParams {}
+
+export default createStyles((theme, {}: NodeStylesParams) => ({
   root: {}
 }))

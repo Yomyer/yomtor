@@ -14,18 +14,19 @@ const defaultProps: Partial<VirtualScrollProps> = {
   component: ScrollArea,
   type: 'always',
   behavior: false,
-  node: (node, className) => (
+  wrapper: (item, node, className) => (
     <div
-      key={node.index}
+      key={item.index}
       className={className}
       style={{
-        height: `${node.size}px`,
-        transform: `translateY(${node.start}px)`
+        height: `${item.size}px`,
+        transform: `translateY(${item.start}px)`
       }}
     >
-      Row: {node.index}
+      {isFunction(node) ? node(item) : node}
     </div>
-  )
+  ),
+  node: (item) => <div>Row: {item.index}</div>
 }
 
 export const _VirtualScroll = forwardRef<HTMLDivElement, VirtualScrollProps>(
@@ -39,6 +40,7 @@ export const _VirtualScroll = forwardRef<HTMLDivElement, VirtualScrollProps>(
       behavior,
       horizontal,
       virtualizerRef,
+      wrapper,
       node,
       ...others
     } = useComponentDefaultProps('VirtualScroll', defaultProps, props)
@@ -76,7 +78,9 @@ export const _VirtualScroll = forwardRef<HTMLDivElement, VirtualScrollProps>(
         >
           {virtualizer
             .getVirtualItems()
-            .map((row) => (isFunction(node) ? node(row, classes.node) : node))}
+            .map((row) =>
+              isFunction(wrapper) ? wrapper(row, node, classes.node) : wrapper
+            )}
         </Box>
       </Element>
     )

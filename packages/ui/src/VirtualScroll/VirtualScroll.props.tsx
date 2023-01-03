@@ -14,7 +14,14 @@ export interface VirtualScrollProps
   horizontal?: boolean
   virtualizerRef?: React.MutableRefObject<Virtualizer<Element, any>>
   behavior?: boolean
-  node?:
+  wrapper?:
     | React.ReactNode
-    | ((node: VirtualItem<Element>, className: string) => React.ReactNode)
+    | ((
+        item: VirtualItem<Element>,
+        node:
+          | React.ReactNode
+          | ((item: VirtualItem<Element>) => React.ReactNode),
+        className: string
+      ) => React.ReactNode)
+  node?: React.ReactNode | ((item: VirtualItem<Element>) => React.ReactNode)
 }
