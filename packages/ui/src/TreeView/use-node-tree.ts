@@ -21,7 +21,7 @@ export const useRecursive = ({
   const depths: number[] = []
   const parents: Record<number, NodeData> = {}
   const previous: Record<number, NodeData> = {}
-  const next: Record<number, NodeData> = {}
+  const nexts: Record<number, NodeData> = {}
   const activeds: Record<number, NodeData> = {}
   const childActiveds: Record<number, NodeData> = {}
   const highlighteds: Record<number, NodeData> = {}
@@ -39,9 +39,9 @@ export const useRecursive = ({
       nodes[index] = node
       depths[index] = depth
       previous[index] = data[i - 1]
-      next[index] = data[i + 1]
+      nexts[index] = data[i + 1]
 
-      if (node.active) {
+      if (node.actived) {
         activeds[index] = node
       }
       if (actived) {
@@ -52,8 +52,8 @@ export const useRecursive = ({
       }
 
       if (
-        node.highlight &&
-        !node.active &&
+        node.highlighted &&
+        !node.actived &&
         !['below', 'above'].includes(position)
       ) {
         highlighteds[index] = node
@@ -64,15 +64,15 @@ export const useRecursive = ({
       }
 
       if (
-        isArray(node.children) && !isUndefined(node.collapse)
-          ? !node.collapse
+        isArray(node.children) && !isUndefined(node.collapsed)
+          ? !node.collapsed
           : !collapsed
       ) {
         recursive(
           node.children,
           depth + 1,
           node,
-          actived || (node.active as boolean),
+          actived || (node.actived as boolean),
           disableDrop || Object.keys(items).includes(index.toString())
         )
       }
@@ -87,7 +87,7 @@ export const useRecursive = ({
     activeds,
     childActiveds,
     highlighteds,
-    next,
+    nexts,
     previous,
     disableDrops
   }
@@ -102,8 +102,8 @@ export const useNodeTree = ({
   const [, forceUpdate] = useReducer((x) => x + 1, 0)
 
   const collapser = (node: NodeData, event: MouseEvent) => {
-    node.collapse = !isUndefined(node.collapse) ? !node.collapse : !collapsed
-
+    node.collapsed = !isUndefined(node.collapsed) ? !node.collapsed : !collapsed
+    console.log('aaa')
     event.stopPropagation()
 
     forceUpdate()

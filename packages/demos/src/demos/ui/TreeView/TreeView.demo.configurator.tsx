@@ -18,7 +18,13 @@ function Demo() {
 function Wrapper(props: TreeViewProps) {
   return (
     <Group position='center'>
-      <TreeView {...props} data={Data} />
+      <TreeView {...props} data={Data}>
+        {(node, item) => (
+          <div>
+            {node.label} - Actived: {node.actived ? 'a' : 'o'}
+          </div>
+        )}
+      </TreeView>
     </Group>
   )
 }
@@ -31,6 +37,10 @@ export const configurator: YomtorDemo = {
       name: 'variant',
       type: 'select',
       data: [{ label: 'filled', value: 'filled' }]
+    },
+    {
+      name: 'collapsed',
+      type: 'boolean'
     }
   ]
 }

@@ -12,7 +12,7 @@ export interface VirtualScrollProps
   count: number
   type?: ScrollAreaTypes
   horizontal?: boolean
-  virtualizerRef?: React.MutableRefObject<Virtualizer<Element, any>>
+  virtualizerRef?: React.MutableRefObject<Virtualizer<Element>>
   behavior?: boolean
   wrapper?:
     | React.ReactNode

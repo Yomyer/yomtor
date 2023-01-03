@@ -7,9 +7,11 @@ export type TreeViewPositions = 'below' | 'above' | 'in'
 
 export interface TreeViewProps<T = NodeData> extends DefaultProps {
   data?: NodeData<T>[]
-  component?:
+  component?: any
+  wrapper?: any
+  children?:
     | React.ReactNode
-    | ((node: NodeData, row: VirtualItem<Element>) => React.ReactNode)
+    | ((node: NodeData, item: VirtualItem<Element>) => React.ReactNode)
   size?: number
   collapsed?: boolean
   indentWitdh?: number
