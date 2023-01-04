@@ -60,7 +60,7 @@ export const _TreeView = forwardRef<HTMLDivElement, TreeViewProps>(
     })
 
     const clickHandler = (node: NodeData) => {
-      node.actived = true
+      node.actived = !node.actived
       rerender()
     }
 
@@ -79,6 +79,7 @@ export const _TreeView = forwardRef<HTMLDivElement, TreeViewProps>(
               children={children}
               onClick={clickHandler}
               onCollapse={collapser}
+              actived={node.actived}
               collapsed={
                 !isUndefined(node.collapsed) ? !node.collapsed : !collapsed
               }

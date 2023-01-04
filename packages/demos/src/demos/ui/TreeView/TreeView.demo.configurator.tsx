@@ -19,11 +19,7 @@ function Wrapper(props: TreeViewProps) {
   return (
     <Group position='center'>
       <TreeView {...props} data={Data}>
-        {(node, item) => (
-          <div>
-            {node.label} - Actived: {node.actived ? 'a' : 'o'}
-          </div>
-        )}
+        {(node, item) => <div>{node.label}</div>}
       </TreeView>
     </Group>
   )

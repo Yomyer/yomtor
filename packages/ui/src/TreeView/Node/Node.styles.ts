@@ -2,9 +2,10 @@ import { createStyles } from '@yomtor/styles'
 
 export interface NodeStylesParams {
   depth: number
+  actived: boolean
 }
 
-export default createStyles((theme, {}: NodeStylesParams) => ({
+export default createStyles((theme, { actived }: NodeStylesParams) => ({
   root: {
     width: '100%',
     display: 'flex',
@@ -40,7 +41,7 @@ export default createStyles((theme, {}: NodeStylesParams) => ({
     cursor: 'pointer'
   },
   actived: {
-    background: 'red'
+    background: actived && 'red'
   },
   parentActived: {
     background: 'blue'

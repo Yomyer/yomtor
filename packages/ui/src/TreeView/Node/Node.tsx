@@ -26,7 +26,10 @@ export const Node = forwardRef<HTMLDivElement, NodeProps>(
       ...others
     } = useComponentDefaultProps('Node', defaultProps, props)
 
-    const { classes, cx } = useStyles({ depth }, { name: 'Node', unstyled })
+    const { classes, cx } = useStyles(
+      { depth, actived },
+      { name: 'Node', unstyled }
+    )
 
     const clickHandler = () => {
       onClick(node)
@@ -36,7 +39,7 @@ export const Node = forwardRef<HTMLDivElement, NodeProps>(
       <Box
         {...others}
         ref={ref}
-        className={cx(className, classes.root)}
+        className={cx(className, classes.root, classes.actived)}
         onClick={clickHandler}
       >
         <div className={classes.indents}>
