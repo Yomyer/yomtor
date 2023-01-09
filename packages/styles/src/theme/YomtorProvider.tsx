@@ -7,29 +7,28 @@ import { DEFAULT_THEME } from './default-theme'
 import createCache from '@emotion/cache'
 
 export interface YomtorProviderProps extends MantineProviderProps {
-    theme?: YomtorThemeOverride
+  theme?: YomtorThemeOverride
 }
 
 const YomtorCache = createCache({ key: 'yomtor', prepend: true })
 
 export function YomtorProvider({
-    children,
-    theme,
-    withGlobalStyles = true,
-    withNormalizeCSS = true,
-    ...others
+  children,
+  theme,
+  withGlobalStyles = true,
+  withNormalizeCSS = true,
+  ...others
 }: YomtorProviderProps) {
-    theme = mergeDeep(DEFAULT_THEME, theme)
-    return (
-        <MantineProvider
-            {...others}
-            theme={theme}
-            withGlobalStyles
-            withNormalizeCSS
-            emotionCache={YomtorCache}
-            {...others}
-        >
-            {children}
-        </MantineProvider>
-    )
+  theme = mergeDeep(DEFAULT_THEME, theme)
+  return (
+    <MantineProvider
+      {...others}
+      theme={theme}
+      withGlobalStyles
+      withNormalizeCSS
+      emotionCache={YomtorCache}
+    >
+      {children}
+    </MantineProvider>
+  )
 }

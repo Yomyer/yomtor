@@ -45,7 +45,7 @@ export const TreeViewStyles = createStyles<Classes, TreeViewProps>(
       display: 'flex',
       position: 'relative',
       height: '100%',
-      flexShrink: '0'
+      flexShrink: 0
     },
     indent: {
       width: indentWitdh,
@@ -54,7 +54,7 @@ export const TreeViewStyles = createStyles<Classes, TreeViewProps>(
       justifyContent: 'center',
       alignItems: 'center',
       boxSizing: 'border-box',
-      flexShrink: '0'
+      flexShrink: 0
     },
     first: {
       marginRight: 0

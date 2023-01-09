@@ -1,6 +1,10 @@
 {
   "extends": "../../tsconfig.json",
-  "include": ["./src", "../../configuration/types"],
+  "include": [
+    "./src",
+    "../../configuration/types",
+    "../../configuration/types/yomtor.d.ts"
+  ],
   "compilerOptions": {
     "rootDir": "src",
     "baseUrl": ".",
