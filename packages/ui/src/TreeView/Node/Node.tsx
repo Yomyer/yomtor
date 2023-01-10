@@ -17,7 +17,6 @@ export const Node = forwardRef<HTMLDivElement, NodeProps>(
       children,
       depth,
       collapsed,
-      actived,
       highlighted,
       onClick,
       onMouseEnter,
@@ -27,7 +26,7 @@ export const Node = forwardRef<HTMLDivElement, NodeProps>(
     } = useComponentDefaultProps('Node', defaultProps, props)
 
     const { classes, cx } = useStyles(
-      { depth, actived },
+      { depth, actived: node.actived },
       { name: 'Node', unstyled }
     )
 

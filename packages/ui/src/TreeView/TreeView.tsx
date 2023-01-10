@@ -9,6 +9,7 @@ import { Node, NodeData } from './Node'
 import { VirtualItem } from '@yomtor/hooks'
 import { useNodeTree } from './use-node-tree'
 import { isUndefined } from 'lodash'
+import { TreeViewProvider } from './TreeViewProvider'
 
 const list = Array.from(Array(500).keys())
 
@@ -65,28 +66,29 @@ export const _TreeView = forwardRef<HTMLDivElement, TreeViewProps>(
     }
 
     return (
-      <Component
-        size={size}
-        count={nodes.length}
-        style={{ height: 300 }}
-        node={(item) => {
-          const node = nodes[item.index]
-          return (
-            <Wrapper
-              depth={depths[item.index]}
-              item={item}
-              node={node}
-              children={children}
-              onClick={clickHandler}
-              onCollapse={collapser}
-              actived={node.actived}
-              collapsed={
-                !isUndefined(node.collapsed) ? !node.collapsed : !collapsed
-              }
-            />
-          )
-        }}
-      />
+      <TreeViewProvider>
+        <Component
+          size={size}
+          count={nodes.length}
+          style={{ height: 300 }}
+          node={(item) => {
+            const node = nodes[item.index]
+            return (
+              <Wrapper
+                depth={depths[item.index]}
+                item={item}
+                node={node}
+                children={children}
+                onClick={clickHandler}
+                onCollapse={collapser}
+                collapsed={
+                  !isUndefined(node.collapsed) ? !node.collapsed : !collapsed
+                }
+              />
+            )
+          }}
+        />
+      </TreeViewProvider>
     )
   }
 ) as any

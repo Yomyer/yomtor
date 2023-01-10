@@ -43,7 +43,8 @@ export default createStyles((theme, { actived }: NodeStylesParams) => {
       cursor: 'pointer'
     },
     actived: {
-      background: actived && theme.colors.primary[5]
+      background: actived && theme.colors.primary[5],
+      color: actived && theme.white
     },
     parentActived: {
       background: 'blue'
