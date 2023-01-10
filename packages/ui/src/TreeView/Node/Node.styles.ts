@@ -1,12 +1,8 @@
 import { createStyles } from '@yomtor/styles'
 
-export interface NodeStylesParams {
-  depth: number
-  actived: boolean
-}
+export interface NodeStylesParams {}
 
-export default createStyles((theme, { actived }: NodeStylesParams) => {
-  console.log(theme.primaryColor)
+export default createStyles((theme, {}: NodeStylesParams) => {
   return {
     root: {
       width: '100%',
@@ -43,8 +39,8 @@ export default createStyles((theme, { actived }: NodeStylesParams) => {
       cursor: 'pointer'
     },
     actived: {
-      background: actived && theme.colors.primary[5],
-      color: actived && theme.white
+      background: theme.colors.primary[5],
+      color: theme.white
     },
     parentActived: {
       background: 'blue'
@@ -57,7 +53,7 @@ export default createStyles((theme, { actived }: NodeStylesParams) => {
         bottom: '0px',
         left: '0',
         right: '0',
-        border: `1px solid yellow`,
+        border: `1px solid ${theme.colors.primary[5]}`,
         pointerEvents: 'none'
       }
     },

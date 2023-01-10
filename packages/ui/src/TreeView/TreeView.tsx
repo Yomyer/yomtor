@@ -42,52 +42,19 @@ export const _TreeView = forwardRef<HTMLDivElement, TreeViewProps>(
       { name: 'TreeView', unstyled }
     )
 
-    const {
-      nodes,
-      depths,
-      parents,
-      highlighteds,
-      activeds,
-      childActiveds,
-      nexts,
-      previous,
-      disableDrops,
-      collapser
-    } = useNodeTree({
-      data,
-      collapsed,
-      position
-      // items: items.current
-    })
-
-    const clickHandler = (node: NodeData) => {
-      node.actived = !node.actived
-      rerender()
-    }
-
     return (
-      <TreeViewProvider>
-        <Component
-          size={size}
-          count={nodes.length}
-          style={{ height: 300 }}
-          node={(item) => {
-            const node = nodes[item.index]
-            return (
-              <Wrapper
-                depth={depths[item.index]}
-                item={item}
-                node={node}
-                children={children}
-                onClick={clickHandler}
-                onCollapse={collapser}
-                collapsed={
-                  !isUndefined(node.collapsed) ? !node.collapsed : !collapsed
-                }
-              />
-            )
-          }}
-        />
+      <TreeViewProvider {...{ data, collapsed }}>
+        {({ nodes }) => (
+          <Component
+            {...others}
+            className={cx(className, classes.root)}
+            size={size}
+            count={nodes.length}
+            node={(item) => {
+              return <Wrapper item={item} children={children} />
+            }}
+          />
+        )}
       </TreeViewProvider>
     )
   }
