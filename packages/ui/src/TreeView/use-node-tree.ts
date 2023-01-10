@@ -10,6 +10,19 @@ type UseNodeTreeProps = {
   items?: { [key: number]: NodeData }
 }
 
+export interface UseNodeTreeData {
+  nodes: NodeData[]
+  depths: number[]
+  parents: Record<number, NodeData>
+  previous: Record<number, NodeData>
+  nexts: Record<number, NodeData>
+  activeds: Record<number, NodeData>
+  childActiveds: Record<number, NodeData>
+  highlighteds: Record<number, NodeData>
+  disableDrops: Record<number, NodeData>
+  collapser: (node: NodeData, event: MouseEvent) => void
+}
+
 export const useRecursive = ({
   data,
   collapsed,
@@ -98,7 +111,7 @@ export const useNodeTree = ({
   collapsed,
   position,
   items
-}: UseNodeTreeProps) => {
+}: UseNodeTreeProps): UseNodeTreeData => {
   const [, forceUpdate] = useReducer((x) => x + 1, 0)
 
   const collapser = (node: NodeData, event: MouseEvent) => {

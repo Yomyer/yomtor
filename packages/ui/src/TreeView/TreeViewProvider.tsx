@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useReducer } from 'react'
 import { NodeData } from './Node'
+import { UseNodeTreeData } from './use-node-tree'
 
-interface TreeViewProviderContextType {
+interface TreeViewProviderContextType extends UseNodeTreeData {
   collapsed?: boolean
   setActive: (node: NodeData) => void
   setHighligth: (node: NodeData) => void
