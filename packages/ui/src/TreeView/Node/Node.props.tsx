@@ -1,4 +1,3 @@
-import { MouseEvent } from 'react'
 import { VirtualItem } from '@yomtor/hooks'
 import { DefaultProps, Selectors, YomtorStyleSystemSize } from '@yomtor/styles'
 import useStyles from './Node.styles'

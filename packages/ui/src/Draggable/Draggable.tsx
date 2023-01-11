@@ -44,6 +44,7 @@ export const Draggable = forwardRef<HTMLDivElement, DraggableProps>(
     const handlerRef = useRef<HTMLDivElement>()
     const phantomRef = useRef<HTMLDivElement>()
     const [animated, setAnimated] = useState<boolean>()
+    const offset = useRef<{ x: number; y: number }>({ x: 0, y: 0 })
     const delta = useRef<{ x: number; y: number }>({ x: 0, y: 0 })
 
     const { classes, cx } = useStyles(
@@ -52,7 +53,7 @@ export const Draggable = forwardRef<HTMLDivElement, DraggableProps>(
     )
 
     const startHandler = (_: DraggableEvent, data: DraggableData) => {
-      delta.current = { x: 0, y: 0 }
+      offset.current = { x: data.x, y: data.y }
     }
 
     const intersect = (target: HTMLElement) => {
@@ -101,8 +102,8 @@ export const Draggable = forwardRef<HTMLDivElement, DraggableProps>(
     }
 
     const dragHandler = (event: DraggableEvent, data: DraggableData) => {
-      delta.current.x += data.deltaX
-      delta.current.y += data.deltaY
+      delta.current.x = data.lastX - offset.current.x
+      delta.current.y = data.lastY - offset.current.y
 
       if (axis && axis !== 'both' && axis !== 'x') {
         delta.current.x = 0
