@@ -18,8 +18,6 @@ export type {
   ClassNames,
   Styles,
   Tuple,
-  MantineThemeColors as YomtorThemeColors,
-  MantineThemeColorsOverride as YomtorThemeColorsOverride,
   MantineStyleSystemProps as YomtorStyleSystemProps,
   MantineStyleSystemSize as YomtorStyleSystemSize,
   MantineNumberSize as YomtorNumberSize,
