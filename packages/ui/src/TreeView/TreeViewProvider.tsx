@@ -55,6 +55,9 @@ export const TreeViewProvider = ({
   const setCollapse = (node: NodeData, event: MouseEvent) => {
     node.collapsed = !isUndefined(node.collapsed) ? !node.collapsed : !collapsed
     event.stopPropagation()
+
+    console.log(scrollRef.current.scrollHeight)
+
     rerender()
   }
 
@@ -70,6 +73,8 @@ export const TreeViewProvider = ({
     setHighligth,
     setCollapse
   }
+
+  console.log(scrollRef?.current?.scrollHeight)
 
   return (
     <>
