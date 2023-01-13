@@ -27,7 +27,7 @@ function useVirtualizerBase<
   const resolvedOptions: VirtualizerOptions<TScrollElement, TItemElement> = {
     ...options,
     onChange: (instance) => {
-      if ((instance.options.getScrollElement() as any).scrollTop) {
+      if ((instance.options.getScrollElement() as Element).scrollTop) {
         flushSync(() => {
           rerender()
         })

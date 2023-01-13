@@ -19,6 +19,7 @@ export { useColorNames } from './use-color-names/use-color-names'
 export { useRgbToHex } from './use-rgb-to-hex/use-rgb-to-hex'
 export { useHexToRgb } from './use-hex-to-rgb/use-hex-to-rgb'
 export { useVirtualizer } from './use-virtualizer/use-virtualizer'
+export { useDetectionScrollEnd } from './use-detection-scroll-end/use-detection-scroll-end'
 
 export {
   type VirtualItem,

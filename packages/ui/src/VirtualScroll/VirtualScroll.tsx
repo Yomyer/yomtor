@@ -1,4 +1,10 @@
-import React, { forwardRef, useRef, useCallback } from 'react'
+import React, {
+  forwardRef,
+  useRef,
+  useCallback,
+  useState,
+  useEffect
+} from 'react'
 import { createPolymorphicComponent } from '@mantine/utils'
 import { useComponentDefaultProps } from '@yomtor/styles'
 
@@ -8,6 +14,7 @@ import { Box } from '../Box'
 import { ScrollArea } from '../ScrollArea'
 import { useMergedRef, useVirtualizer } from '@yomtor/hooks'
 import { isFunction } from 'lodash'
+import { useDetectionScrollEnd } from '../../../hooks/src/use-detection-scroll-end/use-detection-scroll-end'
 
 const defaultProps: Partial<VirtualScrollProps> = {
   size: 30,
@@ -45,12 +52,8 @@ export const _VirtualScroll = forwardRef<HTMLDivElement, VirtualScrollProps>(
       ...others
     } = useComponentDefaultProps('VirtualScroll', defaultProps, props)
 
-    const { classes, cx } = useStyles(
-      { ...others },
-      { name: 'VirtualScroll', unstyled }
-    )
-
     const scrollRef = useRef()
+    const events = useDetectionScrollEnd(scrollRef.current)
 
     const virtualizer = useVirtualizer({
       count,
@@ -59,6 +62,11 @@ export const _VirtualScroll = forwardRef<HTMLDivElement, VirtualScrollProps>(
       enableSmoothScroll: behavior,
       horizontal
     })
+
+    const { classes, cx } = useStyles(
+      { ...others, events },
+      { name: 'VirtualScroll', unstyled }
+    )
 
     if (virtualizerRef) {
       virtualizerRef.current = virtualizer

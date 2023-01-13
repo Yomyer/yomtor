@@ -1,8 +1,10 @@
 import { createStyles } from '@yomtor/styles'
 
-export interface VirtualScrollStylesParams {}
+export interface VirtualScrollStylesParams {
+  events: boolean
+}
 
-export default createStyles((theme, {}: VirtualScrollStylesParams) => ({
+export default createStyles((theme, { events }: VirtualScrollStylesParams) => ({
   root: {
     maxHeight: '100%',
     overflow: 'hidden',
@@ -10,7 +12,8 @@ export default createStyles((theme, {}: VirtualScrollStylesParams) => ({
   },
   viewport: {
     width: '100%',
-    position: 'relative'
+    position: 'relative',
+    pointerEvents: events ? 'all' : 'none'
   },
   node: {
     position: 'absolute',

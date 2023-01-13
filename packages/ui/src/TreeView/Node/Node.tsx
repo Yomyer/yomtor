@@ -9,17 +9,17 @@ import { useTreeViewContext } from '../TreeViewProvider'
 
 const defaultProps: Partial<NodeProps> = {}
 
-export const Node = forwardRef<HTMLDivElement, NodeProps>((props, ref) => {
+export const _Node = forwardRef<HTMLDivElement, NodeProps>((props, ref) => {
   const { unstyled, className, item, children, ...others } =
     useComponentDefaultProps('Node', defaultProps, props)
 
   const {
     setActive,
     setHighligth,
+    setCollapse,
     depths,
     nodes,
-    collapsed: rootCollapsed,
-    collapser
+    collapsed: rootCollapsed
   } = useTreeViewContext()
 
   const node = nodes[item.index]
@@ -39,8 +39,8 @@ export const Node = forwardRef<HTMLDivElement, NodeProps>((props, ref) => {
         [classes.highlighted]: node.highlighted
       })}
       onClick={(event) => setActive(node, event)}
-      onMouseEnter={(event) => setHighligth(node, true, event)}
-      onMouseLeave={(event) => setHighligth(node, false, event)}
+      onMouseEnter={(event) => setHighligth(node, event)}
+      onMouseLeave={(event) => setHighligth(node, event)}
     >
       <div className={classes.indents}>
         {[...Array(depth + 1)].map((_, i) => (
@@ -58,7 +58,7 @@ export const Node = forwardRef<HTMLDivElement, NodeProps>((props, ref) => {
           style={{
             visibility: isArray(node.children) ? 'visible' : null
           }}
-          onClick={(event: MouseEvent) => collapser(node, event)}
+          onClick={(event: MouseEvent) => setCollapse(node, event)}
           onMouseDown={(event) => {
             event.stopPropagation()
           }}
@@ -71,4 +71,8 @@ export const Node = forwardRef<HTMLDivElement, NodeProps>((props, ref) => {
   )
 })
 
-Node.displayName = '@yomtor/ui/TreeViewNode'
+_Node.displayName = '@yomtor/ui/TreeViewNode'
+
+export const Node = React.memo(_Node, (prevProps, nextProps) => {
+  return true
+})
