@@ -55,7 +55,6 @@ export const _VirtualScroll = forwardRef<HTMLDivElement, VirtualScrollProps>(
     const scrollRef = useRef<HTMLElement>(null)
     const viewportRef = useRef(null)
     const events = useDetectionScrollEnd(scrollRef.current)
-    const [height, setHeight] = useState<number>(0)
 
     const virtualizer = useVirtualizer({
       count,
@@ -74,52 +73,12 @@ export const _VirtualScroll = forwardRef<HTMLDivElement, VirtualScrollProps>(
       virtualizerRef.current = virtualizer
     }
 
+    const [height, setHeight] = useState<number>(virtualizer.getTotalSize())
     const previousHeight = usePrevious<number>(height)
 
     useEffect(() => {
-      const observer = new ResizeObserver(() => {})
-      console.log(height)
-      if (
-        scrollRef.current &&
-        scrollRef.current.scrollTop + scrollRef.current.clientHeight >= height
-      ) {
-        console.log('es el final')
-      }
-      observer.observe(viewportRef.current)
-      return () => observer.disconnect()
-    }, [scrollRef, height])
-
-    /*
-    heightRef.current = virtualizer.getTotalSize()
-    const previousHeight = usePrevious<number>(virtualizer.getTotalSize())
-    const previewScrollTop = usePrevious<number>(scrollRef?.current?.scrollTop)
-
-    useEffect(() => {
-      const observer = new ResizeObserver(() => {
-        if (!offsetRef.current) return
-        console.log(previewScrollTop)
-        scrollRef?.current?.scrollTo(0, previewScrollTop)
-      })
-
-      observer.observe(viewportRef.current)
-      return () => observer.disconnect()
-    }, [offsetRef.current, scrollRef])
-
-    useEffect(() => {
-      if (!previousHeight || heightRef.current === previousHeight) return
-
-      if (heightRef.current < previousHeight) {
-        if (!offsetRef.current) {
-          offsetRef.current = previousHeight - heightRef.current
-          console.log('no se suma', offsetRef.current)
-        } else {
-          offsetRef.current =
-            previousHeight - heightRef.current + offsetRef.current
-          console.log('se suma', offsetRef.current)
-        }
-      }
-    }, [heightRef.current])
-    */
+      setHeight(previousHeight)
+    }, [virtualizer.getTotalSize()])
 
     return (
       <Element
