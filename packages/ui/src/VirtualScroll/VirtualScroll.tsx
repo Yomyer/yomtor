@@ -52,11 +52,10 @@ export const _VirtualScroll = forwardRef<HTMLDivElement, VirtualScrollProps>(
       ...others
     } = useComponentDefaultProps('VirtualScroll', defaultProps, props)
 
-    const scrollRef = useRef(null)
+    const scrollRef = useRef<HTMLElement>(null)
     const viewportRef = useRef(null)
     const events = useDetectionScrollEnd(scrollRef.current)
-    const heightRef = useRef<number>(0)
-    const offsetRef = useRef<number>(0)
+    const [height, setHeight] = useState<number>(0)
 
     const virtualizer = useVirtualizer({
       count,
@@ -75,6 +74,22 @@ export const _VirtualScroll = forwardRef<HTMLDivElement, VirtualScrollProps>(
       virtualizerRef.current = virtualizer
     }
 
+    const previousHeight = usePrevious<number>(height)
+
+    useEffect(() => {
+      const observer = new ResizeObserver(() => {})
+      console.log(height)
+      if (
+        scrollRef.current &&
+        scrollRef.current.scrollTop + scrollRef.current.clientHeight >= height
+      ) {
+        console.log('es el final')
+      }
+      observer.observe(viewportRef.current)
+      return () => observer.disconnect()
+    }, [scrollRef, height])
+
+    /*
     heightRef.current = virtualizer.getTotalSize()
     const previousHeight = usePrevious<number>(virtualizer.getTotalSize())
     const previewScrollTop = usePrevious<number>(scrollRef?.current?.scrollTop)
@@ -82,7 +97,7 @@ export const _VirtualScroll = forwardRef<HTMLDivElement, VirtualScrollProps>(
     useEffect(() => {
       const observer = new ResizeObserver(() => {
         if (!offsetRef.current) return
-
+        console.log(previewScrollTop)
         scrollRef?.current?.scrollTo(0, previewScrollTop)
       })
 
@@ -94,12 +109,17 @@ export const _VirtualScroll = forwardRef<HTMLDivElement, VirtualScrollProps>(
       if (!previousHeight || heightRef.current === previousHeight) return
 
       if (heightRef.current < previousHeight) {
-        offsetRef.current =
-          previousHeight - heightRef.current + offsetRef.current
-      } else {
-        // offsetRef.current = 0
+        if (!offsetRef.current) {
+          offsetRef.current = previousHeight - heightRef.current
+          console.log('no se suma', offsetRef.current)
+        } else {
+          offsetRef.current =
+            previousHeight - heightRef.current + offsetRef.current
+          console.log('se suma', offsetRef.current)
+        }
       }
     }, [heightRef.current])
+    */
 
     return (
       <Element
@@ -109,7 +129,7 @@ export const _VirtualScroll = forwardRef<HTMLDivElement, VirtualScrollProps>(
       >
         <Box
           style={{
-            height: `${virtualizer.getTotalSize() + offsetRef.current}px`
+            height: `${height}px`
           }}
           ref={viewportRef}
           className={classes.viewport}
