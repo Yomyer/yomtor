@@ -12,7 +12,7 @@ import { VirtualScrollProps } from './VirtualScroll.props'
 import useStyles from './VirtualScroll.styles'
 import { Box } from '../Box'
 import { ScrollArea } from '../ScrollArea'
-import { useMergedRef, useVirtualizer } from '@yomtor/hooks'
+import { usePrevious, useMergedRef, useVirtualizer } from '@yomtor/hooks'
 import { isFunction } from 'lodash'
 import { useDetectionScrollEnd } from '../../../hooks/src/use-detection-scroll-end/use-detection-scroll-end'
 
@@ -52,8 +52,11 @@ export const _VirtualScroll = forwardRef<HTMLDivElement, VirtualScrollProps>(
       ...others
     } = useComponentDefaultProps('VirtualScroll', defaultProps, props)
 
-    const scrollRef = useRef()
+    const scrollRef = useRef(null)
+    const viewportRef = useRef(null)
     const events = useDetectionScrollEnd(scrollRef.current)
+    const heightRef = useRef<number>(0)
+    const offsetRef = useRef<number>(0)
 
     const virtualizer = useVirtualizer({
       count,
@@ -72,6 +75,32 @@ export const _VirtualScroll = forwardRef<HTMLDivElement, VirtualScrollProps>(
       virtualizerRef.current = virtualizer
     }
 
+    heightRef.current = virtualizer.getTotalSize()
+    const previousHeight = usePrevious<number>(virtualizer.getTotalSize())
+    const previewScrollTop = usePrevious<number>(scrollRef?.current?.scrollTop)
+
+    useEffect(() => {
+      const observer = new ResizeObserver(() => {
+        if (!offsetRef.current) return
+
+        scrollRef?.current?.scrollTo(0, previewScrollTop)
+      })
+
+      observer.observe(viewportRef.current)
+      return () => observer.disconnect()
+    }, [offsetRef.current, scrollRef])
+
+    useEffect(() => {
+      if (!previousHeight || heightRef.current === previousHeight) return
+
+      if (heightRef.current < previousHeight) {
+        offsetRef.current =
+          previousHeight - heightRef.current + offsetRef.current
+      } else {
+        // offsetRef.current = 0
+      }
+    }, [heightRef.current])
+
     return (
       <Element
         {...others}
@@ -80,8 +109,9 @@ export const _VirtualScroll = forwardRef<HTMLDivElement, VirtualScrollProps>(
       >
         <Box
           style={{
-            height: `${virtualizer.getTotalSize()}px`
+            height: `${virtualizer.getTotalSize() + offsetRef.current}px`
           }}
+          ref={viewportRef}
           className={classes.viewport}
         >
           {virtualizer

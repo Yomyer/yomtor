@@ -1,12 +1,11 @@
 import React, { forwardRef, useRef, useState, useReducer } from 'react'
 import { ForwardRefWithStaticComponents } from '@mantine/utils'
 import { useComponentDefaultProps } from '@yomtor/styles'
-
-import { TreeViewPositions, TreeViewProps } from './TreeView.props'
 import useStyles from './TreeView.styles'
+
+import { TreeViewProps } from './TreeView.props'
 import { VirtualScroll } from '../VirtualScroll'
-import { Node, NodeData } from './Node'
-import { useMergedRef } from '@yomtor/hooks'
+import { Node } from './Node'
 import { TreeViewProvider } from './TreeViewProvider'
 
 const list = Array.from(Array(500).keys())
@@ -19,8 +18,6 @@ const defaultProps: Partial<TreeViewProps> = {
 
 export const _TreeView = forwardRef<HTMLDivElement, TreeViewProps>(
   (props, ref) => {
-    const scrollRef = useRef<HTMLElement>()
-
     const {
       component: Component,
       wrapper: Wrapper,
@@ -39,14 +36,14 @@ export const _TreeView = forwardRef<HTMLDivElement, TreeViewProps>(
     )
 
     return (
-      <TreeViewProvider {...{ data, collapsed, scrollRef }}>
+      <TreeViewProvider {...{ data, collapsed }}>
         {({ nodes }) => (
           <Component
             {...others}
             className={cx(className, classes.root)}
             size={size}
             count={nodes.length}
-            ref={useMergedRef(ref, scrollRef)}
+            ref={ref}
             node={(item) => {
               return <Wrapper item={item} children={children} />
             }}

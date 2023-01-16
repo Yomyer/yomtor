@@ -23,7 +23,6 @@ const TreeViewContext = createContext<Partial<TreeViewProviderContextType>>({})
 interface TreeViewProviderProps<T = NodeData> {
   data: NodeData<T>[]
   collapsed?: boolean
-  scrollRef?: React.MutableRefObject<HTMLElement>
   children:
     | React.ReactNode
     | ((data: TreeViewProviderContextType) => React.ReactNode)
@@ -36,7 +35,6 @@ export function useTreeViewContext() {
 export const TreeViewProvider = ({
   data,
   collapsed,
-  scrollRef,
   children
 }: TreeViewProviderProps) => {
   const rerender = useReducer(() => ({}), {})[1]
@@ -56,8 +54,6 @@ export const TreeViewProvider = ({
     node.collapsed = !isUndefined(node.collapsed) ? !node.collapsed : !collapsed
     event.stopPropagation()
 
-    console.log(scrollRef.current.scrollHeight)
-
     rerender()
   }
 
@@ -73,8 +69,6 @@ export const TreeViewProvider = ({
     setHighligth,
     setCollapse
   }
-
-  console.log(scrollRef?.current?.scrollHeight)
 
   return (
     <>
