@@ -15,6 +15,7 @@ import { ScrollArea } from '../ScrollArea'
 import { usePrevious, useMergedRef, useVirtualizer } from '@yomtor/hooks'
 import { isFunction } from 'lodash'
 import { useDetectionScrollEnd } from '../../../hooks/src/use-detection-scroll-end/use-detection-scroll-end'
+import { useHeight } from './use-height'
 
 const defaultProps: Partial<VirtualScrollProps> = {
   size: 30,
@@ -73,61 +74,10 @@ export const _VirtualScroll = forwardRef<HTMLDivElement, VirtualScrollProps>(
       virtualizerRef.current = virtualizer
     }
 
-    const [height, setHeight] = useState<number>(0)
-    const [previous, setPrevious] = useState<number>(0)
-
-    useEffect(() => {
-      const scrollTop = scrollRef?.current?.scrollTop
-
-      console.log('scrollTop', scrollRef.current.scrollTop)
-      console.log('getTotalSize', virtualizer.getTotalSize())
-      console.log('clientHeight', scrollRef.current.clientHeight)
-      console.log('height', height)
-      console.log('previous', previous)
-
-      if (
-        height &&
-        scrollRef.current &&
-        scrollRef.current.scrollTop + scrollRef.current.clientHeight >= height
-      ) {
-        console.log(' // Estas en el fondo?')
-        // setHeight(height)
-        return
-      }
-      console.log('seteamosssss!!!')
-      setHeight(virtualizer.getTotalSize())
-    }, [virtualizer.getTotalSize(), height])
-    /*
-    heightRef.current = virtualizer.getTotalSize()
-    const previousHeight = usePrevious<number>(virtualizer.getTotalSize())
-    const previewScrollTop = usePrevious<number>(scrollRef?.current?.scrollTop)
-
-    useEffect(() => {
-      const observer = new ResizeObserver(() => {
-        if (!offsetRef.current) return
-        console.log(previewScrollTop)
-        scrollRef?.current?.scrollTo(0, previewScrollTop)
-      })
-
-      observer.observe(viewportRef.current)
-      return () => observer.disconnect()
-    }, [offsetRef.current, scrollRef])
-
-    useEffect(() => {
-      if (!previousHeight || heightRef.current === previousHeight) return
-
-      if (heightRef.current < previousHeight) {
-        if (!offsetRef.current) {
-          offsetRef.current = previousHeight - heightRef.current
-          console.log('no se suma', offsetRef.current)
-        } else {
-          offsetRef.current =
-            previousHeight - heightRef.current + offsetRef.current
-          console.log('se suma', offsetRef.current)
-        }
-      }
-    }, [heightRef.current])
-    */
+    const height = useHeight({
+      height: virtualizer.getTotalSize(),
+      element: scrollRef.current
+    })
 
     return (
       <Element
