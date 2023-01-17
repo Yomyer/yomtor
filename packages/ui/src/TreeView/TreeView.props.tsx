@@ -18,4 +18,5 @@ export interface TreeViewProps<T = NodeData> extends DefaultProps {
   sortabled?: boolean
   draggable?: boolean
   multiple?: boolean
+  nodes?: NodeData[]
 }

@@ -15,7 +15,7 @@ interface TreeViewProviderContextType extends UseNodeTreeData {
   padding?: number
   sortabled?: boolean
   setActive: (node: NodeData, event?: MouseEvent) => void
-  setHighligth: (node: NodeData, event?: MouseEvent) => void
+  setHighligth: (node: NodeData, status: boolean, event?: MouseEvent) => void
   setCollapse: (node: NodeData, event?: MouseEvent) => void
 }
 
@@ -48,8 +48,8 @@ export const TreeViewProvider = ({
     rerender()
   }
 
-  const setHighligth = (node: NodeData) => {
-    node.highlighted = !node.highlighted
+  const setHighligth = (node: NodeData, status: boolean) => {
+    node.highlighted = status
     rerender()
   }
 

@@ -45,8 +45,8 @@ export const _Node = forwardRef<HTMLDivElement, NodeProps>((props, ref) => {
         [classes.highlighted]: node.highlighted,
         [classes.parentActived]: childActiveds[item.index]
       })}
-      onMouseEnter={(event) => setHighligth(node, event)}
-      onMouseLeave={(event) => setHighligth(node, event)}
+      onMouseEnter={(event) => setHighligth(node, true, event)}
+      onMouseLeave={(event) => setHighligth(node, false, event)}
     >
       <div className={classes.indents}>
         {[...Array(depth + 1)].map((_, i) => (
@@ -76,7 +76,7 @@ export const _Node = forwardRef<HTMLDivElement, NodeProps>((props, ref) => {
   )
 })
 
-_Node.displayName = '@yomtor/ui/TreeViewNode'
+_Node.displayName = '@yomtor/ui/Node'
 
 export const Node = React.memo(_Node, (prevProps, nextProps) => {
   return true
