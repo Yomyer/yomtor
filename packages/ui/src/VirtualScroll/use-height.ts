@@ -2,16 +2,16 @@ import React, { useState, useEffect } from 'react'
 
 interface UseHeightProps {
   height: number
-  sticky?: boolean
+  overscan?: boolean
   element: HTMLElement
 }
 
 export const useHeight = ({
   height: value,
-  sticky = true,
+  overscan = true,
   element
 }: UseHeightProps) => {
-  if (!sticky) return value
+  if (!overscan) return value
 
   const [height, setHeight] = useState<number>(0)
 

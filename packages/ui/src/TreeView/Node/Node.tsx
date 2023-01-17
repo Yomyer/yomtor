@@ -19,6 +19,8 @@ export const _Node = forwardRef<HTMLDivElement, NodeProps>((props, ref) => {
     setCollapse,
     depths,
     nodes,
+    sortabled,
+    childActiveds,
     collapsed: rootCollapsed
   } = useTreeViewContext()
 
@@ -30,15 +32,19 @@ export const _Node = forwardRef<HTMLDivElement, NodeProps>((props, ref) => {
 
   const { classes, cx } = useStyles({}, { name: 'Node', unstyled })
 
+  if (!sortabled) {
+    others.onMouseDown = (event) => setActive(node, event)
+  }
+
   return (
     <Box
       {...others}
       ref={ref}
       className={cx(className, classes.root, {
         [classes.actived]: node.actived,
-        [classes.highlighted]: node.highlighted
+        [classes.highlighted]: node.highlighted,
+        [classes.parentActived]: childActiveds[item.index]
       })}
-      onClick={(event) => setActive(node, event)}
       onMouseEnter={(event) => setHighligth(node, event)}
       onMouseLeave={(event) => setHighligth(node, event)}
     >
@@ -51,20 +57,19 @@ export const _Node = forwardRef<HTMLDivElement, NodeProps>((props, ref) => {
             })}
           />
         ))}
-        <em
-          className={cx(classes.indent, classes.collapser, {
-            [classes.first]: !depth
-          })}
-          style={{
-            visibility: isArray(node.children) ? 'visible' : null
-          }}
-          onClick={(event: MouseEvent) => setCollapse(node, event)}
-          onMouseDown={(event) => {
-            event.stopPropagation()
-          }}
-        >
-          <PlayIcon rotate={collapsed && 90} size={10} />
-        </em>
+        {isArray(node.children) && (
+          <em
+            className={cx(classes.indent, classes.collapser, {
+              [classes.first]: !depth
+            })}
+            onClick={(event: MouseEvent) => setCollapse(node, event)}
+            onMouseDown={(event) => {
+              event.stopPropagation()
+            }}
+          >
+            <PlayIcon rotate={collapsed && 90} size={10} />
+          </em>
+        )}
       </div>
       {isFunction(children) ? children(node, item) : children}
     </Box>

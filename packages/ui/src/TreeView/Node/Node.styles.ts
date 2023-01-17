@@ -35,15 +35,15 @@ export default createStyles((theme, {}: NodeStylesParams) => {
       right: 0,
       fontSize: 8,
       opacity: 0.5,
-      visibility: 'hidden',
       cursor: 'pointer'
     },
     actived: {
-      background: theme.colors.primary[5],
+      background: theme.colors.primary[9],
       color: theme.white
     },
     parentActived: {
-      background: 'blue'
+      background: theme.colors.primary[8],
+      color: theme.white
     },
     highlighted: {
       '&:after': {
@@ -53,7 +53,7 @@ export default createStyles((theme, {}: NodeStylesParams) => {
         bottom: '0px',
         left: '0',
         right: '0',
-        border: `1px solid ${theme.colors.primary[5]}`,
+        border: `1px solid ${theme.colors.primary[9]}`,
         pointerEvents: 'none'
       }
     },

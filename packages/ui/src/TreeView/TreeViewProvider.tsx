@@ -13,6 +13,7 @@ import { useNodeTree, UseNodeTreeData } from './use-node-tree'
 interface TreeViewProviderContextType extends UseNodeTreeData {
   collapsed?: boolean
   padding?: number
+  sortabled?: boolean
   setActive: (node: NodeData, event?: MouseEvent) => void
   setHighligth: (node: NodeData, event?: MouseEvent) => void
   setCollapse: (node: NodeData, event?: MouseEvent) => void
@@ -23,6 +24,7 @@ const TreeViewContext = createContext<Partial<TreeViewProviderContextType>>({})
 interface TreeViewProviderProps<T = NodeData> {
   data: NodeData<T>[]
   collapsed?: boolean
+  sortabled?: boolean
   children:
     | React.ReactNode
     | ((data: TreeViewProviderContextType) => React.ReactNode)
@@ -35,7 +37,8 @@ export function useTreeViewContext() {
 export const TreeViewProvider = ({
   data,
   collapsed,
-  children
+  children,
+  sortabled
 }: TreeViewProviderProps) => {
   const rerender = useReducer(() => ({}), {})[1]
   const [position, setPosition] = useState<TreeViewPositions>()
@@ -65,6 +68,7 @@ export const TreeViewProvider = ({
       // items: items.current
     }),
     collapsed,
+    sortabled,
     setActive,
     setHighligth,
     setCollapse

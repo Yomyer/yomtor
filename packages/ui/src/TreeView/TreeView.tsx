@@ -1,4 +1,10 @@
-import React, { forwardRef, useRef, useState, useReducer } from 'react'
+import React, {
+  forwardRef,
+  useRef,
+  useState,
+  useReducer,
+  useEffect
+} from 'react'
 import { ForwardRefWithStaticComponents } from '@mantine/utils'
 import { useComponentDefaultProps } from '@yomtor/styles'
 import useStyles from './TreeView.styles'
@@ -7,6 +13,9 @@ import { TreeViewProps } from './TreeView.props'
 import { VirtualScroll } from '../VirtualScroll'
 import { Node } from './Node'
 import { TreeViewProvider } from './TreeViewProvider'
+import { Sortable } from './Sortable'
+import { useDetectionScrollEnd } from '@yomtor/hooks'
+import { useMergedRef } from '@mantine/hooks'
 
 const list = Array.from(Array(500).keys())
 
@@ -27,25 +36,36 @@ export const _TreeView = forwardRef<HTMLDivElement, TreeViewProps>(
       children,
       collapsed,
       className,
+      sortabled,
       ...others
     } = useComponentDefaultProps('TreeView', defaultProps, props)
 
+    const scrollRef = useRef()
+    console.log(scrollRef.current)
+    const events = useDetectionScrollEnd(scrollRef.current)
+    console.log(events)
     const { classes, cx } = useStyles(
       { ...others },
       { name: 'TreeView', unstyled }
     )
 
     return (
-      <TreeViewProvider {...{ data, collapsed }}>
+      <TreeViewProvider {...{ data, collapsed, sortabled }}>
         {({ nodes }) => (
           <Component
             {...others}
             className={cx(className, classes.root)}
             size={size}
             count={nodes.length}
-            ref={ref}
+            ref={useMergedRef(ref, scrollRef)}
             node={(item) => {
-              return <Wrapper item={item} children={children} />
+              return sortabled && events ? (
+                <Sortable>
+                  <Wrapper item={item} children={children} />
+                </Sortable>
+              ) : (
+                <Wrapper item={item} children={children} />
+              )
             }}
           />
         )}

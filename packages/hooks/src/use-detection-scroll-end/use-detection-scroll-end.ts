@@ -7,12 +7,16 @@ export const useDetectionScrollEnd = (element: Element) => {
   useEffect(() => {
     if (!element) return
 
-    element.addEventListener('scroll', () => {
+    const event = () => {
       clearTimeout(timeOut.current)
       setScrollEnd(false)
-      timeOut.current = setTimeout(() => setScrollEnd(true), 50)
-    })
-  }, [element])
+      timeOut.current = setTimeout(() => {
+        setScrollEnd(true)
+      }, 50)
+    }
+    element.addEventListener('scroll', event)
+    return () => element.removeEventListener('scroll', event)
+  }, [element, timeOut])
 
   return scrollEnd
 }

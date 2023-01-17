@@ -18,7 +18,7 @@ function Demo() {
 function Wrapper(props: TreeViewProps) {
   return (
     <Group position='center'>
-      <TreeView {...props} data={Data} style={{ height: 300 }}>
+      <TreeView {...props} sortabled data={Data} style={{ height: 300 }}>
         {(node, item) => <div>{node.label}</div>}
       </TreeView>
     </Group>

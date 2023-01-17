@@ -21,9 +21,9 @@ export default createStyles<Classes, Partial<DraggableStyeProps>>(
         visibility: 'visible !important' as 'visible'
       },
       handler: {
-        pointerEvents: (move && (dragging || animated) && 'none') || 'all',
+        pointerEvents: (move && (dragging || animated) && 'none') || undefined,
         visibility:
-          (move && !phantom && (animated || dragging) && 'hidden') || 'visible',
+          (move && !phantom && (animated || dragging) && 'hidden') || undefined,
         userSelect: !disabled ? 'none' : null
       },
       start: {}

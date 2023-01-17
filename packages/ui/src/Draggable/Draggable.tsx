@@ -113,6 +113,7 @@ export const Draggable = forwardRef<HTMLDivElement, DraggableProps>(
       }
 
       if (
+        !dragging &&
         Math.sqrt(
           delta.current.x * delta.current.x + delta.current.y * delta.current.y
         ) <= distance
@@ -201,6 +202,7 @@ export const Draggable = forwardRef<HTMLDivElement, DraggableProps>(
         onDrag={dragHandler}
         onStop={stopHandler}
         onStart={startHandler}
+        offsetParent={document.querySelector('body')}
       >
         {React.cloneElement(React.Children.only(children), {
           className: cx(children.props.className, classes.handler),
