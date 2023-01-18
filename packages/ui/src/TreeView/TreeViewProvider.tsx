@@ -19,6 +19,8 @@ interface TreeViewProviderContextType extends UseNodeTreeData {
   dragging?: boolean
   position?: TreeViewPositions
   items?: number[]
+  current?: number
+  target?: Element
   setActive: (node: NodeData, event?: MouseEvent) => void
   setDeactive: (node: NodeData, event?: MouseEvent) => void
   setHighligth: (node: NodeData, status: boolean, event?: MouseEvent) => void
@@ -27,6 +29,8 @@ interface TreeViewProviderContextType extends UseNodeTreeData {
   setDragging: (status: boolean) => void
   setPosition: (position: TreeViewPositions) => void
   setItems: (items: number[]) => void
+  setCurrent: (index: number) => void
+  setTarget: (target: Element) => void
 }
 
 const TreeViewContext = createContext<Partial<TreeViewProviderContextType>>({})
@@ -55,6 +59,8 @@ export const TreeViewProvider = ({
   const [sortabled, setSortabled] = useState<boolean>(isSortabled)
   const [dragging, setDragging] = useState(false)
   const [items, setItems] = useState<number[]>([])
+  const [current, setCurrent] = useState<number>()
+  const [target, setTarget] = useState<Element>()
 
   const cache = useNodeTree({
     data,
@@ -112,7 +118,11 @@ export const TreeViewProvider = ({
     position,
     setPosition,
     items,
-    setItems
+    setItems,
+    current,
+    setCurrent,
+    target,
+    setTarget
   }
 
   return (

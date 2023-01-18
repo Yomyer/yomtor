@@ -29,20 +29,7 @@ export const TreeViewContainer = forwardRef<HTMLDivElement, TreeViewProps>(
       ...others
     } = useComponentDefaultProps('TreeView', defaultProps, props)
 
-    const {
-      setSortabled,
-      sortabled,
-      setActive,
-      setDeactive,
-      dragging,
-      setDragging,
-      position,
-      setPosition,
-      items,
-      setItems,
-      disableDrops,
-      activeds
-    } = useTreeViewContext()
+    const { setSortabled, sortabled, position, items } = useTreeViewContext()
 
     const lineRef = useRef<HTMLDivElement>()
     const { classes, cx } = useStyles(
@@ -52,26 +39,6 @@ export const TreeViewContainer = forwardRef<HTMLDivElement, TreeViewProps>(
 
     const handlerScrolling = (status: boolean) => {
       isSortabled && setSortabled(!status)
-    }
-
-    const mouseDownHandler = (
-      item: VirtualItem<Element>,
-      event: React.MouseEvent
-    ) => {
-      setActive(nodes[item.index], event)
-    }
-
-    const mouseUpHandler = (
-      item: VirtualItem<Element>,
-      event: React.MouseEvent
-    ) => {
-      setDeactive(nodes[item.index], event)
-      setDragging(false)
-    }
-
-    const startHandler = () => {
-      setItems(Object.keys(activeds).map((i) => +i))
-      setDragging(true)
     }
 
     return (
@@ -85,15 +52,7 @@ export const TreeViewContainer = forwardRef<HTMLDivElement, TreeViewProps>(
         onScrolling={handlerScrolling}
         node={(item) =>
           sortabled || items.includes(item.index) ? (
-            <Sortable
-              onMouseDown={(event: MouseEvent) =>
-                mouseDownHandler(item, event as unknown as React.MouseEvent)
-              }
-              onStart={(event: MouseEvent) => startHandler()}
-              onMouseUp={(event: MouseEvent) =>
-                mouseUpHandler(item, event as unknown as React.MouseEvent)
-              }
-            >
+            <Sortable item={item}>
               <Wrapper item={item} children={children} />
             </Sortable>
           ) : (
