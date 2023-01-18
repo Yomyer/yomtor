@@ -24,4 +24,5 @@ export interface VirtualScrollProps
         className: string
       ) => React.ReactNode)
   node?: React.ReactNode | ((item: VirtualItem<Element>) => React.ReactNode)
+  onScrolling?: (status: boolean) => void
 }

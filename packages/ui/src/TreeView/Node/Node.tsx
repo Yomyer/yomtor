@@ -1,4 +1,4 @@
-import React, { forwardRef, MouseEvent, useContext } from 'react'
+import React, { forwardRef, MouseEvent, useContext, useEffect } from 'react'
 import { useComponentDefaultProps } from '@yomtor/styles'
 import { Box } from '../../Box'
 import { NodeProps } from './Node.props'
@@ -35,6 +35,10 @@ export const _Node = forwardRef<HTMLDivElement, NodeProps>((props, ref) => {
   if (!sortabled) {
     others.onMouseDown = (event) => setActive(node, event)
   }
+
+  useEffect(() => {
+    return () => setHighligth(node, false)
+  }, [])
 
   return (
     <Box

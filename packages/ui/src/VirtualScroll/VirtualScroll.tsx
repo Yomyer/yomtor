@@ -50,12 +50,14 @@ export const _VirtualScroll = forwardRef<HTMLDivElement, VirtualScrollProps>(
       virtualizerRef,
       wrapper,
       node,
+      onScrolling,
       ...others
     } = useComponentDefaultProps('VirtualScroll', defaultProps, props)
 
     const scrollRef = useRef<HTMLElement>(null)
     const viewportRef = useRef(null)
-    const events = useDetectionScrollEnd(scrollRef.current)
+    const timeOut = useRef(null)
+    const [scrolling, setScrolling] = useState(false)
 
     const virtualizer = useVirtualizer({
       count,
@@ -66,7 +68,7 @@ export const _VirtualScroll = forwardRef<HTMLDivElement, VirtualScrollProps>(
     })
 
     const { classes, cx } = useStyles(
-      { ...others, events },
+      { ...others, events: !scrolling },
       { name: 'VirtualScroll', unstyled }
     )
 
@@ -78,6 +80,22 @@ export const _VirtualScroll = forwardRef<HTMLDivElement, VirtualScrollProps>(
       height: virtualizer.getTotalSize(),
       element: scrollRef.current
     })
+
+    useEffect(() => {
+      if (!scrollRef.current) return
+
+      const event = () => {
+        clearTimeout(timeOut.current)
+        setScrolling(true)
+        onScrolling && onScrolling(true)
+        timeOut.current = setTimeout(() => {
+          setScrolling(false)
+          onScrolling && onScrolling(false)
+        }, 50)
+      }
+      scrollRef.current?.addEventListener('scroll', event)
+      return () => scrollRef.current?.removeEventListener('scroll', event)
+    }, [scrollRef.current, timeOut])
 
     return (
       <Element

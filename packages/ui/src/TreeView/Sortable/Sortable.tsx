@@ -10,8 +10,15 @@ const defaultProps: Partial<SortableProps> = {}
 
 export const Sortable = forwardRef<HTMLDivElement, SortableProps>(
   (props, ref) => {
-    const { unstyled, children, className, ...others } =
-      useComponentDefaultProps('Sortable', defaultProps, props)
+    const {
+      unstyled,
+      children,
+      className,
+      onMouseDown,
+      onStart,
+      onMouseUp,
+      ...others
+    } = useComponentDefaultProps('Sortable', defaultProps, props)
 
     const { classes, cx } = useStyles(
       { ...others },
@@ -19,7 +26,18 @@ export const Sortable = forwardRef<HTMLDivElement, SortableProps>(
     )
 
     return (
-      <Droppable>{() => <Draggable phantom>{children}</Draggable>}</Droppable>
+      <Droppable>
+        {() => (
+          <Draggable
+            phantom
+            onMouseDown={onMouseDown}
+            onMouseUp={onMouseUp}
+            onStart={onStart}
+          >
+            {children}
+          </Draggable>
+        )}
+      </Droppable>
     )
   }
 )

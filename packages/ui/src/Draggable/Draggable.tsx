@@ -35,6 +35,7 @@ export const Draggable = forwardRef<HTMLDivElement, DraggableProps>(
       onDrag,
       onStart,
       onStop,
+      onMouseUp,
       ...others
     } = useComponentDefaultProps('Group', defaultProps, props)
 
@@ -61,6 +62,8 @@ export const Draggable = forwardRef<HTMLDivElement, DraggableProps>(
     }
 
     const stopHandler = (event: DraggableEvent, data: DraggableData) => {
+      onMouseUp && onMouseUp(event)
+
       if (start) {
         setStart(false)
 

@@ -17,7 +17,11 @@ export const _TreeView = forwardRef<HTMLDivElement, TreeViewProps>(
     return (
       <TreeViewProvider {...{ data, collapsed, sortabled }}>
         {({ nodes }) => (
-          <TreeViewContainer {...others} nodes={nodes} ref={ref} />
+          <TreeViewContainer
+            {...{ ...others, sortabled }}
+            nodes={nodes}
+            ref={ref}
+          />
         )}
       </TreeViewProvider>
     )

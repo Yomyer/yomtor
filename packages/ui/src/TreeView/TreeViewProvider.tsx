@@ -1,9 +1,11 @@
 import { isFunction, isUndefined } from 'lodash'
 import React, {
   createContext,
-  MouseEvent,
   useContext,
+  useEffect,
   useReducer,
+  MouseEvent,
+  useRef,
   useState
 } from 'react'
 import { NodeData } from './Node'
@@ -14,9 +16,13 @@ interface TreeViewProviderContextType extends UseNodeTreeData {
   collapsed?: boolean
   padding?: number
   sortabled?: boolean
+  dragging?: boolean
   setActive: (node: NodeData, event?: MouseEvent) => void
+  setDeactive: (node: NodeData, event?: MouseEvent) => void
   setHighligth: (node: NodeData, status: boolean, event?: MouseEvent) => void
   setCollapse: (node: NodeData, event?: MouseEvent) => void
+  setSortabled: (status: boolean) => void
+  setDragging: (status: boolean) => void
 }
 
 const TreeViewContext = createContext<Partial<TreeViewProviderContextType>>({})
@@ -38,14 +44,43 @@ export const TreeViewProvider = ({
   data,
   collapsed,
   children,
-  sortabled
+  sortabled: isSortabled
 }: TreeViewProviderProps) => {
   const rerender = useReducer(() => ({}), {})[1]
   const [position, setPosition] = useState<TreeViewPositions>()
+  const [sortabled, setSortabled] = useState<boolean>(isSortabled)
+  const [dragging, setDragging] = useState(false)
 
-  const setActive = (node: NodeData) => {
-    node.actived = !node.actived
+  const cache = useNodeTree({
+    data,
+    collapsed,
+    position
+    // items: items.current
+  })
+
+  const setActive = (node: NodeData, event: MouseEvent) => {
+    const ctrl = event.ctrlKey || event.metaKey
+    if (!ctrl && !Object.values(cache.activeds).includes(node)) {
+      Object.values(cache.activeds).forEach((n) => (n.actived = false))
+    }
+
+    if (!Object.values(cache.activeds).includes(node) || ctrl) {
+      node.actived = !node.actived
+    }
+
     rerender()
+  }
+
+  const setDeactive = (node: NodeData, event: MouseEvent) => {
+    const ctrl = event.ctrlKey || event.metaKey
+
+    if (!dragging && !ctrl) {
+      Object.values(cache.activeds)
+        .filter((n) => n !== node)
+        .forEach((n) => (n.actived = false))
+
+      rerender()
+    }
   }
 
   const setHighligth = (node: NodeData, status: boolean) => {
@@ -56,22 +91,20 @@ export const TreeViewProvider = ({
   const setCollapse = (node: NodeData, event: MouseEvent) => {
     node.collapsed = !isUndefined(node.collapsed) ? !node.collapsed : !collapsed
     event.stopPropagation()
-
     rerender()
   }
 
   const props = {
-    ...useNodeTree({
-      data,
-      collapsed,
-      position
-      // items: items.current
-    }),
+    ...cache,
     collapsed,
     sortabled,
+    dragging,
     setActive,
+    setDeactive,
     setHighligth,
-    setCollapse
+    setCollapse,
+    setSortabled,
+    setDragging
   }
 
   return (
