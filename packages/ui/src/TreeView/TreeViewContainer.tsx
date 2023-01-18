@@ -1,4 +1,4 @@
-import React, { forwardRef, useState } from 'react'
+import React, { forwardRef, useRef } from 'react'
 import { TreeViewProps } from './TreeView.props'
 import { useComponentDefaultProps } from '@yomtor/styles'
 import { VirtualScroll } from '../VirtualScroll'
@@ -35,8 +35,16 @@ export const TreeViewContainer = forwardRef<HTMLDivElement, TreeViewProps>(
       setActive,
       setDeactive,
       dragging,
-      setDragging
+      setDragging,
+      position,
+      setPosition,
+      items,
+      setItems,
+      disableDrops,
+      activeds
     } = useTreeViewContext()
+
+    const lineRef = useRef<HTMLDivElement>()
     const { classes, cx } = useStyles(
       { ...others },
       { name: 'TreeView', unstyled }
@@ -62,6 +70,7 @@ export const TreeViewContainer = forwardRef<HTMLDivElement, TreeViewProps>(
     }
 
     const startHandler = () => {
+      setItems(Object.keys(activeds).map((i) => +i))
       setDragging(true)
     }
 
@@ -72,9 +81,10 @@ export const TreeViewContainer = forwardRef<HTMLDivElement, TreeViewProps>(
         size={size}
         count={nodes.length}
         ref={ref}
+        forced={items}
         onScrolling={handlerScrolling}
         node={(item) =>
-          sortabled ? (
+          sortabled || items.includes(item.index) ? (
             <Sortable
               onMouseDown={(event: MouseEvent) =>
                 mouseDownHandler(item, event as unknown as React.MouseEvent)
@@ -90,7 +100,11 @@ export const TreeViewContainer = forwardRef<HTMLDivElement, TreeViewProps>(
             <Wrapper item={item} children={children} />
           )
         }
-      />
+      >
+        {position && position !== 'in' /* && !disableDrops[current] */ && (
+          <div ref={lineRef} className={classes.line} />
+        )}
+      </Component>
     )
   }
 )

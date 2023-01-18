@@ -1,7 +1,7 @@
 import useStyles from './VirtualScroll.styles'
 import { Selectors, YomtorStyleSystemSize, DefaultProps } from '@yomtor/styles'
 import { ScrollAreaTypes } from '../ScrollArea/ScrollArea.props'
-import { VirtualItem, Virtualizer } from '@yomtor/hooks'
+import { VirtualItem, UseVirtualizer } from '@yomtor/hooks'
 
 type VirtualScrollStylesNames = Selectors<typeof useStyles>
 
@@ -12,8 +12,9 @@ export interface VirtualScrollProps
   count: number
   type?: ScrollAreaTypes
   horizontal?: boolean
-  virtualizerRef?: React.MutableRefObject<Virtualizer<Element>>
+  virtualizerRef?: React.MutableRefObject<UseVirtualizer>
   behavior?: boolean
+  forced?: number[]
   wrapper?:
     | React.ReactNode
     | ((
@@ -25,4 +26,5 @@ export interface VirtualScrollProps
       ) => React.ReactNode)
   node?: React.ReactNode | ((item: VirtualItem<Element>) => React.ReactNode)
   onScrolling?: (status: boolean) => void
+  children?: React.ReactNode
 }

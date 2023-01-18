@@ -17,12 +17,16 @@ interface TreeViewProviderContextType extends UseNodeTreeData {
   padding?: number
   sortabled?: boolean
   dragging?: boolean
+  position?: TreeViewPositions
+  items?: number[]
   setActive: (node: NodeData, event?: MouseEvent) => void
   setDeactive: (node: NodeData, event?: MouseEvent) => void
   setHighligth: (node: NodeData, status: boolean, event?: MouseEvent) => void
   setCollapse: (node: NodeData, event?: MouseEvent) => void
   setSortabled: (status: boolean) => void
   setDragging: (status: boolean) => void
+  setPosition: (position: TreeViewPositions) => void
+  setItems: (items: number[]) => void
 }
 
 const TreeViewContext = createContext<Partial<TreeViewProviderContextType>>({})
@@ -50,6 +54,7 @@ export const TreeViewProvider = ({
   const [position, setPosition] = useState<TreeViewPositions>()
   const [sortabled, setSortabled] = useState<boolean>(isSortabled)
   const [dragging, setDragging] = useState(false)
+  const [items, setItems] = useState<number[]>([])
 
   const cache = useNodeTree({
     data,
@@ -97,14 +102,17 @@ export const TreeViewProvider = ({
   const props = {
     ...cache,
     collapsed,
-    sortabled,
-    dragging,
     setActive,
     setDeactive,
     setHighligth,
     setCollapse,
+    sortabled,
     setSortabled,
-    setDragging
+    setDragging,
+    position,
+    setPosition,
+    items,
+    setItems
   }
 
   return (
