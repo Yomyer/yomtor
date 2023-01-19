@@ -4,7 +4,7 @@ import { YomtorDemo } from '@yomtor/ds'
 import { Data } from './_data'
 
 const codeTemplate = (props: string, children: string) => `
-import { TreeView } from '@mantine/core';
+import { TreeView } from '@yomtor/ui';
 import { Data } from './_data'
 
 function Demo() {
