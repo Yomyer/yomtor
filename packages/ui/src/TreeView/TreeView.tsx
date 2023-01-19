@@ -37,14 +37,16 @@ export const _TreeView = forwardRef<HTMLDivElement, TreeViewProps>(
     } = useComponentDefaultProps('TreeView', defaultProps, props)
 
     const rerender = useReducer(() => ({}), {})[1]
-    const [position, setPosition] = useState<TreeViewPositions>()
+
     const [sortabled, setSortabled] = useState<boolean>(isSortabled)
     const [dragging, setDragging] = useState(false)
     const [items, setItems] = useState<number[]>([])
-    const [current, setCurrent] = useState<number>()
     const [target, setTarget] = useState<Element>()
     const [parentHighlighted, setParentHighlighted] = useState<number>()
     const [info, setInfo] = useState<TreeViewDropInfo>()
+
+    const position = useRef<TreeViewPositions>()
+    const index = useRef<number>()
     const distance = useRef<number>(0)
     const activeds = useRef<Record<number, NodeData>>({})
 
@@ -56,7 +58,7 @@ export const _TreeView = forwardRef<HTMLDivElement, TreeViewProps>(
     const cache = useNodeTree({
       data,
       collapsed,
-      position,
+      position: position.current,
       items: activeds.current
     })
 
@@ -113,11 +115,10 @@ export const _TreeView = forwardRef<HTMLDivElement, TreeViewProps>(
       dragging,
       setDragging,
       position,
-      setPosition,
+      rerender,
       items,
       setItems,
-      current,
-      setCurrent,
+      index,
       target,
       setTarget,
       parentHighlighted,
