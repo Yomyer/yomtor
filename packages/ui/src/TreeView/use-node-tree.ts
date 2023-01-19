@@ -7,7 +7,7 @@ type UseNodeTreeProps = {
   data: NodeData[]
   collapsed?: boolean
   position?: TreeViewPositions
-  items?: { [key: number]: NodeData }
+  items?: Record<number, NodeData>
 }
 
 export interface UseNodeTreeData {

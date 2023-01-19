@@ -21,6 +21,10 @@ interface TreeViewProviderContextType extends UseNodeTreeData {
   items?: number[]
   current?: number
   target?: Element
+  indent?: number
+  parentHighlighted?: number
+  distance?: React.MutableRefObject<number>
+
   setActive: (node: NodeData, event?: MouseEvent) => void
   setDeactive: (node: NodeData, event?: MouseEvent) => void
   setHighligth: (node: NodeData, status: boolean, event?: MouseEvent) => void
@@ -31,6 +35,7 @@ interface TreeViewProviderContextType extends UseNodeTreeData {
   setItems: (items: number[]) => void
   setCurrent: (index: number) => void
   setTarget: (target: Element) => void
+  setParentHighlighted: (index: number) => void
 }
 
 const TreeViewContext = createContext<Partial<TreeViewProviderContextType>>({})
@@ -39,6 +44,7 @@ interface TreeViewProviderProps<T = NodeData> {
   data: NodeData<T>[]
   collapsed?: boolean
   sortabled?: boolean
+  indent?: number
   children:
     | React.ReactNode
     | ((data: TreeViewProviderContextType) => React.ReactNode)
@@ -52,7 +58,8 @@ export const TreeViewProvider = ({
   data,
   collapsed,
   children,
-  sortabled: isSortabled
+  sortabled: isSortabled,
+  indent = 16
 }: TreeViewProviderProps) => {
   const rerender = useReducer(() => ({}), {})[1]
   const [position, setPosition] = useState<TreeViewPositions>()
@@ -61,13 +68,18 @@ export const TreeViewProvider = ({
   const [items, setItems] = useState<number[]>([])
   const [current, setCurrent] = useState<number>()
   const [target, setTarget] = useState<Element>()
+  const [parentHighlighted, setParentHighlighted] = useState<number>()
+  const distance = useRef<number>(0)
+  const activeds = useRef<Record<number, NodeData>>({})
 
   const cache = useNodeTree({
     data,
     collapsed,
-    position
-    // items: items.current
+    position,
+    items: activeds.current
   })
+
+  activeds.current = cache.activeds
 
   const setActive = (node: NodeData, event: MouseEvent) => {
     const ctrl = event.ctrlKey || event.metaKey
@@ -107,6 +119,7 @@ export const TreeViewProvider = ({
 
   const props = {
     ...cache,
+    indent,
     collapsed,
     setActive,
     setDeactive,
@@ -122,7 +135,10 @@ export const TreeViewProvider = ({
     current,
     setCurrent,
     target,
-    setTarget
+    setTarget,
+    parentHighlighted,
+    setParentHighlighted,
+    distance
   }
 
   return (

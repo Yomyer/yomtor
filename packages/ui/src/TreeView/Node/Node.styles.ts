@@ -1,8 +1,10 @@
 import { createStyles } from '@yomtor/styles'
 
-export interface NodeStylesParams {}
+export interface NodeStylesParams {
+  indent: number
+}
 
-export default createStyles((theme, {}: NodeStylesParams) => {
+export default createStyles((theme, { indent }: NodeStylesParams) => {
   return {
     root: {
       width: '100%',
@@ -19,7 +21,7 @@ export default createStyles((theme, {}: NodeStylesParams) => {
       flexShrink: 0
     },
     indent: {
-      width: 16,
+      width: indent,
       height: '100%',
       display: 'flex',
       justifyContent: 'center',

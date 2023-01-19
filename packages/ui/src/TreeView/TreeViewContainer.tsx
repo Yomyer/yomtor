@@ -1,4 +1,4 @@
-import React, { forwardRef, useRef } from 'react'
+import React, { forwardRef, useEffect, useRef } from 'react'
 import { TreeViewProps } from './TreeView.props'
 import { useComponentDefaultProps } from '@yomtor/styles'
 import { VirtualScroll } from '../VirtualScroll'
@@ -6,7 +6,8 @@ import { Node } from './Node'
 import useStyles from './TreeView.styles'
 import { useTreeViewContext } from './TreeViewProvider'
 import { Sortable } from './Sortable'
-import { VirtualItem } from '@yomtor/hooks'
+import { useMergedRef } from '@yomtor/hooks'
+import { isUndefined } from 'lodash'
 
 const defaultProps: Partial<TreeViewProps> = {
   component: VirtualScroll,
@@ -29,9 +30,20 @@ export const TreeViewContainer = forwardRef<HTMLDivElement, TreeViewProps>(
       ...others
     } = useComponentDefaultProps('TreeView', defaultProps, props)
 
-    const { setSortabled, sortabled, position, items } = useTreeViewContext()
+    const {
+      setSortabled,
+      sortabled,
+      position,
+      target,
+      items,
+      current,
+      depths,
+      indent,
+      disableDrops
+    } = useTreeViewContext()
 
     const lineRef = useRef<HTMLDivElement>()
+    const scrollRef = useRef<HTMLElement>()
     const { classes, cx } = useStyles(
       { ...others },
       { name: 'TreeView', unstyled }
@@ -41,13 +53,46 @@ export const TreeViewContainer = forwardRef<HTMLDivElement, TreeViewProps>(
       isSortabled && setSortabled(!status)
     }
 
+    useEffect(() => {
+      if (target) {
+        const rect = target.getBoundingClientRect()
+        if (lineRef.current) {
+          const top =
+            (position === 'above' ? rect.top : rect.bottom) +
+            scrollRef.current.scrollTop -
+            scrollRef.current.getBoundingClientRect().top
+
+          lineRef.current.style.top = `${top}px`
+          lineRef.current.style.left = `${indent * (depths[current] + 1)}px`
+        }
+
+        /*
+        dropInfo.current = {
+          drag: Object.keys(items.current).length
+            ? Object.keys(items.current).map((index) => nodes[index])
+            : undefined,
+          drop:
+            !isUndefined(current) &&
+            !disableDrops[current] &&
+            !(
+              Object.keys(items.current).includes(current.toString()) &&
+              position === 'in'
+            )
+              ? nodes[current]
+              : undefined,
+          position
+        }
+        */
+      }
+    }, [current, position])
+
     return (
       <Component
         {...others}
         className={cx(className, classes.root)}
         size={size}
         count={nodes.length}
-        ref={ref}
+        ref={useMergedRef(ref, scrollRef)}
         forced={items}
         onScrolling={handlerScrolling}
         node={(item) =>
@@ -60,7 +105,7 @@ export const TreeViewContainer = forwardRef<HTMLDivElement, TreeViewProps>(
           )
         }
       >
-        {position && position !== 'in' /* && !disableDrops[current] */ && (
+        {position && position !== 'in' && !disableDrops[current] && (
           <div ref={lineRef} className={classes.line} />
         )}
       </Component>

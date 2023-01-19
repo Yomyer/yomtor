@@ -19,8 +19,10 @@ export const _Node = forwardRef<HTMLDivElement, NodeProps>((props, ref) => {
     setCollapse,
     depths,
     nodes,
+    indent,
     sortabled,
     childActiveds,
+    parentHighlighted,
     collapsed: rootCollapsed
   } = useTreeViewContext()
 
@@ -30,7 +32,7 @@ export const _Node = forwardRef<HTMLDivElement, NodeProps>((props, ref) => {
     ? !node.collapsed
     : !rootCollapsed
 
-  const { classes, cx } = useStyles({}, { name: 'Node', unstyled })
+  const { classes, cx } = useStyles({ indent }, { name: 'Node', unstyled })
 
   if (!sortabled) {
     others.onMouseDown = (event) => setActive(node, event)
@@ -46,7 +48,8 @@ export const _Node = forwardRef<HTMLDivElement, NodeProps>((props, ref) => {
       ref={ref}
       className={cx(className, classes.root, {
         [classes.actived]: node.actived,
-        [classes.highlighted]: node.highlighted,
+        [classes.highlighted]:
+          node.highlighted || parentHighlighted === item.index,
         [classes.parentActived]: childActiveds[item.index]
       })}
       onMouseEnter={(event) => setHighligth(node, true, event)}
