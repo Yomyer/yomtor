@@ -36,7 +36,7 @@ export const TreeViewContainer = forwardRef<HTMLDivElement, TreeViewProps>(
       position,
       target,
       items,
-      index,
+      current,
       depths,
       indent,
       disableDrops
@@ -58,17 +58,15 @@ export const TreeViewContainer = forwardRef<HTMLDivElement, TreeViewProps>(
         const rect = target.getBoundingClientRect()
         if (lineRef.current) {
           const top =
-            (position.current === 'above' ? rect.top : rect.bottom) +
+            (position === 'above' ? rect.top : rect.bottom) +
             scrollRef.current.scrollTop -
             scrollRef.current.getBoundingClientRect().top
 
           lineRef.current.style.top = `${top}px`
-          lineRef.current.style.left = `${
-            indent * (depths[index.current] + 1)
-          }px`
+          lineRef.current.style.left = `${indent * (depths[current] + 1)}px`
         }
       }
-    }, [index.current, position.current])
+    }, [current, position])
 
     return (
       <Component
@@ -89,11 +87,9 @@ export const TreeViewContainer = forwardRef<HTMLDivElement, TreeViewProps>(
           )
         }
       >
-        {position.current &&
-          position.current !== 'in' &&
-          !disableDrops[index.current] && (
-            <div ref={lineRef} className={classes.line} />
-          )}
+        {position && position !== 'in' && !disableDrops[current] && (
+          <div ref={lineRef} className={classes.line} />
+        )}
       </Component>
     )
   }

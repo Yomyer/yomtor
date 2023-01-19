@@ -8,14 +8,14 @@ export interface TreeViewProviderContextType extends UseNodeTreeData {
   padding?: number
   sortabled?: boolean
   dragging?: boolean
+  position?: TreeViewPositions
   items?: number[]
-  info?: TreeViewDropInfo
+  current?: number
   target?: Element
   indent?: number
   parentHighlighted?: number
-  position?: React.MutableRefObject<TreeViewPositions>
   distance?: React.MutableRefObject<number>
-  index?: React.MutableRefObject<number>
+  info?: TreeViewDropInfo
 
   setActive: (node: NodeData, event?: MouseEvent) => void
   setDeactive: (node: NodeData, event?: MouseEvent) => void
@@ -23,11 +23,12 @@ export interface TreeViewProviderContextType extends UseNodeTreeData {
   setCollapse: (node: NodeData, event?: MouseEvent) => void
   setSortabled: (status: boolean) => void
   setDragging: (status: boolean) => void
+  setPosition: (position: TreeViewPositions) => void
   setItems: (items: number[]) => void
+  setCurrent: (index: number) => void
   setTarget: (target: Element) => void
   setParentHighlighted: (index: number) => void
   setInfo: (info: TreeViewDropInfo) => void
-  rerender: React.DispatchWithoutAction
 }
 
 export const TreeViewContext = createContext<
