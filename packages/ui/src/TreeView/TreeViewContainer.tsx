@@ -4,10 +4,10 @@ import { useComponentDefaultProps } from '@yomtor/styles'
 import { VirtualScroll } from '../VirtualScroll'
 import { Node } from './Node'
 import useStyles from './TreeView.styles'
-import { useTreeViewContext } from './TreeViewProvider'
 import { Sortable } from './Sortable'
 import { useMergedRef } from '@yomtor/hooks'
 import { isUndefined } from 'lodash'
+import { useTreeViewContext } from './TreeViewContext'
 
 const defaultProps: Partial<TreeViewProps> = {
   component: VirtualScroll,
@@ -65,24 +65,6 @@ export const TreeViewContainer = forwardRef<HTMLDivElement, TreeViewProps>(
           lineRef.current.style.top = `${top}px`
           lineRef.current.style.left = `${indent * (depths[current] + 1)}px`
         }
-
-        /*
-        dropInfo.current = {
-          drag: Object.keys(items.current).length
-            ? Object.keys(items.current).map((index) => nodes[index])
-            : undefined,
-          drop:
-            !isUndefined(current) &&
-            !disableDrops[current] &&
-            !(
-              Object.keys(items.current).includes(current.toString()) &&
-              position === 'in'
-            )
-              ? nodes[current]
-              : undefined,
-          position
-        }
-        */
       }
     }, [current, position])
 

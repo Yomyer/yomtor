@@ -59,7 +59,7 @@ export const useNodeTree = ({
       if (actived) {
         childActiveds[index] = node
       }
-      if (disableDrop) {
+      if (disableDrop || Object.keys(items).includes(index.toString())) {
         disableDrops[index] = node
       }
 

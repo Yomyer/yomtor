@@ -11,8 +11,12 @@ export default createStyles((theme, {}: TreeViewProps) => ({
     left: 0,
     right: 0,
     top: 0,
-    height: 3,
-    background: 'white',
+    marginTop: -1,
+    height: 2,
+    background:
+      theme.colorScheme === 'dark'
+        ? theme.colors.gray[2]
+        : theme.colors.gray[8],
     pointerEvents: 'none'
   }
 }))

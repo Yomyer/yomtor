@@ -1,15 +1,15 @@
-import React, { forwardRef, useRef } from 'react'
+import React, { forwardRef, useCallback, useRef } from 'react'
 import { useComponentDefaultProps } from '@yomtor/styles'
 
 import { SortableProps } from './Sortable.props'
 import useStyles from './Sortable.styles'
 import { DropEvent, Droppable } from '../../Droppable'
 import { Draggable } from '../../Draggable'
-import { useTreeViewContext } from '../TreeViewProvider'
 import { VirtualItem } from '@yomtor/hooks'
 import { DraggableEvent } from 'react-draggable'
 import { TreeViewPositions } from '../TreeView.props'
 import { isUndefined } from 'lodash'
+import { useTreeViewContext } from '../TreeViewContext'
 
 const defaultProps: Partial<SortableProps> = {}
 
@@ -21,7 +21,6 @@ export const Sortable = forwardRef<HTMLDivElement, SortableProps>(
     const {
       setActive,
       setDeactive,
-      dragging,
       setDragging,
       position,
       setPosition,
@@ -37,7 +36,9 @@ export const Sortable = forwardRef<HTMLDivElement, SortableProps>(
       nexts,
       depths,
       parents,
+      setInfo,
       indent,
+      disableDrops,
       setParentHighlighted
     } = useTreeViewContext()
 
@@ -54,7 +55,7 @@ export const Sortable = forwardRef<HTMLDivElement, SortableProps>(
       setDeactive(nodes[item.index], event as React.MouseEvent)
       setDragging(false)
       setPosition(undefined)
-      setCurrent(undefined)
+      // setCurrent(undefined)
       setParentHighlighted(undefined)
       distance.current = 0
     }
@@ -82,56 +83,78 @@ export const Sortable = forwardRef<HTMLDivElement, SortableProps>(
       return stack
     }
 
-    const moveHandler = ({
-      target,
-      props
-    }: DropEvent<{ mouseEvent?: MouseEvent }>) => {
-      setTarget(target)
+    const moveHandler = useCallback(
+      ({ target, props }: DropEvent<{ mouseEvent?: MouseEvent }>) => {
+        setTarget(target)
 
-      const node = nodes[item.index]
-      const rect = target.getBoundingClientRect()
-      const height = node.children ? 10 : rect.height / 2
-      const y = props.mouseEvent.clientY
+        const node = nodes[item.index]
+        const rect = target.getBoundingClientRect()
+        const height = node.children ? 10 : rect.height / 2
+        const y = props.mouseEvent.clientY
 
-      let index = item.index
-      let position: TreeViewPositions = 'in'
-      let parent!: number
+        let index = item.index
+        let position: TreeViewPositions = 'in'
+        let parent!: number
 
-      distance.current += props.mouseEvent.movementX
+        distance.current += props.mouseEvent.movementX
 
-      if (rect.top + height >= y) {
-        position = 'above'
-      }
-      if (rect.bottom - height <= y) {
-        position = 'below'
-
-        const closets = getAllParents(index).reverse()
-        if (closets.length) {
-          closets.push(node)
-          let indexX = Math.ceil(distance.current / indent) - 2
-
-          if (indexX > -1) {
-            indexX = Math.min(Math.max(indexX, 0), closets.length - 1)
-            index = nodes.findIndex((node) => node === closets[indexX])
-          } else {
-            index = nodes.findIndex((node) => node === closets[0])
-          }
-        } else if (depths[index + 1] > depths[index]) {
-          index = index + 1
+        if (rect.top + height >= y) {
+          position = 'above'
         }
-      }
+        if (rect.bottom - height <= y) {
+          position = 'below'
 
-      if (parents[index] && position !== 'in') {
-        parent = nodes.findIndex((node) => node === parents[index])
-      }
+          const closets = getAllParents(index).reverse()
+          if (closets.length) {
+            closets.push(node)
+            let indexX = Math.ceil(distance.current / indent) - 2
 
-      setCurrent(index)
-      setPosition(position)
-      setParentHighlighted(parent)
+            if (indexX > -1) {
+              indexX = Math.min(Math.max(indexX, 0), closets.length - 1)
+              index = nodes.findIndex((node) => node === closets[indexX])
+            } else {
+              index = nodes.findIndex((node) => node === closets[0])
+            }
+          } else if (depths[index + 1] > depths[index]) {
+            // console.log(depths[index + 1], depths[index])
+            index = index + 1
+          }
+        }
+
+        if (parents[index] && position !== 'in') {
+          parent = nodes.findIndex((node) => node === parents[index])
+        } else if (position === 'in') {
+          parent = index
+        }
+
+        console.log(index, position)
+        setCurrent(index)
+        setPosition(position)
+        setParentHighlighted(parent)
+      },
+      [position, current]
+    )
+
+    const dropHandler = () => {
+      setTimeout(() => {
+        console.log(current)
+      }, 100)
+      /*setInfo({
+        drag: Object.keys(items).length
+          ? Object.keys(items).map((index) => nodes[index])
+          : undefined,
+        drop:
+          !isUndefined(current) &&
+          !disableDrops[current] &&
+          !(
+            Object.keys(items).includes(current.toString()) && position === 'in'
+          )
+            ? nodes[current]
+            : undefined,
+        position
+      })*/
     }
-
-    const dropHandler = () => {}
-
+    console.log('current', current)
     return (
       <Droppable onMove={moveHandler} onDrop={dropHandler}>
         {() => (

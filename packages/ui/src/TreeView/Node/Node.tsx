@@ -5,7 +5,7 @@ import { NodeProps } from './Node.props'
 import useStyles from './Node.styles'
 import { isArray, isFunction, isUndefined } from 'lodash'
 import { PlayIcon } from '@yomtor/icons'
-import { useTreeViewContext } from '../TreeViewProvider'
+import { useTreeViewContext } from '../TreeViewContext'
 
 const defaultProps: Partial<NodeProps> = {}
 
@@ -23,6 +23,9 @@ export const _Node = forwardRef<HTMLDivElement, NodeProps>((props, ref) => {
     sortabled,
     childActiveds,
     parentHighlighted,
+    disableDrops,
+    dragging,
+    items,
     collapsed: rootCollapsed
   } = useTreeViewContext()
 
@@ -49,7 +52,9 @@ export const _Node = forwardRef<HTMLDivElement, NodeProps>((props, ref) => {
       className={cx(className, classes.root, {
         [classes.actived]: node.actived,
         [classes.highlighted]:
-          node.highlighted || parentHighlighted === item.index,
+          ((node.highlighted && !dragging) ||
+            parentHighlighted === item.index) &&
+          !disableDrops[item.index],
         [classes.parentActived]: childActiveds[item.index]
       })}
       onMouseEnter={(event) => setHighligth(node, true, event)}

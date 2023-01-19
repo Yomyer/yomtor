@@ -40,12 +40,12 @@ export default createStyles((theme, { indent }: NodeStylesParams) => {
       cursor: 'pointer'
     },
     actived: {
-      background: theme.colors.primary[9],
-      color: theme.white
+      background: theme.fn.rgba(theme.colors.primary[5], 0.2),
+      color: theme.colorScheme === 'dark' ? theme.white : theme.black
     },
     parentActived: {
-      background: theme.colors.primary[8],
-      color: theme.white
+      background: theme.fn.rgba(theme.colors.primary[3], 0.2),
+      color: theme.colorScheme === 'dark' ? theme.white : theme.black
     },
     highlighted: {
       '&:after': {
@@ -55,7 +55,7 @@ export default createStyles((theme, { indent }: NodeStylesParams) => {
         bottom: '0px',
         left: '0',
         right: '0',
-        border: `1px solid ${theme.colors.primary[9]}`,
+        border: `1px solid ${theme.fn.rgba(theme.colors.primary[3], 0.2)}`,
         pointerEvents: 'none'
       }
     },

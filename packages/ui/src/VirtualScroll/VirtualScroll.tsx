@@ -105,6 +105,7 @@ export const _VirtualScroll = forwardRef<HTMLDivElement, VirtualScrollProps>(
         {...others}
         ref={useMergedRef(ref, scrollRef)}
         className={cx(className, classes.root)}
+        type='hover'
       >
         <Box
           style={{

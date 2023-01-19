@@ -5,6 +5,12 @@ import { NodeData, NodeProps } from './Node/Node.props'
 
 export type TreeViewPositions = 'below' | 'above' | 'in'
 
+export type TreeViewDropInfo = {
+  drag: NodeData[]
+  drop: NodeData
+  position: TreeViewPositions
+}
+
 export interface TreeViewProps<T = NodeData> extends DefaultProps {
   data?: NodeData<T>[]
   component?: any
@@ -19,4 +25,6 @@ export interface TreeViewProps<T = NodeData> extends DefaultProps {
   draggable?: boolean
   multiple?: boolean
   nodes?: NodeData[]
+  indent?: number
+  onSort?: (info: TreeViewDropInfo) => void
 }
