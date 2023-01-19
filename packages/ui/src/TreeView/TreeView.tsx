@@ -77,6 +77,8 @@ export const _TreeView = forwardRef<HTMLDivElement, TreeViewProps>(
         node.actived = !node.actived
       }
 
+      node.highlighted = false
+
       rerender()
     }
 

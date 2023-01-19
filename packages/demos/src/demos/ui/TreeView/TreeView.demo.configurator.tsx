@@ -10,7 +10,7 @@ import { Data } from './_data'
 function Demo() {
   return (
     <TreeView${props} data={Data}>
-      ${children}
+      {(node, item) => <div>{node.label}</div>}
     </TreeView>
   );
 }
@@ -22,7 +22,7 @@ function Wrapper(props: TreeViewProps) {
         {...props}
         data={Data}
         style={{ height: 300 }}
-        onSort={(info) => console.log(info)}
+        onSort={(info) => alert(JSON.stringify(info))}
       >
         {(node, item) => <div>{node.label}</div>}
       </TreeView>
@@ -34,11 +34,6 @@ export const configurator: YomtorDemo = {
   codeTemplate,
   component: Wrapper,
   configurator: [
-    {
-      name: 'variant',
-      type: 'select',
-      data: [{ label: 'filled', value: 'filled' }]
-    },
     {
       name: 'collapsed',
       type: 'boolean'
