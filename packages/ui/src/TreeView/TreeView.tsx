@@ -32,6 +32,7 @@ export const _TreeView = forwardRef<HTMLDivElement, TreeViewProps>(
       collapsed,
       className,
       indent,
+      onSort,
       sortabled: isSortabled,
       ...others
     } = useComponentDefaultProps('TreeView', defaultProps, props)
@@ -50,8 +51,12 @@ export const _TreeView = forwardRef<HTMLDivElement, TreeViewProps>(
 
     useEffect(() => {
       if (!info) return
-      console.log(info)
+      onSort && onSort(info)
     }, [info])
+
+    useEffect(() => {
+      setSortabled(isSortabled)
+    }, [isSortabled])
 
     const cache = useNodeTree({
       data,

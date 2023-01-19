@@ -18,7 +18,12 @@ function Demo() {
 function Wrapper(props: TreeViewProps) {
   return (
     <Group position='center'>
-      <TreeView {...props} sortabled data={Data} style={{ height: 300 }}>
+      <TreeView
+        {...props}
+        data={Data}
+        style={{ height: 300 }}
+        onSort={(info) => console.log(info)}
+      >
         {(node, item) => <div>{node.label}</div>}
       </TreeView>
     </Group>
@@ -36,6 +41,10 @@ export const configurator: YomtorDemo = {
     },
     {
       name: 'collapsed',
+      type: 'boolean'
+    },
+    {
+      name: 'sortabled',
       type: 'boolean'
     }
   ]
