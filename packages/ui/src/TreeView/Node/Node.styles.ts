@@ -12,7 +12,8 @@ export default createStyles((theme, { indent }: NodeStylesParams) => {
       alignItems: 'center',
       height: '100%',
       letterSpacing: '.005em',
-      fontSize: 13
+      fontSize: 13,
+      userSelect: 'none'
     },
     indents: {
       display: 'flex',
@@ -40,11 +41,11 @@ export default createStyles((theme, { indent }: NodeStylesParams) => {
       cursor: 'pointer'
     },
     actived: {
-      background: theme.fn.rgba(theme.colors.primary[5], 0.2),
+      background: theme.fn.rgba(theme.colors.primary[3], 0.2),
       color: theme.colorScheme === 'dark' ? theme.white : theme.black
     },
     parentActived: {
-      background: theme.fn.rgba(theme.colors.primary[3], 0.2),
+      background: theme.fn.rgba(theme.colors.primary[5], 0.2),
       color: theme.colorScheme === 'dark' ? theme.white : theme.black
     },
     highlighted: {

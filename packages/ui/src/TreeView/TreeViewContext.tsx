@@ -13,6 +13,7 @@ export interface TreeViewProviderContextType extends UseNodeTreeData {
   current?: number
   target?: Element
   indent?: number
+  multiple?: boolean
   parentHighlighted?: number
   distance?: React.MutableRefObject<number>
   info?: TreeViewDropInfo
