@@ -1,3 +1,5 @@
 import { ActionIconProps as BaseActionIconProps } from '@mantine/core'
 
-export type ActionIconProps = BaseActionIconProps
+export interface ActionIconProps extends BaseActionIconProps {
+  compact?: boolean
+}

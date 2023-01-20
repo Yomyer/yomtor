@@ -41,6 +41,10 @@ export const configurator: YomtorDemo = {
     {
       name: 'sortabled',
       type: 'boolean'
+    },
+    {
+      name: 'multiple',
+      type: 'boolean'
     }
   ]
 }

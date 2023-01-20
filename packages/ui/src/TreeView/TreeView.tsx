@@ -18,7 +18,7 @@ import {
 import { TreeViewContainer } from './TreeViewContainer'
 import { NodeData } from './Node'
 import { useNodeTree } from './use-node-tree'
-import { isUndefined } from 'lodash'
+import { isUndefined, range } from 'lodash'
 import { TreeViewContext } from './TreeViewContext'
 
 const defaultProps: Partial<TreeViewProps> = {
@@ -34,6 +34,7 @@ export const _TreeView = forwardRef<HTMLDivElement, TreeViewProps>(
       indent,
       onSort,
       sortabled: isSortabled,
+      multiple,
       ...others
     } = useComponentDefaultProps('TreeView', defaultProps, props)
 
@@ -48,6 +49,7 @@ export const _TreeView = forwardRef<HTMLDivElement, TreeViewProps>(
     const [info, setInfo] = useState<TreeViewDropInfo>()
     const distance = useRef<number>(0)
     const activeds = useRef<Record<number, NodeData>>({})
+    const prev = useRef<number>()
 
     useEffect(() => {
       if (!info) return
@@ -69,7 +71,13 @@ export const _TreeView = forwardRef<HTMLDivElement, TreeViewProps>(
 
     const setActive = (node: NodeData, event: MouseEvent) => {
       const ctrl = event.ctrlKey || event.metaKey
-      if (!ctrl && !Object.values(cache.activeds).includes(node)) {
+      const shift = event.shiftKey
+      const index = cache.nodes.findIndex((n) => n === node)
+
+      if (
+        (!ctrl && !shift && !Object.values(cache.activeds).includes(node)) ||
+        !multiple
+      ) {
         Object.values(cache.activeds).forEach((n) => (n.actived = false))
       }
 
@@ -77,8 +85,14 @@ export const _TreeView = forwardRef<HTMLDivElement, TreeViewProps>(
         node.actived = !node.actived
       }
 
-      node.highlighted = false
+      if (shift && !ctrl && multiple) {
+        const ranges = [prev.current, index]
+        const indexes = range(Math.min(...ranges), Math.max(...ranges) + 1)
+        indexes.forEach((i) => (cache.nodes[i].actived = true))
+      }
 
+      node.highlighted = false
+      prev.current = index
       rerender()
     }
 
@@ -111,6 +125,7 @@ export const _TreeView = forwardRef<HTMLDivElement, TreeViewProps>(
       ...cache,
       indent,
       collapsed,
+      multiple,
       setActive,
       setDeactive,
       setHighligth,

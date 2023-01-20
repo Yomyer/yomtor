@@ -68,6 +68,12 @@ export const configurator: YomtorDemo = {
       initialValue: false
     },
     {
+      name: 'compact',
+      type: 'boolean',
+      defaultValue: false,
+      initialValue: false
+    },
+    {
       name: 'loading',
       type: 'boolean',
       defaultValue: false,

@@ -3,7 +3,7 @@ import { Input, InputProps } from '@yomtor/ui'
 import { ArtboardIcon } from '@yomtor/icons'
 import { YomtorDemo } from '@yomtor/ds'
 
-const codeTemplate = (props: string) => `
+const codeTemplate = (props: string, a: any) => `
 import { Input } from '@yomtor/ui'
 import { ArtboardIcon } from '@yomtor/icons'
 
