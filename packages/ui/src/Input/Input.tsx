@@ -7,20 +7,21 @@ import { InputProps } from './Input.props'
 import useStyles from './Input.styles'
 
 const defaultProps: Partial<InputProps> = {
-  size: 'xs',
+  size: 'sm',
   radius: 'xs',
-  compact: true
+  compact: true,
+  variant: 'transparent'
 }
 
 export const _Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
-  const { unstyled, compact, ...others } = useComponentDefaultProps(
+  const { unstyled, compact, variant, ...others } = useComponentDefaultProps(
     'Input',
     defaultProps,
     props
   )
 
   const { classes, cx } = useStyles(
-    { compact, ...others },
+    { compact, variant, ...others },
     { name: 'Input', unstyled }
   )
 

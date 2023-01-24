@@ -5,10 +5,6 @@ import { Group } from '@mantine/core'
 
 export default { title: 'UI/Buttons/Button' }
 
-export function Primary() {
-  return <Button variant='filled'>Filled</Button>
-}
-
 export function Colors() {
   const items = YOMTOR_COLORS.map((color) => (
     <Group mt='xl' key={color}>

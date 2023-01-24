@@ -4,24 +4,36 @@ import { useComponentDefaultProps } from '@yomtor/styles'
 
 import { ActionIcon as BaseActionIcon } from '@mantine/core'
 import { ActionIconProps } from './ActionIcon.props'
+import Ink from 'react-ink'
 import useStyles from './ActionIcon.styles'
 
-const defaultProps: Partial<ActionIconProps> = {}
+const defaultProps: Partial<ActionIconProps> = {
+  size: 'md',
+  variant: 'transparent',
+  radius: 'xs',
+  compact: true,
+  actived: false
+}
 
 export const _ActionIcon = forwardRef<HTMLButtonElement, ActionIconProps>(
   (props, ref) => {
-    const { unstyled, ...others } = useComponentDefaultProps(
+    const { unstyled, compact, children, ...others } = useComponentDefaultProps(
       'ActionIcon',
       defaultProps,
       props
     )
 
     const { classes, cx } = useStyles(
-      { ...others },
+      { ...others, compact },
       { name: 'ActionIcon', unstyled }
     )
 
-    return <BaseActionIcon {...others} ref={ref} className={classes.root} />
+    return (
+      <BaseActionIcon {...others} ref={ref} className={classes.root}>
+        <Ink hasTouch={false} opacity={0.05} />
+        {children}
+      </BaseActionIcon>
+    )
   }
 ) as any
 

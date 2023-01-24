@@ -6,9 +6,9 @@ import { Button as BaseButton } from '@mantine/core'
 import { ButtonProps } from './Button.props'
 
 const defaultProps: Partial<ButtonProps> = {
-  size: 'xs',
+  size: 'sm',
   variant: 'default',
-  radius: 'xs',
+  radius: 'sm',
   compact: true
 }
 

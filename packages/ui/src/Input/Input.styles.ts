@@ -9,10 +9,13 @@ const sizes = {
   'compact-xl': { height: 40, paddingLeft: 14, paddingRight: 14 }
 }
 
-export default createStyles((theme, { size, compact }: InputProps) => ({
-  input: {
-    ...(compact
-      ? { ...sizes[`compact-${size}`], minHeight: 'unset' }
-      : undefined)
-  }
-}))
+export default createStyles(
+  (theme, { size, variant, compact }: InputProps) => ({
+    input: {
+      ...theme.fn.getVariant({ variant, withFocus: true }),
+      ...(compact
+        ? { ...sizes[`compact-${size}`], minHeight: 'unset' }
+        : undefined)
+    }
+  })
+)
