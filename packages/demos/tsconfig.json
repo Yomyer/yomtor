@@ -3,7 +3,8 @@
   "include": [
     "./src",
     "../../configuration/types",
-    "../../configuration/types/yomtor.d.ts"
+    "../../configuration/types/yomtor.d.ts",
+    "../core/src/ZoomTool"
   ],
   "compilerOptions": {
     "rootDir": "src",

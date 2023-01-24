@@ -1,16 +1,11 @@
 import React, { useRef, useEffect } from 'react'
 import { YomtorDemo } from '@yomtor/ds'
-import {
-  YomtorProvider,
-  Canvas,
-  CanvasProps,
-  ViewTool,
-  ZoomTool
-} from '@yomtor/core'
+import { YomtorProvider, Canvas, ViewToolProps, ViewTool } from '@yomtor/core'
 import { Path } from '@yomtor/paper'
 
 const codeTemplate = (props: string) => `
-import { Yomtor } from '@yomtor/core'
+import { YomtorProvider, Canvas, ViewToolProps, ViewTool } from '@yomtor/core'
+import { Path } from '@yomtor/paper'
 
 function Demo() {
   useEffect(() => {
@@ -23,12 +18,15 @@ function Demo() {
 
   return (
     <YomtorProvider>
-      <Canvas {...props} resize={false} />
+      <Canvas resize={false} >
+        <ViewTool ${props}/>
+      </Canvas>
     </YomtorProvider>
   )
 }
 `
-function Wrapper(props: CanvasProps) {
+
+function Wrapper(props: ViewToolProps) {
   useEffect(() => {
     new Path.Rectangle({
       from: [10, 10],
@@ -39,16 +37,23 @@ function Wrapper(props: CanvasProps) {
 
   return (
     <YomtorProvider>
-      <Canvas {...props} resize={false}>
-        <ViewTool />
-        <ZoomTool />
+      <Canvas resize={false}>
+        <ViewTool {...props} />
       </Canvas>
     </YomtorProvider>
   )
 }
+
 export const configurator: YomtorDemo = {
   type: 'configurator',
   codeTemplate,
   component: Wrapper,
-  configurator: []
+  configurator: [
+    {
+      name: 'factor',
+      type: 'number',
+      initialValue: 5,
+      defaultValue: 5
+    }
+  ]
 }

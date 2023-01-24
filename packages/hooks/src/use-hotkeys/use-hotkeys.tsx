@@ -15,7 +15,6 @@ export type HotKeysOptions = {
   down?: HotKeyHandler
   up?: HotKeyHandler
   options?: Options
-  deps?: React.DependencyList
 }
 
 export interface HotKeyHandler {
@@ -74,13 +73,10 @@ export type Options = {
   keydown?: boolean
 }
 
-export function useHotkeys<T extends Element>({
-  keys,
-  down,
-  up,
-  options,
-  deps
-}: HotKeysOptions): React.MutableRefObject<T | null> {
+export function useHotkeys<T extends Element>(
+  { keys, down, up, options }: HotKeysOptions,
+  deps?: React.DependencyList
+): React.MutableRefObject<T | null> {
   const {
     enableOnTags,
     filter,

@@ -39,8 +39,9 @@ export default function Configurator({
   }, {})
 
   const [state, setState] = useState(initialState)
-  const setStateField = (field: string, value: any) =>
+  const setStateField = (field: string, value: any) => {
     setState((current) => ({ ...current, [field]: value }))
+  }
 
   const items = componentProps.map((prop, index) => {
     const { name, data, type, capitalize, initialValue, label, ...others } =
@@ -88,7 +89,7 @@ export default function Configurator({
           }}
         >
           <div>
-            <Component {...pickBy(state, identity)} />
+            <Component {...state} />
           </div>
         </div>
         <div className={classes.controls}>{items}</div>

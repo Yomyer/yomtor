@@ -34,7 +34,6 @@ export const Canvas = forwardRef<PaperScope, CanvasProps>((props, ref) => {
   useEffect(() => {
     const scope = new PaperScope()
 
-    console.log(scope)
     scope.setup(canvasRef.current)
     initCanvas(scope)
     cursorWithScope(canvasRef.current)

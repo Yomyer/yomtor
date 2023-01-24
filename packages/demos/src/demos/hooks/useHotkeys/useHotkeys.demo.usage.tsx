@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 import { useHotkeys } from '@yomtor/hooks'
+import { YomtorDemo } from '@yomtor/ds'
 
 const code = `
 import { useState } from 'react'
 import { useHotkeys } from '@yomtor/hooks'
+
 
 const [key, setKey] = useState<string>()
   useHotkeys({
