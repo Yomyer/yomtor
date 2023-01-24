@@ -57,4 +57,4 @@ export function ColorControl({
   )
 }
 
-ColorControl.initialValue = 'blue'
+ColorControl.initialValue = ''

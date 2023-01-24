@@ -1,11 +1,15 @@
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 
-import { MantineProvider, MantineProviderProps } from '@mantine/styles'
+import {
+  MantineProvider,
+  MantineProviderProps,
+  useMantineTheme
+} from '@mantine/styles'
 import { YomtorThemeOverride } from './types'
 import { mergeDeep } from './utils/merge-deep'
 import { DEFAULT_THEME } from './default-theme'
 import createCache from '@emotion/cache'
-import { useMantineTheme } from '@mantine/core'
+import { Overwrite } from './Overwrite'
 
 export interface YomtorProviderProps extends MantineProviderProps {
   theme?: YomtorThemeOverride
@@ -30,6 +34,7 @@ export function YomtorProvider({
       withNormalizeCSS
       emotionCache={YomtorCache}
     >
+      <Overwrite />
       {children}
     </MantineProvider>
   )

@@ -1,5 +1,5 @@
 import React from 'react'
-import { ActionIconProps, ActionIcon, Group } from '@yomtor/ui'
+import { ActionIconProps, ActionIcon, Group, Input } from '@yomtor/ui'
 import { ArtboardIcon } from '@yomtor/icons'
 import { YomtorDemo } from '@yomtor/ds'
 
@@ -10,7 +10,7 @@ import { ActionIcon } from '@yomtor/ui'
 function Demo() {
   return (
     <ActionIcon${props}>
-      <ArtboardIcon size={props.size}/>
+      <ArtboardIcon/>
     </ActionIcon>
   );
 }
@@ -18,8 +18,9 @@ function Demo() {
 function Wrapper(props: ActionIconProps) {
   return (
     <Group position='center'>
+      <Input />
       <ActionIcon {...props}>
-        <ArtboardIcon size={props.size} />
+        <ArtboardIcon />
       </ActionIcon>
     </Group>
   )
@@ -38,8 +39,8 @@ export const configurator: YomtorDemo = {
     {
       name: 'variant',
       type: 'select',
-      initialValue: 'subtle',
-      defaultValue: 'subtle',
+      initialValue: 'transparent',
+      defaultValue: 'transparent',
       data: [
         { label: 'transparent', value: 'transparent' },
         { label: 'subtle', value: 'subtle' },
@@ -58,8 +59,8 @@ export const configurator: YomtorDemo = {
     {
       name: 'radius',
       type: 'size',
-      initialValue: 'sm',
-      defaultValue: 'sm'
+      initialValue: 'xs',
+      defaultValue: 'xs'
     },
     {
       name: 'disabled',
@@ -69,6 +70,12 @@ export const configurator: YomtorDemo = {
     },
     {
       name: 'compact',
+      type: 'boolean',
+      defaultValue: true,
+      initialValue: true
+    },
+    {
+      name: 'actived',
       type: 'boolean',
       defaultValue: false,
       initialValue: false

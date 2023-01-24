@@ -4,6 +4,7 @@ import { Prism } from '@mantine/prism'
 import controls, { ControlProps } from './controls'
 import { propsToString } from './props-to-string'
 import useStyles from './Configurator.styles'
+import { pickBy, identity } from 'lodash'
 
 interface ConfiguratorProps {
   component: any
@@ -87,7 +88,7 @@ export default function Configurator({
           }}
         >
           <div>
-            <Component {...state} />
+            <Component {...pickBy(state, identity)} />
           </div>
         </div>
         <div className={classes.controls}>{items}</div>

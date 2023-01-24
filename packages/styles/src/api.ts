@@ -23,7 +23,8 @@ export type {
   MantineNumberSize as YomtorNumberSize,
   MantineSize as YomtorSize,
   MantineSizes as YomtorSizes,
-  MantineThemeOther as YomtorThemeOther
+  MantineThemeOther as YomtorThemeOther,
+  MantineGradient as YomtorGradient
 } from '@mantine/styles'
 
 export type {

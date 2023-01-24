@@ -28,7 +28,8 @@ export const configurator: YomtorDemo = {
     {
       name: 'variant',
       type: 'select',
-      initialValue: 'filled',
+      initialValue: 'default',
+      defaultValue: 'default',
       data: [
         { label: 'filled', value: 'filled' },
         { label: 'light', value: 'light' },
@@ -40,14 +41,26 @@ export const configurator: YomtorDemo = {
     {
       name: 'color',
       type: 'color',
-      initialValue: 'primary',
-      defaultValue: 'primary'
+      initialValue: '',
+      defaultValue: ''
+    },
+    {
+      name: 'radius',
+      type: 'size',
+      initialValue: 'sm',
+      defaultValue: 'sm'
+    },
+    {
+      name: 'size',
+      type: 'size',
+      initialValue: 'sm',
+      defaultValue: 'sm'
     },
     {
       name: 'compact',
       type: 'boolean',
-      initialValue: false,
-      defaultValue: false
+      initialValue: true,
+      defaultValue: true
     },
     {
       name: 'disabled',

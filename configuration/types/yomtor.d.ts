@@ -1,5 +1,9 @@
 import '@mantine/styles'
-import { DefaultYomtorColor, YomtorTheme } from '@yomtor/styles/src'
+import {
+  DefaultYomtorColor,
+  YomtorTheme,
+  VariantOutput as YomtorVariantOutput
+} from '@yomtor/styles/src'
 
 declare module '@mantine/styles' {
   export declare function useMantineTheme(): YomtorTheme
