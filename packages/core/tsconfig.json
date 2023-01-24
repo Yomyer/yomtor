@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "../../tsconfig.json",
   "include": ["./src", "../../configuration/types"],
   "compilerOptions": {
     "rootDir": "src",
@@ -10,21 +10,21 @@
     "declarationDir": "lib",
     "composite": true,
     "paths": {
+      "@yomtor/paper": ["../paper/dist"],
       "@yomtor/ui": ["../ui/src"],
-      "@yomtor/paper": ["../ui/src"],
       "@yomtor/hooks": ["../hooks/src"],
-      "@yomtor/utils": ["../utils/src"],
       "@yomtor/icons": ["../icons/src"],
       "@yomtor/styles": ["../styles/src"],
-      "@yomtor/ds": ["../ds/src"]
+      "@yomtor/utils": ["../utils/src"],
+      "@yomtor/cursors": ["../cursors/src"]
     }
   },
   "references": [
     { "path": "../ui" },
     { "path": "../hooks" },
-    { "path": "../utils" },
     { "path": "../icons" },
+    { "path": "../utils" },
     { "path": "../styles" },
-    { "path": "../ds" }
+    { "path": "../cursors" }
   ]
 }

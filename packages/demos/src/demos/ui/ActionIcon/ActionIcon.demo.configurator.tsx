@@ -18,7 +18,6 @@ function Demo() {
 function Wrapper(props: ActionIconProps) {
   return (
     <Group position='center'>
-      <Input />
       <ActionIcon {...props}>
         <ArtboardIcon />
       </ActionIcon>

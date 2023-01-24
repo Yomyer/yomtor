@@ -1,30 +1,31 @@
 {
-  "name": "@yomtor/demos",
+  "name": "@yomtor/core",
   "version": "1.0.0",
   "description": "Made with create-react-library",
   "author": "Yomyer",
-  "private": true,
   "license": "MIT",
   "repository": "https://github.com/Yomyer/yomtor.git",
   "main": "cjs/index.js",
   "module": "esm/index.js",
   "types": "lib/index.d.ts",
+  "scripts": {
+    "clean": "rimraf -rf ./dist",
+    "compile": "tsc -p tsconfig.build.json",
+    "test": "jest --watchAll"
+  },
   "peerDependencies": {
     "react": "~17.0.2",
     "react-dom": "~17.0.2"
   },
   "dependencies": {
-    "@yomtor/core": "*",
-    "@yomtor/paper": "*",
     "@yomtor/ui": "*",
+    "@yomtor/paper": "*",
+    "@yomtor/cursors": "*",
     "@yomtor/hooks": "*",
-    "@yomtor/utils": "*",
     "@yomtor/icons": "*",
     "@yomtor/styles": "*",
-    "@yomtor/ds": "*",
-    "@mantine/prism": "5.4.0",
+    "@yomtor/utils": "*",
     "lodash": "^4.17.21",
-    "rimraf": "~3.0.2",
-    "prism-react-renderer": "*"
+    "rimraf": "~3.0.2"
   }
 }
