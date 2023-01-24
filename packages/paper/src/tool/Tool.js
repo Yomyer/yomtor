@@ -175,6 +175,7 @@ var Tool = PaperScopeItem.extend(
             if (this._scope.mainTool) {
                 return this._scope.mainTool.getActived();
             }
+            return true
         },
 
         /**

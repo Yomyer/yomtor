@@ -46,6 +46,20 @@ var Grid = Base.extend(
             }
         },
 
+        /**
+         * Private notifier that is called whenever a change occurs in this item or
+         * its sub-elements, such as Segments, Curves, Styles, etc.
+         *
+         * @param {ChangeFlag} flags describes what exactly has changed
+         */
+        _changed: function(flags, _skipProject) {
+            console.log(this._parent)
+            //var project = this.project;
+            
+            /*if (project && !_skipProject)
+                project._changed(flags, this);*/
+        },
+
         _set: function (color, size, opacity, actived) {
             this.color = color;
             this.size = size;
@@ -122,6 +136,8 @@ var Grid = Base.extend(
 
         setActived: function (actived) {
             this._actived = actived;
+
+            this._changed(/*#=*/Change.ACTIVE);
         },
 
         /**

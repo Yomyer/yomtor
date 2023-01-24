@@ -1045,6 +1045,9 @@ var PaperScope = Base.extend({
 
 		if (main) {
 			this._mainTool = tool;
+			this.tool = tool
+		}else if(!this._mainTool){
+			this.tool = null
 		}
 
 		if (this._mainTool) {
@@ -3116,413 +3119,398 @@ var Line = Base.extend({
 });
 
 var Project = PaperScopeItem.extend(
-	 {
-		_class: "Project",
-		_list: "projects",
-		_reference: "project",
-		_compactSerialize: true,
-		_insertMode: false,
-		_activeItems: [],
-		_highlightedItem: null,
-		_mainTool: null,
-		_artboards: [],
-		_controls: null,
+   {
+	_class: 'Project',
+	_list: 'projects',
+	_reference: 'project',
+	_compactSerialize: true,
+	_insertMode: false,
+	_activeItems: [],
+	_highlightedItem: null,
+	_mainTool: null,
+	_artboards: [],
+	_controls: null,
 
-		initialize: function Project(element) {
-			PaperScopeItem.call(this, true);
-			this._children = [];
-			this._namedChildren = {};
-			this._activeLayer = null;
-			this._currentStyle = new Style(null, null, this);
-			this._controls = Controls.create(Item.NO_INSERT);
-			this._view = View.create(
-				this,
-				element || CanvasProvider.getCanvas(1, 1)
-			);
-			this._selectionItems = {};
-			this._selectionCount = 0;
-			this._updateVersion = 0;
-		},
+	initialize: function Project(element) {
+	  PaperScopeItem.call(this, true)
+	  this._children = []
+	  this._namedChildren = {}
+	  this._activeLayer = null
+	  this._currentStyle = new Style(null, null, this)
+	  this._controls = Controls.create(Item.NO_INSERT)
+	  this._view = View.create(this, element || CanvasProvider.getCanvas(1, 1))
+	  this._selectionItems = {}
+	  this._selectionCount = 0
+	  this._updateVersion = 0
+	},
 
-		_serialize: function (options, dictionary) {
-			return Base.serialize(this._children, options, true, dictionary);
-		},
+	_serialize: function (options, dictionary) {
+	  return Base.serialize(this._children, options, true, dictionary)
+	},
 
-		_changed: function (flags, item) {
-			if (flags & 1) {
-				var view = this._view;
-				if (view) {
-					view._needsUpdate = true;
-					if (!view._requested && view._autoUpdate) {
-						view.requestUpdate();
-					}
-				}
-			}
+	_changed: function (flags, item) {
+	  if (flags & 1) {
+		var view = this._view
+		if (view) {
+		  view._needsUpdate = true
+		  if (!view._requested && view._autoUpdate) {
+			view.requestUpdate()
+		  }
+		}
+	  }
 
-			var changes = this._changes;
-			if (changes && item) {
-				var changesById = this._changesById,
-					id = item._id,
-					entry = changesById[id];
-				if (entry) {
-					entry.flags |= flags;
-				} else {
-					changes.push(
-						(changesById[id] = { item: item, flags: flags })
-					);
-				}
-			}
+	  var changes = this._changes
+	  if (changes && item) {
+		var changesById = this._changesById,
+		  id = item._id,
+		  entry = changesById[id]
+		if (entry) {
+		  entry.flags |= flags
+		} else {
+		  changes.push((changesById[id] = { item: item, flags: flags }))
+		}
+	  }
 
-			if (this._controls) {
-				this._controls._changed(flags, item);
-			}
-		},
+	  if (this._controls) {
+		this._controls._changed(flags, item)
+	  }
+	},
 
-		clear: function () {
-			var children = this._children;
-			for (var i = children.length - 1; i >= 0; i--) children[i].remove();
-		},
+	clear: function () {
+	  var children = this._children
+	  for (var i = children.length - 1; i >= 0; i--) children[i].remove()
+	},
 
-		isEmpty: function () {
-			return !this._children.length;
-		},
+	isEmpty: function () {
+	  return !this._children.length
+	},
 
-		remove: function remove() {
-			if (!remove.base.call(this)) return false;
-			if (this._view) this._view.remove();
-			return true;
-		},
+	remove: function remove() {
+	  if (!remove.base.call(this)) return false
+	  if (this._view) this._view.remove()
+	  return true
+	},
 
-		getView: function () {
-			return this._view;
-		},
+	getView: function () {
+	  return this._view
+	},
 
-		getCurrentStyle: function () {
-			return this._currentStyle;
-		},
+	getCurrentStyle: function () {
+	  return this._currentStyle
+	},
 
-		setCurrentStyle: function (style) {
-			this._currentStyle.set(style);
-		},
+	setCurrentStyle: function (style) {
+	  this._currentStyle.set(style)
+	},
 
-		getIndex: function () {
-			return this._index;
-		},
+	getIndex: function () {
+	  return this._index
+	},
 
-		getOptions: function () {
-			return this._scope.settings;
-		},
+	getOptions: function () {
+	  return this._scope.settings
+	},
 
-		getLayers: function () {
-			return this._children;
-		},
+	getLayers: function () {
+	  return this._children
+	},
 
-		getControls: function () {
-			return this._controls;
-		},
+	getControls: function () {
+	  return this._controls
+	},
 
-		getActiveLayer: function () {
-			return (
-				this._activeLayer || new Layer({ project: this, insert: true })
-			);
-		},
+	getActiveLayer: function () {
+	  return this._activeLayer || new Layer({ project: this, insert: true })
+	},
 
-		getArtboards: function () {
-			return this._artboards;
-		},
+	getArtboards: function () {
+	  return this._artboards
+	},
 
-		getActiveArtboard: function () {
-			return this._activeArtboard;
-		},
+	getActiveArtboard: function () {
+	  return this._activeArtboard
+	},
 
-		getGuidesLayer: function () {
-			if (!this._children.Guides) {
-				var current = this.activeLayer;
-				this.addLayer(new paper.Layer({ name: "Guides" }));
-				current.activate();
-			}
+	getGuidesLayer: function () {
+	  if (!this._children.Guides) {
+		var current = this.activeLayer
+		this.addLayer(new paper.Layer({ name: 'Guides' }))
+		current.activate()
+	  }
 
-			return this._children.Guides;
-		},
+	  return this._children.Guides
+	},
 
-		getInsertMode: function () {
-			return this._insertMode;
-		},
+	getInsertMode: function () {
+	  return this._insertMode
+	},
 
-		setInsertMode: function (mode) {
-			this._insertMode = mode;
-		},
+	setInsertMode: function (mode) {
+	  this._insertMode = mode
+	},
 
-		getActiveItems: function () {
-			return this._activeItems;
-		},
+	getActiveItems: function () {
+	  return this._activeItems
+	},
 
-		setActiveItems: function (items) {
-			this.deactivateAll();
+	setActiveItems: function (items) {
+	  this.deactivateAll()
 
-			if (items && items.length) {
-				for (var i = 0, l = items.length; i < l; i++)
-					items[i].setActived(true);
-			}
-		},
+	  if (items && items.length) {
+		for (var i = 0, l = items.length; i < l; i++) items[i].setActived(true)
+	  }
+	},
 
-		getHighlightedItem: function () {
-			return this._highlightedItem;
-		},
+	getHighlightedItem: function () {
+	  return this._highlightedItem
+	},
 
-		setHighlightedItem: function (item) {
-			this.clearHighlightedItem(item);
-		},
+	setHighlightedItem: function (item) {
+	  this.clearHighlightedItem(item)
+	},
 
-		clearHighlightedItem: function (item) {
-			if (this._highlightedItem)
-				this._highlightedItem._highlighted = false;
+	clearHighlightedItem: function (item) {
+	  if (this._highlightedItem) this._highlightedItem._highlighted = false
 
-			this._highlightedItem = item && null;
-		},
+	  this._highlightedItem = item && null
+	},
 
-		getSymbolDefinitions: function () {
-			var definitions = [],
-				ids = {};
-			this.getItems({
-				class: SymbolItem,
-				match: function (item) {
-					var definition = item._definition,
-						id = definition._id;
-					if (!ids[id]) {
-						ids[id] = true;
-						definitions.push(definition);
-					}
-					return false;
-				},
-			});
-			return definitions;
-		},
+	getSymbolDefinitions: function () {
+	  var definitions = [],
+		ids = {}
+	  this.getItems({
+		class: SymbolItem,
+		match: function (item) {
+		  var definition = item._definition,
+			id = definition._id
+		  if (!ids[id]) {
+			ids[id] = true
+			definitions.push(definition)
+		  }
+		  return false
+		}
+	  })
+	  return definitions
+	},
 
-		getSymbols: "getSymbolDefinitions",
+	getSymbols: 'getSymbolDefinitions',
 
-		getSelectedItems: function () {
-			var selectionItems = this._selectionItems,
-				items = [];
-			for (var id in selectionItems) {
-				var item = selectionItems[id],
-					selection = item._selection;
-				if (
-					selection & 1 &&
-					item.isInserted()
-				) {
-					items.push(item);
-				} else if (!selection) {
-					this._updateSelection(item);
-				}
-			}
-			return items;
-		},
+	getSelectedItems: function () {
+	  var selectionItems = this._selectionItems,
+		items = []
+	  for (var id in selectionItems) {
+		var item = selectionItems[id],
+		  selection = item._selection
+		if (selection & 1 && item.isInserted()) {
+		  items.push(item)
+		} else if (!selection) {
+		  this._updateSelection(item)
+		}
+	  }
+	  return items
+	},
 
-		_updateSelection: function (item) {
-			var id = item._id,
-				selectionItems = this._selectionItems;
-			if (item._selection) {
-				if (selectionItems[id] !== item) {
-					this._selectionCount++;
-					selectionItems[id] = item;
-				}
-			} else if (selectionItems[id] === item) {
-				this._selectionCount--;
-				delete selectionItems[id];
-			}
-		},
+	_updateSelection: function (item) {
+	  var id = item._id,
+		selectionItems = this._selectionItems
+	  if (item._selection) {
+		if (selectionItems[id] !== item) {
+		  this._selectionCount++
+		  selectionItems[id] = item
+		}
+	  } else if (selectionItems[id] === item) {
+		this._selectionCount--
+		delete selectionItems[id]
+	  }
+	},
 
-		selectAll: function () {
-			var children = this._children;
-			for (var i = 0, l = children.length; i < l; i++)
-				children[i].setFullySelected(true);
-		},
+	selectAll: function () {
+	  var children = this._children
+	  for (var i = 0, l = children.length; i < l; i++)
+		children[i].setFullySelected(true)
+	},
 
-		deselectAll: function () {
-			var selectionItems = this._selectionItems;
-			for (var i in selectionItems)
-				selectionItems[i].setFullySelected(false);
-		},
+	deselectAll: function () {
+	  var selectionItems = this._selectionItems
+	  for (var i in selectionItems) selectionItems[i].setFullySelected(false)
+	},
 
-		addLayer: function (layer) {
-			return this.insertLayer(undefined, layer);
-		},
+	addLayer: function (layer) {
+	  return this.insertLayer(undefined, layer)
+	},
 
-		insertLayer: function (index, layer) {
-			if (layer instanceof Layer) {
-				layer._remove(false, true);
-				Base.splice(this._children, [layer], index, 0);
-				layer._setProject(this, true);
-				var name = layer._name;
-				if (name) layer.setName(name);
-				if (this._changes) layer._changed(5);
-				if (!this._activeLayer) this._activeLayer = layer;
-			} else {
-				layer = null;
-			}
-			return layer;
-		},
+	insertLayer: function (index, layer) {
+	  if (layer instanceof Layer) {
+		layer._remove(false, true)
+		Base.splice(this._children, [layer], index, 0)
+		layer._setProject(this, true)
+		var name = layer._name
+		if (name) layer.setName(name)
+		if (this._changes) layer._changed(5)
+		if (!this._activeLayer) this._activeLayer = layer
+	  } else {
+		layer = null
+	  }
+	  return layer
+	},
 
-		_insertItem: function (index, item, _created) {
-			item =
-				this.insertLayer(index, item) ||
-				(
-					this._activeLayer ||
-					this._insertItem(undefined, new Layer(Item.NO_INSERT), true)
+	_insertItem: function (index, item, _created) {
+	  item =
+		this.insertLayer(index, item) ||
+		(
+		  this._activeLayer ||
+		  this._insertItem(undefined, new Layer(Item.NO_INSERT), true)
+		)
+		  .insertChild(index, item)
+	  if (_created && item.activate) item.activate()
+	  return item
+	},
+
+	getItems: function (options) {
+	  return Item._getItems(this, options)
+	},
+
+	getItem: function (options) {
+	  return Item._getItems(this, options, null, null, true)[0] || null
+	},
+
+	getItemByPoint: function (point, options) {
+	  options = options || {}
+
+	  var args = {
+		class: Item,
+		segments: true,
+		stroke: true,
+		curves: true,
+		fill: true,
+		guides: false,
+		controls: false,
+		tolerance: 8 / this.view.zoom,
+		match: function (hit) {
+		  return (
+			!hit.item.hasFill() &&
+			!hit.item.blocked &&
+			(options.filter ? options.filter(hit.item) : true)
+		  )
+		}
+	  }
+
+	  var items = this.hitTestAll(point, Base.set(args, options)).concat(
+		this.hitTestAll(
+		  point,
+		  Base.set(
+			args,
+			{
+			  tolerance: 0,
+			  match: function (hit) {
+				return (
+				  !hit.item.blocked &&
+				  (options.filter ? options.filter(hit.item) : true)
 				)
-					.insertChild(index, item);
-			if (_created && item.activate) item.activate();
-			return item;
-		},
+			  }
+			},
+			options
+		  )
+		)
+	  )
 
-		getItems: function (options) {
-			return Item._getItems(this, options);
-		},
+	  if (!items.length) return null
 
-		getItem: function (options) {
-			return Item._getItems(this, options, null, null, true)[0] || null;
-		},
+	  return items[0].item
+	},
 
-		getItemByPoint: function (point, options) {
-			options = options || {};
+	deactivateAll: function () {
+	  var activeItems = this._activeItems
+	  for (var i in activeItems) activeItems[i].actived = false
 
-			var args = {
-				class: Item,
-				segments: true,
-				stroke: true,
-				curves: true,
-				fill: true,
-				guides: false,
-				controls: false,
-				tolerance: 8 / this.view.zoom,
-				match: function (hit) {
-					return (
-						!hit.item.hasFill() &&
-						!hit.item.blocked &&
-						(options.filter ? options.filter(hit.item) : true)
-					);
-				},
-			};
+	  this._activeItems = []
+	},
 
-			var items = this.hitTestAll(point, Base.set(args, options)).concat(
-				this.hitTestAll(
-					point,
-					Base.set(
-						args,
-						{
-							tolerance: 0,
-							match: function (hit) {
-								return (
-									!hit.item.blocked &&
-									(options.filter
-										? options.filter(hit.item)
-										: true)
-								);
-							},
-						},
-						options
-					)
-				)
-			);
+	activeAll: function () {
+	  var children = this._activeLayer._children
+	  for (var i = 0, l = children.length; i < l; i++)
+		children[i].actived = true
+	},
 
-			if (!items.length) return null;
+	importJSON: function (json) {
+	  this.activate()
+	  var layer = this._activeLayer
+	  return Base.importJSON(json, layer && layer.isEmpty() && layer)
+	},
 
-			return items[0].item;
-		},
-
-		deactivateAll: function () {
-			var activeItems = this._activeItems;
-			for (var i in activeItems) activeItems[i].actived = false;
-
-			this._activeItems = [];
-		},
-
-		activeAll: function () {
-			var children = this._activeLayer._children;
-			for (var i = 0, l = children.length; i < l; i++)
-				children[i].actived = true;
-		},
-
-		importJSON: function (json) {
-			this.activate();
-			var layer = this._activeLayer;
-			return Base.importJSON(json, layer && layer.isEmpty() && layer);
-		},
-
-		removeOn: function (type) {
-			var sets = this._removeSets;
-			if (sets) {
-				if (type === "mouseup") sets.mousedrag = null;
-				var set = sets[type];
-				if (set) {
-					for (var id in set) {
-						var item = set[id];
-						for (var key in sets) {
-							var other = sets[key];
-							if (other && other != set) delete other[item._id];
-						}
-						item.remove();
-					}
-					sets[type] = null;
-				}
+	removeOn: function (type) {
+	  var sets = this._removeSets
+	  if (sets) {
+		if (type === 'mouseup') sets.mousedrag = null
+		var set = sets[type]
+		if (set) {
+		  for (var id in set) {
+			var item = set[id]
+			for (var key in sets) {
+			  var other = sets[key]
+			  if (other && other != set) delete other[item._id]
 			}
-		},
+			item.remove()
+		  }
+		  sets[type] = null
+		}
+	  }
+	},
 
-		draw: function (ctx, matrix, pixelRatio) {
-			this._updateVersion++;
-			ctx.save();
-			matrix.applyToContext(ctx);
-			var children = this._children,
-				param = new Base({
-					offset: new Point(0, 0),
-					pixelRatio: pixelRatio,
-					viewMatrix: matrix.isIdentity() ? null : matrix,
-					matrices: [new Matrix()],
-					updateMatrix: true,
-				});
-			for (var i = 0, l = children.length; i < l; i++) {
-				children[i].draw(ctx, param);
-			}
-			ctx.restore();
+	draw: function (ctx, matrix, pixelRatio) {
+	  this._updateVersion++
+	  ctx.save()
+	  matrix.applyToContext(ctx)
+	  var children = this._children,
+		param = new Base({
+		  offset: new Point(0, 0),
+		  pixelRatio: pixelRatio,
+		  viewMatrix: matrix.isIdentity() ? null : matrix,
+		  matrices: [new Matrix()],
+		  updateMatrix: true
+		})
+	  for (var i = 0, l = children.length; i < l; i++) {
+		children[i].draw(ctx, param)
+	  }
+	  ctx.restore()
 
-			if (this._selectionCount > 0) {
-				ctx.save();
-				ctx.strokeWidth = 1;
-				var items = this._selectionItems,
-					size = this._scope.settings.handleSize,
-					version = this._updateVersion;
-				for (var id in items) {
-					items[id]._drawSelection(ctx, matrix, size, items, version);
-				}
-				ctx.restore();
-			}
+	  if (this._selectionCount > 0) {
+		ctx.save()
+		ctx.strokeWidth = 1
+		var items = this._selectionItems,
+		  size = this._scope.settings.handleSize,
+		  version = this._updateVersion
+		for (var id in items) {
+		  items[id]._drawSelection(ctx, matrix, size, items, version)
+		}
+		ctx.restore()
+	  }
 
-			if (this._highlightedItem) {
-				ctx.save();
-				this._highlightedItem._drawHighlight(ctx, matrix, pixelRatio);
-				ctx.restore();
-			}
+	  if (this._highlightedItem) {
+		ctx.save()
+		this._highlightedItem._drawHighlight(ctx, matrix, pixelRatio)
+		ctx.restore()
+	  }
 
-			if (this._grid) {
-				ctx.save();
-				matrix.applyToContext(ctx);
-				this._grid.draw(ctx, matrix, pixelRatio);
-				ctx.restore();
-			}
+	  if (this._grid) {
+		ctx.save()
+		matrix.applyToContext(ctx)
+		this._grid.draw(ctx, matrix, pixelRatio)
+		ctx.restore()
+	  }
 
-			if (this._controls) {
-				if (this._activeItems.length) {
-					ctx.save();
-					this._controls.draw(ctx, matrix, pixelRatio);
-					ctx.restore();
-				}
+	  if (this._controls) {
+		if (this._activeItems.length) {
+		  ctx.save()
+		  this._controls.draw(ctx, matrix, pixelRatio)
+		  ctx.restore()
+		}
 
-				this._controls.drawInfo(ctx, matrix, pixelRatio);
-			}
-		},
+		this._controls.drawInfo(ctx, matrix, pixelRatio)
+	  }
 	}
-);
+  }
+)
 
 var Item = Base.extend(Emitter, {
 	statics: {
@@ -15574,6 +15562,10 @@ var Grid = Base.extend(
 			}
 		},
 
+		_changed: function(flags, _skipProject) {
+			console.log(this._parent)
+		},
+
 		_set: function (color, size, opacity, actived) {
 			this.color = color;
 			this.size = size;
@@ -15630,6 +15622,8 @@ var Grid = Base.extend(
 
 		setActived: function (actived) {
 			this._actived = actived;
+
+			this._changed(1048577);
 		},
 
 		getProject: function () {
@@ -16118,6 +16112,7 @@ var Tool = PaperScopeItem.extend(
 			if (this._scope.mainTool) {
 				return this._scope.mainTool.getActived();
 			}
+			return true
 		},
 
 		activeMain: function () {

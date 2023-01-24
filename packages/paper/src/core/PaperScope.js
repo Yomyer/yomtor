@@ -502,6 +502,9 @@ var PaperScope = Base.extend(/** @lends PaperScope# */{
 
         if (main) {
             this._mainTool = tool;
+            this.tool = tool
+        }else if(!this._mainTool){
+            this.tool = null
         }
 
         if (this._mainTool) {
