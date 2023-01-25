@@ -8,7 +8,7 @@ results
 
 .DS_Store
 yarn.lock
-.yarn
+.yarn/cache
 
 # env
 .env.test
