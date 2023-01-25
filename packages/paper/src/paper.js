@@ -35,7 +35,7 @@
 var paper = function(self, undefined) {
 /*#*/ include('init.js');
 // Inline Straps.js core (the Base class) inside the paper scope first:
-/*#*/ include('../node_modules/straps/straps.js');
+/*#*/ include('../../../node_modules/straps/straps.js');
 
 /*#*/ include('core/Base.js');
 /*#*/ include('core/Emitter.js');

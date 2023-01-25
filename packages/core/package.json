@@ -18,12 +18,12 @@
     "react-dom": "~17.0.2"
   },
   "dependencies": {
-    "@yomtor/ui": "*",
-    "@yomtor/paper": "*",
     "@yomtor/cursors": "*",
     "@yomtor/hooks": "*",
     "@yomtor/icons": "*",
+    "@yomtor/paper": "*",
     "@yomtor/styles": "*",
+    "@yomtor/ui": "*",
     "@yomtor/utils": "*",
     "lodash": "^4.17.21",
     "rimraf": "~3.0.2"

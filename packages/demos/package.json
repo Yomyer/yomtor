@@ -14,17 +14,17 @@
     "react-dom": "~17.0.2"
   },
   "dependencies": {
-    "@yomtor/core": "*",
-    "@yomtor/paper": "*",
-    "@yomtor/ui": "*",
-    "@yomtor/hooks": "*",
-    "@yomtor/utils": "*",
-    "@yomtor/icons": "*",
-    "@yomtor/styles": "*",
-    "@yomtor/ds": "*",
     "@mantine/prism": "5.4.0",
+    "@yomtor/core": "*",
+    "@yomtor/ds": "*",
+    "@yomtor/hooks": "*",
+    "@yomtor/icons": "*",
+    "@yomtor/paper": "*",
+    "@yomtor/styles": "*",
+    "@yomtor/ui": "*",
+    "@yomtor/utils": "*",
     "lodash": "^4.17.21",
-    "rimraf": "~3.0.2",
-    "prism-react-renderer": "*"
+    "prism-react-renderer": "*",
+    "rimraf": "~3.0.2"
   }
 }

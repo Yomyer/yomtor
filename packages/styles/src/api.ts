@@ -4,8 +4,6 @@ export {
   GlobalStyles,
   NormalizeCSS,
   // extractSystemStyles,
-  StylesApiProvider,
-  useContextStylesApi,
   useMantineColorScheme as useYomtorColorScheme,
   useMantineTheme as useYomtorTheme,
   MANTINE_SIZES as YOMTOR_SIZES

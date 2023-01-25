@@ -10,10 +10,10 @@
   "dependencies": {
     "@emotion/styled": "^11.10.4",
     "@yomtor/cursors": "*",
+    "@yomtor/hooks": "*",
     "@yomtor/icons": "*",
     "@yomtor/styles": "*",
-    "@yomtor/ui": "*",
-    "@yomtor/hooks": "*"
+    "@yomtor/ui": "*"
   },
   "devDependencies": {
     "@babel/core": "~7.18.0",

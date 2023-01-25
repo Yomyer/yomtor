@@ -14,8 +14,8 @@
     "docs": "doctoc --title '**Table of content**' README.md",
     "lint": "eslint --ext js,ts,tsx .",
     "jest": "jest",
-    "test": "yarn jest",
-    "storybook": "yarn --cwd ./examples/storybook run storybook",
+    "test": "npm run jest",
+    "storybook": "npm run storybook -w ./examples/storybook",
     "generate": "node ./scripts/generate.js"
   },
   "dependencies": {
@@ -72,5 +72,8 @@
     "rollup-plugin-node-externals": "^2.2.0",
     "rollup-plugin-visualizer": "^5.5.0",
     "typescript": "~4.7.0"
+  },
+  "resolutions": {
+    "graceful-fs": "^4.2.10"
   }
 }

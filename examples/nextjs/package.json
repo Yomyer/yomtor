@@ -13,9 +13,9 @@
     "react-dom": "~18.2.0"
   },
   "dependencies": {
-    "@yomtor/ui": "*",
+    "@yomtor/next": "*",
     "@yomtor/styles": "*",
-    "@yomtor/next": "*"
+    "@yomtor/ui": "*"
   },
   "devDependencies": {
     "rimraf": "~3.0.2",

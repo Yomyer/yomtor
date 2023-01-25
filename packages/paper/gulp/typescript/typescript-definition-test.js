@@ -1,6 +1,6 @@
 "use strict";
 /// <reference path="../../dist/paper.d.ts" />
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 /**
  * This file is used as a way to test auto-generated typescript definition
  * validity. For now, this only check that calling methods as they are defined
@@ -55,11 +55,11 @@ var acolor = new paper_1.Color('#333');
 //
 // Point
 //
-new paper_1.default.Point(0, 0);
-new paper_1.default.Point([0, 0]);
-new paper_1.default.Point({ x: 0, y: 0 });
-new paper_1.default.Point(size);
-new paper_1.default.Point(point);
+new paper_1["default"].Point(0, 0);
+new paper_1["default"].Point([0, 0]);
+new paper_1["default"].Point({ x: 0, y: 0 });
+new paper_1["default"].Point(size);
+new paper_1["default"].Point(point);
 point.x;
 point.y;
 point.length;
@@ -107,17 +107,17 @@ point.divide(0);
 point.divide(point);
 point.modulo(0);
 point.modulo(point);
-paper_1.default.Point.min(point, point);
-paper_1.default.Point.max(point, point);
-paper_1.default.Point.random();
+paper_1["default"].Point.min(point, point);
+paper_1["default"].Point.max(point, point);
+paper_1["default"].Point.random();
 //
 // Size
 //
-new paper_1.default.Size(0, 0);
-new paper_1.default.Size([0, 0]);
-new paper_1.default.Size({ width: 0, height: 0 });
-new paper_1.default.Size(size);
-new paper_1.default.Size(point);
+new paper_1["default"].Size(0, 0);
+new paper_1["default"].Size([0, 0]);
+new paper_1["default"].Size({ width: 0, height: 0 });
+new paper_1["default"].Size(size);
+new paper_1["default"].Size(point);
 size.width;
 size.height;
 size.set(0, 0);
@@ -144,17 +144,17 @@ size.divide(0);
 size.divide(size);
 size.modulo(0);
 size.modulo(size);
-paper_1.default.Size.min(size, size);
-paper_1.default.Size.max(size, size);
-paper_1.default.Size.random();
+paper_1["default"].Size.min(size, size);
+paper_1["default"].Size.max(size, size);
+paper_1["default"].Size.random();
 //
 // Rectangle
 //
-new paper_1.default.Rectangle(point, size);
-new paper_1.default.Rectangle({ point: point, size: size });
-new paper_1.default.Rectangle(0, 0, 0, 0);
-new paper_1.default.Rectangle(point, point);
-new paper_1.default.Rectangle(rectangle);
+new paper_1["default"].Rectangle(point, size);
+new paper_1["default"].Rectangle({ point: point, size: size });
+new paper_1["default"].Rectangle(0, 0, 0, 0);
+new paper_1["default"].Rectangle(point, point);
+new paper_1["default"].Rectangle(rectangle);
 rectangle.x;
 rectangle.y;
 rectangle.width;
@@ -199,10 +199,10 @@ rectangle.scale(0, 0);
 //
 // Matrix
 //
-new paper_1.default.Matrix();
-new paper_1.default.Matrix(0, 0, 0, 0, 0, 0);
-new paper_1.default.Matrix([0, 0, 0, 0, 0, 0]);
-new paper_1.default.Matrix(matrix);
+new paper_1["default"].Matrix();
+new paper_1["default"].Matrix(0, 0, 0, 0, 0, 0);
+new paper_1["default"].Matrix([0, 0, 0, 0, 0, 0]);
+new paper_1["default"].Matrix(matrix);
 matrix.a;
 matrix.b;
 matrix.c;
@@ -255,9 +255,9 @@ matrix.applyToContext({});
 //
 // Project
 //
-new paper_1.default.Project({});
-new paper_1.default.Project('');
-new paper_1.default.Project(size);
+new paper_1["default"].Project({});
+new paper_1["default"].Project('');
+new paper_1["default"].Project(size);
 project.view;
 project.currentStyle;
 project.index;
@@ -445,27 +445,27 @@ item.removeOnUp();
 //
 // Layer
 //
-new paper_1.default.Layer([item]);
-new paper_1.default.Layer({});
+new paper_1["default"].Layer([item]);
+new paper_1["default"].Layer({});
 layer.activate();
 //
 // Group
 //
-new paper_1.default.Group([item]);
-new paper_1.default.Group({});
+new paper_1["default"].Group([item]);
+new paper_1["default"].Group({});
 group.clipped;
 //
 // Shape
 //
-new paper_1.default.Shape.Circle(point, 0);
-new paper_1.default.Shape.Circle({});
-new paper_1.default.Shape.Rectangle(rectangle);
-new paper_1.default.Shape.Rectangle(rectangle, size);
-new paper_1.default.Shape.Rectangle(point, size);
-new paper_1.default.Shape.Rectangle(point, point);
-new paper_1.default.Shape.Rectangle({});
-new paper_1.default.Shape.Ellipse(rectangle);
-new paper_1.default.Shape.Ellipse({});
+new paper_1["default"].Shape.Circle(point, 0);
+new paper_1["default"].Shape.Circle({});
+new paper_1["default"].Shape.Rectangle(rectangle);
+new paper_1["default"].Shape.Rectangle(rectangle, size);
+new paper_1["default"].Shape.Rectangle(point, size);
+new paper_1["default"].Shape.Rectangle(point, point);
+new paper_1["default"].Shape.Rectangle({});
+new paper_1["default"].Shape.Ellipse(rectangle);
+new paper_1["default"].Shape.Ellipse({});
 shape.type;
 shape.size;
 shape.radius;
@@ -474,11 +474,11 @@ shape.toPath(true);
 //
 // Raster
 //
-new paper_1.default.Raster();
-new paper_1.default.Raster({});
-new paper_1.default.Raster({});
-new paper_1.default.Raster('');
-new paper_1.default.Raster('', point);
+new paper_1["default"].Raster();
+new paper_1["default"].Raster({});
+new paper_1["default"].Raster({});
+new paper_1["default"].Raster('');
+new paper_1["default"].Raster('', point);
 raster.size;
 raster.width;
 raster.height;
@@ -571,33 +571,33 @@ pathItem.curveBy(point, point);
 pathItem.curveBy(point, point, 0);
 pathItem.cubicCurveBy(point, point, point);
 pathItem.quadraticCurveBy(point, point);
-paper_1.default.PathItem.create('');
-paper_1.default.PathItem.create([[0]]);
-paper_1.default.PathItem.create({});
+paper_1["default"].PathItem.create('');
+paper_1["default"].PathItem.create([[0]]);
+paper_1["default"].PathItem.create({});
 //
 // Path
 //
-new paper_1.default.Path();
-new paper_1.default.Path([segment]);
-new paper_1.default.Path(object);
-new paper_1.default.Path('');
-new paper_1.default.Path.Line(point, point);
-new paper_1.default.Path.Line(object);
-new paper_1.default.Path.Circle(point, 0);
-new paper_1.default.Path.Circle(object);
-new paper_1.default.Path.Rectangle(rectangle);
-new paper_1.default.Path.Rectangle(rectangle, size);
-new paper_1.default.Path.Rectangle(point, size);
-new paper_1.default.Path.Rectangle(point, point);
-new paper_1.default.Path.Rectangle(object);
-new paper_1.default.Path.Ellipse(rectangle);
-new paper_1.default.Path.Ellipse(object);
-new paper_1.default.Path.Arc(point, point, point);
-new paper_1.default.Path.Arc(object);
-new paper_1.default.Path.RegularPolygon(point, 0, 0);
-new paper_1.default.Path.RegularPolygon(object);
-new paper_1.default.Path.Star(point, 0, 0, 0);
-new paper_1.default.Path.Star(object);
+new paper_1["default"].Path();
+new paper_1["default"].Path([segment]);
+new paper_1["default"].Path(object);
+new paper_1["default"].Path('');
+new paper_1["default"].Path.Line(point, point);
+new paper_1["default"].Path.Line(object);
+new paper_1["default"].Path.Circle(point, 0);
+new paper_1["default"].Path.Circle(object);
+new paper_1["default"].Path.Rectangle(rectangle);
+new paper_1["default"].Path.Rectangle(rectangle, size);
+new paper_1["default"].Path.Rectangle(point, size);
+new paper_1["default"].Path.Rectangle(point, point);
+new paper_1["default"].Path.Rectangle(object);
+new paper_1["default"].Path.Ellipse(rectangle);
+new paper_1["default"].Path.Ellipse(object);
+new paper_1["default"].Path.Arc(point, point, point);
+new paper_1["default"].Path.Arc(object);
+new paper_1["default"].Path.RegularPolygon(point, 0, 0);
+new paper_1["default"].Path.RegularPolygon(object);
+new paper_1["default"].Path.Star(point, 0, 0, 0);
+new paper_1["default"].Path.Star(object);
 path.segments;
 path.firstSegment;
 path.lastSegment;
@@ -649,8 +649,8 @@ path = path.off({});
 //
 // CompoundPath
 //
-new paper_1.default.CompoundPath(object);
-new paper_1.default.CompoundPath('');
+new paper_1["default"].CompoundPath(object);
+new paper_1["default"].CompoundPath('');
 compoundPath.closed;
 compoundPath.firstSegment;
 compoundPath.lastSegment;
@@ -662,11 +662,11 @@ compoundPath.length;
 //
 // Segment
 //
-new paper_1.default.Segment();
-new paper_1.default.Segment(point);
-new paper_1.default.Segment(point, point);
-new paper_1.default.Segment(point, point, point);
-new paper_1.default.Segment(object);
+new paper_1["default"].Segment();
+new paper_1["default"].Segment(point);
+new paper_1["default"].Segment(point, point);
+new paper_1["default"].Segment(point, point, point);
+new paper_1["default"].Segment(object);
 segment.point;
 segment.handleIn;
 segment.handleOut;
@@ -693,8 +693,8 @@ segment.interpolate(segment, segment, 0);
 //
 // Curve
 //
-new paper_1.default.Curve(segment, segment);
-new paper_1.default.Curve(point, point, point, point);
+new paper_1["default"].Curve(segment, segment);
+new paper_1["default"].Curve(point, point, point, point);
 curve.point1;
 curve.point2;
 curve.handle1;
@@ -761,8 +761,8 @@ curve.getIntersections(curve);
 //
 // CurveLocation
 //
-new paper_1.default.CurveLocation(curve, 0);
-new paper_1.default.CurveLocation(curve, 0, point);
+new paper_1["default"].CurveLocation(curve, 0);
+new paper_1["default"].CurveLocation(curve, 0, point);
 curveLocation.segment;
 curveLocation.curve;
 curveLocation.path;
@@ -784,8 +784,8 @@ curveLocation.hasOverlap();
 //
 // SymbolDefinition
 //
-new paper_1.default.SymbolDefinition(item);
-new paper_1.default.SymbolDefinition(item, true);
+new paper_1["default"].SymbolDefinition(item);
+new paper_1["default"].SymbolDefinition(item, true);
 symbolDefinition.project;
 symbolDefinition.item;
 symbolDefinition.place();
@@ -795,14 +795,14 @@ symbolDefinition.equals(symbolDefinition);
 //
 // SymbolItem
 //
-new paper_1.default.SymbolItem(symbolDefinition);
-new paper_1.default.SymbolItem(item);
-new paper_1.default.SymbolItem(symbolDefinition, point);
+new paper_1["default"].SymbolItem(symbolDefinition);
+new paper_1["default"].SymbolItem(item);
+new paper_1["default"].SymbolItem(symbolDefinition, point);
 symbolItem.definition;
 //
 // Style
 //
-new paper_1.default.Style({ strokeColor: 'red' });
+new paper_1["default"].Style({ strokeColor: 'red' });
 style.view;
 style.strokeColor;
 style.strokeWidth;
@@ -826,14 +826,14 @@ style.justification;
 //
 // Color
 //
-new paper_1.default.Color(0, 0, 0);
-new paper_1.default.Color(0, 0, 0, 0);
-new paper_1.default.Color(0);
-new paper_1.default.Color(0, 0);
-new paper_1.default.Color(object);
-new paper_1.default.Color('');
-new paper_1.default.Color(gradient, point, point);
-new paper_1.default.Color(gradient, point, point, point);
+new paper_1["default"].Color(0, 0, 0);
+new paper_1["default"].Color(0, 0, 0, 0);
+new paper_1["default"].Color(0);
+new paper_1["default"].Color(0, 0);
+new paper_1["default"].Color(object);
+new paper_1["default"].Color('');
+new paper_1["default"].Color(gradient, point, point);
+new paper_1["default"].Color(gradient, point, point, point);
 color.type;
 color.components;
 color.alpha;
@@ -870,7 +870,7 @@ color.multiply(0);
 color.multiply(color);
 color.divide(0);
 color.divide(color);
-paper_1.default.Color.random();
+paper_1["default"].Color.random();
 //
 // Gradient
 //
@@ -881,9 +881,9 @@ gradient.equals(gradient);
 //
 // GradientStop
 //
-new paper_1.default.GradientStop();
-new paper_1.default.GradientStop(color);
-new paper_1.default.GradientStop(color, 0);
+new paper_1["default"].GradientStop();
+new paper_1["default"].GradientStop(color);
+new paper_1["default"].GradientStop(color, 0);
 gradientStop.offset;
 gradientStop.color;
 gradientStop.clone();
@@ -899,8 +899,8 @@ textItem.justification;
 //
 // PointText
 //
-new paper_1.default.PointText(point);
-new paper_1.default.PointText(object);
+new paper_1["default"].PointText(point);
+new paper_1["default"].PointText(object);
 pointText.point;
 //
 // View
@@ -1012,8 +1012,8 @@ toolEvent.toString();
 //
 // Key
 //
-paper_1.default.Key.modifiers;
-paper_1.default.Key.isDown('');
+paper_1["default"].Key.modifiers;
+paper_1["default"].Key.isDown('');
 //
 // KeyEvent
 //
@@ -1024,7 +1024,7 @@ keyEvent.toString();
 //
 // PaperScope
 //
-new paper_1.default.PaperScope();
+new paper_1["default"].PaperScope();
 paperScope.version;
 paperScope.settings;
 paperScope.settings = null;
@@ -1040,7 +1040,7 @@ paperScope.setup('');
 paperScope.setup({});
 paperScope.setup(size);
 paperScope.activate();
-paper_1.default.PaperScope.get(0);
+paper_1["default"].PaperScope.get(0);
 new paperScope.Color('');
 new paperScope.CompoundPath('');
 new paperScope.Curve(segment, segment);
@@ -1078,26 +1078,26 @@ new paperScope.View();
 //
 // Global PaperScope instance
 //
-paper_1.default.version;
-paper_1.default.settings;
-paper_1.default.project;
-paper_1.default.projects;
-paper_1.default.view;
-paper_1.default.tool;
-paper_1.default.tools;
-paper_1.default.execute('');
-paper_1.default.execute('', object);
-paper_1.default.install(object);
-paper_1.default.setup('');
-paper_1.default.setup({});
-paper_1.default.setup(size);
-paper_1.default.activate();
+paper_1["default"].version;
+paper_1["default"].settings;
+paper_1["default"].project;
+paper_1["default"].projects;
+paper_1["default"].view;
+paper_1["default"].tool;
+paper_1["default"].tools;
+paper_1["default"].execute('');
+paper_1["default"].execute('', object);
+paper_1["default"].install(object);
+paper_1["default"].setup('');
+paper_1["default"].setup({});
+paper_1["default"].setup(size);
+paper_1["default"].activate();
 //
 // PaperScript
 //
-paper_1.default.PaperScript.compile('');
-paper_1.default.PaperScript.compile('', object);
-paper_1.default.PaperScript.execute('', paperScope);
-paper_1.default.PaperScript.execute('', paperScope, object);
-paper_1.default.PaperScript.load();
-paper_1.default.PaperScript.load({});
+paper_1["default"].PaperScript.compile('');
+paper_1["default"].PaperScript.compile('', object);
+paper_1["default"].PaperScript.execute('', paperScope);
+paper_1["default"].PaperScript.execute('', paperScope, object);
+paper_1["default"].PaperScript.load();
+paper_1["default"].PaperScript.load({});

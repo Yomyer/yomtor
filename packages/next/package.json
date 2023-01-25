@@ -9,15 +9,15 @@
   "module": "esm/index.js",
   "types": "lib/index.d.ts",
   "peerDependencies": {
+    "next": "*",
     "react": "~17.0.2",
-    "react-dom": "~17.0.2",
-    "next": "*"
+    "react-dom": "~17.0.2"
   },
   "dependencies": {
+    "@emotion/server": ">=11.4.0",
     "@mantine/next": "^5.4.0",
     "@mantine/ssr": "^5.4.0",
-    "@emotion/server": ">=11.4.0",
-    "@yomtor/styles": "*",
-    "@yomtor/ssr": "*"
+    "@yomtor/ssr": "*",
+    "@yomtor/styles": "*"
   }
 }

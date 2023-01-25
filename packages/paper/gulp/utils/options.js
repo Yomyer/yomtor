@@ -10,24 +10,32 @@
  * All rights reserved.
  */
 
-var execSync = require('child_process').execSync,
+var execSync = require("child_process").execSync,
     // Require the __options object, so we have access to the version number and
     // make amendments, e.g. the release date.
-    options = require('../../src/options.js'),
-    argv = require('minimist')(process.argv.slice(2));
+    options = require("../../src/options.js"),
+    argv = require("minimist")(process.argv.slice(2));
 
 function git(command) {
-    return execSync('git ' + command).toString().trim();
+    return execSync("git " + command)
+        .toString()
+        .trim();
 }
+
 /*
 options.date = git('log -1 --pretty=format:%ad');
 options.branch = git('rev-parse --abbrev-ref HEAD');
 */
 // If a specific branch is requested, quit without errors if we don't match.
-var ensureBranch = argv['ensure-branch'];
+var ensureBranch = argv["ensure-branch"];
 if (ensureBranch && ensureBranch !== options.branch) {
-    console.log('Branch "' + options.branch + '" does not match requested "' +
-            ensureBranch + '". There is nothing to do here.');
+    console.log(
+        'Branch "' +
+            options.branch +
+            '" does not match requested "' +
+            ensureBranch +
+            '". There is nothing to do here.'
+    );
     process.exit(0);
 }
 
@@ -36,12 +44,11 @@ var version = options.version,
     branch = options.branch;
 
 // If we're not on the master branch, use the branch name as a suffix:
-if (branch !== 'master')
-    options.version += '-' + branch;
+if (branch !== "master") options.version += "-" + branch;
 
 // Allow the removal of the suffix again, as needed by the publish task.
-options.resetVersion = function() {
+options.resetVersion = function () {
     options.version = version;
-}
+};
 
 module.exports = options;
