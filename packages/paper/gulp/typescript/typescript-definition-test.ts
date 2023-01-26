@@ -1,3 +1,6 @@
+/* eslint-disable no-unused-expressions */
+/* eslint-disable prefer-const */
+/* eslint-disable @typescript-eslint/triple-slash-reference */
 /// <reference path="../../dist/paper.d.ts" />
 
 /**

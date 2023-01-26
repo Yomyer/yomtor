@@ -16,7 +16,9 @@
     "jest": "jest",
     "test": "npm run jest",
     "storybook": "npm run storybook -w ./examples/storybook",
-    "generate": "node ./scripts/generate.js"
+    "generate": "node ./scripts/generate.js",
+    "build:paper": "npm run build -w ./packages/paper",
+    "type:paper": "npm run type -w ./packages/paper"
   },
   "dependencies": {
     "@emotion/cache": "^11.10.3",
