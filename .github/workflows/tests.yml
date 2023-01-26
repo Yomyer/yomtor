@@ -16,14 +16,14 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '16.8.0'
-          cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
+          # cache: 'yarn'
+          # cache-dependency-path: '**/yarn.lock'
       - name: Install dependencies
         run: |
           sudo apt update
           sudo apt install -y libcairo2-dev libjpeg-dev libpango1.0-dev libgif-dev librsvg2-dev
       - name: Install
-        run: yarn install --frozen-lockfile --prefer-offline
+        run: yarn install #--frozen-lockfile --prefer-offline
       #- name: Build public packages
       #  run: npm run build:all
       #- name: Run syncpack, eslint, tsc and jest
