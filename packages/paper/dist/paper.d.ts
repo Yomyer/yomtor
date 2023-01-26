@@ -1801,6 +1801,9 @@ declare namespace paper {
          */
         activeInfo: {angle: number, inheritedAngle: number, width: number, height: number, top: number, left: number, rigth: number, bottom: number, center: Point, topCenter: Point, rightCenter: Point, bottomCenter: Point, leftCenter: Point, topLeft: Point, topRight: Point, bottomRight: Point, bottomLeft: Point}
 
+        
+        grid: Grid
+
         /** 
          * The color of the stroke.
          */
@@ -2343,6 +2346,12 @@ declare namespace paper {
          *     SVG content
          */
         importSVG(svg: SVGElement | string, onLoad: Function): Item
+
+        /** 
+         * @param object - an object containing properties to be set on the
+         * grid
+         */
+        setGrid(object: object): void
 
         /** 
          * Adds the specified item as a child of this item at the end of the its
@@ -5658,6 +5667,18 @@ declare namespace paper {
          *     SVG content
          */
         importSVG(svg: SVGElement | string, onLoad: Function): Item
+
+        /** 
+         * @param object - an object containing properties to be set on the
+         * grid
+         */
+        setGrid(object: object): void
+
+        /** 
+         * @return object an object containing properties to be set on the
+         * rectangle
+         */
+        getGrid(): Grid
 
         
         removeOn(type: string): void

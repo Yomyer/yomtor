@@ -15560,7 +15560,9 @@ var Grid = Base.extend(
 		},
 
 		_changed: function(flags, _skipProject) {
-			console.log(this._parent)
+			if (this.parent){
+				this.parent._changed(4097)
+			}
 		},
 
 		_set: function (color, size, opacity, actived) {
@@ -15585,7 +15587,7 @@ var Grid = Base.extend(
 		},
 
 		setColor: function () {
-			this._color = Color.read((arguments[0] && arguments) || ["black"]);
+			this._color = Color.read((arguments[0] && arguments) || ["#7D7D7D"]);
 		},
 
 		getSize: function () {
@@ -15593,7 +15595,7 @@ var Grid = Base.extend(
 		},
 
 		setSize: function () {
-			this._size = Size.read((arguments[0] && arguments) || [1]);
+			this._size = Size.read((arguments[0] && arguments) || [0.45]);
 		},
 
 		getOpacity: function () {
@@ -15601,7 +15603,7 @@ var Grid = Base.extend(
 		},
 
 		setOpacity: function (opacity) {
-			this._opacity = opacity || 0.1;
+			this._opacity = opacity || 0.25;
 		},
 
 		getParent: function () {
@@ -15682,8 +15684,8 @@ var Grid = Base.extend(
 			var project = this.getProject(),
 				view = this.getView(),
 				zoom = view.getZoom();
-
-			if (this.isView() && zoom < 5) {
+			console.log(zoom)
+			if (this.isView() && zoom < 9) {
 				return;
 			}
 
@@ -15694,6 +15696,7 @@ var Grid = Base.extend(
 			this._drawHorizontal(ctx);
 			this._drawVertical(ctx);
 			ctx.stroke();
+
 		},
 	},
 	new (function () {
@@ -15706,6 +15709,7 @@ var Grid = Base.extend(
 			setGrid: function () {
 				this._grid = Grid.read(arguments);
 				this._grid._parent = this;
+				this._changed(4097)
 			},
 		};
 		Item.inject(item);

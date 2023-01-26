@@ -25,13 +25,13 @@ if (typeof window === "object") {
             // ../../dist/paper-full.js, or directly through ../../src/load.js,
             // and match root as all the path's parts that lead to that folder,
             // exclude the last bit (dist|src), as that's a sub-folder of paper.
-            root = src.match(/^(.*\/)\w*\//)[1],
+            root = src.match(/^(.*\/)\w*\//)[1]
             load = function (src) {
                 document.write('<script src="' + src + '"></script>');
             };
         // First load the prepro's browser.js file, which provides the include()
         // function for the browser.
-        load(root + "node_modules/prepro/lib/browser.js");
+        load(root + "../../node_modules/prepro/lib/browser.js");
         // Now that we will have window.include() through browser.js, trigger
         // the loading of this file again, which will execute the lower part of
         // the code the 2nd time around.
@@ -47,7 +47,7 @@ if (typeof window === "object") {
         // Load constants.js, required by the on-the-fly preprocessing:
         include("constants.js");
         // Automatically load stats.js while developing.
-        include("../node_modules/stats.js/build/stats.min.js");
+        include("../../../node_modules/stats.js/build/stats.min.js");
         include("paper.js");
     }
 } else if (typeof require !== "undefined") {

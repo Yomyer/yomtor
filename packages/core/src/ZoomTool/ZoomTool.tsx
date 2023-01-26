@@ -54,10 +54,7 @@ export const ZoomTool = (props: ZoomToolProps) => {
   useEffect(() => {
     if (!canvas) return
     setTool(canvas.createTool('Zoom'))
-
-    if (pixelGrid) {
-      canvas.project.setGrid({ actived: true })
-    }
+    canvas.project.setGrid({ actived: pixelGrid })
   }, [canvas, pixelGrid])
 
   useEffect(() => {

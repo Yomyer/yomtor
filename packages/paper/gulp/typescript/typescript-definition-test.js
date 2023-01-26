@@ -1,4 +1,6 @@
 "use strict";
+/* eslint-disable no-unused-expressions */
+/* eslint-disable prefer-const */
 /* eslint-disable @typescript-eslint/triple-slash-reference */
 /// <reference path="../../dist/paper.d.ts" />
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {

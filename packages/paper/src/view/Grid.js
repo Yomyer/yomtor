@@ -53,11 +53,9 @@ var Grid = Base.extend(
          * @param {ChangeFlag} flags describes what exactly has changed
          */
         _changed: function(flags, _skipProject) {
-            console.log(this._parent)
-            //var project = this.project;
-            
-            /*if (project && !_skipProject)
-                project._changed(flags, this);*/
+            if (this.parent){
+                this.parent._changed(/*#=*/Change.VIEW)
+            } 
         },
 
         _set: function (color, size, opacity, actived) {
@@ -86,7 +84,7 @@ var Grid = Base.extend(
         },
 
         setColor: function (/* color */) {
-            this._color = Color.read((arguments[0] && arguments) || ["black"]);
+            this._color = Color.read((arguments[0] && arguments) || ["#7D7D7D"]);
         },
 
         /**
@@ -98,7 +96,7 @@ var Grid = Base.extend(
         },
 
         setSize: function (/* size */) {
-            this._size = Size.read((arguments[0] && arguments) || [1]);
+            this._size = Size.read((arguments[0] && arguments) || [0.45]);
         },
 
         /**
@@ -110,7 +108,7 @@ var Grid = Base.extend(
         },
 
         setOpacity: function (opacity) {
-            this._opacity = opacity || 0.1;
+            this._opacity = opacity || 0.25;
         },
 
         /**
@@ -208,8 +206,8 @@ var Grid = Base.extend(
             var project = this.getProject(),
                 view = this.getView(),
                 zoom = view.getZoom();
-
-            if (this.isView() && zoom < 5) {
+                
+            if (this.isView() && zoom < 9) {
                 return;
             }
 
@@ -217,9 +215,12 @@ var Grid = Base.extend(
             ctx.globalAlpha = this._opacity;
             ctx.lineWidth = 0.5 * (1 / zoom);
             ctx.beginPath();
+            
             this._drawHorizontal(ctx);
             this._drawVertical(ctx);
             ctx.stroke();
+
+    
         },
     },
     new (function () {
@@ -232,6 +233,7 @@ var Grid = Base.extend(
             setGrid: function (/* grid */) {
                 this._grid = Grid.read(arguments);
                 this._grid._parent = this;
+                this._changed(/*#=*/Change.VIEW)
             },
         };
         Item.inject(item);

@@ -2833,8 +2833,30 @@ new function() { // Injection scope for hit-test functions shared with project
      */
 
     /**
-     * @name Input#grid
+     * @name Item#grid
      * @type Grid
+     */
+
+    /**
+     * @name Item#grid
+     * @type Grid
+     */
+
+    /**
+     * @name Item#setGrid
+     * @function
+     * 
+     * @param {Object} object an object containing properties to be set on the
+     * grid
+     *
+     * 
+     * @example
+     * var rectangle = new Grid({
+     *     color: 'red',
+     *     size: 60,
+     *     opacity: 0.5
+     * });
+     *
      */
 
     /**

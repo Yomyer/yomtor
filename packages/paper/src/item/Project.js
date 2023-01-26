@@ -1027,6 +1027,33 @@ var Project = PaperScopeItem.extend(
      */
 
     /**
+     * @name Project#setGrid
+     * @function
+     * 
+     * @param {Object} object an object containing properties to be set on the
+     * grid
+     *
+     * 
+     * @example
+     * var rectangle = new Grid({
+     *     color: 'red',
+     *     size: 60,
+     *     opacity: 0.5
+     * });
+     *
+     */
+
+    /**
+     * @name Project#getGrid
+     * @function
+     * 
+     * @return {Grid} object an object containing properties to be set on the
+     * rectangle
+     *
+     *
+     */
+
+    /**
      * @param {String} type
      */
     removeOn: function (type) {
