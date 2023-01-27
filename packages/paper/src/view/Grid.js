@@ -96,7 +96,7 @@ var Grid = Base.extend(
         },
 
         setSize: function (/* size */) {
-            this._size = Size.read((arguments[0] && arguments) || [0.45]);
+            this._size = Size.read((arguments[0] && arguments) || [1]);
         },
 
         /**
@@ -207,7 +207,7 @@ var Grid = Base.extend(
                 view = this.getView(),
                 zoom = view.getZoom();
 
-            if (this.isView() && zoom < 12) {
+            if (this.isView() && zoom < 5) {
                 return;
             }
 

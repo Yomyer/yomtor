@@ -38,7 +38,7 @@ function Wrapper(props: ViewToolProps) {
   return (
     <YomtorProvider>
       <Canvas resize={false}>
-        <ZoomTool {...props} />
+        <ZoomTool {...props}>{(zoom) => <div>{zoom}</div>}</ZoomTool>
       </Canvas>
     </YomtorProvider>
   )

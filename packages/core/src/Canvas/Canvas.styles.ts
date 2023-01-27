@@ -1,5 +1,4 @@
 import { createStyles } from '@yomtor/styles'
-import { CanvasProps } from './Canvas.props'
 
 export interface CanvasStylesParams {
   hasArtboards: boolean
@@ -8,12 +7,19 @@ export interface CanvasStylesParams {
 export default createStyles((theme, { hasArtboards }: CanvasStylesParams) => ({
   root: {
     height: '100%',
-    width: '100%'
+    width: '100%',
+    position: 'relative'
   },
   tools: {
     position: 'absolute',
+    top: 0,
+    left: 0,
     bottom: 0,
-    right: 0
+    right: 0,
+    pointerEvents: 'none',
+    '& > *': {
+      pointerEvents: 'all'
+    }
   },
   canvas: {
     background:

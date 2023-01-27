@@ -33,4 +33,4 @@ export const YomtorProvider = forwardRef<HTMLDivElement, YomtorProviderProps>(
   }
 )
 
-YomtorProvider.displayName = '@yomtor/ui/YomtorProvider'
+YomtorProvider.displayName = '@yomtor/core/YomtorProvider'

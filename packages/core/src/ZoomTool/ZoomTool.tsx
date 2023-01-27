@@ -4,6 +4,7 @@ import { useEditorContext } from '../Editor.context'
 import React, { useCallback, useEffect, useState } from 'react'
 import { Tool, Grid } from '@yomtor/paper'
 import { useEventListener, useHotkeys } from '@yomtor/hooks'
+import { isFunction } from 'lodash'
 
 const defaultProps: Partial<ZoomToolProps> = {
   factor: 8,
@@ -11,7 +12,7 @@ const defaultProps: Partial<ZoomToolProps> = {
 }
 
 export const ZoomTool = (props: ZoomToolProps) => {
-  const { factor, pixelGrid } = useComponentDefaultProps(
+  const { factor, children, pixelGrid } = useComponentDefaultProps(
     'ZoomTool',
     defaultProps,
     props
@@ -85,9 +86,5 @@ export const ZoomTool = (props: ZoomToolProps) => {
     canvas && canvas.view.element
   )
 
-  return (
-    <>
-      <button>{zoom}</button>
-    </>
-  )
+  return <>{isFunction(children) ? children(zoom, canvas) : children}</>
 }

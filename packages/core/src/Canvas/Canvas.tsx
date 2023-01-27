@@ -74,4 +74,4 @@ export const Canvas = forwardRef<PaperScope, CanvasProps>((props, ref) => {
   )
 })
 
-Canvas.displayName = '@yomtor/ui/Canvas'
+Canvas.displayName = '@yomtor/core/Canvas'

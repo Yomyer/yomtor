@@ -2,6 +2,7 @@ import '@mantine/styles'
 import {
   DefaultYomtorColor,
   YomtorTheme,
+  CSSObject,
   VariantOutput as YomtorVariantOutput
 } from '@yomtor/styles/src'
 
