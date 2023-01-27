@@ -15684,8 +15684,8 @@ var Grid = Base.extend(
 			var project = this.getProject(),
 				view = this.getView(),
 				zoom = view.getZoom();
-			console.log(zoom)
-			if (this.isView() && zoom < 9) {
+
+			if (this.isView() && zoom < 12) {
 				return;
 			}
 
