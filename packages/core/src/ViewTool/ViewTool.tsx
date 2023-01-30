@@ -178,3 +178,5 @@ export const ViewTool = (props: ViewToolProps) => {
 
   return <></>
 }
+
+ViewTool.displayName = '@yomtor/core/ViewTool'

@@ -11,8 +11,10 @@
     "composite": true,
     "paths": {
       "@yomtor/ui": ["../ui/src"],
+      "@yomtor/yomtor": ["../yomtor/src"],
       "@yomtor/paper": ["../ui/src"],
       "@yomtor/hooks": ["../hooks/src"],
+      "@yomtor/core": ["../core/src"],
       "@yomtor/utils": ["../utils/src"],
       "@yomtor/icons": ["../icons/src"],
       "@yomtor/styles": ["../styles/src"],
@@ -21,6 +23,9 @@
   },
   "references": [
     { "path": "../ui" },
+    { "path": "../hooks" },
+    { "path": "../yomtor" },
+    { "path": "../core" },
     { "path": "../hooks" },
     { "path": "../utils" },
     { "path": "../icons" },

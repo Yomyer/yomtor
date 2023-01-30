@@ -1,1 +1,3 @@
-export interface ZoomControlsProps {}
+export interface ZoomControlsProps {
+  zoom: number
+}

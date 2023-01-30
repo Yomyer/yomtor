@@ -60,6 +60,8 @@ var Controls = Item.extend(
                 strokeWidth: 0.2,
             });
 
+            this._children = []
+
             Base.each(this._corners, function (corner) {
                 var item = new ControlItem(corner);
                 item._style.set(that._style.clone());
@@ -388,7 +390,7 @@ var Controls = Item.extend(
             matrix = matrix.appended(this.getGlobalMatrix(true));
 
             ctx.lineWidth = 0.3;
-            ctx.strokeStyle = this.strokeColor.toCanvasStyle(ctx, matrix);
+            ctx.strokeStyle = 'red';
 
             for (var x in items) {
                 items[x]._drawActivation(ctx, matrix, items.length > 1);

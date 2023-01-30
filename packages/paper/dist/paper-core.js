@@ -7541,6 +7541,8 @@ var Controls = Item.extend(
 				strokeWidth: 0.2,
 			});
 
+			this._children = []
+
 			Base.each(this._corners, function (corner) {
 				var item = new ControlItem(corner);
 				item._style.set(that._style.clone());

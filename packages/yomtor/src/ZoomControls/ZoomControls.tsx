@@ -4,13 +4,28 @@ import { useEditorContext } from '@yomtor/core'
 import React, { useCallback, useEffect, useState } from 'react'
 
 const defaultProps: Partial<ZoomControlsProps> = {
-  factor: 8,
-  pixelGrid: true
+  zoom: 1
 }
 
 export const ZoomControls = (props: ZoomControlsProps) => {
-  const {} = useComponentDefaultProps('ZoomControls', defaultProps, props)
+  const { zoom: zoomProp } = useComponentDefaultProps(
+    'ZoomControls',
+    defaultProps,
+    props
+  )
   const { canvas } = useEditorContext()
+  const [zoom, setZoom] = useState<number>(zoomProp)
 
-  return <></>
+  useEffect(() => {
+    if (!canvas) return
+    canvas.view.on('zoom', ({ zoom }) => {
+      setZoom(zoom)
+    })
+  }, [canvas])
+
+  useEffect(() => {
+    setZoom(zoom)
+  }, [zoom])
+
+  return <>{zoom}</>
 }

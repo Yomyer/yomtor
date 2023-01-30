@@ -1,9 +1,9 @@
 import hotkeys, { HotkeysEvent } from 'hotkeys-js'
 import React, { useCallback, useEffect, useRef } from 'react'
 import { intersectionWith } from 'lodash'
+import { Point } from '@yomtor/paper'
 
 type AvailableTags = 'INPUT' | 'TEXTAREA' | 'SELECT'
-type Point = { x: number; y: number }
 
 export type HotKeysEvent = HotkeysEvent & {
   delta: Point
@@ -42,7 +42,7 @@ const isKeyboardEventTriggeredByInput = (ev: KeyboardEvent) => {
 }
 
 const getDeltaArrow = (ev: KeyboardEvent) => {
-  const point: Point = { x: 0, y: 0 }
+  const point = new Point(0, 0)
   switch (ev.code) {
     case 'ArrowUp':
       point.y = -1

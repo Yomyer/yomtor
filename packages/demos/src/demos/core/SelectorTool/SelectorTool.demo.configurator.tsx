@@ -3,15 +3,19 @@ import { YomtorDemo } from '@yomtor/ds'
 import {
   YomtorProvider,
   Canvas,
-  CanvasProps,
-  ViewTool,
-  ZoomTool,
-  SelectorTool
+  SelectorTool,
+  SelectorToolProps
 } from '@yomtor/core'
 import { Path } from '@yomtor/paper'
 
 const codeTemplate = (props: string) => `
-import { Yomtor } from '@yomtor/core'
+import {
+  YomtorProvider,
+  Canvas,
+  SelectorTool,
+  SelectorToolProps
+} from '@yomtor/core'
+import { Path } from '@yomtor/paper'
 
 function Demo() {
   useEffect(() => {
@@ -24,12 +28,15 @@ function Demo() {
 
   return (
     <YomtorProvider>
-      <Canvas {...props} resize={false} />
+      <Canvas resize={false} >
+        <SelectorTool ${props}/>
+      </Canvas>
     </YomtorProvider>
   )
 }
 `
-function Wrapper(props: CanvasProps) {
+
+function Wrapper(props: SelectorToolProps) {
   useEffect(() => {
     new Path.Rectangle({
       from: [10, 10],
@@ -40,14 +47,13 @@ function Wrapper(props: CanvasProps) {
 
   return (
     <YomtorProvider>
-      <Canvas {...props} resize={false}>
-        <ViewTool />
-        <ZoomTool />
-        <SelectorTool />
+      <Canvas resize={false}>
+        <SelectorTool {...props} />
       </Canvas>
     </YomtorProvider>
   )
 }
+
 export const configurator: YomtorDemo = {
   type: 'configurator',
   codeTemplate,

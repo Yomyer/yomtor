@@ -88,3 +88,5 @@ export const ZoomTool = (props: ZoomToolProps) => {
 
   return <>{isFunction(children) ? children(zoom, canvas) : children}</>
 }
+
+ZoomTool.displayName = '@yomtor/core/ZoomTool'

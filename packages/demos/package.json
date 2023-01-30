@@ -23,6 +23,7 @@
     "@yomtor/styles": "*",
     "@yomtor/ui": "*",
     "@yomtor/utils": "*",
+    "@yomtor/yomtor": "*",
     "lodash": "^4.17.21",
     "prism-react-renderer": "*",
     "rimraf": "~3.0.2"
