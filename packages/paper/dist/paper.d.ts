@@ -471,7 +471,7 @@ declare namespace paper {
     
     class ControlItem extends Item {
         
-        item: string
+        item: Item
 
         
         corner: 'topCenter'  |  'rightCenter'  |  'bottomCenter'  |  'leftCenter'  |  'topLeft'  |  'topRight'  |  'bottomRight'  |  'bottomLef'
@@ -548,6 +548,9 @@ declare namespace paper {
 
         
         getOposite(String: any): Point
+
+        
+        getControl(String: any): ControlItem
 
         
         setInfo(label: string, point: Point, corner?: 'topCenter'  |  'rightCenter'  |  'bottomCenter'  |  'leftCenter'  |  'topLeft'  |  'topRight'  |  'bottomRight'  |  'bottomLeft'): void

@@ -273,6 +273,17 @@ var Controls = Item.extend(
         },
 
         /**
+         * @name Controls#getControl
+         * @param String
+         * @function
+         * @return {ControlItem}
+         *
+         */
+        getControl: function (name) {
+            return this._children[name];
+        },
+
+        /**
          *
          * @param {String} label
          * @param {Point} point
@@ -390,7 +401,7 @@ var Controls = Item.extend(
             matrix = matrix.appended(this.getGlobalMatrix(true));
 
             ctx.lineWidth = 0.3;
-            ctx.strokeStyle = 'red';
+            ctx.strokeStyle = this.strokeColor.toCanvasStyle(ctx, matrix);;
 
             for (var x in items) {
                 items[x]._drawActivation(ctx, matrix, items.length > 1);

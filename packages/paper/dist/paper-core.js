@@ -7240,8 +7240,8 @@ var ControlItem = Item.extend(
 
 		isSmallZoom: function () {
 			if (
-				this._project._controls.width * this.getZoom() <
-				10
+				(this._project._controls.width + this._project._controls.height) * this.getZoom() <
+				20
 			) {
 				return true;
 			}
@@ -7673,6 +7673,10 @@ var Controls = Item.extend(
 			return this[this._oposite[oposite]];
 		},
 
+		getControl: function (name) {
+			return this._children[name];
+		},
+
 		setInfo: function (label, point, corner) {
 			if (!this._info) {
 				return (this._info = new ControlInfo(
@@ -7781,7 +7785,7 @@ var Controls = Item.extend(
 			matrix = matrix.appended(this.getGlobalMatrix(true));
 
 			ctx.lineWidth = 0.3;
-			ctx.strokeStyle = this.strokeColor.toCanvasStyle(ctx, matrix);
+			ctx.strokeStyle = this.strokeColor.toCanvasStyle(ctx, matrix);;
 
 			for (var x in items) {
 				items[x]._drawActivation(ctx, matrix, items.length > 1);

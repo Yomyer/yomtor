@@ -83,7 +83,7 @@ export const ViewTool = (props: ViewToolProps) => {
         )
 
         canvas.view.center = canvas.view.center.add(
-          scrollDragDirection.current.multiply(factor).divide(canvas.view.zoom)
+          scrollDragDirection.current.multiply(1).divide(canvas.view.zoom)
         )
       }
     })

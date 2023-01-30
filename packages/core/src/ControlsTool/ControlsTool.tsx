@@ -88,6 +88,7 @@ export const ControlsTool = (props: ControlsToolProps) => {
       return clone
     })
   }
+
   const transform = (e: ToolEvent, helper = true) => {
     mode.current === 'rotate' ? rotate(e, helper) : resize(e, helper)
   }
@@ -233,7 +234,7 @@ export const ControlsTool = (props: ControlsToolProps) => {
     const rotateHandler = new Shape.Rectangle({
       size: 10,
       fillColor: 'red',
-      opacity: 1,
+      opacity: 0.00000001,
       insert: false
     })
 
@@ -254,17 +255,6 @@ export const ControlsTool = (props: ControlsToolProps) => {
     controls.addControl(
       new ControlItem('bottomRight', 5, rotateHandler.clone()),
       'rotateBottomRight'
-    )
-
-    controls.addControl(
-      new ControlItem(
-        'topCenter',
-        [-20, -20],
-        Object.assign(rotateHandler.clone(), {
-          size: [10]
-        })
-      ),
-      'resizeTopCenter'
     )
 
     tool.onMouseDrag = (e: ToolEvent) => {
@@ -328,6 +318,16 @@ export const ControlsTool = (props: ControlsToolProps) => {
       if (!corner.current) {
         clearCursor([Rotate, Resize])
       }
+    })
+
+    canvas.view.on('mouseup', () => {
+      const topCenter = controls.getControl('topCenter')
+      console.log(topCenter.item.bounds.width, controls.width)
+      console.log((topCenter.item.bounds.width * 100) / controls.width)
+      topCenter.item.scale(
+        (controls.width - topCenter.item.bounds.width) / controls.width,
+        1
+      )
     })
 
     controls.onMouseEnter = (e: MouseEvent & { target: ControlItem }) => {

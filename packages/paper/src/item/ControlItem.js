@@ -37,7 +37,7 @@ var ControlItem = Item.extend(
 
         /**
          * @bean
-         * @type String
+         * @type Item
          */
         getItem: function () {
             return this._item;
@@ -158,8 +158,8 @@ var ControlItem = Item.extend(
 
         isSmallZoom: function () {
             if (
-                this._project._controls.width * this.getZoom() <
-                10
+                (this._project._controls.width + this._project._controls.height) * this.getZoom() <
+                20
             ) {
                 return true;
             }
