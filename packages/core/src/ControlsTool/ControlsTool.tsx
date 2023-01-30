@@ -21,7 +21,7 @@ import {
   rotateDelta,
   scaleWithRotate
 } from '@yomtor/utils'
-import { useHotkeys } from '@yomtor/hooks'
+import { useEventListener, useHotkeys } from '@yomtor/hooks'
 import {
   clearCursor,
   clearGlobalCursor,
@@ -98,7 +98,7 @@ export const ControlsTool = (props: ControlsToolProps) => {
     if (helper && e) {
       helperControl()
     }
-    console.log(current)
+
     current.delta = rotateDelta(
       current.point.subtract(current.offset),
       current.handler,
@@ -176,7 +176,6 @@ export const ControlsTool = (props: ControlsToolProps) => {
 
     if (e.modifiers.shift) {
       delta = (Math.round(delta / 15) * 15) % 360
-      console.log(delta)
     }
 
     canvas.project.activeItems.forEach((item) => {
@@ -197,7 +196,7 @@ export const ControlsTool = (props: ControlsToolProps) => {
     clearGlobalCursor(Rotate, cursorAngle.current)
 
     if (!cursor.current) {
-      return global ? setGlobalCursor(cursorIcon) : setCursor(cursorIcon)
+      return // setCursor(cursorIcon)
     }
 
     angle =
@@ -257,9 +256,6 @@ export const ControlsTool = (props: ControlsToolProps) => {
       'rotateBottomRight'
     )
 
-    setTimeout(() => {
-      console.log(canvas.project.controls)
-    }, 1000)
     controls.addControl(
       new ControlItem(
         'topCenter',
@@ -443,13 +439,35 @@ export const ControlsTool = (props: ControlsToolProps) => {
       },
       up: () => {
         if (!tool.actived) {
-          console.log('up?')
           mode.current = 'resize'
           showCursor()
         }
       }
     },
     [tool, canvas]
+  )
+
+  useEventListener(
+    'wheel',
+    (e: WheelEvent) => {
+      if (tool.actived && cursor.current && data.current) {
+        const point = canvas.view.getEventPoint(e as any)
+        const delta = point.subtract(lastPoint.current)
+        data.current.point = data.current.point.add(delta)
+
+        const event = {
+          modifiers: {
+            alt: e.altKey,
+            shift: e.shiftKey
+          }
+        } as ToolEvent
+
+        transform(event)
+
+        lastPoint.current = point
+      }
+    },
+    canvas && canvas.view.element
   )
 
   return <>{children}</>

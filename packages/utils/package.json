@@ -12,8 +12,8 @@
     "@mantine/utils": "^5.4.0"
   },
   "dependencies": {
+    "@yomtor/paper": "*",
     "lodash": "^4.17.21",
-    "rimraf": "~3.0.2",
-    "@yomtor/paper": "*"
+    "rimraf": "~3.0.2"
   }
 }

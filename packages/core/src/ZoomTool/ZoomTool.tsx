@@ -27,7 +27,6 @@ export const ZoomTool = (props: ZoomToolProps) => {
 
       if (e.metaKey) {
         canvas.getTool('View').paused = true
-        tool.activate()
 
         const oldZoom = canvas.view.zoom
         const oldCenter = canvas.view.center
@@ -46,7 +45,7 @@ export const ZoomTool = (props: ZoomToolProps) => {
 
         setZoom(newZoom)
       } else {
-        tool.activeMain()
+        canvas.getTool('View').paused = false
       }
     },
     [tool]
@@ -68,8 +67,7 @@ export const ZoomTool = (props: ZoomToolProps) => {
       keys: '*+cmd',
       down: () => {},
       up: () => {
-        if (tool && tool.actived) {
-          tool.activeMain()
+        if (canvas.getTool('View').paused) {
           canvas.getTool('View').paused = false
         }
         return false

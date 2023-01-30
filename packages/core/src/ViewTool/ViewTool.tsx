@@ -29,7 +29,7 @@ export const ViewTool = (props: ViewToolProps) => {
 
   const wheelMove = useCallback(
     (e: WheelEvent) => {
-      if (tool && tool.mainActived && !tool.paused) {
+      if (tool && !tool.paused) {
         const point = new canvas.Point(e.deltaX, e.deltaY).divide(factor)
 
         canvas.view.center = canvas.view.center.add(
