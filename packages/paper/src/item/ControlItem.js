@@ -101,10 +101,15 @@ var ControlItem = Item.extend(
             return this._project._view.getZoom();
         },
 
+        _getOwner: function(){
+            return this._project.controls
+        },
+        
         _createDefaultItem: function () {
             return new Shape.Rectangle({
-                size: 7,
+                size: 8,
                 insert: false,
+                strokeScaling: false
             });
         },
 

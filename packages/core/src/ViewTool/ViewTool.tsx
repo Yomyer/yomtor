@@ -85,6 +85,8 @@ export const ViewTool = (props: ViewToolProps) => {
         canvas.view.center = canvas.view.center.add(
           scrollDragDirection.current.multiply(1).divide(canvas.view.zoom)
         )
+
+        canvas.view.emit('viewdragmove', e)
       }
     })
 
@@ -102,23 +104,23 @@ export const ViewTool = (props: ViewToolProps) => {
 
     canvas.view.on('frame', (e: any) => {
       if (!(e.count % 1) && !tool.actived) {
-        setTimeout(() => {
-          if (scrollDragDirection.current) {
-            const delta = scrollDragDirection.current
-              .multiply(factor)
-              .divide(canvas.view.zoom)
-            const point = dragEvent.current.point.add(delta)
+        //setTimeout(() => {
+        if (scrollDragDirection.current) {
+          const delta = scrollDragDirection.current
+            .multiply(factor)
+            .divide(canvas.view.zoom)
+          const point = dragEvent.current.point.add(delta)
 
-            dragEvent.current.point = point
-            dragEvent.current.delta = delta
+          dragEvent.current.point = point
+          dragEvent.current.delta = delta
 
-            canvas.project.removeOn('mousedrag')
+          canvas.project.removeOn('mousedrag')
 
-            canvas.view.emit('mousedrag', dragEvent.current)
+          canvas.view.emit('mousedrag', dragEvent.current)
 
-            canvas.view.handleMouseEvent('mousedrag', dragEvent.current, point)
-          }
-        })
+          canvas.view.handleMouseEvent('mousedrag', dragEvent.current, point)
+        }
+        //})
       }
     })
 

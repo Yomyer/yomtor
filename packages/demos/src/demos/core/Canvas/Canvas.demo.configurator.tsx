@@ -34,7 +34,8 @@ function Wrapper(props: CanvasProps) {
     new Path.Rectangle({
       from: [10, 10],
       to: [50, 50],
-      fillColor: 'red'
+      fillColor: 'red',
+      strokeColor: 'green'
     })
   }, [])
 

@@ -1,10 +1,18 @@
-import { Item, Point } from '@yomtor/paper'
+import { Item, Point, Size } from '@yomtor/paper'
 import { isUndefined } from 'lodash'
 import { rotatePoint } from './rotate-point'
 
-export const scaleWithRotate = function (
+export function scaleWithRotate(item: Item, factor: Size)
+export function scaleWithRotate(
   item: Item,
-  factor: Point,
+  factor: Point | Size,
+  pivot?: Point,
+  center?: Point,
+  angle?: number
+)
+export function scaleWithRotate(
+  item: Item,
+  factor: Point | Size,
   pivot?: Point,
   center?: Point,
   angle?: number
@@ -22,6 +30,14 @@ export const scaleWithRotate = function (
   pivot = rotatePoint(pivot, center, -angle)
 
   item.rotate(-angle, center)
+
+  if (factor instanceof Size) {
+    factor = new Point(
+      factor.width ? factor.width / item.bounds.width : 1,
+      factor.height ? factor.height / item.bounds.height : 1
+    )
+  }
+
   item.scale(factor.x, factor.y, pivot)
   item.rotate(angle, center)
 

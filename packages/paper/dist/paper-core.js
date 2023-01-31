@@ -7183,10 +7183,14 @@ var ControlItem = Item.extend(
 			return this._project._view.getZoom();
 		},
 
+		_getOwner: function(){
+			return this._project.controls
+		},
 		_createDefaultItem: function () {
 			return new Shape.Rectangle({
-				size: 7,
+				size: 8,
 				insert: false,
+				strokeScaling: false
 			});
 		},
 
@@ -7542,11 +7546,12 @@ var Controls = Item.extend(
 			});
 
 			this._children = []
+			this._namedChildren = {}
 
 			Base.each(this._corners, function (corner) {
 				var item = new ControlItem(corner);
 				item._style.set(that._style.clone());
-				that.addControl(item, corner);
+				that.addControl(item, corner, false);
 			});
 		},
 
@@ -7571,15 +7576,20 @@ var Controls = Item.extend(
 			}
 		},
 
-		addControl: function (item, name) {
+		addControl: function (item, name, push = true) {
 			item.remove();
-			this._children.unshift(item);
+			this._children.push(item);
+			item._index = this._children.length - 1
 
 			if (name) {
 				this._children[name || item.name] = item;
-				item.name = name;
-				this._changed(65537, item);
+				item.name = name || item.name;
 			}
+			if(push){
+				item.sendToBack();
+			}
+
+			this._changed(65537, item);
 		},
 
 		getControls: function () {

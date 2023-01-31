@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { ControlsToolProps } from './ControlsTool.props'
 import { useComponentDefaultProps } from '@yomtor/styles'
 import { useEditorContext } from '../Editor.context'
@@ -66,6 +66,12 @@ export const ControlsTool = (props: ControlsToolProps) => {
   const lastPoint = useRef<Point>(null)
   const corner = useRef<Item>(null)
   const activeHelpers = useRef<Item[]>([])
+  const scaleCorners = [
+    'topCenter',
+    'bottomCenter',
+    'leftCenter',
+    'rightCenter'
+  ]
 
   const helperControl = () => {
     canvas.project.deactivateAll()
@@ -197,7 +203,7 @@ export const ControlsTool = (props: ControlsToolProps) => {
     clearGlobalCursor(Rotate, cursorAngle.current)
 
     if (!cursor.current) {
-      return // setCursor(cursorIcon)
+      return setCursor(cursorIcon)
     }
 
     angle =
@@ -222,6 +228,29 @@ export const ControlsTool = (props: ControlsToolProps) => {
     cursorAngle.current = angle
   }
 
+  const scaleControls = useCallback(() => {
+    const controls = canvas.project.controls
+
+    if (controls.width) {
+      scaleWithRotate(
+        controls.getControl('topCenter').item,
+        new Size(controls.width * canvas.view.zoom, 0)
+      )
+      scaleWithRotate(
+        controls.getControl('bottomCenter').item,
+        new Size(controls.width * canvas.view.zoom, 0)
+      )
+      scaleWithRotate(
+        controls.getControl('leftCenter').item,
+        new Size(0, controls.height * canvas.view.zoom)
+      )
+      scaleWithRotate(
+        controls.getControl('rightCenter').item,
+        new Size(0, controls.height * canvas.view.zoom)
+      )
+    }
+  }, [canvas])
+
   useEffect(() => {
     if (!canvas) return
     setTool(canvas.createTool('Transform'))
@@ -234,7 +263,7 @@ export const ControlsTool = (props: ControlsToolProps) => {
     const rotateHandler = new Shape.Rectangle({
       size: 10,
       fillColor: 'red',
-      opacity: 0.00000001,
+      opacity: 0.0000001,
       insert: false
     })
 
@@ -252,10 +281,17 @@ export const ControlsTool = (props: ControlsToolProps) => {
       new ControlItem('bottomLeft', [-5, 5], rotateHandler.clone()),
       'rotateBottomLeft'
     )
+
     controls.addControl(
       new ControlItem('bottomRight', 5, rotateHandler.clone()),
       'rotateBottomRight'
     )
+
+    scaleCorners.forEach((corner) => {
+      controls.getControl(corner).sendToBack()
+      controls.getControl(corner).item.shadowOffset = null
+      controls.getControl(corner).item.opacity = 0.0000001
+    })
 
     tool.onMouseDrag = (e: ToolEvent) => {
       const delta = e.point.subtract(lastPoint.current)
@@ -320,14 +356,19 @@ export const ControlsTool = (props: ControlsToolProps) => {
       }
     })
 
-    canvas.view.on('mouseup', () => {
-      const topCenter = controls.getControl('topCenter')
-      console.log(topCenter.item.bounds.width, controls.width)
-      console.log((topCenter.item.bounds.width * 100) / controls.width)
-      topCenter.item.scale(
-        (controls.width - topCenter.item.bounds.width) / controls.width,
-        1
-      )
+    canvas.view.on('mouseup', scaleControls)
+    canvas.view.on('zoom', scaleControls)
+
+    canvas.view.on('viewdragmove', function (e) {
+      if (tool.actived && cursor.current && data.current) {
+        const delta = e.point.subtract(lastPoint.current)
+        console.log(delta)
+        /*const delta = e.point.subtract(lastPoint.current)
+        data.current.point = data.current.point.add(delta)
+        transform(e)
+
+        lastPoint.current = e.point*/
+      }
     })
 
     controls.onMouseEnter = (e: MouseEvent & { target: ControlItem }) => {
@@ -338,7 +379,11 @@ export const ControlsTool = (props: ControlsToolProps) => {
         point: e.target.position,
         corner: e.target
       }
-      mode.current = e.modifiers.meta ? 'rotate' : 'resize'
+
+      mode.current =
+        !scaleCorners.includes(e.target.name) && e.modifiers.meta
+          ? 'rotate'
+          : 'resize'
 
       if (e.target.name.startsWith('rotate')) {
         mode.current = 'rotate'
@@ -425,7 +470,8 @@ export const ControlsTool = (props: ControlsToolProps) => {
           if (
             canvas.project.controls &&
             corner.current &&
-            mode.current !== 'rotate'
+            mode.current !== 'rotate' &&
+            !scaleCorners.includes(corner.current.name)
           ) {
             mode.current = 'rotate'
             cursor.current = {
@@ -438,8 +484,10 @@ export const ControlsTool = (props: ControlsToolProps) => {
         }
       },
       up: () => {
-        if (!tool.actived) {
-          mode.current = 'resize'
+        if (!tool.actived && corner.current) {
+          mode.current = corner.current.name.startsWith('rotate')
+            ? 'rotate'
+            : 'resize'
           showCursor()
         }
       }
