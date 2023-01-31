@@ -17,7 +17,7 @@ import {
 } from '@yomtor/paper'
 import { differenceWith, intersectionWith, isEqual } from 'lodash'
 import { useYomtorTheme } from '@yomtor/styles'
-import { HotKeysEvent, useHotkeys } from '@yomtor/hooks'
+import { HotKeysEvent, useEventListener, useHotkeys } from '@yomtor/hooks'
 import { round } from '@yomtor/utils'
 import { clearCursor, Clone, Default, setCursor } from '@yomtor/cursors'
 

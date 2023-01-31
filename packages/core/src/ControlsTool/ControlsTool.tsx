@@ -372,7 +372,9 @@ export const ControlsTool = (props: ControlsToolProps) => {
     })
 
     controls.onMouseEnter = (e: MouseEvent & { target: ControlItem }) => {
-      if (tool.actived && !tool.mainActived) return
+      if ((tool.actived && !tool.mainActived) || canvas.mainTool.paused) return
+
+      console.log()
 
       cursor.current = {
         angle: 0,
@@ -456,12 +458,6 @@ export const ControlsTool = (props: ControlsToolProps) => {
     }
   }, [tool])
 
-  useEffect(() => {
-    return () => {
-      // canvas.project.controls = null
-    }
-  })
-
   useHotkeys(
     {
       keys: '*+cmd',
@@ -495,6 +491,7 @@ export const ControlsTool = (props: ControlsToolProps) => {
     [tool, canvas]
   )
 
+  /*
   useEventListener(
     'wheel',
     (e: WheelEvent) => {
@@ -517,6 +514,7 @@ export const ControlsTool = (props: ControlsToolProps) => {
     },
     canvas && canvas.view.element
   )
+  */
 
   return <>{children}</>
 }

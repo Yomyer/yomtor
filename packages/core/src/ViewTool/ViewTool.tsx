@@ -2,7 +2,14 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { ViewToolProps } from './ViewTool.props'
 import { useComponentDefaultProps } from '@yomtor/styles'
 import { useEditorContext } from '../Editor.context'
-import { Point, Tool, ToolEvent, MouseEvent, Rectangle } from '@yomtor/paper'
+import {
+  Point,
+  Tool,
+  ToolEvent,
+  MouseEvent,
+  Rectangle,
+  Event
+} from '@yomtor/paper'
 import { HotKeysEvent, useEventListener, useHotkeys } from '@yomtor/hooks'
 import {
   clearCursor,
@@ -26,6 +33,25 @@ export const ViewTool = (props: ViewToolProps) => {
   const scrollDragDirection = useRef<Point>()
   const dragEvent = useRef<ToolEvent>()
   const downPoint = useRef<Point>()
+  const outside = useRef<boolean>()
+
+  const emitDragEvent = (e: WheelEvent) => {
+    const event = new ToolEvent(tool, 'mousewheel', e)
+    event.modifiers.alt = e.altKey
+    event.modifiers.shift = e.shiftKey
+    event.modifiers.control = e.ctrlKey
+    event.modifiers.meta = e.metaKey
+    event.lastPoint = offset.current
+    event.downPoint = downPoint.current
+    event.point = canvas.view.getEventPoint(e as unknown as Event)
+    event.delta = event.point.subtract(offset.current)
+
+    canvas.view.emit('mousewheel', event)
+    canvas.view.emit('mousedrag', event)
+    canvas.tool.onMouseDrag(event)
+
+    offset.current = event.point
+  }
 
   const wheelMove = useCallback(
     (e: WheelEvent) => {
@@ -36,6 +62,8 @@ export const ViewTool = (props: ViewToolProps) => {
           point.divide(canvas.view.zoom)
         )
       }
+
+      emitDragEvent(e)
     },
     [tool, factor]
   )
@@ -65,14 +93,26 @@ export const ViewTool = (props: ViewToolProps) => {
 
     canvas.view.on('mousedrag', (e: MouseEvent) => {
       const rect = new Rectangle(new Point(0, 0), canvas.view.viewSize).expand(
-        -5
+        -10
       )
 
       const point = canvas.view.projectToView(e.point)
-      const inside = rect.contains(point)
+      outside.current = !rect.contains(point)
 
-      dragEvent.current = e as unknown as ToolEvent
-      dragEvent.current.downPoint = downPoint.current
+      if (outside.current) {
+        dragEvent.current = e as unknown as ToolEvent
+        dragEvent.current.downPoint = downPoint.current
+        dragEvent.current.delta = new Point(
+          point.x < rect.x ? -1 : point.x > rect.width ? 1 : 0,
+          point.y < rect.y ? -1 : point.y > rect.height ? 1 : 0
+        )
+      } else {
+        // console.log('dif0')
+      }
+
+      /*
+       
+t
 
       scrollDragDirection.current = null
 
@@ -88,10 +128,12 @@ export const ViewTool = (props: ViewToolProps) => {
 
         canvas.view.emit('viewdragmove', e)
       }
+      */
     })
 
     canvas.view.on('mouseup', () => {
       scrollDragDirection.current = null
+      outside.current = false
     })
 
     canvas.view.on('mousedown', (e: ToolEvent) => {
@@ -102,6 +144,21 @@ export const ViewTool = (props: ViewToolProps) => {
   useEffect(() => {
     if (!tool) return
 
+    canvas.view.on('frame', (e: any) => {
+      console.log(outside.current)
+      if (outside.current) {
+        canvas.view.center = canvas.view.center.add(
+          dragEvent.current.delta.divide(canvas.view.zoom)
+        )
+
+        canvas.tool.onMouseDrag(e)
+
+        console.log('aa', dragEvent.current)
+
+        // console.log(dragEvent.current.delta)
+      }
+    })
+    /*
     canvas.view.on('frame', (e: any) => {
       if (!(e.count % 1) && !tool.actived) {
         //setTimeout(() => {
@@ -114,15 +171,18 @@ export const ViewTool = (props: ViewToolProps) => {
           dragEvent.current.point = point
           dragEvent.current.delta = delta
 
-          canvas.project.removeOn('mousedrag')
+          
+          // canvas.project.removeOn('mousedrag')
 
-          canvas.view.emit('mousedrag', dragEvent.current)
+          //  canvas.view.emit('mousedrag', dragEvent.current)
 
-          canvas.view.handleMouseEvent('mousedrag', dragEvent.current, point)
+          // canvas.view.handleMouseEvent('mousedrag', dragEvent.current, point)
+         
         }
         //})
       }
     })
+    */
 
     tool.onMouseDown = () => {
       setGlobalCursor(Grabbing)
