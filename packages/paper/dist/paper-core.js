@@ -1032,7 +1032,11 @@ var PaperScope = Base.extend({
 		return this;
 	},
 
-	createTool: function(name, main) {
+	hasTool: function(name){
+		return !!this.tools[name];
+	},
+
+	createTool: function(name, main, depth) {
 		var tool = new this.Tool();
 
 		if (name) {
@@ -1050,13 +1054,23 @@ var PaperScope = Base.extend({
 		if (this._mainTool) {
 			this._mainTool.activeMain();
 		}
+
+		if(depth){
+			var scope = this;
+			Base.each(depth, function(tool) {
+				setTimeout(function(){
+					if(!scope.hasTool(tool)){
+						console.error('The tool '+name +' needs the tool '+tool+' to work correctly.')
+					}
+				})
+			});
+		}
 		return tool;
 	},
 
 	getTool: function(name){
 		return this.tools[name] || {};
 	},
-
 	setInfo: function( label, point){
 		this.fire('info:updated', Base.set({ label: label, point: point }));
 	},

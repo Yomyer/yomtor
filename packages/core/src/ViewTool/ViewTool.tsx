@@ -87,7 +87,7 @@ export const ViewTool = (props: ViewToolProps) => {
 
   useEffect(() => {
     if (!canvas) return
-    const tool = canvas.createTool('View')
+    const tool = canvas.createTool('ViewTool')
 
     setTool(tool)
 

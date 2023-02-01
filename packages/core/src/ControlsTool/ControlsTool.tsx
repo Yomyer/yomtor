@@ -253,7 +253,7 @@ export const ControlsTool = (props: ControlsToolProps) => {
 
   useEffect(() => {
     if (!canvas) return
-    setTool(canvas.createTool('Transform'))
+    setTool(canvas.createTool('TransformTool', false, ['SelectorTool']))
   }, [canvas])
 
   useEffect(() => {

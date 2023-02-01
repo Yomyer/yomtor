@@ -93,6 +93,8 @@ var Controls = Item.extend(
 
         /**
          * @param {Item} item the item to be added as a child
+         * @param {string} name
+         * @param {boolean} [push=true]
          * @return {Item} the added item, or `null` if adding was not possible
          */
         addControl: function (item, name, push = true) {

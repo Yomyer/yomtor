@@ -489,10 +489,20 @@ var PaperScope = Base.extend(/** @lends PaperScope# */{
     /**
      * 
      * @param {String} name 
+     * @return {Boolean}
+     */
+    hasTool: function(name){
+        return !!this.tools[name];
+    },
+
+    /**
+     * 
+     * @param {String} name 
      * @param {Boolean} [main] 
+     * @param {String[]} [depth] 
      * @return {Tool}
      */
-    createTool: function(name, main) {
+    createTool: function(name, main, depth) {
         var tool = new this.Tool();
 
         if (name) {
@@ -510,6 +520,17 @@ var PaperScope = Base.extend(/** @lends PaperScope# */{
         if (this._mainTool) {
             this._mainTool.activeMain();
         }
+
+        if(depth){
+            var scope = this;
+            Base.each(depth, function(tool) {
+                setTimeout(function(){
+                    if(!scope.hasTool(tool)){
+                        console.error('The tool '+name +' needs the tool '+tool+' to work correctly.')
+                    }
+                })
+            });
+        }
     
         return tool;
     },
@@ -522,7 +543,7 @@ var PaperScope = Base.extend(/** @lends PaperScope# */{
     getTool: function(name){
         return this.tools[name] || {};
     },
-
+        
     /**
      * 
      * @param {String} label 

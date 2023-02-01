@@ -26,7 +26,7 @@ export const ZoomTool = (props: ZoomToolProps) => {
       if (!tool) return
 
       if (e.metaKey) {
-        canvas.getTool('View').paused = true
+        canvas.getTool('ViewTool').paused = true
 
         const oldZoom = canvas.view.zoom
         const oldCenter = canvas.view.center
@@ -45,7 +45,7 @@ export const ZoomTool = (props: ZoomToolProps) => {
 
         setZoom(newZoom)
       } else {
-        canvas.getTool('View').paused = false
+        canvas.getTool('ViewTool').paused = false
       }
     },
     [tool]
@@ -53,7 +53,7 @@ export const ZoomTool = (props: ZoomToolProps) => {
 
   useEffect(() => {
     if (!canvas) return
-    setTool(canvas.createTool('Zoom'))
+    setTool(canvas.createTool('ZoomTool'))
     canvas.project.setGrid({ actived: pixelGrid })
   }, [canvas, pixelGrid])
 
@@ -67,8 +67,8 @@ export const ZoomTool = (props: ZoomToolProps) => {
       keys: '*+cmd',
       down: () => {},
       up: () => {
-        if (canvas.getTool('View').paused) {
-          canvas.getTool('View').paused = false
+        if (canvas.getTool('ViewTool').paused) {
+          canvas.getTool('ViewTool').paused = false
         }
         return false
       }

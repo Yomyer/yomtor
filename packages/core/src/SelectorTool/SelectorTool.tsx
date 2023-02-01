@@ -26,7 +26,7 @@ const defaultProps: Partial<SelectorToolProps> = {
 }
 
 export const SelectorTool = (props: SelectorToolProps) => {
-  const {} = useComponentDefaultProps('ViewTool', defaultProps, props)
+  const {} = useComponentDefaultProps('SelectorTool', defaultProps, props)
 
   const { canvas } = useEditorContext()
   const theme = useYomtorTheme()
@@ -318,7 +318,7 @@ export const SelectorTool = (props: SelectorToolProps) => {
 
   useEffect(() => {
     if (!canvas) return
-    setTool(canvas.createTool('Selector', true))
+    setTool(canvas.createTool('SelectorTool', true))
   }, [canvas])
 
   useEffect(() => {

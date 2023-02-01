@@ -544,7 +544,7 @@ declare namespace paper {
          * 
          * @return the added item, or `null` if adding was not possible
          */
-        addControl(item: Item, name: any, push: any): Item
+        addControl(item: Item, name: string, push?: boolean): Item
 
         
         getOposite(String: any): Point
@@ -3663,7 +3663,10 @@ declare namespace paper {
         fire(eventName: string | Array<string>, options?: object): Tool
 
         
-        createTool(name: string, main?: boolean): Tool
+        hasTool(name: string): boolean
+
+        
+        createTool(name: string, main?: boolean, depth?: string[]): Tool
 
         
         getTool(name: string): Tool
