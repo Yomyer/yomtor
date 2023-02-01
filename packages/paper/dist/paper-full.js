@@ -2371,6 +2371,14 @@ var Rectangle = Base.extend({
 		return this.width * this.height;
 	},
 
+	getNearestPoint(){
+		var point = Point.read(arguments);
+
+		var x = Math.min(this.width, Math.max(0, point.x - this.x));
+		var y = Math.min(this.height, Math.max(0, point.y - this.y));
+		return new paper.Point(this.x + x, this.y + y);
+	},
+
 	isEmpty: function() {
 		return this.width === 0 || this.height === 0;
 	},

@@ -32,7 +32,7 @@ export const SelectorTool = (props: SelectorToolProps) => {
   const theme = useYomtorTheme()
   const [tool, setTool] = useState<Tool>()
   const selector = useRef<Group>(null)
-  const mode = useRef<string>('select')
+  const mode = useRef<string>('none')
   const activedItems = useRef<Item[]>([])
   const clonedItems = useRef<Item[]>([])
   const selectRect = useRef<Path>(null)
@@ -137,6 +137,7 @@ export const SelectorTool = (props: SelectorToolProps) => {
 
   const rectSelectorController = (e: KeyEvent | ToolEvent) => {
     if (e instanceof canvas.ToolEvent) {
+      selectRect.current && selectRect.current.remove()
       selectRect.current = new canvas.Path.Rectangle({
         from: e.downPoint,
         to: e.point,
@@ -148,7 +149,8 @@ export const SelectorTool = (props: SelectorToolProps) => {
 
       selectRect.current.removeOn({
         up: true,
-        drag: true
+        drag: true,
+        move: true
       })
     }
 
@@ -240,7 +242,6 @@ export const SelectorTool = (props: SelectorToolProps) => {
     (e: ToolEvent | HotKeysEvent) => {
       canvas.project.activeItems.forEach((item) => {
         let position = item.position.add(e.delta)
-
         if (e instanceof ToolEvent) {
           if (beforePositions.current[item.uid]) {
             position = beforePositions.current[item.uid].add(
@@ -309,7 +310,7 @@ export const SelectorTool = (props: SelectorToolProps) => {
         e.delta = e.delta.multiply((e.isPressed('shift') && 10) || 1)
         move(e)
 
-        mode.current = 'select'
+        mode.current = 'none'
       }
     },
     [tool]
@@ -474,7 +475,7 @@ export const SelectorTool = (props: SelectorToolProps) => {
         moved.current = false
       }
 
-      mode.current = 'select'
+      mode.current = 'none'
 
       updateAtiveItems()
 
@@ -512,12 +513,11 @@ export const SelectorTool = (props: SelectorToolProps) => {
       if (!e.modifiers.alt && mode.current === 'clone') {
         mode.current = 'move'
         cloneController()
-      } else if (mode.current !== 'move') {
-        mode.current = 'select'
-      }
-
-      if (mode.current === 'select') {
+      } else if (mode.current !== 'move' && selectRect.current) {
         rectSelectorController(e)
+        mode.current = 'select'
+      } else {
+        mode.current = 'none'
       }
     }
   }, [tool])

@@ -359,18 +359,6 @@ export const ControlsTool = (props: ControlsToolProps) => {
     canvas.view.on('mouseup', scaleControls)
     canvas.view.on('zoom', scaleControls)
 
-    canvas.view.on('viewdragmove', function (e) {
-      if (tool.actived && cursor.current && data.current) {
-        const delta = e.point.subtract(lastPoint.current)
-        console.log(delta)
-        /*const delta = e.point.subtract(lastPoint.current)
-        data.current.point = data.current.point.add(delta)
-        transform(e)
-
-        lastPoint.current = e.point*/
-      }
-    })
-
     controls.onMouseEnter = (e: MouseEvent & { target: ControlItem }) => {
       if ((tool.actived && !tool.mainActived) || canvas.mainTool.paused) return
 
@@ -490,31 +478,6 @@ export const ControlsTool = (props: ControlsToolProps) => {
     },
     [tool, canvas]
   )
-
-  /*
-  useEventListener(
-    'wheel',
-    (e: WheelEvent) => {
-      if (tool.actived && cursor.current && data.current) {
-        const point = canvas.view.getEventPoint(e as any)
-        const delta = point.subtract(lastPoint.current)
-        data.current.point = data.current.point.add(delta)
-
-        const event = {
-          modifiers: {
-            alt: e.altKey,
-            shift: e.shiftKey
-          }
-        } as ToolEvent
-
-        transform(event)
-
-        lastPoint.current = point
-      }
-    },
-    canvas && canvas.view.element
-  )
-  */
 
   return <>{children}</>
 }

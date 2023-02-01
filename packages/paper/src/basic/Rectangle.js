@@ -266,7 +266,6 @@ var Rectangle = Base.extend(/** @lends Rectangle# */{
         this.y = point.y;
     },
 
-
     /**
      * The size of the rectangle
      *
@@ -465,7 +464,7 @@ var Rectangle = Base.extend(/** @lends Rectangle# */{
         // in a couple of places in core.
         return this;
     },
-
+    
     /**
      * The top-left point of the rectangle.
      *
@@ -532,6 +531,22 @@ var Rectangle = Base.extend(/** @lends Rectangle# */{
         return this.width * this.height;
     },
 
+    /**
+     * Returns the nearest point on the path item to the specified point.
+     * @name Rectangle#getNearestPoint
+     * @function
+     * @param {Point} point
+     * @return {Point} 
+     */
+    getNearestPoint(/* point */){
+        var point = Point.read(arguments);
+
+        var x = Math.min(this.width, Math.max(0, point.x - this.x));
+        var y = Math.min(this.height, Math.max(0, point.y - this.y));
+        return new paper.Point(this.x + x, this.y + y);
+    },
+
+        
     /**
      * @return {Boolean} {@true if the rectangle is empty}
      */

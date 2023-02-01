@@ -8,7 +8,8 @@ import {
   ToolEvent,
   MouseEvent,
   Rectangle,
-  Event
+  Event,
+  Path
 } from '@yomtor/paper'
 import { HotKeysEvent, useEventListener, useHotkeys } from '@yomtor/hooks'
 import {
@@ -19,6 +20,7 @@ import {
   setCursor,
   setGlobalCursor
 } from '@yomtor/cursors'
+import { round } from '@yomtor/utils'
 
 const defaultProps: Partial<ViewToolProps> = {
   factor: 5
@@ -47,8 +49,8 @@ export const ViewTool = (props: ViewToolProps) => {
     event.delta = event.point.subtract(offset.current)
 
     canvas.view.emit('mousewheel', event)
-    canvas.view.emit('mousedrag', event)
-    canvas.tool.onMouseDrag(event)
+    // canvas.view.emit('mousedrag', event)
+    canvas.tool && canvas.tool.onMouseDrag(event)
 
     offset.current = event.point
   }
@@ -85,7 +87,9 @@ export const ViewTool = (props: ViewToolProps) => {
 
   useEffect(() => {
     if (!canvas) return
-    setTool(canvas.createTool('View'))
+    const tool = canvas.createTool('View')
+
+    setTool(tool)
 
     canvas.view.on('mousemove', (e: MouseEvent) => {
       offset.current = e.point
@@ -95,40 +99,23 @@ export const ViewTool = (props: ViewToolProps) => {
       const rect = new Rectangle(new Point(0, 0), canvas.view.viewSize).expand(
         -10
       )
-
       const point = canvas.view.projectToView(e.point)
       outside.current = !rect.contains(point)
-
+      const nearest = rect.getNearestPoint(point)
+      const distance = round(
+        Math.min(Math.max(nearest.getDistance(point), 0), 7)
+      )
       if (outside.current) {
-        dragEvent.current = e as unknown as ToolEvent
-        dragEvent.current.downPoint = downPoint.current
-        dragEvent.current.delta = new Point(
-          point.x < rect.x ? -1 : point.x > rect.width ? 1 : 0,
-          point.y < rect.y ? -1 : point.y > rect.height ? 1 : 0
-        )
-      } else {
-        // console.log('dif0')
+        dragEvent.current = new ToolEvent(tool, 'mousedrag', e)
+        Object.assign(dragEvent.current, e, {
+          count: distance,
+          downPoint: downPoint.current,
+          delta: new Point(
+            point.x < rect.x ? -distance : point.x > rect.width ? distance : 0,
+            point.y < rect.y ? -distance : point.y > rect.height ? distance : 0
+          ).divide(canvas.view.zoom)
+        })
       }
-
-      /*
-       
-t
-
-      scrollDragDirection.current = null
-
-      if (!inside) {
-        scrollDragDirection.current = new Point(
-          point.x < rect.x ? -1 : point.x > rect.width ? 1 : 0,
-          point.y < rect.y ? -1 : point.y > rect.height ? 1 : 0
-        )
-
-        canvas.view.center = canvas.view.center.add(
-          scrollDragDirection.current.multiply(1).divide(canvas.view.zoom)
-        )
-
-        canvas.view.emit('viewdragmove', e)
-      }
-      */
     })
 
     canvas.view.on('mouseup', () => {
@@ -145,44 +132,15 @@ t
     if (!tool) return
 
     canvas.view.on('frame', (e: any) => {
-      console.log(outside.current)
       if (outside.current) {
-        canvas.view.center = canvas.view.center.add(
-          dragEvent.current.delta.divide(canvas.view.zoom)
+        canvas.view.center = canvas.view.center.add(dragEvent.current.delta)
+        dragEvent.current.point = dragEvent.current.point.add(
+          dragEvent.current.delta
         )
 
-        canvas.tool.onMouseDrag(e)
-
-        console.log('aa', dragEvent.current)
-
-        // console.log(dragEvent.current.delta)
+        canvas.tool && canvas.tool.onMouseDrag(dragEvent.current)
       }
     })
-    /*
-    canvas.view.on('frame', (e: any) => {
-      if (!(e.count % 1) && !tool.actived) {
-        //setTimeout(() => {
-        if (scrollDragDirection.current) {
-          const delta = scrollDragDirection.current
-            .multiply(factor)
-            .divide(canvas.view.zoom)
-          const point = dragEvent.current.point.add(delta)
-
-          dragEvent.current.point = point
-          dragEvent.current.delta = delta
-
-          
-          // canvas.project.removeOn('mousedrag')
-
-          //  canvas.view.emit('mousedrag', dragEvent.current)
-
-          // canvas.view.handleMouseEvent('mousedrag', dragEvent.current, point)
-         
-        }
-        //})
-      }
-    })
-    */
 
     tool.onMouseDown = () => {
       setGlobalCursor(Grabbing)

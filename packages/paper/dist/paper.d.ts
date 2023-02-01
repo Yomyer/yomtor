@@ -544,7 +544,7 @@ declare namespace paper {
          * 
          * @return the added item, or `null` if adding was not possible
          */
-        addControl(item: Item, name: any): Item
+        addControl(item: Item, name: any, push: any): Item
 
         
         getOposite(String: any): Point
@@ -6107,6 +6107,11 @@ declare namespace paper {
          * @return a string representation of this rectangle
          */
         toString(): string
+
+        /** 
+         * Returns the nearest point on the path item to the specified point.
+         */
+        getNearestPoint(point: Point): Point
 
         /** 
          * @return true if the rectangle is empty
