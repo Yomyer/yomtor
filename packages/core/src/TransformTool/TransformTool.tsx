@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { ControlsToolProps } from './ControlsTool.props'
+import { TransformToolProps } from './TransformTool.props'
 import { useComponentDefaultProps } from '@yomtor/styles'
 import { useEditorContext } from '../Editor.context'
 import {
@@ -31,9 +31,9 @@ import {
   setGlobalCursor
 } from '@yomtor/cursors'
 
-const defaultProps: Partial<ControlsToolProps> = {}
+const defaultProps: Partial<TransformToolProps> = {}
 
-export const ControlsTool = (props: ControlsToolProps) => {
+export const TransformTool = (props: TransformToolProps) => {
   const { children } = useComponentDefaultProps(
     'ControlsTool',
     defaultProps,
@@ -482,4 +482,4 @@ export const ControlsTool = (props: ControlsToolProps) => {
   return <>{children}</>
 }
 
-ControlsTool.displayName = '@yomtor/core/ControlsTool'
+TransformTool.displayName = '@yomtor/core/ControlsTool'

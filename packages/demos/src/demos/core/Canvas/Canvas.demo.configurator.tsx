@@ -6,6 +6,7 @@ import {
   CanvasProps,
   ViewTool,
   ZoomTool,
+  TransformTool,
   SelectorTool
 } from '@yomtor/core'
 import { Path } from '@yomtor/paper'
@@ -24,7 +25,12 @@ function Demo() {
 
   return (
     <YomtorProvider>
-      <Canvas {...props} resize={false} />
+      <Canvas {...props} resize={false}>
+        <ViewTool />
+        <ZoomTool />
+        <SelectorTool />
+        <TransformTool />
+      </Canvas>
     </YomtorProvider>
   )
 }
@@ -45,6 +51,7 @@ function Wrapper(props: CanvasProps) {
         <ViewTool />
         <ZoomTool />
         <SelectorTool />
+        <TransformTool />
       </Canvas>
     </YomtorProvider>
   )

@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useComponentDefaultProps } from '@mantine/styles'
 import { SelectorToolProps } from './SelectorTool.props'
-import { ControlsTool } from '../ControlsTool/ControlsTool'
 import { useEditorContext } from '../Editor.context'
 import {
   Artboard,
@@ -560,7 +559,7 @@ export const SelectorTool = (props: SelectorToolProps) => {
     [tool]
   )
 
-  return <ControlsTool />
+  return <></>
 }
 
 SelectorTool.displayName = '@yomtor/core/SelectorTool'
