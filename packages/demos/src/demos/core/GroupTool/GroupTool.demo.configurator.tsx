@@ -14,7 +14,6 @@ import {
   YomtorProvider,
   Canvas,
   GroupTool,
-  GroupToolProps,
   SelectorTool
 } from '@yomtor/core'
 import { Path } from '@yomtor/paper'

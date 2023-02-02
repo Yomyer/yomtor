@@ -4,7 +4,7 @@ import { SelectorToolProps } from './SelectorTool.props'
 import { useEditorContext } from '../Editor.context'
 import {
   Artboard,
-  ControlItem,
+  Control,
   Group,
   Item,
   KeyEvent,
@@ -21,11 +21,16 @@ import { round } from '@yomtor/utils'
 import { clearCursor, Clone, Default, setCursor } from '@yomtor/cursors'
 
 const defaultProps: Partial<SelectorToolProps> = {
-  factor: 5
+  move: true,
+  clone: true
 }
 
 export const SelectorTool = (props: SelectorToolProps) => {
-  const {} = useComponentDefaultProps('SelectorTool', defaultProps, props)
+  const { move: isMove, clone: isClone } = useComponentDefaultProps(
+    'SelectorTool',
+    defaultProps,
+    props
+  )
 
   const { canvas } = useEditorContext()
   const theme = useYomtorTheme()
@@ -70,7 +75,7 @@ export const SelectorTool = (props: SelectorToolProps) => {
   }
 
   const cloneController = () => {
-    if (mode.current === 'clone') {
+    if (mode.current === 'clone' && isClone && isMove) {
       canvas.project.clearHighlightedItem()
 
       if (!clonedItems.current.length) {
@@ -239,6 +244,8 @@ export const SelectorTool = (props: SelectorToolProps) => {
 
   const move = useCallback(
     (e: ToolEvent | HotKeysEvent) => {
+      if (!isMove) return
+
       canvas.project.activeItems.forEach((item) => {
         let position = item.position.add(e.delta)
         if (e instanceof ToolEvent) {
@@ -292,8 +299,9 @@ export const SelectorTool = (props: SelectorToolProps) => {
         canvas.fire('object:moving', e)
         moved.current = true
       }
+      console.log(isMove)
     },
-    [canvas]
+    [canvas, isMove]
   )
 
   const arrowMove = useCallback(
@@ -312,7 +320,7 @@ export const SelectorTool = (props: SelectorToolProps) => {
         mode.current = 'none'
       }
     },
-    [tool]
+    [tool, isMove]
   )
 
   useEffect(() => {
@@ -450,7 +458,7 @@ export const SelectorTool = (props: SelectorToolProps) => {
     }
 
     tool.onMouseMove = (e: ToolEvent) => {
-      if (e.item instanceof ControlItem) return
+      if (e.item instanceof Control || !isClone || !isMove) return
 
       hightlightController(e)
 
@@ -519,7 +527,7 @@ export const SelectorTool = (props: SelectorToolProps) => {
         mode.current = 'none'
       }
     }
-  }, [tool])
+  }, [tool, isMove, isClone])
 
   useHotkeys(
     {
@@ -528,7 +536,7 @@ export const SelectorTool = (props: SelectorToolProps) => {
         arrowMove(e)
       }
     },
-    [tool]
+    [tool, isMove]
   )
 
   useHotkeys(
@@ -547,7 +555,9 @@ export const SelectorTool = (props: SelectorToolProps) => {
         if (
           mouseEvent.current &&
           mouseEvent.current.item &&
-          !selectRect.current
+          !selectRect.current &&
+          isMove &&
+          isClone
         ) {
           setCursor(Default, 0, Clone)
         }
@@ -556,7 +566,7 @@ export const SelectorTool = (props: SelectorToolProps) => {
         clearCursor(Default, 0, Clone)
       }
     },
-    [tool]
+    [tool, isMove, isClone]
   )
 
   return <></>

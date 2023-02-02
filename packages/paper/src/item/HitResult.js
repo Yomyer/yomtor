@@ -135,7 +135,7 @@ var HitResult = Base.extend(/** @lends HitResult# */{
                 // Only hit selected objects
                 selected: false,
 
-                controls: true,
+                selector: true,
 
                 legacy: false
             }, options);

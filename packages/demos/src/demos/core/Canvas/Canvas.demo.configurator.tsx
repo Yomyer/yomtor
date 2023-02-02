@@ -7,12 +7,21 @@ import {
   ViewTool,
   ZoomTool,
   TransformTool,
-  SelectorTool
+  SelectorTool,
+  GroupTool
 } from '@yomtor/core'
 import { Path } from '@yomtor/paper'
 
 const codeTemplate = (props: string) => `
-import { Yomtor } from '@yomtor/core'
+import {
+  YomtorProvider,
+  Canvas,
+  ViewTool,
+  ZoomTool,
+  TransformTool,
+  SelectorTool,
+  GroupTool 
+} from '@yomtor/core'
 
 function Demo() {
   useEffect(() => {
@@ -28,6 +37,7 @@ function Demo() {
       <Canvas {...props} resize={false}>
         <ViewTool />
         <ZoomTool />
+        <GroupTool />
         <SelectorTool />
         <TransformTool />
       </Canvas>
@@ -50,6 +60,7 @@ function Wrapper(props: CanvasProps) {
       <Canvas {...props} resize={false}>
         <ViewTool />
         <ZoomTool />
+        <GroupTool />
         <SelectorTool />
         <TransformTool />
       </Canvas>

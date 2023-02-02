@@ -89,12 +89,17 @@
           clipped: true
       });
 
-      new ControlItem('test', new Shape.Rectangle())
+      new Control('topLeft', new Shape.Rectangle({fillColor: 'black', size: 10}), function(event) {
+        event.control.setPosition(event.selector.topLeft)
+      })
 
-      /*project.addControl(
-        'test',
-        function
-      )*/
+      new Control('bottomRight', new Shape.Rectangle({fillColor: 'black', size: 10}), function(event) {
+        event.control.setPosition(event.selector.bottomRight)
+      })
+
+      project.selector.onMouseEnter = function() {
+          console.log('aa')
+      }
 
       function getPathByPoint(point, legacy){
           var options = options | {};
@@ -136,7 +141,7 @@
       }
 
       function onMouseDown(event) {
-          if(!(event.item instanceof ControlItem)){
+          if(!(event.item instanceof Control)){
               var point = event.point;
               path = getPathByPoint(point, event.modifiers.meta)
 

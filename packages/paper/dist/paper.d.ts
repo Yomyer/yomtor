@@ -446,117 +446,25 @@ declare namespace paper {
     }
 
     
-    class ControlInfo extends Item {
+    class Control extends Item {
         
-        content: string
-
-        
-        corner: string
+        item: Item
 
         
         position: Point
 
         
-        label: PointText
-
-        
-        background: Path
-
-        
-        item: Group
-
-
-    }
-
-    
-    class ControlItem extends Item {
-        
-        item: Item
-
-        
-        corner: 'topCenter'  |  'rightCenter'  |  'bottomCenter'  |  'leftCenter'  |  'topLeft'  |  'topRight'  |  'bottomRight'  |  'bottomLef'
-
-        
         offset: Point
 
+        
+        size: Size
 
         
-        constructor(corner: 'topCenter'  |  'rightCenter'  |  'bottomCenter'  |  'leftCenter'  |  'topLeft'  |  'topRight'  |  'bottomRight'  |  'bottomLeft', offset: Point | number | Array<number>, item: Item)
+        onDraw: (event: DrawControlEvent) => void | null
 
-    }
-
-    
-    class Controls extends Item {
-        
-        readonly controls: any[]
 
         
-        readonly x: number
-
-        
-        readonly y: number
-
-        
-        readonly angle: number
-
-        
-        readonly inheritedAngle: number
-
-        
-        readonly width: number
-
-        
-        readonly height: number
-
-        
-        readonly center: Point
-
-        
-        readonly topLeft: Point
-
-        
-        readonly topCenter: Point
-
-        
-        readonly topRight: Point
-
-        
-        readonly rightCenter: Point
-
-        
-        readonly bottomRight: Point
-
-        
-        readonly bottomCenter: Point
-
-        
-        readonly bottomLeft: Point
-
-        
-        readonly leftCenter: Point
-
-        
-        readonly position: Point
-
-
-        /** 
-         * @param item - the item to be added as a child
-         * 
-         * @return the added item, or `null` if adding was not possible
-         */
-        addControl(item: Item, name: string, push?: boolean): Item
-
-        
-        getOposite(String: any): Point
-
-        
-        getControl(String: any): ControlItem
-
-        
-        setInfo(label: string, point: Point, corner?: 'topCenter'  |  'rightCenter'  |  'bottomCenter'  |  'leftCenter'  |  'topLeft'  |  'topRight'  |  'bottomRight'  |  'bottomLeft'): void
-
-        
-        clearInfo(): void
+        constructor(name: string, item: Item, draw?: (event: DrawControlEvent) => void)
 
     }
 
@@ -1277,6 +1185,22 @@ declare namespace paper {
 
     }
 
+    
+    class DrawControlEvent extends Event {
+        
+        readonly control: Control
+
+        
+        selector: Selector
+
+
+        /** 
+         * Creates a new Segment object.
+         */
+        constructor(control?: Control, selector?: Selector)
+
+    }
+
     /** 
      * The Event object is the base class for any of the other event types,
      * such as {@link MouseEvent}, {@link ToolEvent} and {@link KeyEvent}.
@@ -1518,7 +1442,7 @@ declare namespace paper {
         /** 
          * The class name of the item as a string.
          */
-        className: 'Group' | 'Layer' | 'Path' | 'CompoundPath' | 'Shape' | 'Raster' |    'SymbolItem' | 'PointText' | 'Artboard' | 'ControlItem' | 'Controls' | 'ControlInfo'
+        className: 'Group' | 'Layer' | 'Path' | 'CompoundPath' | 'Shape' | 'Raster' |    'SymbolItem' | 'PointText' | 'Artboard' | 'Control' | 'Selector' | 'SelectorInfo'
 
         /** 
          * The name of the item. If the item has a name, it can be accessed by name
@@ -3562,11 +3486,10 @@ declare namespace paper {
         Artboard: typeof Artboard
         Color: typeof Color
         CompoundPath: typeof CompoundPath
-        ControlInfo: typeof ControlInfo
-        ControlItem: typeof ControlItem
-        Controls: typeof Controls
+        Control: typeof Control
         Curve: typeof Curve
         CurveLocation: typeof CurveLocation
+        DrawControlEvent: typeof DrawControlEvent
         Event: typeof Event
         Gradient: typeof Gradient
         GradientStop: typeof GradientStop
@@ -3589,6 +3512,8 @@ declare namespace paper {
         Raster: typeof Raster
         Rectangle: typeof Rectangle
         Segment: typeof Segment
+        Selector: typeof Selector
+        SelectorInfo: typeof SelectorInfo
         Shape: typeof Shape
         Size: typeof Size
         Style: typeof Style
@@ -5305,9 +5230,9 @@ declare namespace paper {
         readonly layers: Layer[]
 
         /** 
-         * The controls within the project.
+         * The selector within the project.
          */
-        readonly controls: Controls
+        readonly selector: Selector
 
         /** 
          * The layer which is currently active. New items will be created on this
@@ -6460,6 +6385,100 @@ declare namespace paper {
          *     `0` and `1`, but extrapolation is possible too
          */
         interpolate(from: Segment, to: Segment, factor: number): void
+
+    }
+
+    
+    class Selector extends Item {
+        
+        readonly selector: any[]
+
+        
+        readonly x: number
+
+        
+        readonly y: number
+
+        
+        readonly angle: number
+
+        
+        readonly inheritedAngle: number
+
+        
+        readonly width: number
+
+        
+        readonly height: number
+
+        
+        readonly center: Point
+
+        
+        readonly topLeft: Point
+
+        
+        readonly topCenter: Point
+
+        
+        readonly topRight: Point
+
+        
+        readonly rightCenter: Point
+
+        
+        readonly bottomRight: Point
+
+        
+        readonly bottomCenter: Point
+
+        
+        readonly bottomLeft: Point
+
+        
+        readonly leftCenter: Point
+
+        
+        readonly position: Point
+
+        
+        onControlDraw: (event: DrawControlEvent) => void | null
+
+
+        
+        getOposite(String: any): Point
+
+        
+        getControl(String: any): Control
+
+        
+        setInfo(label: string, point: Point, corner?: 'topCenter'  |  'rightCenter'  |  'bottomCenter'  |  'leftCenter'  |  'topLeft'  |  'topRight'  |  'bottomRight'  |  'bottomLeft'): void
+
+        
+        clearInfo(): void
+
+    }
+
+    
+    class SelectorInfo extends Item {
+        
+        content: string
+
+        
+        corner: string
+
+        
+        position: Point
+
+        
+        label: PointText
+
+        
+        background: Path
+
+        
+        item: Group
+
 
     }
 
@@ -7857,11 +7876,10 @@ declare module '@yomtor/paper'
     export class Artboard extends paper.Artboard {}
     export class Color extends paper.Color {}
     export class CompoundPath extends paper.CompoundPath {}
-    export class ControlInfo extends paper.ControlInfo {}
-    export class ControlItem extends paper.ControlItem {}
-    export class Controls extends paper.Controls {}
+    export class Control extends paper.Control {}
     export class Curve extends paper.Curve {}
     export class CurveLocation extends paper.CurveLocation {}
+    export class DrawControlEvent extends paper.DrawControlEvent {}
     export class Event extends paper.Event {}
     export class Gradient extends paper.Gradient {}
     export class GradientStop extends paper.GradientStop {}
@@ -7884,6 +7902,8 @@ declare module '@yomtor/paper'
     export class Raster extends paper.Raster {}
     export class Rectangle extends paper.Rectangle {}
     export class Segment extends paper.Segment {}
+    export class Selector extends paper.Selector {}
+    export class SelectorInfo extends paper.SelectorInfo {}
     export class Shape extends paper.Shape {}
     export class Size extends paper.Size {}
     export class Style extends paper.Style {}

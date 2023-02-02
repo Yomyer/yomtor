@@ -3151,7 +3151,7 @@ var Project = PaperScopeItem.extend(
 	_highlightedItem: null,
 	_mainTool: null,
 	_artboards: [],
-	_controls: null,
+	_selector: null,
 
 	initialize: function Project(element) {
 	  PaperScopeItem.call(this, true)
@@ -3159,7 +3159,7 @@ var Project = PaperScopeItem.extend(
 	  this._namedChildren = {}
 	  this._activeLayer = null
 	  this._currentStyle = new Style(null, null, this)
-	  this._controls = Controls.create(Item.NO_INSERT)
+	  this._selector = Selector.create(Item.NO_INSERT)
 	  this._view = View.create(this, element || CanvasProvider.getCanvas(1, 1))
 	  this._selectionItems = {}
 	  this._selectionCount = 0
@@ -3193,8 +3193,8 @@ var Project = PaperScopeItem.extend(
 		}
 	  }
 
-	  if (this._controls) {
-		this._controls._changed(flags, item)
+	  if (this._selector) {
+		this._selector._changed(flags, item)
 	  }
 	},
 
@@ -3237,8 +3237,8 @@ var Project = PaperScopeItem.extend(
 	  return this._children
 	},
 
-	getControls: function () {
-	  return this._controls
+	getSelector: function () {
+	  return this._selector
 	},
 
 	getActiveLayer: function () {
@@ -3406,7 +3406,7 @@ var Project = PaperScopeItem.extend(
 		curves: true,
 		fill: true,
 		guides: false,
-		controls: false,
+		selector: false,
 		tolerance: 8 / this.view.zoom,
 		match: function (hit) {
 		  return (
@@ -3521,14 +3521,14 @@ var Project = PaperScopeItem.extend(
 		ctx.restore()
 	  }
 
-	  if (this._controls) {
+	  if (this._selector) {
 		if (this._activeItems.length) {
 		  ctx.save()
-		  this._controls.draw(ctx, matrix, pixelRatio)
+		  this._selector.draw(ctx, matrix, pixelRatio)
 		  ctx.restore()
 		}
 
-		this._controls.drawInfo(ctx, matrix, pixelRatio)
+		this._selector.drawInfo(ctx, matrix, pixelRatio)
 	  }
 	}
   }
@@ -4614,7 +4614,7 @@ new function() {
 		var children = this._children;
 
 		if(this instanceof Project){
-			var controls = this._controls && this._controls._children;
+			var controls = this._selector && this._selector._children;
 			if(controls && this._activeItems.length){
 				children = children.concat(controls);
 			}
@@ -7122,7 +7122,7 @@ var HitResult = Base.extend({
 				guides: paper.settings.hitGuides,
 				selected: false,
 
-				controls: true,
+				selector: true,
 
 				legacy: false
 			}, options);
@@ -7130,228 +7130,359 @@ var HitResult = Base.extend({
 	}
 });
 
-var ControlItem = Item.extend(
+var Selector = Item.extend(
 	 {
-		_class: "ControlItem",
-		_item: null,
-		_corner: null,
-		_offset: null,
-		_control: true,
+		_class: "Selector",
+		_applyChildrenStyle: false,
+		_corners: [
+			"topLeft",
+			"topCenter",
+			"topRight",
+			"rightCenter",
+			"bottomRight",
+			"bottomCenter",
+			"bottomLeft",
+			"leftCenter",
+		],
+		_project: null,
+		_angle: 0,
+		_width: null,
+		_height: null,
+		_center: null,
+		_topCenter: null,
+		_rightCenter: null,
+		_bottomCenter: null,
+		_leftCenter: null,
+		_topLeft: null,
+		_topRight: null,
+		_bottomRight: null,
+		_bottomLeft: null,
+		_children: [],
+		_cornerItems: {},
+		_activeItemsInfo: null,
+		_info: null,
+		_defaultStyles: {
+			shadowColor: "rgba(0, 0, 0, 0.3)",
+			shadowBlur: 2,
+			shadowOffset: 1,
+		},
 
-		initialize: function ControlItem(corner, offset, item) {
-			this._project = paper.project;
-			if (item) {
-				item.remove();
-				this._item = item;
-			} else {
-				this._item = this._createDefaultItem();
+		_oposite: {
+			topLeft: "bottomRight",
+			topCenter: "bottomCenter",
+			topRight: "bottomLeft",
+			leftCenter: "rightCenter",
+			rightCenter: "leftCenter",
+			bottomLeft: "topRight",
+			bottomCenter: "topCenter",
+			bottomRight: "topLeft",
+			center: "center",
+		},
+
+		initialize: function Selector(arg) {
+			var that = this;
+
+			this._initialize(arg);
+			this._style.set(Object.assign({}, this._defaultStyles, {
+				strokeColor: "rgba(0, 142, 252, 1)",
+				fillColor: "white",
+				strokeWidth: 0.2,
+			}));
+
+			this._children = []
+			this._namedChildren = {}
+		},
+
+		_changed: function (flags, item) {
+			if (flags & 65536) {
+				this._activeItemsInfo = null;
 			}
-			this._item._control = this;
-			this._corner = corner;
-			this._offset = Point.read([offset]);
-			this._style = this._item._style;
+
+			if (flags & 1048576) {
+				this._cornerItems = {};
+			}
+
+			if (
+				item &&
+				(flags & 1048584) &&
+				!(item instanceof Layer) &&
+				!item.guide &&
+				!item._control &&
+				item.actived
+			) {
+				this._activeItemsInfo = null;
+			}
 		},
 
-		setActived: function () {},
-
-		getItem: function () {
-			return this._item;
+		getSelector: function () {
+			return this._children;
 		},
 
-		setItem: function (item) {
-			this._item = item;
+		getX: function () {
+			return this._descomposeActiveItemsInfo("topLeft", "x") || 0;
 		},
 
-		getCorner: function () {
-			return this._corner;
+		getY: function () {
+			return this._descomposeActiveItemsInfo("topLeft", "y") || 0;
 		},
 
-		setCorner: function (corner) {
-			this._corner = corner;
+		getAngle: function () {
+			return this._descomposeActiveItemsInfo("angle") || 0;
 		},
 
-		getOffset: function () {
-			return this._offset;
+		getInheritedAngle: function(){
+			return this._descomposeActiveItemsInfo("inheritedAngle") || 0;
 		},
 
-		setOffset: function () {
-			this._offset = Point.read(arguments);
+		getWidth: function () {
+			return this._descomposeActiveItemsInfo("width") || 0;
+		},
+
+		getHeight: function () {
+			return this._descomposeActiveItemsInfo("height") || 0;
+		},
+
+		getCenter: function () {
+			return this._descomposeActiveItemsInfo("center") || new Point(0, 0);
+		},
+
+		getTopLeft: function () {
+			return (
+				this._descomposeActiveItemsInfo("topLeft") || new Point(0, 0)
+			);
+		},
+
+		getTopCenter: function () {
+			return (
+				this._descomposeActiveItemsInfo("topCenter") || new Point(0, 0)
+			);
+		},
+
+		getTopRight: function () {
+			return (
+				this._descomposeActiveItemsInfo("topRight") || new Point(0, 0)
+			);
+		},
+
+		getRightCenter: function () {
+			return (
+				this._descomposeActiveItemsInfo("rightCenter") ||
+				new Point(0, 0)
+			);
+		},
+
+		getBottomRight: function () {
+			return (
+				this._descomposeActiveItemsInfo("bottomRight") ||
+				new Point(0, 0)
+			);
+		},
+
+		getBottomCenter: function () {
+			return (
+				this._descomposeActiveItemsInfo("bottomCenter") ||
+				new Point(0, 0)
+			);
+		},
+
+		getBottomLeft: function () {
+			return (
+				this._descomposeActiveItemsInfo("bottomLeft") || new Point(0, 0)
+			);
+		},
+
+		getLeftCenter: function () {
+			return (
+				this._descomposeActiveItemsInfo("leftCenter") || new Point(0, 0)
+			);
 		},
 
 		getPosition: function () {
-			return this._item.getPosition();
+			return this._descomposeActiveItemsInfo("center") || new Point(0, 0);
 		},
 
-		setPosition: function () {
-			var matrix = new Matrix().rotate(this._item.getRotation());
-			var offset = matrix._transformPoint(this._offset.divide(this.getZoom()));
-			this._item.setPosition(Point.read(arguments).add(offset));
+		getOposite: function (oposite) {
+			return this[this._oposite[oposite]];
 		},
 
-		getRotation: function () {
-			return this._item.getRotation();
+		getControl: function (name) {
+			return this._children[name];
 		},
 
-		setRotation: function (rotation) {
-			this._item.setRotation(rotation);
+		setInfo: function (label, point, corner) {
+			if (!this._info) {
+				return (this._info = new SelectorInfo(
+					label,
+					point,
+					corner || "topLeft"
+				));
+			}
+
+			this._info.setCorner(corner || "topLeft");
+			this._info.setContent(label);
+			this._info.setPosition(point);
 		},
 
-		getBounds: function () {
-			return this._item.getBounds();
+		clearInfo: function () {
+			this._info = null;
 		},
 
-		setBounds: function () {
-			this._item.setBounds(arguments);
+		_addControl: function (name, item) {
+			item.remove();
+			this._children.push(item);
+			item._index = this._children.length - 1
+
+			item._style.set(this._defaultStyles)
+
+			if (name) {
+				this._children[name || item.name] = item;
+				item.name = name || item.name;
+			}
+
+			this._changed(65537, item);
+		},
+		_descomposeActiveItemsInfo: function (name, sub) {
+			if (this._getActiveItemsInfo()) {
+				if (sub) {
+					return this._getActiveItemsInfo()[name][sub];
+				}
+
+				return this._getActiveItemsInfo()[name];
+			}
+
+			return null;
 		},
 
-		getZoom: function(){
-			return this._project._view.getZoom();
+		_getActiveItemsInfo: function () {
+
+			var items = this._project._activeItems;
+			if (items.length) {
+				var info = items[0].activeInfo;
+
+				if (items.length > 1) {
+					var cornerIntems = this._getCornerItems();
+
+					var rect = cornerIntems.left.bounds;
+					for (var x in cornerIntems) {
+						rect = rect.unite(cornerIntems[x].bounds);
+					}
+
+					info = {
+						angle: 0,
+						width: rect.width,
+						height: rect.height,
+						center: rect.center,
+						topCenter: rect.topCenter,
+						rightCenter: rect.rightCenter,
+						bottomCenter: rect.bottomCenter,
+						leftCenter: rect.leftCenter,
+						topLeft: rect.topLeft,
+						topRight: rect.topRight,
+						bottomRight: rect.bottomRight,
+						bottomLeft: rect.bottomLeft,
+					};
+				}
+
+				return (this._activeItemsInfo = info);
+			}
+			return (this._activeItemsInfo = null);
 		},
 
-		_getOwner: function(){
-			return this._project.controls
-		},
-		_createDefaultItem: function () {
-			return new Shape.Rectangle({
-				size: 8,
-				insert: false,
-				strokeScaling: false
+		_getCornerItems: function () {
+			if (this._cornerItems.left) return this._cornerItems;
+			var items = this._project._activeItems;
+			var left = this._cornerItems.left;
+			var right = this._cornerItems.right;
+			var top = this._cornerItems.top;
+			var bottom = this._cornerItems.bottom;
+
+			for (var x in items) {
+				var bounds = items[x].bounds;
+
+				if (!left || (left && left.bounds.left > bounds.left)) {
+					left = items[x];
+				}
+				if (!right || (right && right.bounds.right < bounds.right)) {
+					right = items[x];
+				}
+				if (!top || (top && top.bounds.top > bounds.top)) {
+					top = items[x];
+				}
+				if (
+					!bottom ||
+					(bottom && bottom.bounds.bottom < bounds.bottom)
+				) {
+					bottom = items[x];
+				}
+			}
+
+			return (this._cornerItems = {
+				left: left,
+				right: right,
+				top: top,
+				bottom: bottom,
 			});
 		},
 
-		_hitTest: function (point, options) {
-			if (this.isSmallZoom()) {
-				return null;
+		draw: function (ctx, matrix, pixelRatio) {
+			var items = this._project._activeItems;
+			var Selector = this._children;
+
+			matrix = matrix.appended(this.getGlobalMatrix(true));
+
+			ctx.lineWidth = 0.3;
+			ctx.strokeStyle = this.strokeColor.toCanvasStyle(ctx, matrix);;
+
+			for (var x in items) {
+				items[x]._drawActivation(ctx, matrix, items.length > 1);
 			}
 
-			var zoom = this.getZoom();
-			var hit;
+			var bounds = matrix._transformBounds(this);
 
-			if (
-				this._item._locked ||
-				!this._item._visible ||
-				!options.controls
-			) {
-				return null;
+			if (items.length > 1) {
+				ctx.beginPath();
+				ctx.moveTo(bounds.topLeft.x, bounds.topLeft.y);
+				ctx.lineTo(bounds.topRight.x, bounds.topRight.y);
+				ctx.lineTo(bounds.bottomRight.x, bounds.bottomRight.y);
+				ctx.lineTo(bounds.bottomLeft.x, bounds.bottomLeft.y);
+				ctx.closePath();
+
+				ctx.stroke();
 			}
 
-			this._item.transform(
-				new Matrix().scale(1 / zoom, this.getPosition()),
-				false,
-				false,
-				true
-			);
+			matrix.applyToContext(ctx);
 
-			options.tolerance = 5 / zoom;
+			var param = new Base({
+				offset: new Point(0, 0),
+				pixelRatio: pixelRatio,
+				viewMatrix: matrix.isIdentity() ? null : matrix,
+				matrices: [new Matrix()],
+				updateMatrix: true,
+			});
 
-			if (this._item._hitTest(point, options)) {
-				hit = new HitResult("fill", this);
-				var match = options.match;
-
-				if (match && !match(hit)) {
-					hit = null;
-				}
-
-				if (hit && options.all) {
-					options.all.push(hit);
-				}
-			}
-
-			this._item.transform(
-				new Matrix().scale(zoom, this.getPosition()),
-				false,
-				false,
-				true
-			);
-
-			return hit;
-		},
-
-		isSmallZoom: function () {
-			if (
-				(this._project._controls.width + this._project._controls.height) * this.getZoom() <
-				20
-			) {
-				return true;
+			for (var x = 0; x < Selector.length; x++) {
+				this._children[x].draw(ctx, param);
 			}
 		},
 
-		emit: function emit(type, event) {
-			var handlers =
-				(this._project._controls._callbacks &&
-					this._project._controls._callbacks[type]) ||
-				[];
-
-			handlers = (this._callbacks && this._callbacks[type]) || handlers;
-
-			if (!handlers.length) return false;
-			var args = Base.slice(arguments, 1),
-				setTarget = event && event.target && !event.currentTarget;
-
-			handlers = handlers.slice();
-			if (setTarget) event.currentTarget = this;
-			for (var i = 0, l = handlers.length; i < l; i++) {
-				if (handlers[i].apply(this, args) == false) {
-					if (event && event.stop) event.stop();
-					break;
-				}
+		drawInfo: function (ctx, matrix, pixelRatio) {
+			if (this._info) {
+				this._info.draw(ctx, matrix, pixelRatio);
 			}
-			if (setTarget) delete event.currentTarget;
-			return true;
 		},
-
-		responds: function responds(type) {
-			return !!!!(
-				(this._callbacks && this._callbacks[type]) ||
-				(this._project._controls._callbacks &&
-					this._project._controls._callbacks[type])
-			);
-		},
-
-		draw: function (ctx, param) {
-			if (this.isSmallZoom()) {
-				return;
-			}
-
-			var controls = this._project.controls;
-			var zoom = this.getZoom();
-			var shadowOffset = null;
-
-			this.setRotation(controls.inheritedAngle);
-			this.setPosition(controls[this.corner]);
-
-			this._item.transform(
-				new Matrix().scale(1 / zoom, this.getPosition()),
-				false,
-				false,
-				true
-			);
-
-			if (this._item.shadowOffset) {
-				shadowOffset = this._item.shadowOffset.clone();
-				this._item.shadowOffset = new Matrix()
-					.rotate(-this.item.getRotation())
-					._transformPoint(shadowOffset);
-			}
-
-			this._item.draw(ctx, param);
-			this._item.transform(
-				new Matrix().scale(zoom, this.getPosition()),
-				false,
-				false,
-				true
-			);
-
-			if (shadowOffset) {
-				this._item.shadowOffset = shadowOffset;
-			}
+	},
+	{
+		statics: {
+			create: function (project) {
+				return new Selector(project);
+			},
 		},
 	}
 );
 
-var ControlInfo = Item.extend(
+var SelectorInfo = Item.extend(
 	 {
-		_class: "ControlInfo",
+		_class: "SelectorInfo",
 		_content: null,
 		_item: null,
 		_label: null,
@@ -7360,7 +7491,7 @@ var ControlInfo = Item.extend(
 		_corner: 'topLeft',
 		_offset: 18,
 
-		initialize: function ControlInfo(content, point, corner) {
+		initialize: function SelectorInfo(content, point, corner) {
 			this._project = paper.project;
 
 			this.setCorner(corner);
@@ -7373,7 +7504,7 @@ var ControlInfo = Item.extend(
 		_initialize: function (content) {
 			this.setLabel(
 				new PointText({
-					fillColor:this._project._controls.fillColor,
+					fillColor:this._project._selector.fillColor,
 					point: [0, 0],
 					content: content,
 					fontSize: 12,
@@ -7384,7 +7515,7 @@ var ControlInfo = Item.extend(
 
 			this.setBackground(
 				new Shape.Rectangle({
-					fillColor: this._project._controls.strokeColor,
+					fillColor: this._project._selector.strokeColor,
 					insert: false,
 					position: this._label.position,
 					size: new Size(this._label.bounds).add(this._padding),
@@ -7513,353 +7644,219 @@ var ControlInfo = Item.extend(
 	}
 );
 
-var Controls = Item.extend(
+var Control = Item.extend(
 	 {
-		_class: "Controls",
-		_applyChildrenStyle: false,
-		_corners: [
-			"topLeft",
-			"topCenter",
-			"topRight",
-			"rightCenter",
-			"bottomRight",
-			"bottomCenter",
-			"bottomLeft",
-			"leftCenter",
-		],
-		_project: null,
-		_angle: 0,
-		_width: null,
-		_height: null,
-		_center: null,
-		_topCenter: null,
-		_rightCenter: null,
-		_bottomCenter: null,
-		_leftCenter: null,
-		_topLeft: null,
-		_topRight: null,
-		_bottomRight: null,
-		_bottomLeft: null,
-		_children: [],
-		_cornerItems: {},
-		_activeItemsInfo: null,
-		_info: null,
+		_class: "Control",
+		_item: null,
+		_control: true,
+		_owner: null,
+		_offset: null,
 
-		_oposite: {
-			topLeft: "bottomRight",
-			topCenter: "bottomCenter",
-			topRight: "bottomLeft",
-			leftCenter: "rightCenter",
-			rightCenter: "leftCenter",
-			bottomLeft: "topRight",
-			bottomCenter: "topCenter",
-			bottomRight: "topLeft",
-			center: "center",
-		},
+		initialize: function Control(name, item, draw) {
+			this._project = paper.project;
+			this._owner = this._project.selector;
 
-		initialize: function Controls(arg) {
-			var that = this;
-
-			this._initialize(arg);
-			this._style.set({
-				shadowColor: "rgba(0, 0, 0, 0.3)",
-				shadowBlur: 2,
-				shadowOffset: 1,
-				strokeColor: "rgba(0, 142, 252, 1)",
-				fillColor: "white",
-				strokeWidth: 0.2,
-			});
-
-			this._children = []
-			this._namedChildren = {}
-
-		},
-
-		_changed: function (flags, item) {
-			if (flags & 65536) {
-				this._activeItemsInfo = null;
-			}
-
-			if (flags & 1048576) {
-				this._cornerItems = {};
-			}
-
-			if (
-				item &&
-				(flags & 1048584) &&
-				!(item instanceof Layer) &&
-				!item.guide &&
-				!item._control &&
-				item.actived
-			) {
-				this._activeItemsInfo = null;
-			}
-		},
-
-		addControl: function (item, name, push = true) {
 			item.remove();
-			this._children.push(item);
-			item._index = this._children.length - 1
+			this._item = item;
+			this._item._control = this;
+			this._style = this._item._style
+			this.onDraw = draw;
 
-			if (name) {
-				this._children[name || item.name] = item;
-				item.name = name || item.name;
-			}
-			if(push){
-				item.sendToBack();
-			}
-
-			this._changed(65537, item);
+			this._owner._addControl(name, this);
 		},
 
-		getControls: function () {
-			return this._children;
+		setActived: function () {},
+
+		getItem: function () {
+			return this._item;
 		},
 
-		getX: function () {
-			return this._descomposeActiveItemsInfo("topLeft", "x") || 0;
-		},
-
-		getY: function () {
-			return this._descomposeActiveItemsInfo("topLeft", "y") || 0;
-		},
-
-		getAngle: function () {
-			return this._descomposeActiveItemsInfo("angle") || 0;
-		},
-
-		getInheritedAngle: function(){
-			return this._descomposeActiveItemsInfo("inheritedAngle") || 0;
-		},
-
-		getWidth: function () {
-			return this._descomposeActiveItemsInfo("width") || 0;
-		},
-
-		getHeight: function () {
-			return this._descomposeActiveItemsInfo("height") || 0;
-		},
-
-		getCenter: function () {
-			return this._descomposeActiveItemsInfo("center") || new Point(0, 0);
-		},
-
-		getTopLeft: function () {
-			return (
-				this._descomposeActiveItemsInfo("topLeft") || new Point(0, 0)
-			);
-		},
-
-		getTopCenter: function () {
-			return (
-				this._descomposeActiveItemsInfo("topCenter") || new Point(0, 0)
-			);
-		},
-
-		getTopRight: function () {
-			return (
-				this._descomposeActiveItemsInfo("topRight") || new Point(0, 0)
-			);
-		},
-
-		getRightCenter: function () {
-			return (
-				this._descomposeActiveItemsInfo("rightCenter") ||
-				new Point(0, 0)
-			);
-		},
-
-		getBottomRight: function () {
-			return (
-				this._descomposeActiveItemsInfo("bottomRight") ||
-				new Point(0, 0)
-			);
-		},
-
-		getBottomCenter: function () {
-			return (
-				this._descomposeActiveItemsInfo("bottomCenter") ||
-				new Point(0, 0)
-			);
-		},
-
-		getBottomLeft: function () {
-			return (
-				this._descomposeActiveItemsInfo("bottomLeft") || new Point(0, 0)
-			);
-		},
-
-		getLeftCenter: function () {
-			return (
-				this._descomposeActiveItemsInfo("leftCenter") || new Point(0, 0)
-			);
+		setItem: function (item) {
+			this._item = item;
 		},
 
 		getPosition: function () {
-			return this._descomposeActiveItemsInfo("center") || new Point(0, 0);
+			return this._item.getPosition();
 		},
 
-		getOposite: function (oposite) {
-			return this[this._oposite[oposite]];
+		setPosition: function () {
+		   this._item.setPosition(Point.read(arguments));
 		},
 
-		getControl: function (name) {
-			return this._children[name];
+		getOffset: function(){
+			return this._offset
 		},
 
-		setInfo: function (label, point, corner) {
-			if (!this._info) {
-				return (this._info = new ControlInfo(
-					label,
-					point,
-					corner || "topLeft"
-				));
+		setOffset: function(){
+			var matrix = new Matrix().rotate(this._item.getRotation());
+			this._offset = matrix._transformPoint(Point.read(arguments).divide(this.getZoom()));
+			this._item.setPosition(this._item.getPosition().add(this._offset));
+		},
+
+		getSize: function(){
+			return this._item.getSize();
+		},
+
+		setSize: function(){
+			this._item.setSize(Size.read(arguments));
+		},
+
+		getRotation: function () {
+			return this._item.getRotation();
+		},
+
+		setRotation: function (rotation) {
+			this._item.setRotation(rotation);
+		},
+
+		getBounds: function () {
+			return this._item.getBounds();
+		},
+
+		setBounds: function () {
+			this._item.setBounds(arguments);
+		},
+
+		getZoom: function(){
+			return this._project._view.getZoom();
+		},
+
+		_getOwner: function(){
+			return this._owner
+		},
+		_hitTest: function (point, options) {
+			if (this.isSmallZoom()) {
+				return null;
 			}
 
-			this._info.setCorner(corner || "topLeft");
-			this._info.setContent(label);
-			this._info.setPosition(point);
-		},
+			var zoom = this.getZoom();
+			var hit;
 
-		clearInfo: function () {
-			this._info = null;
-		},
-
-		_descomposeActiveItemsInfo: function (name, sub) {
-			if (this._getActiveItemsInfo()) {
-				if (sub) {
-					return this._getActiveItemsInfo()[name][sub];
-				}
-
-				return this._getActiveItemsInfo()[name];
+			if (
+				this._item._locked ||
+				!this._item._visible ||
+				!options.selector
+			) {
+				return null;
 			}
 
-			return null;
-		},
+			this._item.transform(
+				new Matrix().scale(1 / zoom, this.getPosition()),
+				false,
+				false,
+				true
+			);
 
-		_getActiveItemsInfo: function () {
+			options.tolerance = 5 / zoom;
 
-			var items = this._project._activeItems;
-			if (items.length) {
-				var info = items[0].activeInfo;
+			if (this._item._hitTest(point, options)) {
+				hit = new HitResult("fill", this);
+				var match = options.match;
 
-				if (items.length > 1) {
-					var cornerIntems = this._getCornerItems();
-
-					var rect = cornerIntems.left.bounds;
-					for (var x in cornerIntems) {
-						rect = rect.unite(cornerIntems[x].bounds);
-					}
-
-					info = {
-						angle: 0,
-						width: rect.width,
-						height: rect.height,
-						center: rect.center,
-						topCenter: rect.topCenter,
-						rightCenter: rect.rightCenter,
-						bottomCenter: rect.bottomCenter,
-						leftCenter: rect.leftCenter,
-						topLeft: rect.topLeft,
-						topRight: rect.topRight,
-						bottomRight: rect.bottomRight,
-						bottomLeft: rect.bottomLeft,
-					};
+				if (match && !match(hit)) {
+					hit = null;
 				}
 
-				return (this._activeItemsInfo = info);
-			}
-			return (this._activeItemsInfo = null);
-		},
-
-		_getCornerItems: function () {
-			if (this._cornerItems.left) return this._cornerItems;
-			var items = this._project._activeItems;
-			var left = this._cornerItems.left;
-			var right = this._cornerItems.right;
-			var top = this._cornerItems.top;
-			var bottom = this._cornerItems.bottom;
-
-			for (var x in items) {
-				var bounds = items[x].bounds;
-
-				if (!left || (left && left.bounds.left > bounds.left)) {
-					left = items[x];
-				}
-				if (!right || (right && right.bounds.right < bounds.right)) {
-					right = items[x];
-				}
-				if (!top || (top && top.bounds.top > bounds.top)) {
-					top = items[x];
-				}
-				if (
-					!bottom ||
-					(bottom && bottom.bounds.bottom < bounds.bottom)
-				) {
-					bottom = items[x];
+				if (hit && options.all) {
+					options.all.push(hit);
 				}
 			}
 
-			return (this._cornerItems = {
-				left: left,
-				right: right,
-				top: top,
-				bottom: bottom,
-			});
+			this._item.transform(
+				new Matrix().scale(zoom, this.getPosition()),
+				false,
+				false,
+				true
+			);
+
+			return hit;
 		},
 
-		draw: function (ctx, matrix, pixelRatio) {
-			var items = this._project._activeItems;
-			var controls = this._children;
-
-			matrix = matrix.appended(this.getGlobalMatrix(true));
-
-			ctx.lineWidth = 0.3;
-			ctx.strokeStyle = this.strokeColor.toCanvasStyle(ctx, matrix);;
-
-			for (var x in items) {
-				items[x]._drawActivation(ctx, matrix, items.length > 1);
-			}
-
-			var bounds = matrix._transformBounds(this);
-
-			if (items.length > 1) {
-				ctx.beginPath();
-				ctx.moveTo(bounds.topLeft.x, bounds.topLeft.y);
-				ctx.lineTo(bounds.topRight.x, bounds.topRight.y);
-				ctx.lineTo(bounds.bottomRight.x, bounds.bottomRight.y);
-				ctx.lineTo(bounds.bottomLeft.x, bounds.bottomLeft.y);
-				ctx.closePath();
-
-				ctx.stroke();
-			}
-
-			matrix.applyToContext(ctx);
-
-			var param = new Base({
-				offset: new Point(0, 0),
-				pixelRatio: pixelRatio,
-				viewMatrix: matrix.isIdentity() ? null : matrix,
-				matrices: [new Matrix()],
-				updateMatrix: true,
-			});
-
-			for (var x = 0; x < controls.length; x++) {
-				this._children[x].draw(ctx, param);
+		isSmallZoom: function () {
+			if (
+				(this._project._selector.width + this._project._selector.height) * this.getZoom() <
+				20
+			) {
+				return true;
 			}
 		},
 
-		drawInfo: function (ctx, matrix, pixelRatio) {
-			if (this._info) {
-				this._info.draw(ctx, matrix, pixelRatio);
+		emit: function emit(type, event) {
+			var handlers =
+				(this._project._selector._callbacks &&
+					this._project._selector._callbacks[type]) ||
+				[];
+
+			handlers = (this._callbacks && this._callbacks[type]) || handlers;
+
+			if (!handlers.length) return false;
+			var args = Base.slice(arguments, 1),
+				setTarget = event && event.target && !event.currentTarget;
+
+			handlers = handlers.slice();
+			if (setTarget) event.currentTarget = this;
+			for (var i = 0, l = handlers.length; i < l; i++) {
+				if (handlers[i].apply(this, args) == false) {
+					if (event && event.stop) event.stop();
+					break;
+				}
 			}
+			if (setTarget) delete event.currentTarget;
+			return true;
 		},
-	},
-	{
-		statics: {
-			create: function (project) {
-				return new Controls(project);
-			},
+
+		responds: function responds(type) {
+			return !!!!(
+				(this._callbacks && this._callbacks[type]) ||
+				(this._project._selector._callbacks &&
+					this._project._selector._callbacks[type])
+			);
+		},
+
+		draw: function (ctx, param) {
+			if (this.isSmallZoom()) {
+				return;
+			}
+
+			var owner = this._owner;
+			var zoom = this.getZoom();
+			var shadowOffset = null;
+
+			this.setRotation(owner.inheritedAngle);
+			this.setPosition(owner.topLeft);
+
+			if(owner.onControlDraw){
+				owner.onControlDraw(new DrawControlEvent(this, owner))
+			}
+			if(this.onDraw){
+				this.onDraw(new DrawControlEvent(this, owner))
+			}
+
+			this._item.transform(
+				new Matrix().scale(1 / zoom, this.getPosition()),
+				false,
+				false,
+				true
+			);
+
+			if (this._item.shadowOffset) {
+				shadowOffset = this._item.shadowOffset.clone();
+				this._item.shadowOffset = new Matrix()
+					.rotate(-this.item.getRotation())
+					._transformPoint(shadowOffset);
+			}
+
+			this._item.draw(ctx, param);
+			this._item.transform(
+				new Matrix().scale(zoom, this.getPosition()),
+				false,
+				false,
+				true
+			);
+
+			if (shadowOffset) {
+				this._item.shadowOffset = shadowOffset;
+			}
 		},
 	}
 );
@@ -15967,6 +15964,33 @@ var MouseEvent = Event.extend({
 				+ ', modifiers: ' + this.getModifiers()
 				+ ' }';
 	}
+});
+
+var DrawControlEvent = Event.extend({
+	_class: 'DrawControlEvent',
+	_control: null,
+	_selector: null,
+
+	initialize: function DrawControlEvent(control, selector) {
+		this.control = control;
+		this.selector = selector;
+	},
+
+	getControl: function() {
+		return this._control;
+	},
+
+	setControl: function(control) {
+		this._control = control;
+	},
+
+	getSelector: function() {
+		return this._selector;
+	},
+
+	setSelector: function(selector) {
+		this._selector = selector;
+	},
 });
 
 var ToolEvent = Event.extend({

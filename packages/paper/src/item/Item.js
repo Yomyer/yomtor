@@ -305,7 +305,7 @@ new function() { // Injection scope for various item event handlers
      * @name Item#className
      * @type String
      * @values 'Group', 'Layer', 'Path', 'CompoundPath', 'Shape', 'Raster',
-     *     'SymbolItem', 'PointText', 'Artboard', 'ControlItem', 'Controls', 'ControlInfo'
+     *     'SymbolItem', 'PointText', 'Artboard', 'Control', 'Selector', 'SelectorInfo'
      */
 
     /**
@@ -2260,7 +2260,7 @@ new function() { // Injection scope for hit-test functions shared with project
         var children = this._children;
 
         if(this instanceof Project){
-            var controls = this._controls && this._controls._children;
+            var controls = this._selector && this._selector._children;
             if(controls && this._activeItems.length){
                 children = children.concat(controls);
             }

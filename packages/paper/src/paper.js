@@ -67,10 +67,10 @@ var paper = function(self, undefined) {
 /*#*/ include('item/SymbolItem.js');
 /*#*/ include('item/SymbolDefinition.js');
 /*#*/ include('item/HitResult.js');
-/*#*/ include('item/ControlItem.js');
-/*#*/ include('item/ControlInfo.js');
-/*#*/ include('item/Controls.js');
 
+/*#*/ include('item/Selector.js');
+/*#*/ include('item/SelectorInfo.js');
+/*#*/ include('item/Control.js');
 
 /*#*/ include('path/Segment.js');
 /*#*/ include('path/SegmentPoint.js');
@@ -105,6 +105,7 @@ var paper = function(self, undefined) {
 /*#*/ include('event/KeyEvent.js');
 /*#*/ include('event/Key.js');
 /*#*/ include('event/MouseEvent.js');
+/*#*/ include('event/DrawControlEvent.js');
 
 /*#*/ include('tool/ToolEvent.js');
 /*#*/ include('tool/Tool.js');

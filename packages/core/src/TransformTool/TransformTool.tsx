@@ -3,7 +3,7 @@ import { TransformToolProps } from './TransformTool.props'
 import { useComponentDefaultProps } from '@yomtor/styles'
 import { useEditorContext } from '../Editor.context'
 import {
-  ControlItem,
+  Control,
   Item,
   Matrix,
   MouseEvent,
@@ -35,7 +35,7 @@ const defaultProps: Partial<TransformToolProps> = {}
 
 export const TransformTool = (props: TransformToolProps) => {
   const { children } = useComponentDefaultProps(
-    'ControlsTool',
+    'TransformTool',
     defaultProps,
     props
   )
@@ -66,12 +66,14 @@ export const TransformTool = (props: TransformToolProps) => {
   const lastPoint = useRef<Point>(null)
   const corner = useRef<Item>(null)
   const activeHelpers = useRef<Item[]>([])
+  const toolControls = useRef<Control[]>([])
   const scaleCorners = [
     'topCenter',
     'bottomCenter',
     'leftCenter',
     'rightCenter'
   ]
+  const corners = ['topLeft', 'topRight', 'bottomLeft', 'bottomRight']
 
   const helperControl = () => {
     canvas.project.deactivateAll()
@@ -158,7 +160,7 @@ export const TransformTool = (props: TransformToolProps) => {
       )
     })
 
-    canvas.project.controls.setInfo(
+    canvas.project.selector.setInfo(
       `${abs(round(sizeModify.width * factor.x))} x ${abs(
         round(sizeModify.height * factor.y)
       )}`,
@@ -189,7 +191,7 @@ export const TransformTool = (props: TransformToolProps) => {
       item.rotate(delta, data.current.center)
     })
 
-    canvas.project.controls.setInfo(`${delta % 181}º`, current.point)
+    canvas.project.selector.setInfo(`${delta % 181}º`, current.point)
     if (helper) {
       canvas.fire('object:rotating', e)
     }
@@ -209,7 +211,7 @@ export const TransformTool = (props: TransformToolProps) => {
     angle =
       ((Math.round(
         (cursor.current.corner.position.subtract(
-          canvas.project.controls.position
+          canvas.project.selector.position
         ).angle +
           angle) /
           5
@@ -228,28 +230,71 @@ export const TransformTool = (props: TransformToolProps) => {
     cursorAngle.current = angle
   }
 
-  const scaleControls = useCallback(() => {
-    const controls = canvas.project.controls
+  const createControls = useCallback(() => {
+    const controls = toolControls.current
 
-    if (controls.width) {
-      scaleWithRotate(
-        controls.getControl('topCenter').item,
-        new Size(controls.width * canvas.view.zoom, 0)
-      )
-      scaleWithRotate(
-        controls.getControl('bottomCenter').item,
-        new Size(controls.width * canvas.view.zoom, 0)
-      )
-      scaleWithRotate(
-        controls.getControl('leftCenter').item,
-        new Size(0, controls.height * canvas.view.zoom)
-      )
-      scaleWithRotate(
-        controls.getControl('rightCenter').item,
-        new Size(0, controls.height * canvas.view.zoom)
-      )
+    const handler = new Shape.Rectangle({
+      size: 8,
+      strokeColor: 'rgba(0, 142, 252, 1)',
+      fillColor: 'white',
+      strokeWidth: 0.2,
+      insert: false
+    })
+
+    const invisibleHandler = new Shape.Rectangle({
+      size: 8,
+      fillColor: 'white',
+      opacity: 0.000001,
+      insert: false
+    })
+
+    const rotates = {
+      rotateTopLeft: -5,
+      rotateTopRight: [5, -5],
+      rotateBottomLeft: [-5, 5],
+      rotateBottomRight: 5
     }
-  }, [canvas])
+
+    Object.keys(rotates).forEach((corner) => {
+      controls.push(
+        new Control(
+          corner,
+          invisibleHandler.clone(),
+          ({ control, selector }) => {
+            control.position =
+              selector[corner.replace('rotateB', 'b').replace('rotateT', 't')]
+            control.offset = rotates[corner]
+          }
+        )
+      )
+    })
+
+    scaleCorners.forEach((corner) => {
+      controls.push(
+        new Control(
+          corner,
+          invisibleHandler.clone(),
+          ({ control, selector }) => {
+            control.position = selector[corner]
+            ;['topCenter', 'bottomCenter'].includes(corner) &&
+              (control.size.width = selector.width)
+            ;['leftCenter', 'rightCenter'].includes(corner) &&
+              (control.size.height = selector.height)
+          }
+        )
+      )
+    })
+
+    corners.forEach((corner) => {
+      controls.push(
+        new Control(
+          corner,
+          handler.clone(),
+          ({ control, selector }) => (control.position = selector[corner])
+        )
+      )
+    })
+  }, [tool])
 
   useEffect(() => {
     if (!canvas) return
@@ -259,44 +304,9 @@ export const TransformTool = (props: TransformToolProps) => {
   useEffect(() => {
     if (!tool) return
 
-    const controls = canvas.project.controls
-    const rotateHandler = new Shape.Rectangle({
-      size: 10,
-      fillColor: 'red',
-      opacity: 1,
-      insert: false
-    })
+    createControls()
 
-    /*
-    controls.addControl(
-      new ControlItem('topLeft', -5, rotateHandler.clone()),
-      'rotateTopLeft'
-    )
-
-    controls.addControl(
-      new ControlItem('topRight', [5, -5], rotateHandler.clone()),
-      'rotateTopRight'
-    )
-
-    controls.addControl(
-      new ControlItem('bottomLeft', [-5, 5], rotateHandler.clone()),
-      'rotateBottomLeft'
-    )
-
-    controls.addControl(
-      new ControlItem('bottomRight', 5, rotateHandler.clone()),
-      'rotateBottomRight'
-    )
-
-    controls.addControl(rotateHandler, 'dasda')
-    */
-    /*
-    scaleCorners.forEach((corner) => {
-      controls.getControl(corner).sendToBack()
-      controls.getControl(corner).item.shadowOffset = null
-      controls.getControl(corner).item.opacity = 0.0000001
-    })
-    */
+    const selector = canvas.project.selector
 
     tool.onMouseDrag = (e: ToolEvent) => {
       const delta = e.point.subtract(lastPoint.current)
@@ -341,7 +351,7 @@ export const TransformTool = (props: TransformToolProps) => {
 
       cursor.current = null
 
-      controls.clearInfo()
+      selector.clearInfo()
 
       canvas.fire(
         mode.current === 'resize' ? 'object:resized' : 'object:rotated',
@@ -349,8 +359,8 @@ export const TransformTool = (props: TransformToolProps) => {
       )
     }
 
-    canvas.view.on('mousemove', (e: MouseEvent & { target: ControlItem }) => {
-      if (e.target && e.target.data && e.target.corner) {
+    canvas.view.on('mousemove', (e: MouseEvent & { target: Control }) => {
+      if (e.target && e.target.data && e.target.name) {
         corner.current = e.target || corner.current
       } else {
         corner.current = null
@@ -361,13 +371,8 @@ export const TransformTool = (props: TransformToolProps) => {
       }
     })
 
-    //canvas.view.on('mouseup', scaleControls)
-    //canvas.view.on('zoom', scaleControls)
-
-    controls.onMouseEnter = (e: MouseEvent & { target: ControlItem }) => {
+    selector.on('mouseenter', (e: MouseEvent & { target: Control }) => {
       if ((tool.actived && !tool.mainActived) || canvas.mainTool.paused) return
-
-      console.log()
 
       cursor.current = {
         angle: 0,
@@ -387,37 +392,38 @@ export const TransformTool = (props: TransformToolProps) => {
       cursorAngle.current = null
 
       showCursor()
-    }
+    })
 
-    controls.onMouseLeave = () => {
+    selector.on('mouseleave', () => {
       if (!tool.actived) {
         cursor.current = null
       }
       clearCursor([Rotate, Resize])
-    }
+    })
 
-    controls.onMouseDown = (e: MouseEvent & { target: ControlItem }) => {
+    selector.on('mousedown', (e: MouseEvent & { target: Control }) => {
       if (!tool.mainActived) return
 
       tool.activate()
 
-      const cornerName = e.target.corner
-      const controls = canvas.project.controls
+      const cornerName = e.target.name
+        .replace('rotateB', 'b')
+        .replace('rotateT', 't')
       activeItems.current = [...canvas.project.activeItems]
 
-      const angle = controls.inheritedAngle
+      const angle = selector.inheritedAngle
 
       const matrix = new Matrix().rotate(
-        -controls.inheritedAngle,
-        controls.center
+        -selector.inheritedAngle,
+        selector.center
       )
-      const center = controls.center
-      const corner: Point = controls[cornerName]
-      const handler: Point = controls[cornerName]
-      const pivot: Point = controls.getOposite(cornerName)
-      const pivotOrigin = controls.getOposite(cornerName)
-      const offset = e.target.offset
-      const size = new Size(controls)
+      const center = selector.center
+      const corner: Point = selector[cornerName]
+      const handler: Point = selector[cornerName]
+      const pivot: Point = selector.getOposite(cornerName)
+      const pivotOrigin = selector.getOposite(cornerName)
+      // const offset = e.target.offset
+      const size = new Size(selector)
       const direction = sign(
         normalize(
           matrix.transformPoint(corner).subtract(matrix.transformPoint(pivot))
@@ -433,12 +439,12 @@ export const TransformTool = (props: TransformToolProps) => {
         center,
         direction,
         angle,
-        offset,
+        // offset,
         point: round(e.target.position)
       }
 
       cursor.current = {
-        angle: controls.angle,
+        angle: selector.angle,
         point: e.target.position,
         corner: e.target
       }
@@ -448,7 +454,7 @@ export const TransformTool = (props: TransformToolProps) => {
       showCursor(true)
 
       lastPoint.current = e.point
-    }
+    })
   }, [tool])
 
   useHotkeys(
@@ -457,7 +463,7 @@ export const TransformTool = (props: TransformToolProps) => {
       down: () => {
         if (!tool.actived) {
           if (
-            canvas.project.controls &&
+            canvas.project.selector &&
             corner.current &&
             mode.current !== 'rotate' &&
             !scaleCorners.includes(corner.current.name)
@@ -466,7 +472,7 @@ export const TransformTool = (props: TransformToolProps) => {
             cursor.current = {
               point: corner.current.position,
               corner: corner.current,
-              angle: canvas.project.controls.angle
+              angle: canvas.project.selector.angle
             }
             showCursor()
           }
@@ -487,4 +493,4 @@ export const TransformTool = (props: TransformToolProps) => {
   return <>{children}</>
 }
 
-TransformTool.displayName = '@yomtor/core/ControlsTool'
+TransformTool.displayName = '@yomtor/core/TransformTool'

@@ -41,7 +41,7 @@ var Project = PaperScopeItem.extend(
     _highlightedItem: null,
     _mainTool: null,
     _artboards: [],
-    _controls: null,
+    _selector: null,
 
     // TODO: Add arguments to define pages
     /**
@@ -65,7 +65,7 @@ var Project = PaperScopeItem.extend(
       this._namedChildren = {}
       this._activeLayer = null
       this._currentStyle = new Style(null, null, this)
-      this._controls = Controls.create(Item.NO_INSERT)
+      this._selector = Selector.create(Item.NO_INSERT)
       // If no view is provided, we create a 1x1 px canvas view just so we
       // have something to do size calculations with.
       // (e.g. PointText#_getBounds)
@@ -121,8 +121,8 @@ var Project = PaperScopeItem.extend(
         }
       }
 
-      if (this._controls) {
-        this._controls._changed(flags, item)
+      if (this._selector) {
+        this._selector._changed(flags, item)
       }
     },
 
@@ -240,13 +240,13 @@ var Project = PaperScopeItem.extend(
     },
 
     /**
-     * The controls within the project.
+     * The selector within the project.
      *
      * @bean
-     * @type Controls
+     * @type Selector
      */
-    getControls: function () {
-      return this._controls
+    getSelector: function () {
+      return this._selector
     },
 
     // TODO: Define #setLayers()?
@@ -851,7 +851,7 @@ var Project = PaperScopeItem.extend(
         curves: true,
         fill: true,
         guides: false,
-        controls: false,
+        selector: false,
         tolerance: 8 / this.view.zoom,
         match: function (hit) {
           return (
@@ -1127,14 +1127,14 @@ var Project = PaperScopeItem.extend(
         ctx.restore()
       }
 
-      if (this._controls) {
+      if (this._selector) {
         if (this._activeItems.length) {
           ctx.save()
-          this._controls.draw(ctx, matrix, pixelRatio)
+          this._selector.draw(ctx, matrix, pixelRatio)
           ctx.restore()
         }
 
-        this._controls.drawInfo(ctx, matrix, pixelRatio)
+        this._selector.drawInfo(ctx, matrix, pixelRatio)
       }
     }
   }

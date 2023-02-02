@@ -13,7 +13,6 @@ import {
   YomtorProvider,
   Canvas,
   SelectorTool,
-  SelectorToolProps
 } from '@yomtor/core'
 import { Path } from '@yomtor/paper'
 
@@ -58,5 +57,18 @@ export const configurator: YomtorDemo = {
   type: 'configurator',
   codeTemplate,
   component: Wrapper,
-  configurator: []
+  configurator: [
+    {
+      name: 'move',
+      type: 'boolean',
+      initialValue: true,
+      defaultValue: true
+    },
+    {
+      name: 'clone',
+      type: 'boolean',
+      initialValue: true,
+      defaultValue: true
+    }
+  ]
 }

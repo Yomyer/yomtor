@@ -4,7 +4,7 @@ import { YomtorProvider, Canvas, ViewToolProps, ViewTool } from '@yomtor/core'
 import { Path } from '@yomtor/paper'
 
 const codeTemplate = (props: string) => `
-import { YomtorProvider, Canvas, ViewToolProps, ViewTool } from '@yomtor/core'
+import { YomtorProvider, Canvas, ViewTool } from '@yomtor/core'
 import { Path } from '@yomtor/paper'
 
 function Demo() {
