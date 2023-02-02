@@ -8,29 +8,29 @@ var ControlItem = Item.extend(
     /** @lends ControlItem# */ {
         _class: "ControlItem",
         _item: null,
-        _corner: null,
-        _offset: null,
         _control: true,
+        _owner: null,
+        // _update: null,
+
 
         /**
          * @name ControlItem#initialize
          * 
-         * @param {'topCenter' | 'rightCenter' | 'bottomCenter' | 'leftCenter' | 'topLeft' | 'topRight' | 'bottomRight' | 'bottomLeft'} corner
-         * @param {Point|Number|Array<number>} offset
          * @param {Item} item
+         * @param {Function} update
          */
-        initialize: function ControlItem(corner, offset, item) {
+        
+        initialize: function ControlItem(name, item) {
             this._project = paper.project;
-            if (item) {
-                item.remove();
-                this._item = item;
-            } else {
-                this._item = this._createDefaultItem();
-            }
+ 
+            this._owner = this._project.controls;
+
+            item.remove();
+            this._item = item;
             this._item._control = this;
-            this._corner = corner;
-            this._offset = Point.read([offset]);
-            this._style = this._item._style;
+            this._style = this._item._style
+
+            
         },
 
         setActived: function () {},
@@ -47,38 +47,29 @@ var ControlItem = Item.extend(
             this._item = item;
         },
 
-        /**
-         * @bean
-         * @type 'topCenter' | 'rightCenter' | 'bottomCenter' | 'leftCenter' | 'topLeft' | 'topRight' | 'bottomRight' | 'bottomLef'
-         */
-        getCorner: function () {
-            return this._corner;
-        },
-
-        setCorner: function (corner) {
-            this._corner = corner;
-        },
 
         /**
          * @bean
-         * @type Point
+         * @type Function
          */
-        getOffset: function () {
-            return this._offset;
+        getUpdate: function () {
+            return this._upadte;
         },
 
-        setOffset: function (/* point */) {
-            this._offset = Point.read(arguments);
+        setUpdate: function (update) {
+            this._update = update;
         },
-
+        
         getPosition: function () {
             return this._item.getPosition();
         },
 
         setPosition: function (/* point */) {
-            var matrix = new Matrix().rotate(this._item.getRotation());
+            /*var matrix = new Matrix().rotate(this._item.getRotation());
             var offset = matrix._transformPoint(this._offset.divide(this.getZoom()));
             this._item.setPosition(Point.read(arguments).add(offset));
+            */
+           this._item.setPosition(Point.read(arguments));
         },
 
         getRotation: function () {
@@ -102,17 +93,9 @@ var ControlItem = Item.extend(
         },
 
         _getOwner: function(){
-            return this._project.controls
+            return this._owner
         },
         
-        _createDefaultItem: function () {
-            return new Shape.Rectangle({
-                size: 8,
-                insert: false,
-                strokeScaling: false
-            });
-        },
-
         _hitTest: function (point, options) {
             if (this.isSmallZoom()) {
                 return null;
@@ -211,8 +194,11 @@ var ControlItem = Item.extend(
             var zoom = this.getZoom();
             var shadowOffset = null;
 
+            // this._update(this, controls)
+            /*
             this.setRotation(controls.inheritedAngle);
             this.setPosition(controls[this.corner]);
+            */
 
             this._item.transform(
                 new Matrix().scale(1 / zoom, this.getPosition()),

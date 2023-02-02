@@ -7573,11 +7573,6 @@ var Controls = Item.extend(
 			this._children = []
 			this._namedChildren = {}
 
-			Base.each(this._corners, function (corner) {
-				var item = new ControlItem(corner);
-				item._style.set(that._style.clone());
-				that.addControl(item, corner, false);
-			});
 		},
 
 		_changed: function (flags, item) {

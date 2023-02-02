@@ -63,11 +63,13 @@ var Controls = Item.extend(
             this._children = []
             this._namedChildren = {}
 
+            /*
             Base.each(this._corners, function (corner) {
                 var item = new ControlItem(corner);
                 item._style.set(that._style.clone());
                 that.addControl(item, corner, false);
             });
+            */
         },
 
         _changed: function (flags, item) {
@@ -89,28 +91,6 @@ var Controls = Item.extend(
             ) {
                 this._activeItemsInfo = null;
             }
-        },
-
-        /**
-         * @param {Item} item the item to be added as a child
-         * @param {string} name
-         * @param {boolean} [push=true]
-         * @return {Item} the added item, or `null` if adding was not possible
-         */
-        addControl: function (item, name, push = true) {
-            item.remove();
-            this._children.push(item);
-            item._index = this._children.length - 1
-
-            if (name) {
-                this._children[name || item.name] = item;
-                item.name = name || item.name;
-            }
-            if(push){
-                item.sendToBack();
-            }
-
-            this._changed(/*#=*/ Change.CONTROL, item);
         },
 
         /**
@@ -318,6 +298,20 @@ var Controls = Item.extend(
             this._info = null;
         },
 
+
+        _addControl: function (name, item) {
+            item.remove();
+            this._children.push(item);
+            item._index = this._children.length - 1
+
+            if (name) {
+                this._children[name || item.name] = item;
+                item.name = name || item.name;
+            }
+
+            this._changed(/*#=*/ Change.CONTROL, item);
+        },
+        
         _descomposeActiveItemsInfo: function (name, sub) {
             if (this._getActiveItemsInfo()) {
                 if (sub) {

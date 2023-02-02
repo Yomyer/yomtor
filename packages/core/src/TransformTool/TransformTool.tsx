@@ -263,10 +263,11 @@ export const TransformTool = (props: TransformToolProps) => {
     const rotateHandler = new Shape.Rectangle({
       size: 10,
       fillColor: 'red',
-      opacity: 0.0000001,
+      opacity: 1,
       insert: false
     })
 
+    /*
     controls.addControl(
       new ControlItem('topLeft', -5, rotateHandler.clone()),
       'rotateTopLeft'
@@ -287,11 +288,15 @@ export const TransformTool = (props: TransformToolProps) => {
       'rotateBottomRight'
     )
 
+    controls.addControl(rotateHandler, 'dasda')
+    */
+    /*
     scaleCorners.forEach((corner) => {
       controls.getControl(corner).sendToBack()
       controls.getControl(corner).item.shadowOffset = null
       controls.getControl(corner).item.opacity = 0.0000001
     })
+    */
 
     tool.onMouseDrag = (e: ToolEvent) => {
       const delta = e.point.subtract(lastPoint.current)
@@ -356,8 +361,8 @@ export const TransformTool = (props: TransformToolProps) => {
       }
     })
 
-    canvas.view.on('mouseup', scaleControls)
-    canvas.view.on('zoom', scaleControls)
+    //canvas.view.on('mouseup', scaleControls)
+    //canvas.view.on('zoom', scaleControls)
 
     controls.onMouseEnter = (e: MouseEvent & { target: ControlItem }) => {
       if ((tool.actived && !tool.mainActived) || canvas.mainTool.paused) return
