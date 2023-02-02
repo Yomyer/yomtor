@@ -8,6 +8,7 @@ import {
   ZoomTool,
   TransformTool,
   SelectorTool,
+  CloneTool,
   GroupTool
 } from '@yomtor/core'
 import { Path } from '@yomtor/paper'
@@ -20,6 +21,7 @@ import {
   ZoomTool,
   TransformTool,
   SelectorTool,
+  CloneTool,
   GroupTool 
 } from '@yomtor/core'
 
@@ -39,6 +41,7 @@ function Demo() {
         <ZoomTool />
         <GroupTool />
         <SelectorTool />
+        <CloneTool />
         <TransformTool />
       </Canvas>
     </YomtorProvider>
@@ -53,6 +56,13 @@ function Wrapper(props: CanvasProps) {
       fillColor: 'red',
       strokeColor: 'green'
     })
+
+    new Path.Rectangle({
+      from: [10, 10],
+      to: [50, 50],
+      fillColor: 'blue',
+      strokeColor: 'green'
+    })
   }, [])
 
   return (
@@ -62,6 +72,7 @@ function Wrapper(props: CanvasProps) {
         <ZoomTool />
         <GroupTool />
         <SelectorTool />
+        <CloneTool />
         <TransformTool />
       </Canvas>
     </YomtorProvider>

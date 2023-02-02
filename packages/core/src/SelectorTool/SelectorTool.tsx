@@ -26,7 +26,7 @@ const defaultProps: Partial<SelectorToolProps> = {
 }
 
 export const SelectorTool = (props: SelectorToolProps) => {
-  const { move: isMove, clone: isClone } = useComponentDefaultProps(
+  const { move: isMove } = useComponentDefaultProps(
     'SelectorTool',
     defaultProps,
     props
@@ -38,11 +38,9 @@ export const SelectorTool = (props: SelectorToolProps) => {
   const selector = useRef<Group>(null)
   const mode = useRef<string>('none')
   const activedItems = useRef<Item[]>([])
-  const clonedItems = useRef<Item[]>([])
   const selectRect = useRef<Path>(null)
   const moved = useRef<boolean>(false)
   const selectItems = useRef<Item[]>(null)
-  const mouseEvent = useRef<ToolEvent>(null)
   const beforePositions = useRef<{ [key: string]: Point }>({})
   const startInArtboard = useRef<boolean>(false)
 
@@ -74,62 +72,15 @@ export const SelectorTool = (props: SelectorToolProps) => {
     )
   }
 
-  const cloneController = () => {
-    if (mode.current === 'clone' && isClone && isMove) {
-      canvas.project.clearHighlightedItem()
-
-      if (!clonedItems.current.length) {
-        clonedItems.current = canvas.project.activeItems.map((item) => {
-          const cloned = item.clone()
-          beforePositions.current[cloned.uid] =
-            beforePositions.current[item.uid]
-          return cloned
-        })
-
-        canvas.project.deactivateAll()
-        clonedItems.current.forEach((item) => item.set({ actived: true }))
-
-        if (Object.keys(beforePositions.current).length) {
-          activedItems.current.forEach(
-            (item) => (item.position = beforePositions.current[item.uid])
-          )
-
-          canvas.fire('object:created', {
-            items: activedItems.current
-          })
-        }
-      }
-    } else {
-      if (clonedItems.current.length) {
-        canvas.project.deactivateAll()
-
-        clonedItems.current.map((item, index) => {
-          if (activedItems.current.length) {
-            activedItems.current[index].actived = true
-            activedItems.current[index].position = item.position
-          }
-
-          item.remove()
-        })
-        clonedItems.current = []
-
-        canvas.fire('object:deleted', {
-          items: activedItems.current
-        })
-      }
-    }
-  }
-
   const hightlightController = (e?: ToolEvent) => {
     if (selectRect.current) return
-    if (!e) e = mouseEvent.current
     if (!e) return
 
     const item = canvas.project.getItemByPoint(e.point, {
       legacy: e.modifiers.meta
     })
 
-    if (item && !clonedItems.current.length) {
+    if (item) {
       item.highlighted = true
       canvas.fire('hightlight:created')
     } else {
@@ -299,7 +250,6 @@ export const SelectorTool = (props: SelectorToolProps) => {
         canvas.fire('object:moving', e)
         moved.current = true
       }
-      console.log(isMove)
     },
     [canvas, isMove]
   )
@@ -341,9 +291,7 @@ export const SelectorTool = (props: SelectorToolProps) => {
         setBeforePositions()
         updateAtiveItems()
       }
-      mode.current = ['move', 'clone'].includes(beforeMode)
-        ? beforeMode
-        : 'none'
+      mode.current = ['move'].includes(beforeMode) ? beforeMode : 'none'
 
       tool.paused = false
     }
@@ -352,7 +300,6 @@ export const SelectorTool = (props: SelectorToolProps) => {
       beforePositions.current = {}
       beforeMode = mode.current
       mode.current = 'none'
-      cloneController()
     }
 
     tool.onDoubleClick = (e: ToolEvent) => {
@@ -364,6 +311,7 @@ export const SelectorTool = (props: SelectorToolProps) => {
 
         if (e.item) {
           canvas.fire('edit', e)
+          hightlightController()
         }
       }
     }
@@ -404,9 +352,6 @@ export const SelectorTool = (props: SelectorToolProps) => {
           }
 
           mode.current = 'move'
-          if (e.modifiers.alt) {
-            mode.current = 'clone'
-          }
 
           if (!isActiveItemsUpdated()) {
             canvas.fire(`selection:${updated}`, e)
@@ -421,6 +366,8 @@ export const SelectorTool = (props: SelectorToolProps) => {
             legacy: true,
             class: Artboard
           })
+
+          canvas.fire(`selection:pressed`, e)
         } else if (activedItems.current.length && !e.modifiers.shift) {
           canvas.fire(`selection:cleared`, e)
           activedItems.current = []
@@ -445,10 +392,7 @@ export const SelectorTool = (props: SelectorToolProps) => {
       if (distance < 2 / canvas.view.zoom) {
         return
       }
-
-      cloneController()
-
-      if (['move', 'clone'].includes(mode.current)) {
+      if (mode.current === 'move') {
         move(e)
       }
 
@@ -458,21 +402,21 @@ export const SelectorTool = (props: SelectorToolProps) => {
     }
 
     tool.onMouseMove = (e: ToolEvent) => {
-      if (e.item instanceof Control || !isClone || !isMove) return
+      if (e.item instanceof Control || !isMove) return
 
       hightlightController(e)
 
-      mouseEvent.current = e
-
+      /*
       if (e.modifiers.alt && mouseEvent.current && mouseEvent.current.item) {
         setCursor(Default, 0, Clone)
       } else {
         clearCursor(Default, 0, Clone)
       }
+      */
     }
 
     tool.onMouseUp = (e: ToolEvent) => {
-      clonedItems.current = []
+      // clonedItems.current = []
       beforePositions.current = {}
       selectItems.current = null
       selectRect.current = null
@@ -490,15 +434,12 @@ export const SelectorTool = (props: SelectorToolProps) => {
     }
 
     tool.onKeyDown = (e: KeyEvent) => {
-      if (e.modifiers.alt && mode.current === 'move') {
-        mode.current = 'clone'
-        cloneController()
-      }
-
       if (e.modifiers.alt && mode.current === 'select') {
         rectSelectorController(e)
       }
 
+      // Move to clone??
+      /*
       if (['delete', 'backspace'].includes(e.key)) {
         let items = [...canvas.project.activeItems]
 
@@ -514,20 +455,16 @@ export const SelectorTool = (props: SelectorToolProps) => {
 
         items = null
       }
+      */
     }
 
     tool.onKeyUp = (e: KeyEvent) => {
-      if (!e.modifiers.alt && mode.current === 'clone') {
-        mode.current = 'move'
-        cloneController()
-      } else if (mode.current !== 'move' && selectRect.current) {
+      if (mode.current !== 'move' && selectRect.current) {
         rectSelectorController(e)
         mode.current = 'select'
-      } else {
-        mode.current = 'none'
       }
     }
-  }, [tool, isMove, isClone])
+  }, [tool, isMove])
 
   useHotkeys(
     {
@@ -546,27 +483,6 @@ export const SelectorTool = (props: SelectorToolProps) => {
       up: () => hightlightController()
     },
     [tool]
-  )
-
-  useHotkeys(
-    {
-      keys: '*+alt',
-      down: () => {
-        if (
-          mouseEvent.current &&
-          mouseEvent.current.item &&
-          !selectRect.current &&
-          isMove &&
-          isClone
-        ) {
-          setCursor(Default, 0, Clone)
-        }
-      },
-      up: () => {
-        clearCursor(Default, 0, Clone)
-      }
-    },
-    [tool, isMove, isClone]
   )
 
   return <></>

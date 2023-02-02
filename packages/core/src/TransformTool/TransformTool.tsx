@@ -61,7 +61,6 @@ export const TransformTool = (props: TransformToolProps) => {
     angle: number
     delta?: Point
     point?: Point
-    offset?: Point
   }>()
   const lastPoint = useRef<Point>(null)
   const corner = useRef<Item>(null)
@@ -109,7 +108,7 @@ export const TransformTool = (props: TransformToolProps) => {
     }
 
     current.delta = rotateDelta(
-      current.point.subtract(current.offset),
+      current.point,
       current.handler,
       current.angle
     ).multiply(current.direction)
@@ -422,7 +421,6 @@ export const TransformTool = (props: TransformToolProps) => {
       const handler: Point = selector[cornerName]
       const pivot: Point = selector.getOposite(cornerName)
       const pivotOrigin = selector.getOposite(cornerName)
-      // const offset = e.target.offset
       const size = new Size(selector)
       const direction = sign(
         normalize(
@@ -439,7 +437,6 @@ export const TransformTool = (props: TransformToolProps) => {
         center,
         direction,
         angle,
-        // offset,
         point: round(e.target.position)
       }
 
