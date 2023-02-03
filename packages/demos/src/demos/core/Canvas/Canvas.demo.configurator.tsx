@@ -12,6 +12,7 @@ import {
   GroupTool
 } from '@yomtor/core'
 import { Path } from '@yomtor/paper'
+import { AppShell, Header } from '@yomtor/ui'
 
 const codeTemplate = (props: string) => `
 import {
@@ -67,14 +68,20 @@ function Wrapper(props: CanvasProps) {
 
   return (
     <YomtorProvider>
-      <Canvas {...props} resize={false}>
-        <ViewTool />
-        <ZoomTool />
-        <GroupTool />
-        <SelectorTool />
-        <ManagementTool />
-        <TransformTool />
-      </Canvas>
+      <AppShell
+        padding={0}
+        fixed={false}
+        header={<Header height={60}>Soy header</Header>}
+      >
+        <Canvas {...props} resize={false}>
+          <ViewTool />
+          <ZoomTool />
+          <GroupTool />
+          <SelectorTool />
+          <ManagementTool />
+          <TransformTool />
+        </Canvas>
+      </AppShell>
     </YomtorProvider>
   )
 }
