@@ -770,7 +770,6 @@ var Emitter = {
 
 var PaperScope = Base.extend({
 	_class: 'PaperScope',
-	_eventListeners: {},
 	initialize: function PaperScope() {
 		paper = this;
 		this.settings = new Base({
@@ -891,145 +890,6 @@ var PaperScope = Base.extend({
 	remove: function() {
 		this.clear();
 		delete PaperScope._scopes[this._id];
-	},
-
-	_removeEventListener: function(eventName, handler){
-		if (!this._eventListeners[eventName]) {
-			return;
-		}
-		if (handler) {
-			var index = this._eventListeners[eventName].findIndex(
-				function(event) {
-					return event === handler;
-				}
-			);
-			this._eventListeners[eventName] = this._eventListeners[
-				eventName
-			].filter(function(_, key) {
-				return key !== index;
-			});
-		} else {
-			this._eventListeners[eventName] = [];
-		}
-	},
-
-	 on: function(eventName, handler){
-		if (eventName instanceof Array) {
-			for (var key in eventName) {
-				this.on(eventName[key], handler);
-			}
-
-			return;
-		}
-		if (!this._eventListeners) {
-			this._eventListeners = {};
-		}
-		if (eventName instanceof Object) {
-			for (var prop in eventName) {
-				this.on(prop, eventName[prop]);
-			}
-		} else {
-			if (!this._eventListeners[eventName]) {
-				this._eventListeners[eventName] = [];
-			}
-			this._eventListeners[eventName].push(handler);
-		}
-		return this;
-	},
-
-	 off: function(eventName, handler){
-		if (eventName instanceof Array) {
-			for (var key in eventName) {
-				this.off(eventName[key], handler);
-			}
-
-			return;
-		}
-
-		if (!this._eventListeners) {
-			return this;
-		}
-		if (arguments.length === 0) {
-			for (eventName in this._eventListeners) {
-				this._removeEventListener(eventName);
-			}
-		} else if (eventName instanceof Object) {
-			for (var prop in eventName) {
-				this._removeEventListener(prop, eventName[prop]);
-			}
-		} else {
-			this._removeEventListener(eventName, handler);
-		}
-		return this;
-	},
-
-	fire: function(eventName, options){
-		if (!this._eventListeners) return this;
-
-		if (eventName instanceof Array) {
-			for (var key in eventName) {
-				this.fire(eventName[key], options);
-			}
-
-			return;
-		}
-
-		if(!options){
-			options = {};
-		}
-
-		if (options && !options.items) {
-			options.items = this.project.getActiveItems();
-		}
-
-		var listenersForEvent = this._eventListeners[eventName];
-		if (listenersForEvent) {
-			listenersForEvent.forEach(function(event){
-				return event.call(this, options || null);
-			});
-
-			this._eventListeners[eventName] = listenersForEvent.filter(function(value){
-				return value;
-			});
-		}
-
-		if (eventName.startsWith('object:') && eventName.endsWith('ing')) {
-			var listenersForObjectModified = this._eventListeners[
-				'object:modifing'
-			];
-
-			if (listenersForObjectModified) {
-				listenersForObjectModified.forEach(function(event) {
-					return event.call(this, options || null);
-				});
-			}
-		}
-
-		if (eventName.startsWith('object:') && eventName.endsWith('ed')) {
-			var listenersForObjectModified = this._eventListeners[
-				'object:modified'
-			];
-
-			if (listenersForObjectModified) {
-				listenersForObjectModified.forEach(function(event) {
-					return event.call(this, options || null);
-				});
-			}
-		}
-
-		if (eventName.startsWith('selection:')) {
-			var listenersForObjectModified = this._eventListeners[
-				'selection:modified'
-			];
-
-			if (listenersForObjectModified) {
-				listenersForObjectModified.forEach(function(event){
-					event.call(this, options || null);
-				});
-			}
-		}
-
-		return this;
 	},
 
 	hasTool: function(name){
@@ -3149,12 +3009,14 @@ var Project = PaperScopeItem.extend(
 	_mainTool: null,
 	_artboards: [],
 	_selector: null,
+	_eventListeners: {},
 
 	initialize: function Project(element) {
 	  PaperScopeItem.call(this, true)
 	  this._children = []
 	  this._namedChildren = {}
 	  this._activeLayer = null
+	  this._eventListeners = {}
 	  this._currentStyle = new Style(null, null, this)
 	  this._selector = Selector.create(Item.NO_INSERT)
 	  this._view = View.create(this, element || CanvasProvider.getCanvas(1, 1))
@@ -3449,6 +3311,151 @@ var Project = PaperScopeItem.extend(
 	  var children = this._activeLayer._children
 	  for (var i = 0, l = children.length; i < l; i++)
 		children[i].actived = true
+	},
+
+	 _removeEventListener: function(eventName, handler){
+	  if (!this._eventListeners[eventName]) {
+		  return;
+	  }
+	  if (handler) {
+		  var index = this._eventListeners[eventName].findIndex(
+			  function(event) {
+				  return event === handler;
+			  }
+		  );
+		  this._eventListeners[eventName] = this._eventListeners[
+			  eventName
+		  ].filter(function(_, key) {
+			  return key !== index;
+		  });
+	  } else {
+		  this._eventListeners[eventName] = [];
+	  }
+	},
+
+	offAll: function(){
+	  this._eventListeners = {}
+
+	  return this
+	},
+
+	on: function(eventName, handler){
+		if (eventName instanceof Array) {
+			for (var key in eventName) {
+				this.on(eventName[key], handler);
+			}
+
+			return;
+		}
+		if (!this._eventListeners) {
+			this._eventListeners = {};
+		}
+		if (eventName instanceof Object) {
+			for (var prop in eventName) {
+				this.on(prop, eventName[prop]);
+			}
+		} else {
+			if (!this._eventListeners[eventName]) {
+				this._eventListeners[eventName] = [];
+			}
+			this._eventListeners[eventName].push(handler);
+		}
+		return this;
+	},
+
+	off: function(eventName, handler){
+		if (eventName instanceof Array) {
+			for (var key in eventName) {
+				this.off(eventName[key], handler);
+			}
+
+			return;
+		}
+
+		if (!this._eventListeners) {
+			return this;
+		}
+		if (arguments.length === 0) {
+			for (eventName in this._eventListeners) {
+				this._removeEventListener(eventName);
+			}
+		} else if (eventName instanceof Object) {
+			for (var prop in eventName) {
+				this._removeEventListener(prop, eventName[prop]);
+			}
+		} else {
+			this._removeEventListener(eventName, handler);
+		}
+		return this;
+	},
+
+	fire: function(eventName, options){
+	  if (!this._eventListeners) return this;
+
+	  if (eventName instanceof Array) {
+		  for (var key in eventName) {
+			  this.fire(eventName[key], options);
+		  }
+
+		  return;
+	  }
+
+	  if(!options){
+		  options = {};
+	  }
+
+	  if (options && !options.items) {
+		  options.items = this.getActiveItems();
+	  }
+
+	  var listenersForEvent = this._eventListeners[eventName];
+	  if (listenersForEvent) {
+		  listenersForEvent.forEach(function(event){
+			  return event.call(this, options || null);
+		  });
+
+		  this._eventListeners[eventName] = listenersForEvent.filter(function(value){
+			  return value;
+		  });
+	  }
+
+	  if (eventName.startsWith('object:') && eventName.endsWith('ing')) {
+		  var listenersForObjectModified = this._eventListeners[
+			  'object:modifing'
+		  ];
+
+		  if (listenersForObjectModified) {
+			  listenersForObjectModified.forEach(function(event) {
+				  return event.call(this, options || null);
+			  });
+		  }
+	  }
+
+	  if (eventName.startsWith('object:') && eventName.endsWith('ed')) {
+		  var listenersForObjectModified = this._eventListeners[
+			  'object:modified'
+		  ];
+
+		  if (listenersForObjectModified) {
+			  listenersForObjectModified.forEach(function(event) {
+				  return event.call(this, options || null);
+			  });
+		  }
+	  }
+
+	  if (eventName.startsWith('selection:')) {
+		  var listenersForObjectModified = this._eventListeners[
+			  'selection:modified'
+		  ];
+
+		  if (listenersForObjectModified) {
+			  listenersForObjectModified.forEach(function(event){
+				  event.call(this, options || null);
+			  });
+		  }
+	  }
+
+	  return this;
 	},
 
 	importJSON: function (json) {

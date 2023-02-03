@@ -35,6 +35,7 @@ export const Canvas = forwardRef<PaperScope, CanvasProps>((props, ref) => {
     const scope = new PaperScope()
 
     scope.setup(canvasRef.current)
+
     initCanvas(scope)
     cursorWithScope(canvasRef.current)
 
@@ -48,7 +49,7 @@ export const Canvas = forwardRef<PaperScope, CanvasProps>((props, ref) => {
 
     setCursor(Default)
 
-    canvas.on(['object:created', 'object:deleted'], () => {
+    canvas.project.on(['object:created', 'object:deleted'], () => {
       setHasArtboards(!!canvas.project.artboards.length)
     })
   }, [canvas])

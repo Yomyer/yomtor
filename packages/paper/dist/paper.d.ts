@@ -1188,7 +1188,7 @@ declare namespace paper {
     
     class DrawControlEvent extends Event {
         
-        readonly control: Control
+        control: Control
 
         
         selector: Selector
@@ -3579,15 +3579,6 @@ declare namespace paper {
         activate(): void
 
         
-        on(eventName: string | Array<string>, handler: Function): Tool
-
-        
-        off(eventName: string | Array<string>, handler: Function): Tool
-
-        
-        fire(eventName: string | Array<string>, options?: object): Tool
-
-        
         hasTool(name: string): boolean
 
         
@@ -5494,6 +5485,18 @@ declare namespace paper {
          * active all items of project
          */
         activeAll(): void
+
+        
+        offAll(): Project
+
+        
+        on(eventName: string | Array<string>, handler: Function): Project
+
+        
+        off(eventName: string | Array<string>, handler: Function): Project
+
+        
+        fire(eventName: string | Array<string>, options?: object): Project
 
         /** 
          * Exports (serializes) the project with all its layers and child items to a

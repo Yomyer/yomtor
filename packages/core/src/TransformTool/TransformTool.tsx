@@ -167,7 +167,7 @@ export const TransformTool = (props: TransformToolProps) => {
     )
 
     if (helper) {
-      canvas.fire('object:scaling', e)
+      canvas.project.fire('object:scaling', e)
     }
   }
 
@@ -192,7 +192,7 @@ export const TransformTool = (props: TransformToolProps) => {
 
     canvas.project.selector.setInfo(`${delta % 181}º`, current.point)
     if (helper) {
-      canvas.fire('object:rotating', e)
+      canvas.project.fire('object:rotating', e)
     }
 
     showCursor(true, canvas.project.activeItems.length > 1 && delta)
@@ -352,7 +352,7 @@ export const TransformTool = (props: TransformToolProps) => {
 
       selector.clearInfo()
 
-      canvas.fire(
+      canvas.project.fire(
         mode.current === 'resize' ? 'object:resized' : 'object:rotated',
         e
       )

@@ -2,9 +2,17 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useComponentDefaultProps } from '@mantine/styles'
 import { ManagementToolProps } from './ManagementTool.props'
 import { useEditorContext } from '../Editor.context'
-import { Item, MouseEvent, Point, Tool, ToolEvent } from '@yomtor/paper'
+import {
+  Item,
+  KeyEvent,
+  MouseEvent,
+  Point,
+  Tool,
+  ToolEvent
+} from '@yomtor/paper'
 import { useHotkeys } from '@yomtor/hooks'
 import { clearCursor, Clone, Default, setCursor } from '@yomtor/cursors'
+import { clone } from 'lodash'
 
 const defaultProps: Partial<ManagementToolProps> = {}
 
@@ -12,11 +20,11 @@ export const ManagementTool = (props: ManagementToolProps) => {
   const {} = useComponentDefaultProps('ManagementTool', defaultProps, props)
 
   const { canvas } = useEditorContext()
-  const [tool, setTool] = useState<Tool>()
   const clonedItems = useRef<Record<string, Item>>({})
   const beforePositions = useRef<Record<string, Point>>({})
   const activedItems = useRef<Item[]>([])
   const mouseEvent = useRef<MouseEvent>(null)
+  const clipboard = useRef<Item[]>([])
 
   const setBeforePositions = () => {
     activedItems.current = [...canvas.project.activeItems]
@@ -38,79 +46,47 @@ export const ManagementTool = (props: ManagementToolProps) => {
           item.position = beforePositions.current[item.uid]
           cloned.actived = true
           clonedItems.current[item.uid] = cloned
-
-          console.log('meclono')
         }
       })
-    } else if (clonedItems) {
+    } else if (Object.keys(clonedItems.current).length) {
       activedItems.current.forEach((item) => {
         const clone = clonedItems.current[item.uid]
         if (clone) {
-          console.log('borramos clone?')
           item.actived = true
           item.position = clone.position
           clone.remove()
         }
-        /*
-        if (clone.position.equals(item.position)) {
-          clone.remove()
-        }
-        */
       })
-      /*
-      clonedItems.current.forEach((item) => {
-        item.remove()
-      })
-      */
-    } else {
-      console.log('miro si las posiciones son iguales?')
     }
+  }
 
-    /*
-    if (mode.current === 'clone') {
-      canvas.project.clearHighlightedItem()
-
-      if (!clonedItems.current.length) {
-        clonedItems.current = canvas.project.activeItems.map((item) => {
-          const cloned = item.clone()
-          beforePositions.current[cloned.uid] =
-            beforePositions.current[item.uid]
-          return cloned
-        })
-
-        canvas.project.deactivateAll()
-        clonedItems.current.forEach((item) => item.set({ actived: true }))
-
-        if (Object.keys(beforePositions.current).length) {
-          activedItems.current.forEach(
-            (item) => (item.position = beforePositions.current[item.uid])
-          )
-
-          canvas.fire('object:created', {
-            items: activedItems.current
-          })
-        }
+  const removeDuplicates = () => {
+    activedItems.current.forEach((item) => {
+      const clone = clonedItems.current[item.uid]
+      if (clone && clone.position.equals(item.position)) {
+        clone.remove()
+        item.actived = true
+        delete clonedItems.current[item.uid]
       }
-    } else {
-      if (clonedItems.current.length) {
-        canvas.project.deactivateAll()
+    })
+  }
 
-        clonedItems.current.map((item, index) => {
-          if (activedItems.current.length) {
-            activedItems.current[index].actived = true
-            activedItems.current[index].position = item.position
-          }
+  const cut = () => {
+    clipboard.current = [...canvas.project.activeItems]
+    canvas.project.activeItems.forEach((item) => item.remove())
+  }
 
-          item.remove()
-        })
-        clonedItems.current = []
+  const copy = () => {
+    clipboard.current = [...canvas.project.activeItems]
+  }
 
-        canvas.fire('object:deleted', {
-          items: activedItems.current
-        })
-      }
-    }
-    */
+  const paste = () => {
+    console.log(clipboard.current)
+    clipboard.current.forEach((item) => {
+      item.clone()
+      // item.highlighted = item.actived = false
+    })
+    // clipboard.current = clone(canvas.project.activeItems)
   }
 
   useEffect(() => {
@@ -128,7 +104,7 @@ export const ManagementTool = (props: ManagementToolProps) => {
       }
     })
 
-    canvas.on('selection:pressed', (e: MouseEvent) => {
+    canvas.project.on('selection:pressed', (e: MouseEvent) => {
       setBeforePositions()
       if (e.modifiers.alt) {
         cloneController(true)
@@ -138,55 +114,45 @@ export const ManagementTool = (props: ManagementToolProps) => {
     canvas.view.on('mouseup', (e: MouseEvent) => {
       beforePositions.current = {}
       if (e.modifiers.alt) {
+        removeDuplicates()
         clonedItems.current = {}
         cloneController(true)
+
+        canvas.project.fire(['selection:updated', 'object:created'], {
+          items: canvas.project.activeItems
+        })
+      }
+    })
+
+    canvas.view.on('keydown', (e: KeyEvent) => {
+      if (['delete', 'backspace'].includes(e.key)) {
+        let items = [...canvas.project.activeItems]
+
+        items.forEach((item) => item.remove())
+        canvas.project.fire('selection:cleared', { items })
+
+        canvas.project.fire('object:deleted', {
+          items: items.map((item) => {
+            item.data.deleted = true
+            return item
+          })
+        })
+
+        items = null
       }
     })
   }, [canvas])
-
-  /*
-  useEffect(() => {
-    if (!tool) return
-
-   
-    tool.onActivate = () => {
-      setCursor(Default, 0, Clone)
-      cloneController()
-    }
-
-    tool.onDeactivate = () => {
-      clearCursor(Default, 0, Clone)
-      // beforePositions.current = {}
-      cloneController()
-    }
-
-    tool.onMouseDrag = (e: ToolEvent) => {
-      if (!e.downPoint || !e.point) {
-        return
-      }
-
-      console.log('drag?')
-
-      cloneController()
-    }
- 
-  }, [tool])
-     */
 
   useHotkeys(
     {
       keys: '*+alt',
       down: () => {
-        if (mouseEvent.current) {
-          setCursor(Default, 0, Clone)
-          cloneController(true)
-          //tool.activate()
-        }
+        setCursor(Default, 0, Clone)
+        cloneController(true)
       },
       up: () => {
         clearCursor(Default, 0, Clone)
         cloneController(false)
-        //tool.activeMain()
       }
     },
     [canvas]
@@ -196,7 +162,33 @@ export const ManagementTool = (props: ManagementToolProps) => {
     {
       keys: 'cmd+c',
       down: () => {
-        console.log('copy')
+        if (canvas.mainTool.actived) {
+          copy()
+        }
+      }
+    },
+    [canvas]
+  )
+
+  useHotkeys(
+    {
+      keys: 'cmd+x',
+      down: () => {
+        if (canvas.mainTool.actived) {
+          cut()
+        }
+      }
+    },
+    [canvas]
+  )
+
+  useHotkeys(
+    {
+      keys: 'cmd+v',
+      down: () => {
+        if (canvas.mainTool.actived) {
+          paste()
+        }
       }
     },
     [canvas]

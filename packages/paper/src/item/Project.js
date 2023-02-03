@@ -42,6 +42,7 @@ var Project = PaperScopeItem.extend(
     _mainTool: null,
     _artboards: [],
     _selector: null,
+    _eventListeners: {},
 
     // TODO: Add arguments to define pages
     /**
@@ -64,6 +65,7 @@ var Project = PaperScopeItem.extend(
       this._children = []
       this._namedChildren = {}
       this._activeLayer = null
+      this._eventListeners = {}
       this._currentStyle = new Style(null, null, this)
       this._selector = Selector.create(Item.NO_INSERT)
       // If no view is provided, we create a 1x1 px canvas view just so we
@@ -905,6 +907,183 @@ var Project = PaperScopeItem.extend(
       var children = this._activeLayer._children
       for (var i = 0, l = children.length; i < l; i++)
         children[i].actived = true
+    },
+
+
+    /**
+     * 
+     * @param {String} eventName 
+     * @param {Function} handler 
+     * @return {Project}
+     */
+     _removeEventListener: function(eventName, handler){
+      if (!this._eventListeners[eventName]) {
+          return;
+      }
+      if (handler) {
+          var index = this._eventListeners[eventName].findIndex(
+              function(event) {
+                  return event === handler;
+              } 
+          );
+          this._eventListeners[eventName] = this._eventListeners[
+              eventName
+          ].filter(function(_, key) {
+              return key !== index;
+          });
+      } else {
+          this._eventListeners[eventName] = [];
+      }
+    },
+
+
+
+    /**
+     * 
+     * @returns {Project}
+     */
+    offAll: function(){
+      this._eventListeners = {}
+
+      return this
+    },
+
+    /**
+     * 
+     * @param {String|Array<string>} eventName 
+     * @param {Function} handler 
+     * @returns {Project}
+     */
+    on: function(eventName, handler){
+        if (eventName instanceof Array) {
+            for (var key in eventName) {
+                this.on(eventName[key], handler);
+            }
+
+            return;
+        }
+        if (!this._eventListeners) {
+            this._eventListeners = {};
+        }
+        if (eventName instanceof Object) {
+            for (var prop in eventName) {
+                this.on(prop, eventName[prop]);
+            }
+        } else {
+            if (!this._eventListeners[eventName]) {
+                this._eventListeners[eventName] = [];
+            }
+            this._eventListeners[eventName].push(handler);
+        }
+        return this;
+    },
+
+    /**
+     * 
+     * @param {String|Array<string>} eventName 
+     * @param {Function} handler 
+     * @return {Project}
+     */
+    off: function(eventName, handler){
+        if (eventName instanceof Array) {
+            for (var key in eventName) {
+                this.off(eventName[key], handler);
+            }
+
+            return;
+        }
+
+        if (!this._eventListeners) {
+            return this;
+        }
+        if (arguments.length === 0) {
+            for (eventName in this._eventListeners) {
+                this._removeEventListener(eventName);
+            }
+        } else if (eventName instanceof Object) {
+            for (var prop in eventName) {
+                this._removeEventListener(prop, eventName[prop]);
+            }
+        } else {
+            this._removeEventListener(eventName, handler);
+        }
+        return this;
+    },
+    
+
+    /**
+     * 
+     * @param {String|Array<string>} eventName 
+     * @param {Object} [options] 
+     * @return {Project}
+     */
+    fire: function(eventName, options){
+      if (!this._eventListeners) return this;
+
+      if (eventName instanceof Array) {
+          for (var key in eventName) {
+              this.fire(eventName[key], options);
+          }
+
+          return;
+      }
+
+      if(!options){
+          options = {};
+      }
+
+      if (options && !options.items) {
+          options.items = this.getActiveItems();
+      }
+
+      var listenersForEvent = this._eventListeners[eventName];
+      if (listenersForEvent) {
+          listenersForEvent.forEach(function(event){
+              return event.call(this, options || null);
+          });
+
+          this._eventListeners[eventName] = listenersForEvent.filter(function(value){
+              return value;
+          });
+      }
+
+      if (eventName.startsWith('object:') && eventName.endsWith('ing')) {
+          var listenersForObjectModified = this._eventListeners[
+              'object:modifing'
+          ];
+
+          if (listenersForObjectModified) {
+              listenersForObjectModified.forEach(function(event) {
+                  return event.call(this, options || null);
+              });
+          }
+      }
+
+      if (eventName.startsWith('object:') && eventName.endsWith('ed')) {            
+          var listenersForObjectModified = this._eventListeners[
+              'object:modified'
+          ];
+
+          if (listenersForObjectModified) {
+              listenersForObjectModified.forEach(function(event) {
+                  return event.call(this, options || null);
+              });
+          }
+      }
+
+      if (eventName.startsWith('selection:')) {
+          var listenersForObjectModified = this._eventListeners[
+              'selection:modified'
+          ];
+
+          if (listenersForObjectModified) {
+              listenersForObjectModified.forEach(function(event){
+                  event.call(this, options || null);
+              });
+          }
+      }
+
+      return this;
     },
 
     /**
