@@ -8,7 +8,7 @@ import {
   ZoomTool,
   TransformTool,
   SelectorTool,
-  CloneTool,
+  ManagementTool,
   GroupTool
 } from '@yomtor/core'
 import { Path } from '@yomtor/paper'
@@ -21,7 +21,7 @@ import {
   ZoomTool,
   TransformTool,
   SelectorTool,
-  CloneTool,
+  ManagementTool,
   GroupTool 
 } from '@yomtor/core'
 
@@ -41,7 +41,7 @@ function Demo() {
         <ZoomTool />
         <GroupTool />
         <SelectorTool />
-        <CloneTool />
+        <ManagementTool />
         <TransformTool />
       </Canvas>
     </YomtorProvider>
@@ -72,7 +72,7 @@ function Wrapper(props: CanvasProps) {
         <ZoomTool />
         <GroupTool />
         <SelectorTool />
-        <CloneTool />
+        <ManagementTool />
         <TransformTool />
       </Canvas>
     </YomtorProvider>

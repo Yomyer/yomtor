@@ -41,8 +41,9 @@ export const SelectorTool = (props: SelectorToolProps) => {
   const selectRect = useRef<Path>(null)
   const moved = useRef<boolean>(false)
   const selectItems = useRef<Item[]>(null)
-  const beforePositions = useRef<{ [key: string]: Point }>({})
   const startInArtboard = useRef<boolean>(false)
+
+  const lastPoint = useRef<Point>(null)
 
   const compareToItemList = (a: Item[], b: Item[]): boolean => {
     return isEqual(
@@ -57,19 +58,6 @@ export const SelectorTool = (props: SelectorToolProps) => {
 
   const updateAtiveItems = () => {
     activedItems.current = [...canvas.project.activeItems]
-  }
-
-  const setBeforePositions = () => {
-    beforePositions.current = canvas.project.activeItems.reduce(
-      (positions, item) => {
-        if (!positions[item.uid]) {
-          positions[item.uid] = item.position.clone()
-        }
-
-        return positions
-      },
-      beforePositions.current
-    )
   }
 
   const hightlightController = (e?: ToolEvent) => {
@@ -198,14 +186,12 @@ export const SelectorTool = (props: SelectorToolProps) => {
       if (!isMove) return
 
       canvas.project.activeItems.forEach((item) => {
-        let position = item.position.add(e.delta)
+        let delta = e.delta
+
         if (e instanceof ToolEvent) {
-          if (beforePositions.current[item.uid]) {
-            position = beforePositions.current[item.uid].add(
-              round(e.point.subtract(e.downPoint))
-            )
-          }
+          delta = e.point.subtract(lastPoint.current)
         }
+        const position = item.position.add(delta)
 
         item.position = position
       })
@@ -288,7 +274,6 @@ export const SelectorTool = (props: SelectorToolProps) => {
         canvas.fire('selection:created', {
           ...{ items: canvas.project.activeItems }
         })
-        setBeforePositions()
         updateAtiveItems()
       }
       mode.current = ['move'].includes(beforeMode) ? beforeMode : 'none'
@@ -297,7 +282,6 @@ export const SelectorTool = (props: SelectorToolProps) => {
     }
 
     tool.onDeactivate = () => {
-      beforePositions.current = {}
       beforeMode = mode.current
       mode.current = 'none'
     }
@@ -357,7 +341,6 @@ export const SelectorTool = (props: SelectorToolProps) => {
             canvas.fire(`selection:${updated}`, e)
           }
 
-          setBeforePositions()
           updateAtiveItems()
 
           startInArtboard.current = !!canvas.project.hitTest(e.downPoint, {
@@ -376,6 +359,8 @@ export const SelectorTool = (props: SelectorToolProps) => {
         if (!item) {
           mode.current = 'select'
         }
+
+        lastPoint.current = e.point
       }
     }
 
@@ -392,6 +377,7 @@ export const SelectorTool = (props: SelectorToolProps) => {
       if (distance < 2 / canvas.view.zoom) {
         return
       }
+
       if (mode.current === 'move') {
         move(e)
       }
@@ -399,25 +385,17 @@ export const SelectorTool = (props: SelectorToolProps) => {
       if (mode.current === 'select') {
         rectSelectorController(e)
       }
+
+      lastPoint.current = e.point
     }
 
     tool.onMouseMove = (e: ToolEvent) => {
       if (e.item instanceof Control || !isMove) return
 
       hightlightController(e)
-
-      /*
-      if (e.modifiers.alt && mouseEvent.current && mouseEvent.current.item) {
-        setCursor(Default, 0, Clone)
-      } else {
-        clearCursor(Default, 0, Clone)
-      }
-      */
     }
 
     tool.onMouseUp = (e: ToolEvent) => {
-      // clonedItems.current = []
-      beforePositions.current = {}
       selectItems.current = null
       selectRect.current = null
 

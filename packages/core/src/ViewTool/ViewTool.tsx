@@ -49,7 +49,6 @@ export const ViewTool = (props: ViewToolProps) => {
     event.delta = event.point.subtract(offset.current)
 
     canvas.view.emit('mousewheel', event)
-    // canvas.view.emit('mousedrag', event)
     canvas.tool && canvas.tool.onMouseDrag(event)
 
     offset.current = event.point
@@ -106,9 +105,10 @@ export const ViewTool = (props: ViewToolProps) => {
         Math.min(Math.max(nearest.getDistance(point), 0), 7)
       )
       if (outside.current) {
-        dragEvent.current = new ToolEvent(tool, 'mousedrag', e)
+        dragEvent.current = new ToolEvent(tool, 'mouseviewdrag', e)
         Object.assign(dragEvent.current, e, {
           count: distance,
+          type: 'mouseviewdrag',
           downPoint: downPoint.current,
           delta: new Point(
             point.x < rect.x ? -distance : point.x > rect.width ? distance : 0,

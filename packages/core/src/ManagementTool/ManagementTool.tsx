@@ -1,15 +1,15 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useComponentDefaultProps } from '@mantine/styles'
-import { CloneToolProps } from './CloneTool.props'
+import { ManagementToolProps } from './ManagementTool.props'
 import { useEditorContext } from '../Editor.context'
 import { Item, MouseEvent, Point, Tool, ToolEvent } from '@yomtor/paper'
 import { useHotkeys } from '@yomtor/hooks'
 import { clearCursor, Clone, Default, setCursor } from '@yomtor/cursors'
 
-const defaultProps: Partial<CloneToolProps> = {}
+const defaultProps: Partial<ManagementToolProps> = {}
 
-export const CloneTool = (props: CloneToolProps) => {
-  const {} = useComponentDefaultProps('CloneTool', defaultProps, props)
+export const ManagementTool = (props: ManagementToolProps) => {
+  const {} = useComponentDefaultProps('ManagementTool', defaultProps, props)
 
   const { canvas } = useEditorContext()
   const [tool, setTool] = useState<Tool>()
@@ -36,29 +36,34 @@ export const CloneTool = (props: CloneToolProps) => {
           const cloned = item.clone()
           item.highlighted = item.actived = false
           item.position = beforePositions.current[item.uid]
-          cloned.fillColor = 'blue'
           cloned.actived = true
           clonedItems.current[item.uid] = cloned
 
           console.log('meclono')
         }
       })
-    } else {
+    } else if (clonedItems) {
       activedItems.current.forEach((item) => {
-        item.actived = true
-
         const clone = clonedItems.current[item.uid]
         if (clone) {
+          console.log('borramos clone?')
+          item.actived = true
           item.position = clone.position
           clone.remove()
         }
-
-        console.log('me borro y me dejo tal cual xD')
+        /*
+        if (clone.position.equals(item.position)) {
+          clone.remove()
+        }
+        */
       })
       /*
       clonedItems.current.forEach((item) => {
         item.remove()
-      })*/
+      })
+      */
+    } else {
+      console.log('miro si las posiciones son iguales?')
     }
 
     /*
@@ -115,9 +120,11 @@ export const CloneTool = (props: CloneToolProps) => {
       if (e.target.layer) {
         mouseEvent.current = e
         if (e.modifiers.alt) {
+          setCursor(Default, 0, Clone)
         }
       } else {
         mouseEvent.current = null
+        clearCursor(Default, 0, Clone)
       }
     })
 
@@ -198,4 +205,4 @@ export const CloneTool = (props: CloneToolProps) => {
   return <></>
 }
 
-CloneTool.displayName = '@yomtor/core/CloneTool'
+ManagementTool.displayName = '@yomtor/core/ManagementTool'
