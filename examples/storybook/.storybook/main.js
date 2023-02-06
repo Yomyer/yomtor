@@ -18,7 +18,7 @@ const storiesPath = !argv._[0]
           .replace(/\\/g, '/')
 
 module.exports = {
-    stories: [storiesPath],
+    stories: ['../../../packages/demos/src/app.stories.tsx', storiesPath],
     addons: ['storybook-addon-turbo-build', 'storybook-dark-mode'],
     webpackFinal: async (config) => {
         config.resolve = {

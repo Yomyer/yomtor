@@ -14,7 +14,7 @@ import {
 import { Path } from '@yomtor/paper'
 import { AppShell, Header } from '@yomtor/ui'
 
-const codeTemplate = (props: string) => `
+const code = `
 import {
   YomtorProvider,
   Canvas,
@@ -68,11 +68,7 @@ function Wrapper(props: CanvasProps) {
 
   return (
     <YomtorProvider>
-      <AppShell
-        padding={0}
-        fixed={false}
-        header={<Header height={60}>Soy header</Header>}
-      >
+      <AppShell padding={0} fixed={false} header={<Header>Soy header</Header>}>
         <Canvas {...props} resize={false}>
           <ViewTool />
           <ZoomTool />
@@ -86,8 +82,8 @@ function Wrapper(props: CanvasProps) {
   )
 }
 export const configurator: YomtorDemo = {
-  type: 'configurator',
-  codeTemplate,
+  type: 'demo',
   component: Wrapper,
-  configurator: []
+  demoProps: { spacing: false },
+  code
 }

@@ -1,2 +1,2 @@
-export * from './Header'
-export * from './Header.props'
+export * from './Navbar'
+export * from './Navbar.props'
