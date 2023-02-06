@@ -7,5 +7,5 @@ type SortableStylesNames = Selectors<typeof useStyles>
 export interface SortableProps
   extends Omit<DefaultProps<SortableStylesNames>, YomtorStyleSystemSize> {
   children: React.ReactElement
-  item: VirtualItem<Element>
+  item: VirtualItem
 }

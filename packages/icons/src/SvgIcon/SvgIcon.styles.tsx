@@ -1,4 +1,4 @@
-import { createStyles, YomtorTheme } from '@yomtor/styles'
+import { createStyles } from '@yomtor/styles'
 import { SvgIconProps } from './SvgIcon.props'
 
 type Classes = 'root'
@@ -12,7 +12,7 @@ const sizes = {
 }
 
 export const SvgIconStyles = createStyles<Classes, SvgIconProps>(
-  (theme: YomtorTheme, { hidden, rotate, size, style }) => ({
+  (theme, { hidden, rotate, size, style }) => ({
     ...style,
     root: {
       color: 'inherit',

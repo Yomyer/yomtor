@@ -25,12 +25,7 @@ export type {
   MantineGradient as YomtorGradient
 } from '@mantine/styles'
 
-export type {
-  EmotionCache,
-  CSSObject,
-  Selectors,
-  UseStylesOptions
-} from '@mantine/styles'
+export type { EmotionCache, Selectors, UseStylesOptions } from '@mantine/styles'
 
 export {
   keyframes,

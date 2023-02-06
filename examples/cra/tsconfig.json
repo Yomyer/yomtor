@@ -1,5 +1,6 @@
 {
   "extends": "../../tsconfig.json",
+  "include": ["./src", "../../configuration/types"],
   "compilerOptions": {
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
@@ -15,6 +16,5 @@
     "jsx": "preserve",
     "skipLibCheck": true,
     "incremental": true
-  },
-  "include": ["src"]
+  }
 }

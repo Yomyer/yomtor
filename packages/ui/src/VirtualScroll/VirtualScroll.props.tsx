@@ -12,19 +12,17 @@ export interface VirtualScrollProps
   count: number
   type?: ScrollAreaTypes
   horizontal?: boolean
-  virtualizerRef?: React.MutableRefObject<UseVirtualizer>
+  virtualizerRef?: React.MutableRefObject<UseVirtualizer<Element, Element>>
   behavior?: boolean
   forced?: number[]
   wrapper?:
     | React.ReactNode
     | ((
-        item: VirtualItem<Element>,
-        node:
-          | React.ReactNode
-          | ((item: VirtualItem<Element>) => React.ReactNode),
+        item: VirtualItem,
+        node: React.ReactNode | ((item: VirtualItem) => React.ReactNode),
         className: string
       ) => React.ReactNode)
-  node?: React.ReactNode | ((item: VirtualItem<Element>) => React.ReactNode)
+  node?: React.ReactNode | ((item: VirtualItem) => React.ReactNode)
   onScrolling?: (status: boolean) => void
   children?: React.ReactNode
 }

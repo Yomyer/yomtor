@@ -13,7 +13,7 @@ export default createStyles((theme, { events }: VirtualScrollStylesParams) => ({
   viewport: {
     width: '100%',
     position: 'relative',
-    pointerEvents: events ? 'all' : 'none !important'
+    pointerEvents: events ? 'all' : 'none'
   },
   node: {
     position: 'absolute',

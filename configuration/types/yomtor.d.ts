@@ -1,5 +1,5 @@
 import '@mantine/styles'
-import {
+import type {
   DefaultYomtorColor,
   YomtorTheme,
   CSSObject,

@@ -15355,7 +15355,6 @@ new function() {
 	return {
 		_viewEvents: viewEvents,
 		_handleMouseEvent: function(type, event, point) {
-
 			var itemEvents = this._itemEvents,
 				hitItems = itemEvents.native[type],
 				nativeMove = type === 'mousemove',

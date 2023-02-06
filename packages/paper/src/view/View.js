@@ -1320,7 +1320,6 @@ new function() { // Injection scope for event handling on the browser
          * tools.
          */
         _handleMouseEvent: function(type, event, point) {
-
             var itemEvents = this._itemEvents,
                 // Look up hitItems, which tells us whether a given native mouse
                 // event requires an item hit-test or not, before changing type

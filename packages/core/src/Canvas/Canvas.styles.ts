@@ -10,7 +10,8 @@ export default createStyles((theme, { hasArtboards }: CanvasStylesParams) => {
       height: '100%',
       width: '100%',
       position: 'relative',
-      overflow: 'hidden'
+      overflow: 'hidden',
+      minHeight: 300
     },
     tools: {
       position: 'absolute',
