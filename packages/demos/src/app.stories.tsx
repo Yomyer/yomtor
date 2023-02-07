@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { AppShell, Navbar, Header } from '@yomtor/ui'
 import {
-  YomtorProvider,
+  EditorProvider,
   Canvas,
   CanvasProps,
   ViewTool,
@@ -9,7 +9,8 @@ import {
   TransformTool,
   SelectorTool,
   ManagementTool,
-  GroupTool
+  GroupTool,
+  RectangleTool
 } from '@yomtor/core'
 import { Path } from '@yomtor/paper'
 
@@ -36,7 +37,7 @@ export function Default() {
   }, [])
 
   return (
-    <YomtorProvider>
+    <EditorProvider>
       <AppShell
         padding={0}
         navbar={
@@ -44,7 +45,13 @@ export function Default() {
             aaaaa
           </Navbar>
         }
-        header={<Header height={40}>Soy header</Header>}
+        header={
+          <Header height={40}>
+            <RectangleTool>
+              <button>Rectangle</button>
+            </RectangleTool>
+          </Header>
+        }
       >
         <Canvas>
           <ViewTool />
@@ -55,6 +62,6 @@ export function Default() {
           <TransformTool />
         </Canvas>
       </AppShell>
-    </YomtorProvider>
+    </EditorProvider>
   )
 }

@@ -1,8 +1,57 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { YomtorProvider } from '@yomtor/styles'
-import { Button } from '@yomtor/ui'
-import { ArtboardIcon } from '@yomtor/icons'
+import { AppShell, Header, Navbar } from '@yomtor/ui'
+import {
+  Canvas,
+  EditorProvider,
+  GroupTool,
+  ManagementTool,
+  RectangleTool,
+  SelectorTool,
+  TransformTool,
+  ViewTool,
+  ZoomTool
+} from '@yomtor/core'
+import { Path } from '@yomtor/paper'
 
 export const App = () => {
-  return <YomtorProvider theme={{ colorScheme: 'dark' }}>dasda</YomtorProvider>
+  useEffect(() => {
+    new Path.Rectangle({
+      from: [10, 10],
+      to: [50, 50],
+      fillColor: 'red',
+      strokeColor: 'green'
+    })
+  }, [])
+
+  return (
+    <YomtorProvider theme={{ colorScheme: 'dark' }}>
+      <EditorProvider>
+        <AppShell
+          padding={0}
+          navbar={
+            <Navbar width={{ base: 200 }} resize min={100} max={500}>
+              aaaaa
+            </Navbar>
+          }
+          header={
+            <Header height={40}>
+              <RectangleTool>
+                <button>Rectangle</button>
+              </RectangleTool>
+            </Header>
+          }
+        >
+          <Canvas>
+            <ViewTool />
+            <ZoomTool />
+            <GroupTool />
+            <SelectorTool />
+            <ManagementTool />
+            <TransformTool />
+          </Canvas>
+        </AppShell>
+      </EditorProvider>
+    </YomtorProvider>
+  )
 }

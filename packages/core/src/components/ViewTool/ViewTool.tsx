@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { ViewToolProps } from './ViewTool.props'
 import { useComponentDefaultProps } from '@yomtor/styles'
-import { useEditorContext } from '../Editor.context'
+import { useEditorContext } from '../../Editor.context'
 import {
   Point,
   Tool,
@@ -196,26 +196,6 @@ export const ViewTool = (props: ViewToolProps) => {
     canvas && canvas.view.element
   )
 
-  /*
-  if (canvas && canvas.view.element) {
-    function beginSliding(e) {
-      canvas.view.element.parentElement.onpointermove = slide
-      canvas.view.element.parentElement.setPointerCapture(e.pointerId)
-    }
-
-    function stopSliding(e) {
-      canvas.view.element.parentElement.onpointermove = null
-      canvas.view.element.parentElement.releasePointerCapture(e.pointerId)
-    }
-
-    function slide(e) {
-      console.log(e.clientX)
-    }
-
-    canvas.view.element.parentElement.onpointerdown = beginSliding
-    canvas.view.element.parentElement.onpointerup = stopSliding
-  }
-  */
   return <></>
 }
 

@@ -8,6 +8,7 @@ import type {
 
 declare module '@mantine/styles' {
   export declare function useMantineTheme(): YomtorTheme
+  export type Sx = CSSObject | ((theme: YomtorTheme) => CSSObject)
   export declare function createStyles<
     Key extends string = string,
     Params = void,

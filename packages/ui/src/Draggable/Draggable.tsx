@@ -14,6 +14,7 @@ import ReactDragable, {
   DraggableEvent,
   DraggableCore
 } from 'react-draggable'
+import { useMergedRef } from '@mantine/hooks'
 
 const defaultProps: Partial<DraggableProps> = {
   move: true,
@@ -203,13 +204,14 @@ export const Draggable = forwardRef<HTMLDivElement, DraggableProps>(
       <DraggableCore
         {...others}
         onDrag={dragHandler}
+        nodeRef={handlerRef}
         onStop={stopHandler}
         onStart={startHandler}
         offsetParent={document.querySelector('body')}
       >
         {React.cloneElement(React.Children.only(children), {
           className: cx(children.props.className, classes.handler),
-          ref: handlerRef
+          ref: useMergedRef(ref, handlerRef)
         })}
       </DraggableCore>
     )

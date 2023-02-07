@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { TransformToolProps } from './TransformTool.props'
 import { useComponentDefaultProps } from '@yomtor/styles'
-import { useEditorContext } from '../Editor.context'
+import { useEditorContext } from '../../Editor.context'
 import {
   Control,
   Item,

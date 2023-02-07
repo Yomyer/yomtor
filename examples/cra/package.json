@@ -9,11 +9,14 @@
   },
   "dependencies": {
     "@emotion/styled": "^11.10.4",
+    "@yomtor/core": "*",
     "@yomtor/cursors": "*",
     "@yomtor/hooks": "*",
     "@yomtor/icons": "*",
+    "@yomtor/paper": "*",
     "@yomtor/styles": "*",
-    "@yomtor/ui": "*"
+    "@yomtor/ui": "*",
+    "@yomtor/yomtor": "*"
   },
   "devDependencies": {
     "@babel/core": "~7.18.0",

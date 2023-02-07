@@ -1,6 +1,6 @@
 import { CSSProperties } from 'react'
-import type { YomtorColor, YomtorTheme, YomtorThemeBase } from '../../../types'
-import { DEFAULT_THEME, MantineGradient } from '@mantine/styles'
+import type { YomtorColor, YomtorTheme } from '../../../types'
+import { MantineGradient } from '@mantine/styles'
 
 export interface VariantInput {
   variant:

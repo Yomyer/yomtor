@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { GroupToolProps } from './GroupTool.props'
 import { useComponentDefaultProps } from '@yomtor/styles'
-import { useEditorContext } from '../Editor.context'
+import { useEditorContext } from '../../Editor.context'
 import { Tool, Group, ToolEvent, Rectangle, Item } from '@yomtor/paper'
 import { first, orderBy } from 'lodash'
 import { useHotkeys } from '@yomtor/hooks'

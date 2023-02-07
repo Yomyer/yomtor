@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useComponentDefaultProps } from '@mantine/styles'
 import { SelectorToolProps } from './SelectorTool.props'
-import { useEditorContext } from '../Editor.context'
+import { useEditorContext } from '../../Editor.context'
 import {
   Artboard,
   Control,
@@ -295,7 +295,8 @@ export const SelectorTool = (props: SelectorToolProps) => {
 
         if (e.item) {
           canvas.project.fire('edit', e)
-          hightlightController()
+          canvas.project.highlightedItem &&
+            (canvas.project.highlightedItem.highlighted = false)
         }
       }
     }
@@ -415,25 +416,6 @@ export const SelectorTool = (props: SelectorToolProps) => {
       if (e.modifiers.alt && mode.current === 'select') {
         rectSelectorController(e)
       }
-
-      // Move to clone??
-      /*
-      if (['delete', 'backspace'].includes(e.key)) {
-        let items = [...canvas.project.activeItems]
-
-        items.forEach((item) => item.remove())
-        canvas.project.fire('selection:cleared', { items })
-
-        canvas.project.fire('object:deleted', {
-          items: items.map((item) => {
-            item.data.deleted = true
-            return item
-          })
-        })
-
-        items = null
-      }
-      */
     }
 
     tool.onKeyUp = (e: KeyEvent) => {

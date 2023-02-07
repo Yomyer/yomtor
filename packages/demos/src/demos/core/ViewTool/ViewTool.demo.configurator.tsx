@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react'
 import { YomtorDemo } from '@yomtor/ds'
-import { YomtorProvider, Canvas, ViewToolProps, ViewTool } from '@yomtor/core'
+import { EditorProvider, Canvas, ViewToolProps, ViewTool } from '@yomtor/core'
 import { Path } from '@yomtor/paper'
 
 const codeTemplate = (props: string) => `
@@ -36,11 +36,11 @@ function Wrapper(props: ViewToolProps) {
   }, [])
 
   return (
-    <YomtorProvider>
+    <EditorProvider>
       <Canvas resize={false}>
         <ViewTool {...props} />
       </Canvas>
-    </YomtorProvider>
+    </EditorProvider>
   )
 }
 

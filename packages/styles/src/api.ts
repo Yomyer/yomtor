@@ -15,6 +15,7 @@ export type {
   Sx,
   ClassNames,
   Styles,
+  CSSObject,
   Tuple,
   MantineStyleSystemProps as YomtorStyleSystemProps,
   MantineStyleSystemSize as YomtorStyleSystemSize,

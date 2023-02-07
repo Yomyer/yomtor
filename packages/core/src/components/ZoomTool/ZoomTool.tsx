@@ -1,6 +1,6 @@
 import { ZoomToolProps } from './ZoomTool.props'
 import { useComponentDefaultProps } from '@yomtor/styles'
-import { useEditorContext } from '../Editor.context'
+import { useEditorContext } from '../../Editor.context'
 import React, { useCallback, useEffect, useState } from 'react'
 import { Tool, Grid } from '@yomtor/paper'
 import { useEventListener, useHotkeys } from '@yomtor/hooks'

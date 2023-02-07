@@ -8,7 +8,7 @@ import React, {
 import { CanvasProps } from './Canvas.props'
 import { useComponentDefaultProps } from '@yomtor/styles'
 import useStyles from './Canvas.styles'
-import { useEditorContext } from '../Editor.context'
+import { useEditorContext } from '../../Editor.context'
 import { PaperScope, Point, Size } from '@yomtor/paper'
 import { cursorWithScope, Default, setCursor } from '@yomtor/cursors'
 import { debounce } from 'lodash'
@@ -95,16 +95,6 @@ export const Canvas = forwardRef<PaperScope, CanvasProps>((props, ref) => {
       }
     })
   }, [canvas, position])
-
-  /*
-  const onResize = useCallback(() => {
-    if (canvasRef.current) {
-      console.log('a')
-      const { width, height } = canvasRef.current.getBoundingClientRect()
-      canvas.view.viewSize = new Size(width, height)
-    }
-  }, [canvas])
-  */
 
   return (
     <div className={classes.root} ref={wrapperRef}>

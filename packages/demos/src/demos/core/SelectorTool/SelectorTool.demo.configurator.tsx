@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react'
 import { YomtorDemo } from '@yomtor/ds'
 import {
-  YomtorProvider,
+  EditorProvider,
   Canvas,
   SelectorTool,
   SelectorToolProps
@@ -45,11 +45,11 @@ function Wrapper(props: SelectorToolProps) {
   }, [])
 
   return (
-    <YomtorProvider>
+    <EditorProvider>
       <Canvas resize={false}>
         <SelectorTool {...props} />
       </Canvas>
-    </YomtorProvider>
+    </EditorProvider>
   )
 }
 

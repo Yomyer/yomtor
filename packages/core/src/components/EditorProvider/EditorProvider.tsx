@@ -1,12 +1,12 @@
 import React, { forwardRef, useState } from 'react'
-import { YomtorProviderProps } from './YomtorProvider.props'
+import { EditorProviderProps } from './EditorProvider.props'
 import { useComponentDefaultProps } from '@yomtor/styles'
 import { PaperScope } from '@yomtor/paper'
-import { EditorContext } from '../Editor.context'
+import { EditorContext } from '../../Editor.context'
 
-const defaultProps: Partial<YomtorProviderProps> = {}
+const defaultProps: Partial<EditorProviderProps> = {}
 
-export const YomtorProvider = forwardRef<HTMLDivElement, YomtorProviderProps>(
+export const EditorProvider = forwardRef<HTMLDivElement, EditorProviderProps>(
   (props, ref) => {
     const { children, ...others } = useComponentDefaultProps(
       'Yomtor',
@@ -18,7 +18,7 @@ export const YomtorProvider = forwardRef<HTMLDivElement, YomtorProviderProps>(
     const initCanvas = (c: PaperScope): void => {
       setCanvas(c)
     }
-
+    console.log(canvas)
     return (
       <EditorContext.Provider
         value={{
@@ -33,4 +33,4 @@ export const YomtorProvider = forwardRef<HTMLDivElement, YomtorProviderProps>(
   }
 )
 
-YomtorProvider.displayName = '@yomtor/core/YomtorProvider'
+EditorProvider.displayName = '@yomtor/core/EditorProvider'
