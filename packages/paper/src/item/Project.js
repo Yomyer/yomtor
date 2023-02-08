@@ -353,7 +353,7 @@ var Project = PaperScopeItem.extend(
      * @param {Item} [item] the item to higlight
      */
     clearHighlightedItem: function (item) {
-      if (this._highlightedItem) this._highlightedItem._highlighted = false
+      if (this._highlightedItem) this._highlightedItem.highlighted = false
 
       this._highlightedItem = item && null
     },

@@ -216,7 +216,7 @@ const generateStyle = async (className: string, props: Props) => {
   }
 
   if (props.action) {
-    data = { ...data, x: '4', y: '4' }
+    data = { ...data, x: (+data.x - 4).toString(), y: (+data.y - 4).toString() }
   }
 
   const svg64 = toBase64SVG(generateSVGCursor(props, 0.5))

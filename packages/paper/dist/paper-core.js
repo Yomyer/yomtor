@@ -3151,7 +3151,7 @@ var Project = PaperScopeItem.extend(
 	},
 
 	clearHighlightedItem: function (item) {
-	  if (this._highlightedItem) this._highlightedItem._highlighted = false
+	  if (this._highlightedItem) this._highlightedItem.highlighted = false
 
 	  this._highlightedItem = item && null
 	},

@@ -16,9 +16,7 @@ import {
 } from '@yomtor/paper'
 import { differenceWith, intersectionWith, isEqual } from 'lodash'
 import { useYomtorTheme } from '@yomtor/styles'
-import { HotKeysEvent, useEventListener, useHotkeys } from '@yomtor/hooks'
-import { round } from '@yomtor/utils'
-import { clearCursor, Clone, Default, setCursor } from '@yomtor/cursors'
+import { HotKeysEvent, useHotkeys } from '@yomtor/hooks'
 
 const defaultProps: Partial<SelectorToolProps> = {
   move: true,
@@ -295,8 +293,7 @@ export const SelectorTool = (props: SelectorToolProps) => {
 
         if (e.item) {
           canvas.project.fire('edit', e)
-          canvas.project.highlightedItem &&
-            (canvas.project.highlightedItem.highlighted = false)
+          canvas.project.clearHighlightedItem()
         }
       }
     }

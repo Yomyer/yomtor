@@ -390,6 +390,8 @@ export const TransformTool = (props: TransformToolProps) => {
 
       cursorAngle.current = null
 
+      canvas.project.clearHighlightedItem()
+
       showCursor()
     })
 

@@ -31,6 +31,7 @@ export const ObjectTool = forwardRef<HTMLDivElement, ObjectToolProps>(
     const { canvas } = useEditorContext()
     const theme = useYomtorTheme()
     const [insertMode, setInserMode] = useState(false)
+    const [dragging, setDragging] = useState(false)
     const [tool, setTool] = useState<Tool>()
     const phantom = useRef<Item>(null)
 
@@ -50,7 +51,8 @@ export const ObjectTool = forwardRef<HTMLDivElement, ObjectToolProps>(
 
       if (insertMode) {
         tool.activate()
-      } else if (tool) {
+      } else if (tool && insertMode === false) {
+        canvas.project.selector.clearInfo()
         if (phantom.current) phantom.current.remove()
         tool.activeMain()
       }
@@ -60,11 +62,17 @@ export const ObjectTool = forwardRef<HTMLDivElement, ObjectToolProps>(
       if (!tool) return
 
       tool.onActivate = () => {
+        console.log('activated', hotKey)
         setCursor(Cross, 0, cursor)
       }
 
       tool.onDeactivate = () => {
         clearCursor(Cross, 0, cursor)
+        setInserMode(null)
+      }
+
+      tool.onMouseDown = (event: ToolEvent) => {
+        canvas.project.selector.emit('mousedown', event)
       }
 
       tool.onMouseDrag = (event: ToolEvent) => {
@@ -80,6 +88,7 @@ export const ObjectTool = forwardRef<HTMLDivElement, ObjectToolProps>(
 
       tool.onMouseUp = (event: ToolEvent) => {
         setInserMode(false)
+
         if (phantom.current) {
           phantom.current.remove()
           canvas.project.deactivateAll()
@@ -99,17 +108,25 @@ export const ObjectTool = forwardRef<HTMLDivElement, ObjectToolProps>(
           }
 
           item.actived = true
-          canvas.project.fire('object:created', event)
         }
-
-        canvas.project.selector.clearInfo()
       }
 
-      tool.onKeyDown = (e: KeyEvent) => {
-        if (e.key === 'escape') {
+      tool.onKeyDown = (event: KeyEvent) => {
+        if (event.key === 'escape') {
           setInserMode(false)
+          canvas.project.fire('tool:keydown', event)
         }
       }
+
+      canvas.view.on('keydown', (event: KeyEvent) => {
+        if (event.key === 'escape') {
+          setDragging(true)
+        }
+      })
+
+      canvas.view.on('mouseup', () => setDragging(false))
+      canvas.view.on('mousedrag', () => setDragging(true))
+
       if (toolRef) {
         toolRef.current = tool
       }
@@ -119,12 +136,12 @@ export const ObjectTool = forwardRef<HTMLDivElement, ObjectToolProps>(
       {
         keys: hotKey,
         down: () => {
-          if (tool && (tool.mainActived || tool.mainActived === undefined)) {
+          if (tool && !dragging) {
             setInserMode(true)
           }
         }
       },
-      [tool]
+      [tool, dragging]
     )
 
     return (

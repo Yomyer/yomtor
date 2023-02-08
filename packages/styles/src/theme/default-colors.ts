@@ -74,7 +74,7 @@ export const DEFAULT_COLORS = {
     '#1864ab'
   ],
   dark: [
-    '#C1C2C5',
+    '#D9D9D9',
     '#A6A7AB',
     '#909296',
     '#5c5f66',
