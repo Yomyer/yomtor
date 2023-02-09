@@ -3510,7 +3510,7 @@ new function() { // Injection scope for hit-test functions shared with project
      *
      * @name Item#strokeColor
      * @property
-     * @type ?Color
+     * @type ?Color | string
      *
      * @example {@paperscript}
      * // Setting the stroke color of a path:
@@ -3672,7 +3672,7 @@ new function() { // Injection scope for hit-test functions shared with project
      *
      * @name Item#fillColor
      * @property
-     * @type ?Color
+     * @type ?Color | string
      *
      * @example {@paperscript}
      * // Setting the fill color of a path to red:
@@ -3706,7 +3706,7 @@ new function() { // Injection scope for hit-test functions shared with project
      *
      * @property
      * @name Item#shadowColor
-     * @type ?Color
+     * @type ?Color | string
      *
      * @example {@paperscript}
      * // Creating a circle with a black shadow:

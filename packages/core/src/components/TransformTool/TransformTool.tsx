@@ -387,7 +387,6 @@ export const TransformTool = (props: TransformToolProps) => {
       if (e.target.name.startsWith('rotate')) {
         mode.current = 'rotate'
       }
-
       cursorAngle.current = null
 
       canvas.project.clearHighlightedItem()
@@ -398,13 +397,13 @@ export const TransformTool = (props: TransformToolProps) => {
     selector.on('mouseleave', () => {
       if (!tool.actived) {
         cursor.current = null
+        mode.current = 'resize'
       }
       clearCursor([Rotate, Resize])
     })
 
     selector.on('mousedown', (e: MouseEvent & { target: Control }) => {
       if (!tool.mainActived) return
-
       tool.activate()
 
       const cornerName = e.target.name
@@ -418,6 +417,7 @@ export const TransformTool = (props: TransformToolProps) => {
         -selector.inheritedAngle,
         selector.center
       )
+
       const center = selector.center
       const corner: Point = selector[cornerName]
       const handler: Point = selector[cornerName]
@@ -439,12 +439,12 @@ export const TransformTool = (props: TransformToolProps) => {
         center,
         direction,
         angle,
-        point: round(e.target.position)
+        point: round(selector[cornerName] as Point)
       }
 
       cursor.current = {
         angle: selector.angle,
-        point: e.target.position,
+        point: selector[cornerName],
         corner: e.target
       }
 
@@ -452,7 +452,7 @@ export const TransformTool = (props: TransformToolProps) => {
 
       showCursor(true)
 
-      lastPoint.current = e.point
+      lastPoint.current = selector[cornerName]
     })
   }, [tool])
 

@@ -3,14 +3,13 @@ import { AppShell, Navbar, Header } from '@yomtor/ui'
 import {
   EditorProvider,
   Canvas,
-  CanvasProps,
   ViewTool,
   ZoomTool,
   TransformTool,
   SelectorTool,
   ManagementTool,
   GroupTool,
-  RectangleTool
+  ObjectPathTool
 } from '@yomtor/core'
 import { Path } from '@yomtor/paper'
 
@@ -47,9 +46,9 @@ export function Default() {
         }
         header={
           <Header height={40}>
-            <RectangleTool>
+            <ObjectPathTool type='rectangle'>
               <button>Rectangle</button>
-            </RectangleTool>
+            </ObjectPathTool>
           </Header>
         }
       >

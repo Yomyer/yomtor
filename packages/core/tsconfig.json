@@ -1,6 +1,11 @@
 {
   "extends": "../../tsconfig.json",
-  "include": ["./src", "../../configuration/types", "../utils/src/math.ts"],
+  "include": [
+    "./src",
+    "../../configuration/types",
+    "../utils/src/math.ts",
+    "../../old/use-object-tool.tsx"
+  ],
   "compilerOptions": {
     "rootDir": "src",
     "baseUrl": ".",

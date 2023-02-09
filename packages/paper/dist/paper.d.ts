@@ -1734,7 +1734,7 @@ declare namespace paper {
         /** 
          * The color of the stroke.
          */
-        strokeColor: Color | null
+        strokeColor: Color  |  string | null
 
         /** 
          * The width of the stroke.
@@ -1783,7 +1783,7 @@ declare namespace paper {
         /** 
          * The fill color of the item.
          */
-        fillColor: Color | null
+        fillColor: Color  |  string | null
 
         /** 
          * The fill-rule with which the shape gets filled. Please note that only
@@ -1794,7 +1794,7 @@ declare namespace paper {
         /** 
          * The shadow color.
          */
-        shadowColor: Color | null
+        shadowColor: Color  |  string | null
 
         /** 
          * The shadow's blur radius.
