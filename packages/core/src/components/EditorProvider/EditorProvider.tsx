@@ -18,7 +18,7 @@ export const EditorProvider = forwardRef<HTMLDivElement, EditorProviderProps>(
     const initCanvas = (c: PaperScope): void => {
       setCanvas(c)
     }
-    console.log(canvas)
+
     return (
       <EditorContext.Provider
         value={{

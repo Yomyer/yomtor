@@ -43,6 +43,133 @@ declare namespace paper {
 
     }
 
+    
+    class Change  {
+        
+        static CHILDREN: number
+
+        
+        static INSERTION: number
+
+        
+        static GEOMETRY: number
+
+        
+        static MATRIX: number
+
+        
+        static SEGMENTS: number
+
+        
+        static STROKE: number
+
+        
+        static STYLE: number
+
+        
+        static ATTRIBUTE: number
+
+        
+        static CONTENT: number
+
+        
+        static PIXELS: number
+
+        
+        static VIEW: number
+
+        
+        static CONTROL: number
+
+        
+        static ACTIVE: number
+
+
+    }
+
+    
+    class ChangeFlag  {
+        /** 
+         * Anything affecting the appearance of an item, including GEOMETRY,
+         * STROKE, STYLE and ATTRIBUTE (except for the invisible ones: locked, name)
+         */
+        static APPEARANCE: number
+
+        /** 
+         * A change in the item's children
+         */
+        static CHILDREN: number
+
+        /** 
+         * A change of the item's place in the scene graph (removed, inserted,
+         * moved)
+         */
+        static INSERTION: number
+
+        /** 
+         * Item geometry (path, bounds)
+         */
+        static GEOMETRY: number
+
+        /** 
+         * The item's matrix has changed
+         */
+        static MATRIX: number
+
+        /** 
+         * Only segment(s) have changed, and affected curves have already been
+         * notified. This is to implement an optimization in _changed() calls
+         */
+        static SEGMENTS: number
+
+        /** 
+         * Stroke geometry (excluding color)
+         */
+        static STROKE: number
+
+        /** 
+         * Fill style or stroke color / dash
+         */
+        static STYLE: number
+
+        /** 
+         * Item attributes: visible, blendMode, locked, name, opacity, clipMask ...
+         */
+        static ATTRIBUTE: number
+
+        /** 
+         * Text content
+         */
+        static CONTENT: number
+
+        /** 
+         * Raster pixels
+         */
+        static PIXELS: number
+
+        /** 
+         * Clipping in one of the child items
+         */
+        static CLIPPING: number
+
+        /** 
+         * The view has been transformed
+         */
+        static VIEW: number
+
+        /** 
+         * A change controls
+         */
+        static CONTROL: number
+
+        /** 
+         * A change iactived item
+         */
+        static ACTIVE: number
+
+
+    }
+
     /** 
      * All properties and functions that expect color values in the form
      * of instances of Color objects, also accept named colors and hex values as
@@ -3484,6 +3611,8 @@ declare namespace paper {
         mainTool: Tool
 
         Artboard: typeof Artboard
+        Change: typeof Change
+        ChangeFlag: typeof ChangeFlag
         Color: typeof Color
         CompoundPath: typeof CompoundPath
         Control: typeof Control
@@ -5313,6 +5442,13 @@ declare namespace paper {
         remove(): void
 
         /** 
+         * The selected items contained within the project.
+         * 
+         * @param Point - point
+         */
+        hitTestArtboard(Point: any): HitResult
+
+        /** 
          * Clear the highlighted item
          * 
          * @param item - the item to higlight
@@ -7114,6 +7250,9 @@ declare namespace paper {
         
         paused: boolean
 
+        
+        idle: boolean
+
         /** 
          * Get active main tool
          */
@@ -7877,6 +8016,8 @@ declare module '@yomtor/paper'
     const paperFull: paper.PaperScope;
 
     export class Artboard extends paper.Artboard {}
+    export class Change extends paper.Change {}
+    export class ChangeFlag extends paper.ChangeFlag {}
     export class Color extends paper.Color {}
     export class CompoundPath extends paper.CompoundPath {}
     export class Control extends paper.Control {}

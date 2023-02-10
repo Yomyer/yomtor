@@ -49,7 +49,9 @@ export const ViewTool = (props: ViewToolProps) => {
     event.delta = event.point.subtract(offset.current)
 
     canvas.view.emit('mousewheel', event)
-    canvas.tool && canvas.tool.onMouseDrag(event)
+    if (!canvas.getTool('ViewTool').actived) {
+      canvas.tool && canvas.tool.onMouseDrag(event)
+    }
 
     offset.current = event.point
   }
@@ -57,7 +59,7 @@ export const ViewTool = (props: ViewToolProps) => {
   const wheelMove = useCallback(
     (e: WheelEvent) => {
       if (tool && !tool.paused) {
-        const point = new canvas.Point(e.deltaX, e.deltaY).divide(factor)
+        const point = new Point(e.deltaX, e.deltaY).divide(factor)
 
         canvas.view.center = canvas.view.center.add(
           point.divide(canvas.view.zoom)

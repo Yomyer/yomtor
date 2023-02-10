@@ -10,6 +10,7 @@ import { ForwardRefWithStaticComponents } from '@mantine/utils'
 import { useComponentDefaultProps } from '@yomtor/styles'
 
 import {
+  TreeViewComponent,
   TreeViewDropInfo,
   TreeViewPositions,
   TreeViewProps
@@ -25,143 +26,140 @@ const defaultProps: Partial<TreeViewProps> = {
   indent: 16
 }
 
-export const _TreeView = forwardRef<HTMLDivElement, TreeViewProps>(
-  (props, ref) => {
-    const {
-      data,
-      collapsed,
-      className,
-      indent,
-      onSort,
-      sortabled: isSortabled,
-      multiple,
-      ...others
-    } = useComponentDefaultProps('TreeView', defaultProps, props)
+export const TreeView: TreeViewComponent = forwardRef<
+  HTMLDivElement,
+  TreeViewProps<unknown>
+>((props, ref) => {
+  const {
+    data,
+    collapsed,
+    className,
+    indent,
+    onSort,
+    sortabled: isSortabled,
+    multiple,
+    ...others
+  } = useComponentDefaultProps('TreeView', defaultProps, props)
 
-    const rerender = useReducer(() => ({}), {})[1]
-    const [position, setPosition] = useState<TreeViewPositions>()
-    const [sortabled, setSortabled] = useState<boolean>(isSortabled)
-    const [dragging, setDragging] = useState(false)
-    const [items, setItems] = useState<number[]>([])
-    const [current, setCurrent] = useState<number>()
-    const [target, setTarget] = useState<Element>()
-    const [parentHighlighted, setParentHighlighted] = useState<number>()
-    const [info, setInfo] = useState<TreeViewDropInfo>()
-    const distance = useRef<number>(0)
-    const activeds = useRef<Record<number, NodeData>>({})
-    const prev = useRef<number>()
+  const rerender = useReducer(() => ({}), {})[1]
+  const [position, setPosition] = useState<TreeViewPositions>()
+  const [sortabled, setSortabled] = useState<boolean>(isSortabled)
+  const [dragging, setDragging] = useState(false)
+  const [items, setItems] = useState<number[]>([])
+  const [current, setCurrent] = useState<number>()
+  const [target, setTarget] = useState<Element>()
+  const [parentHighlighted, setParentHighlighted] = useState<number>()
+  const [info, setInfo] = useState<TreeViewDropInfo>()
+  const distance = useRef<number>(0)
+  const activeds = useRef<Record<number, NodeData>>({})
+  const prev = useRef<number>()
 
-    useEffect(() => {
-      if (!info) return
-      onSort && onSort(info)
-    }, [info])
+  useEffect(() => {
+    if (!info) return
+    onSort && onSort(info)
+  }, [info])
 
-    useEffect(() => {
-      setSortabled(isSortabled)
-    }, [isSortabled])
+  useEffect(() => {
+    setSortabled(isSortabled)
+  }, [isSortabled])
 
-    const cache = useNodeTree({
-      data,
-      collapsed,
-      position,
-      items: activeds.current
-    })
+  const cache = useNodeTree({
+    data,
+    collapsed,
+    position,
+    items: activeds.current
+  })
 
-    activeds.current = cache.activeds
+  activeds.current = cache.activeds
 
-    const setActive = (node: NodeData, event: MouseEvent) => {
-      const ctrl = event.ctrlKey || event.metaKey
-      const shift = event.shiftKey
-      const index = cache.nodes.findIndex((n) => n === node)
+  const setActive = (node: NodeData, event: MouseEvent) => {
+    const ctrl = event.ctrlKey || event.metaKey
+    const shift = event.shiftKey
+    const index = cache.nodes.findIndex((n) => n === node)
 
-      if (
-        (!ctrl && !shift && !Object.values(cache.activeds).includes(node)) ||
-        !multiple
-      ) {
-        Object.values(cache.activeds).forEach((n) => (n.actived = false))
-      }
-
-      if (!Object.values(cache.activeds).includes(node) || ctrl) {
-        node.actived = !node.actived
-      }
-
-      if (shift && !ctrl && multiple) {
-        const ranges = [prev.current, index]
-        const indexes = range(Math.min(...ranges), Math.max(...ranges) + 1)
-        indexes.forEach((i) => (cache.nodes[i].actived = true))
-      }
-
-      node.highlighted = false
-      prev.current = index
-      rerender()
+    if (
+      (!ctrl && !shift && !Object.values(cache.activeds).includes(node)) ||
+      !multiple
+    ) {
+      Object.values(cache.activeds).forEach((n) => (n.actived = false))
     }
 
-    const setDeactive = (node: NodeData, event: MouseEvent) => {
-      const ctrl = event.ctrlKey || event.metaKey
-
-      if (!dragging && !ctrl) {
-        Object.values(cache.activeds)
-          .filter((n) => n !== node)
-          .forEach((n) => (n.actived = false))
-
-        rerender()
-      }
+    if (!Object.values(cache.activeds).includes(node) || ctrl) {
+      node.actived = !node.actived
     }
 
-    const setHighligth = (node: NodeData, status: boolean) => {
-      node.highlighted = status
-      rerender()
+    if (shift && !ctrl && multiple) {
+      const ranges = [prev.current, index]
+      const indexes = range(Math.min(...ranges), Math.max(...ranges) + 1)
+      indexes.forEach((i) => (cache.nodes[i].actived = true))
     }
 
-    const setCollapse = (node: NodeData, event: MouseEvent) => {
-      node.collapsed = !isUndefined(node.collapsed)
-        ? !node.collapsed
-        : !collapsed
-      event.stopPropagation()
-      rerender()
-    }
-
-    const values = {
-      ...cache,
-      indent,
-      collapsed,
-      multiple,
-      setActive,
-      setDeactive,
-      setHighligth,
-      setCollapse,
-      sortabled,
-      setSortabled,
-      dragging,
-      setDragging,
-      position,
-      setPosition,
-      items,
-      setItems,
-      current,
-      setCurrent,
-      target,
-      setTarget,
-      parentHighlighted,
-      setParentHighlighted,
-      info,
-      setInfo,
-      distance
-    }
-
-    return (
-      <TreeViewContext.Provider value={values}>
-        <TreeViewContainer
-          {...{ ...others, sortabled }}
-          nodes={values.nodes}
-          ref={ref}
-        />
-      </TreeViewContext.Provider>
-    )
+    node.highlighted = false
+    prev.current = index
+    rerender()
   }
-) as any
 
-_TreeView.displayName = '@yomtor/ui/TreeView'
+  const setDeactive = (node: NodeData, event: MouseEvent) => {
+    const ctrl = event.ctrlKey || event.metaKey
 
-export const TreeView: ForwardRefWithStaticComponents<TreeViewProps, {}> =
-  _TreeView
+    if (!dragging && !ctrl) {
+      Object.values(cache.activeds)
+        .filter((n) => n !== node)
+        .forEach((n) => (n.actived = false))
+
+      rerender()
+    }
+  }
+
+  const setHighligth = (node: NodeData, status: boolean) => {
+    node.highlighted = status
+    rerender()
+  }
+
+  const setCollapse = (node: NodeData, event: MouseEvent) => {
+    node.collapsed = !isUndefined(node.collapsed) ? !node.collapsed : !collapsed
+    event.stopPropagation()
+    rerender()
+  }
+
+  const values = {
+    ...cache,
+    indent,
+    collapsed,
+    multiple,
+    setActive,
+    setDeactive,
+    setHighligth,
+    setCollapse,
+    sortabled,
+    setSortabled,
+    dragging,
+    setDragging,
+    position,
+    setPosition,
+    items,
+    setItems,
+    current,
+    setCurrent,
+    target,
+    setTarget,
+    parentHighlighted,
+    setParentHighlighted,
+    info,
+    setInfo,
+    distance
+  }
+
+  return (
+    <TreeViewContext.Provider value={values}>
+      <TreeViewContainer
+        {...{ ...others, sortabled }}
+        data={data}
+        nodes={values.nodes}
+        ref={ref}
+      />
+    </TreeViewContext.Provider>
+  )
+}) as any
+
+TreeView.displayName = '@yomtor/ui/TreeView'

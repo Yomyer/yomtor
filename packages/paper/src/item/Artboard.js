@@ -350,7 +350,7 @@ var Artboard = Group.extend(
                 })
             );
 
-            if (hit || !this.isClipped()) {
+            if (hit || (!this.isClipped() && !options.legacy)) {
                 return _hitTest.base.call(
                     this,
                     point,

@@ -3000,6 +3000,54 @@ var Line = Base.extend({
 	}
 });
 
+var ChangeFlag = {
+	APPEARANCE: 0x1,
+
+	CHILDREN: 0x2,
+
+	INSERTION: 0x4,
+
+	GEOMETRY: 0x8,
+
+	MATRIX: 0x10,
+
+	SEGMENTS: 0x20,
+
+	STROKE: 0x40,
+
+	STYLE: 0x80,
+
+	ATTRIBUTE: 0x100,
+
+	CONTENT: 0x200,
+
+	PIXELS: 0x400,
+
+	CLIPPING: 0x800,
+
+	VIEW: 0x1000,
+
+	CONTROL: 0x10000,
+
+	ACTIVE: 0x100000
+};
+
+var Change = {
+	CHILDREN: ChangeFlag.CHILDREN | ChangeFlag.GEOMETRY | ChangeFlag.APPEARANCE,
+	INSERTION: ChangeFlag.INSERTION | ChangeFlag.APPEARANCE,
+	GEOMETRY: ChangeFlag.GEOMETRY | ChangeFlag.APPEARANCE,
+	MATRIX: ChangeFlag.MATRIX | ChangeFlag.GEOMETRY | ChangeFlag.APPEARANCE,
+	SEGMENTS: ChangeFlag.SEGMENTS | ChangeFlag.GEOMETRY | ChangeFlag.APPEARANCE,
+	STROKE: ChangeFlag.STROKE | ChangeFlag.STYLE | ChangeFlag.APPEARANCE,
+	STYLE: ChangeFlag.STYLE | ChangeFlag.APPEARANCE,
+	ATTRIBUTE: ChangeFlag.ATTRIBUTE | ChangeFlag.APPEARANCE,
+	CONTENT: ChangeFlag.CONTENT | ChangeFlag.GEOMETRY | ChangeFlag.APPEARANCE,
+	PIXELS: ChangeFlag.PIXELS | ChangeFlag.APPEARANCE,
+	VIEW: ChangeFlag.VIEW | ChangeFlag.APPEARANCE,
+	CONTROL: ChangeFlag.CONTROL | ChangeFlag.APPEARANCE,
+	ACTIVE: ChangeFlag.ACTIVE | ChangeFlag.APPEARANCE
+};
+
 var Project = PaperScopeItem.extend(
    {
 	_class: 'Project',
@@ -3055,6 +3103,8 @@ var Project = PaperScopeItem.extend(
 		}
 	  }
 
+	  this.fire('changed', flags)
+
 	  if (this._selector) {
 		this._selector._changed(flags, item)
 	  }
@@ -3109,6 +3159,17 @@ var Project = PaperScopeItem.extend(
 
 	getArtboards: function () {
 	  return this._artboards
+	},
+
+	hitTestArtboard: function () {
+		var point = Point.read(arguments);
+
+		return this.hitTest(point, {
+		  fill: true,
+		  stroke: false,
+		  legacy: true,
+		  class: Artboard
+		})
 	},
 
 	getActiveArtboard: function () {
@@ -5193,7 +5254,7 @@ new function() {
 		if(scale) this._constraintsPivot = center || this.getPosition(true);
 
 		this._transformType = key;
-
+		this._lastPosition = null
 		return this.transform(new Matrix()[key](value,
 				center || this.getPosition(true)));
 	};
@@ -5268,7 +5329,6 @@ new function() {
 		} else if (transformMatrix && position && this._pivot) {
 			this._position = matrix._transformPoint(position, position);
 		}
-
 		return this;
 	},
 
@@ -6066,7 +6126,7 @@ var Artboard = Group.extend(
 				})
 			);
 
-			if (hit || !this.isClipped()) {
+			if (hit || (!this.isClipped() && !options.legacy)) {
 				return _hitTest.base.call(
 					this,
 					point,
@@ -16163,12 +16223,20 @@ var Tool = PaperScopeItem.extend(
 			this._minDistance = this._maxDistance = distance;
 		},
 
-		getPaused: function () {
+		 getPaused: function () {
 			return this._paused;
 		},
 
 		setPaused: function (paused) {
 			this._paused = paused;
+		},
+
+		getIdle: function () {
+			return this._idle;
+		},
+
+		setIdle: function (idle) {
+			this._idle = idle;
 		},
 
 		getActived: function () {
@@ -19683,6 +19751,8 @@ var paper = new (PaperScope.inject(Base.exports, {
 	Key: Key,
 	DomEvent: DomEvent,
 	DomElement: DomElement,
+	ChangeFlag: ChangeFlag,
+	Change: Change,
 	document: document,
 	window: window,
 	Symbol: SymbolDefinition,

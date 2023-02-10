@@ -16,7 +16,8 @@ import { useObjectPath } from './use-object-path'
 const defaultProps: Partial<ObjectPathToolProps> = {
   onInserMode: () => {},
   hotKey: 'r',
-  cursor: Rectangle
+  cursor: Rectangle,
+  type: 'rectangle'
 }
 
 export const ObjectPathTool = forwardRef<HTMLDivElement, ObjectPathToolProps>(
@@ -28,7 +29,7 @@ export const ObjectPathTool = forwardRef<HTMLDivElement, ObjectPathToolProps>(
     const [insertMode, setInserMode] = useState(false)
     const [dragging, setDragging] = useState(false)
     const [tool, setTool] = useState<Tool>()
-    const phantom = useRef<Partial<Path>>(null)
+    const phantom = useRef<Item>(null)
 
     const onClick = useCallback(() => {
       setInserMode(true)
@@ -68,23 +69,14 @@ export const ObjectPathTool = forwardRef<HTMLDivElement, ObjectPathToolProps>(
 
       tool.onMouseDown = (event: ToolEvent) => {
         setInserMode(true)
-        /*
-        const attr = attrs({ event, canvas, theme })
-        phantom.current = new ObjectItem({
-          ...attr,
-          guide: true,
-          parent: canvas.guidesLayer
-        })
-        */
       }
 
       tool.onMouseDrag = (event: ToolEvent) => {
         const distance = event.downPoint
           .multiply(canvas.view.zoom)
           .getDistance(event.point.multiply(canvas.view.zoom))
-        console.log(distance)
 
-        if (distance > 3) {
+        if (distance > 5) {
           setDragging(true)
           canvas.project.deactivateAll()
 
@@ -99,11 +91,13 @@ export const ObjectPathTool = forwardRef<HTMLDivElement, ObjectPathToolProps>(
           phantom.current.actived = true
           const transformTool = canvas.getTool('TransformTool')
           transformTool.activeMain()
+          transformTool.idle = true
 
           canvas.project.selector.emit('mousedown', {
             ...event,
             target: canvas.project.selector.getControl('bottomRight')
           })
+          setCursor(Cross, 0, cursor)
         }
       }
 
@@ -147,6 +141,8 @@ export const ObjectPathTool = forwardRef<HTMLDivElement, ObjectPathToolProps>(
       canvas.view.on('mouseup', () => {
         setDragging(false)
         phantom.current = null
+        clearCursor(Cross, 0, cursor)
+        canvas.getTool('TransformTool').idle = false
       })
       // canvas.view.on('mousedrag', () => setDragging(true))
 

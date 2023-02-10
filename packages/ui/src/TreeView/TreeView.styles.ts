@@ -1,7 +1,7 @@
 import { createStyles } from '@yomtor/styles'
 import { TreeViewProps } from './TreeView.props'
 
-export default createStyles((theme, {}: TreeViewProps) => ({
+export default createStyles((theme, {}: Partial<TreeViewProps>) => ({
   root: {
     minHeight: '400px',
     width: '100%'

@@ -9,8 +9,12 @@ import {
   SelectorTool,
   ManagementTool,
   GroupTool,
-  ObjectPathTool
+  OvalTool,
+  RectangleTool,
+  PolygonTool,
+  ArtboardTool
 } from '@yomtor/core'
+import { ObjectControls } from '@yomtor/yomtor'
 import { Path } from '@yomtor/paper'
 
 export default {
@@ -24,14 +28,16 @@ export function Default() {
       from: [10, 10],
       to: [50, 50],
       fillColor: 'red',
-      strokeColor: 'green'
+      strokeColor: 'green',
+      name: 'Rectangle'
     })
 
     new Path.Rectangle({
       from: [150, 200],
       to: [300, 250],
       fillColor: 'blue',
-      strokeColor: 'green'
+      strokeColor: 'green',
+      name: 'Rectangle'
     })
   }, [])
 
@@ -41,14 +47,23 @@ export function Default() {
         padding={0}
         navbar={
           <Navbar width={{ base: 200 }} resize min={100} max={500}>
-            aaaaa
+            <ObjectControls />
           </Navbar>
         }
         header={
           <Header height={40}>
-            <ObjectPathTool type='rectangle'>
+            <RectangleTool>
               <button>Rectangle</button>
-            </ObjectPathTool>
+            </RectangleTool>
+            <OvalTool>
+              <button>OvalTool</button>
+            </OvalTool>
+            <PolygonTool>
+              <button>PolygonTool</button>
+            </PolygonTool>
+            <ArtboardTool>
+              <button>ArtboardTool</button>
+            </ArtboardTool>
           </Header>
         }
       >

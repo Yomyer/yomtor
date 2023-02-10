@@ -13,6 +13,7 @@ import {
   ZoomTool
 } from '@yomtor/core'
 import { Path } from '@yomtor/paper'
+import { ObjectControls } from '@yomtor/yomtor'
 
 export const App = () => {
   useEffect(() => {
@@ -31,7 +32,7 @@ export const App = () => {
           padding={0}
           navbar={
             <Navbar width={{ base: 200 }} resize min={100} max={500}>
-              aaaaa
+              <ObjectControls />
             </Navbar>
           }
           header={

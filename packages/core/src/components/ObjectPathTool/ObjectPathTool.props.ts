@@ -11,8 +11,9 @@ export type ObjectPathTypes =
   | 'arc'
   | 'star'
   | 'polygon'
+  | 'artboard'
 
-export type ObjectpathEvent = {
+export type ObjectPathEvent = {
   event: ToolEvent
   canvas: PaperScope
   theme: YomtorTheme

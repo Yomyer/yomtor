@@ -123,6 +123,8 @@ var Project = PaperScopeItem.extend(
         }
       }
 
+      this.fire('changed', flags)
+
       if (this._selector) {
         this._selector._changed(flags, item)
       }
@@ -275,6 +277,25 @@ var Project = PaperScopeItem.extend(
     getArtboards: function () {
       return this._artboards
     },
+
+    /**
+     * The selected items contained within the project.
+     *
+     * @function
+     * @param Point point
+     * @return {HitResult}
+     */
+    hitTestArtboard: function (/* point */) {
+        var point = Point.read(arguments);
+
+        return this.hitTest(point, {
+          fill: true,
+          stroke: false,
+          legacy: true,
+          class: Artboard
+        })
+    },
+    
 
     /**
      * The artboard which is currently active.

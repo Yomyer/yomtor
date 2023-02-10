@@ -1,28 +1,52 @@
-import { Path } from '@yomtor/paper'
-import { ObjectpathEvent } from './ObjectPathTool.props'
-import { round } from '@yomtor/utils'
-
+import { Artboard, Item, Path } from '@yomtor/paper'
+import { ObjectPathEvent } from './ObjectPathTool.props'
 export const useObjectPath = ({
   type,
   theme,
   canvas,
   dragging,
   event
-}: ObjectpathEvent) => {
+}: ObjectPathEvent): Item => {
   const styles = {
-    fillColor: theme.colors.dark[0],
-    strokeColor: theme.colors.primary[5],
-    strokeWidth: 1 / canvas.view.zoom
+    fillColor: theme.colors.dark[0]
   }
 
   switch (type) {
+    case 'artboard':
+      return new Artboard({
+        fillColor: 'white',
+        clipped: false,
+        name: 'Artboard',
+        ...(!dragging
+          ? { point: event.downPoint.round().subtract(50), size: 100 }
+          : { point: event.downPoint.round(), size: 1 })
+      })
+      break
+    case 'polygon':
+      return new Path.RegularPolygon({
+        ...styles,
+        name: 'Oval',
+        sides: 3,
+        center: event.downPoint.round(),
+        ...(!dragging ? { radius: 50 } : { radius: 1 })
+      })
+      break
+    case 'oval':
+      return new Path.Ellipse({
+        ...styles,
+        name: 'Oval',
+        ...(!dragging
+          ? { point: event.downPoint.round().subtract(50), size: 100 }
+          : { point: event.downPoint.round(), size: 1 })
+      })
+      break
     default:
       return new Path.Rectangle({
         ...styles,
         name: 'Rectangle',
         ...(!dragging
-          ? { point: round(event.downPoint).subtract(50), size: 100 }
-          : { point: round(event.downPoint), size: 1, actived: true })
+          ? { point: event.downPoint.round().subtract(50), size: 100 }
+          : { point: event.downPoint.round(), size: 1 })
       })
       break
   }

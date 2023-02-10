@@ -17,6 +17,7 @@ import {
 import { differenceWith, intersectionWith, isEqual } from 'lodash'
 import { useYomtorTheme } from '@yomtor/styles'
 import { HotKeysEvent, useHotkeys } from '@yomtor/hooks'
+import { round } from '@yomtor/utils'
 
 const defaultProps: Partial<SelectorToolProps> = {
   move: true,
@@ -39,7 +40,8 @@ export const SelectorTool = (props: SelectorToolProps) => {
   const selectRect = useRef<Path>(null)
   const moved = useRef<boolean>(false)
   const selectItems = useRef<Item[]>(null)
-  const startInArtboard = useRef<boolean>(false)
+  const positions = useRef<Record<string, Point>>({})
+  const outside = useRef<boolean>(true)
 
   const lastPoint = useRef<Point>(null)
 
@@ -189,18 +191,16 @@ export const SelectorTool = (props: SelectorToolProps) => {
         if (e instanceof ToolEvent) {
           delta = e.point.subtract(lastPoint.current)
         }
-        const position = item.position.add(delta)
+        if (!positions.current[item.uid])
+          positions.current[item.uid] = item.position
 
-        item.position = position
+        positions.current[item.uid] = positions.current[item.uid].add(delta)
+
+        item.position = positions.current[item.uid].round()
       })
 
       if (e instanceof ToolEvent) {
-        const artboard = canvas.project.hitTest(e.point, {
-          fill: true,
-          stroke: false,
-          legacy: true,
-          class: Artboard
-        })
+        const artboard = canvas.project.hitTestArtboard(e.point)
         let inserted = false
 
         canvas.project.activeItems.forEach((item) => {
@@ -214,7 +214,7 @@ export const SelectorTool = (props: SelectorToolProps) => {
             } else if (
               !artboard &&
               item.artboard &&
-              (startInArtboard.current || !item.intersects(item.artboard))
+              (!outside.current || !item.intersects(item.artboard))
             ) {
               item.artboard.parent.insertChild(
                 item.artboard.parent.children.length + 1,
@@ -341,13 +341,6 @@ export const SelectorTool = (props: SelectorToolProps) => {
 
           updateAtiveItems()
 
-          startInArtboard.current = !!canvas.project.hitTest(e.downPoint, {
-            fill: true,
-            stroke: false,
-            legacy: true,
-            class: Artboard
-          })
-
           canvas.project.fire(`selection:pressed`, e)
         } else if (activedItems.current.length && !e.modifiers.shift) {
           canvas.project.fire(`selection:cleared`, e)
@@ -359,6 +352,11 @@ export const SelectorTool = (props: SelectorToolProps) => {
         }
 
         lastPoint.current = e.point
+
+        const artboard = canvas.project.hitTestArtboard(e.point)
+        outside.current = artboard
+          ? !artboard.item.bounds.contains(e.downPoint)
+          : true
       }
     }
 
@@ -396,6 +394,7 @@ export const SelectorTool = (props: SelectorToolProps) => {
     tool.onMouseUp = (e: ToolEvent) => {
       selectItems.current = null
       selectRect.current = null
+      positions.current = {}
 
       if (moved.current) {
         canvas.project.fire('object:moved', e)

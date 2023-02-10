@@ -3766,7 +3766,8 @@ new function() { // Injection scope for hit-test functions shared with project
         if(scale) this._constraintsPivot = center || this.getPosition(true);
 
         this._transformType = key;
-
+        this._lastPosition = null
+        
         return this.transform(new Matrix()[key](value,
                 center || this.getPosition(true)));
     };
@@ -4063,7 +4064,7 @@ new function() { // Injection scope for hit-test functions shared with project
             // arbitrary transformations and we can therefore update _position:
             this._position = matrix._transformPoint(position, position);
         }
-
+        
         // Allow chaining here, since transform() is related to Matrix functions
         return this;
     },

@@ -2,6 +2,7 @@ import React from 'react'
 import { VirtualItem } from '@yomtor/hooks'
 import { DefaultProps } from '@yomtor/styles'
 import { NodeData, NodeProps } from './Node/Node.props'
+import { ForwardRefWithStaticComponents } from '@yomtor/utils'
 
 export type TreeViewPositions = 'below' | 'above' | 'in'
 
@@ -12,12 +13,12 @@ export type TreeViewDropInfo = {
 }
 
 export interface TreeViewProps<T = NodeData> extends DefaultProps {
-  data?: NodeData<T>[]
+  data: NodeData<T>[]
   component?: any
   wrapper?: React.ForwardRefExoticComponent<NodeProps>
   children?:
     | React.ReactNode
-    | ((node: NodeData, item: VirtualItem) => React.ReactNode)
+    | ((node: NodeData<T>, item: VirtualItem) => React.ReactNode)
   size?: number
   collapsed?: boolean
   indentWitdh?: number
@@ -28,3 +29,9 @@ export interface TreeViewProps<T = NodeData> extends DefaultProps {
   indent?: number
   onSort?: (info: TreeViewDropInfo) => void
 }
+
+export type TreeViewComponent =
+  | ((<D = NodeData>(props: TreeViewProps<D>) => React.ReactElement) & {
+      displayName?: string
+    }) &
+      ForwardRefWithStaticComponents<TreeViewProps, {}>

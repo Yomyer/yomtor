@@ -356,7 +356,7 @@ item.strokeScaling;
 item.dashArray;
 item.miterLimit;
 item.fillColor;
-item.fillColor && item.fillColor.red;
+item.fillColor && item.fillColor;
 item.fillRule;
 item.shadowColor;
 item.shadowBlur;

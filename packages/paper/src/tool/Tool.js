@@ -149,7 +149,7 @@ var Tool = PaperScopeItem.extend(
          * @bean
          * @type Boolean
          */
-        getPaused: function () {
+         getPaused: function () {
             return this._paused;
         },
 
@@ -157,6 +157,20 @@ var Tool = PaperScopeItem.extend(
             this._paused = paused;
         },
 
+
+        /**
+         * @bean
+         * @type Boolean
+         */
+        getIdle: function () {
+            return this._idle;
+        },
+
+        setIdle: function (idle) {
+            this._idle = idle;
+        },
+
+                
         /**
          * Get active main tool
          * @name Tool#actived
