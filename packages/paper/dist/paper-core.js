@@ -3026,6 +3026,8 @@ var ChangeFlag = {
 
 	CONTROL: 0x10000,
 
+	HIGHLIGHT: 0x200000,
+
 	ACTIVE: 0x100000
 };
 
@@ -3042,7 +3044,8 @@ var Change = {
 	PIXELS: ChangeFlag.PIXELS | ChangeFlag.APPEARANCE,
 	VIEW: ChangeFlag.VIEW | ChangeFlag.APPEARANCE,
 	CONTROL: ChangeFlag.CONTROL | ChangeFlag.APPEARANCE,
-	ACTIVE: ChangeFlag.ACTIVE | ChangeFlag.APPEARANCE
+	ACTIVE: ChangeFlag.ACTIVE | ChangeFlag.ATTRIBUTE | ChangeFlag.APPEARANCE,
+	HIGHLIGHT: ChangeFlag.HIGHLIGHT | ChangeFlag.ATTRIBUTE | ChangeFlag.APPEARANCE
 };
 
 var Project = PaperScopeItem.extend(
@@ -4559,8 +4562,7 @@ new function() {
 		}
 
 		if(!Base.equals(before, Object.keys(this._project._activeItems))){
-			console.log(before, Object.keys(this._project._activeItems))
-			this._changed(1048577);
+			this._changed(1048833);
 		}
 	},
 
@@ -4578,7 +4580,7 @@ new function() {
 
 		this._project._highlightedItem = highlighted ? this : null;
 
-		this._changed(257);
+		this._changed(2097409);
 	},
 
 	getActiveItems: function(){
@@ -7217,6 +7219,7 @@ var Selector = Item.extend(
 		_angle: 0,
 		_width: null,
 		_height: null,
+		_size: null,
 		_center: null,
 		_topCenter: null,
 		_rightCenter: null,
@@ -7307,8 +7310,43 @@ var Selector = Item.extend(
 			return this._descomposeActiveItemsInfo("width") || 0;
 		},
 
+		setWidth: function(width, center) {
+			var items = this._project._activeItems;
+			var newWidth = this.width
+			var matrix = new Matrix().rotate(this.angle);
+			var factor = 1
+			if (Math.abs(width) > 0.0000001) {
+				factor = width / newWidth
+				console.log(factor)
+			}
+
+			Base.each(items, function(item){
+				var matrix = new Matrix()
+				matrix.rotate(item.angle)
+				matrix.scale(new Point(factor, 1), center)
+				item.transform(matrix, center)
+			})
+
+		},
+
 		getHeight: function () {
 			return this._descomposeActiveItemsInfo("height") || 0;
+		},
+
+		setHeight: function(height, center) {
+			var items = this._project._activeItems;
+
+		},
+
+		getSize: function(){
+			return new Size(this.width, this.height)
+		},
+
+		setSize: function(){
+			var size = Size.read(arguments);
+			var center = Point.read(arguments);
+			this.setWidth(size.width, center)
+			this.setHeight(size.width, center)
 		},
 
 		getCenter: function () {
@@ -15723,7 +15761,7 @@ var Grid = Base.extend(
 		setActived: function (actived) {
 			this._actived = actived;
 
-			this._changed(1048577);
+			this._changed(1048833);
 		},
 
 		getProject: function () {

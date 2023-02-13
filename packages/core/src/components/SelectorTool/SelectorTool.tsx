@@ -14,7 +14,7 @@ import {
   Tool,
   ToolEvent
 } from '@yomtor/paper'
-import { differenceWith, intersectionWith, isEqual } from 'lodash'
+import { differenceWith, find, intersectionWith, isEqual } from 'lodash'
 import { useYomtorTheme } from '@yomtor/styles'
 import { HotKeysEvent, useHotkeys } from '@yomtor/hooks'
 import { round } from '@yomtor/utils'
@@ -155,6 +155,12 @@ export const SelectorTool = (props: SelectorToolProps) => {
           deactives.forEach((item) => (item.actived = false))
         }
 
+        canvas.project.activeItems.forEach((item) => {
+          if (!actives.find((find) => item.uid === find.uid)) {
+            item.actived = false
+          }
+        })
+
         if (e.modifiers.shift && selectItems.current === null) {
           selectItems.current = [...canvas.project.activeItems]
         }
@@ -293,7 +299,7 @@ export const SelectorTool = (props: SelectorToolProps) => {
 
         if (e.item) {
           canvas.project.fire('edit', e)
-          canvas.project.clearHighlightedItem()
+          // canvas.project.clearHighlightedItem()
         }
       }
     }
@@ -302,6 +308,8 @@ export const SelectorTool = (props: SelectorToolProps) => {
       if (!tool.actived) return
       let action = null
       mode.current = 'select'
+
+      canvas.project.clearHighlightedItem()
 
       // Todo aquí verificamos si hace click en un control :D
       if (selector.current) {

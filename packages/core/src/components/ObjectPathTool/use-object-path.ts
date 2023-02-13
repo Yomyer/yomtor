@@ -15,7 +15,7 @@ export const useObjectPath = ({
     case 'artboard':
       return new Artboard({
         fillColor: 'white',
-        clipped: false,
+        clipped: true,
         name: 'Artboard',
         ...(!dragging
           ? { point: event.downPoint.round().subtract(50), size: 100 }

@@ -136,6 +136,14 @@ var ChangeFlag = {
      * @bean
      * @type number
      */
+    HIGHLIGHT: 0x200000,
+
+    /**
+     * A change iactived item
+     *
+     * @bean
+     * @type number
+     */
     ACTIVE: 0x100000
 };
 
@@ -208,5 +216,10 @@ var Change = {
      * @bean
      * @type number
      */
-    ACTIVE: ChangeFlag.ACTIVE | ChangeFlag.APPEARANCE
+    ACTIVE: ChangeFlag.ACTIVE | ChangeFlag.ATTRIBUTE | ChangeFlag.APPEARANCE,
+    /**
+     * @bean
+     * @type number
+     */
+    HIGHLIGHT: ChangeFlag.HIGHLIGHT | ChangeFlag.ATTRIBUTE | ChangeFlag.APPEARANCE
 };

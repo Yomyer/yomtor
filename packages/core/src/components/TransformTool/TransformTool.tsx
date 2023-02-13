@@ -62,6 +62,7 @@ export const TransformTool = (props: TransformToolProps) => {
     delta?: Point
     point?: Point
   }>()
+  const activeCorner = useRef<string>(null)
   const lastPoint = useRef<Point>(null)
   const corner = useRef<Item>(null)
   const activeHelpers = useRef<Item[]>([])
@@ -101,6 +102,43 @@ export const TransformTool = (props: TransformToolProps) => {
   }
 
   const resize = (e: ToolEvent, helper = true) => {
+    const selector = canvas.project.selector
+
+    let pivot = selector.getOposite(activeCorner.current)
+    const matrix = new Matrix().rotate(
+      -selector.inheritedAngle,
+      selector.center
+    )
+    const direction = sign(
+      normalize(
+        matrix
+          .transformPoint(selector[activeCorner.current])
+          .subtract(matrix.transformPoint(pivot))
+      )
+    )
+
+    const delta = e.point.subtract(lastPoint.current)
+
+    let size = selector.size.add(delta.multiply(direction))
+    // console.log(size)
+
+    /*
+    if (size.width === 0) {
+      size.width = 1
+    }
+    if (size.height === 0) {
+      size.height = 1
+    }
+    */
+
+    if (e.modifiers.alt) {
+      pivot = selector.center
+      size = size.multiply(0.5)
+    }
+    console.log(size.multiply(delta.sign()))
+    // console.log(pivot)
+    selector.setSize(size, pivot)
+    /*
     const current = data.current
 
     if (helper && e) {
@@ -149,6 +187,7 @@ export const TransformTool = (props: TransformToolProps) => {
       factor.y *= signy
     }
 
+    console.log(factor)
     canvas.project.activeItems.forEach((item) => {
       scaleWithRotate(
         item,
@@ -169,13 +208,14 @@ export const TransformTool = (props: TransformToolProps) => {
     if (helper) {
       canvas.project.fire('object:scaling', e)
     }
+    */
   }
 
   const rotate = (e: ToolEvent, helper = true) => {
     const current = data.current
 
     if (helper && e) {
-      helperControl()
+      // helperControl()
     }
 
     const origin = data.current.handler.subtract(current.center).angle % 360
@@ -416,6 +456,7 @@ export const TransformTool = (props: TransformToolProps) => {
         .replace('rotateB', 'b')
         .replace('rotateT', 't')
       activeItems.current = [...canvas.project.activeItems]
+      activeCorner.current = cornerName
 
       const angle = selector.inheritedAngle
 

@@ -84,6 +84,9 @@ declare namespace paper {
         
         static ACTIVE: number
 
+        
+        static HIGHLIGHT: number
+
 
     }
 
@@ -161,6 +164,11 @@ declare namespace paper {
          * A change controls
          */
         static CONTROL: number
+
+        /** 
+         * A change iactived item
+         */
+        static HIGHLIGHT: number
 
         /** 
          * A change iactived item
@@ -6545,10 +6553,13 @@ declare namespace paper {
         readonly inheritedAngle: number
 
         
-        readonly width: number
+        width: number
 
         
-        readonly height: number
+        height: number
+
+        
+        size: Size
 
         
         readonly center: Point
@@ -6583,6 +6594,15 @@ declare namespace paper {
         
         onControlDraw: (event: DrawControlEvent) => void | null
 
+
+        
+        setWidth(width: number, center?: Point): void
+
+        
+        setHeight(heigth: number, center?: Point): void
+
+        
+        setSize(Size: Size, center?: Point): void
 
         
         getOposite(String: any): Point

@@ -21,6 +21,7 @@ var Selector = Item.extend(
         _angle: 0,
         _width: null,
         _height: null,
+        _size: null,
         _center: null,
         _topCenter: null,
         _rightCenter: null,
@@ -136,11 +137,80 @@ var Selector = Item.extend(
         },
 
         /**
+         * @function
+         * @param {number} width 
+         * @param {Point} [center] 
+         * @bean
+         * @type Number
+         */
+        setWidth: function(width, center) {
+            var items = this._project._activeItems;
+            var newWidth = this.width
+            var matrix = new Matrix().rotate(this.angle);
+            var factor = 1
+            
+            if (Math.abs(width) > 0.0000001) {
+                factor = width / newWidth
+                console.log(factor)
+            }
+
+            Base.each(items, function(item){
+                var matrix = new Matrix()
+                matrix.rotate(item.angle)
+                matrix.scale(new Point(factor, 1), center)
+                item.transform(matrix, center)
+                //YY item.scale(new Point(factor, 1), center)
+            })
+            
+            
+
+            // console.log(factor)
+        },
+
+        /**
          * @bean
          * @type Number
          */
         getHeight: function () {
             return this._descomposeActiveItemsInfo("height") || 0;
+        },
+
+        /**
+         * @function
+         * @param {number} heigth 
+         * @param {Point} [center] 
+         * @bean
+         * @type Number
+         */
+        setHeight: function(height, center) {
+            var items = this._project._activeItems;
+
+            // console.log(height)
+        },
+
+                
+        /**
+
+         * @bean
+         * @type Size
+         */
+        getSize: function(){
+            return new Size(this.width, this.height)
+        },
+
+        /**
+         * @function
+         * @param {Size} Size 
+         * @param {Point} [center] 
+         * @bean
+         * @type Size
+         */
+        setSize: function(/* size, center */){
+            var size = Size.read(arguments);
+            var center = Point.read(arguments);
+            
+            this.setWidth(size.width, center)
+            this.setHeight(size.width, center)
         },
 
         /**

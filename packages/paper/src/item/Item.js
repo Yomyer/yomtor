@@ -2097,7 +2097,6 @@ new function() { // Injection scope for various item event handlers
         }
 
         if(!Base.equals(before, Object.keys(this._project._activeItems))){
-            console.log(before, Object.keys(this._project._activeItems))
             this._changed(/*#=*/Change.ACTIVE);
         }
     },
@@ -2124,7 +2123,7 @@ new function() { // Injection scope for various item event handlers
 
         this._project._highlightedItem = highlighted ? this : null;
 
-        this._changed(/*#=*/Change.ATTRIBUTE);
+        this._changed(/*#=*/Change.HIGHLIGHT);
     },
 
     /**
