@@ -132,7 +132,7 @@ export const SelectorTool = (props: SelectorToolProps) => {
           .getItems(artboardMatch)
           .concat(canvas.project.activeLayer.getItems(itemMatch))
 
-        canvas.project.deactivateAll()
+        // canvas.project.deactivateAll()
 
         const deactives = e.modifiers.shift
           ? intersectionWith(

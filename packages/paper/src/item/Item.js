@@ -2073,6 +2073,8 @@ new function() { // Injection scope for various item event handlers
     },
 
     setActived: function(actived){
+        const before = Object.keys(this._project._activeItems)
+
         if(actived && !this._project._activeItems[this.uid] && !this._project._activeItems[this._parent && this._parent.uid]){
             this._project._activeItems.push(this);
             this._project._activeItems[this.uid] = this;
@@ -2094,7 +2096,10 @@ new function() { // Injection scope for various item event handlers
                 children[i].setActived(false);
         }
 
-        this._changed(/*#=*/Change.ACTIVE);
+        if(!Base.equals(before, Object.keys(this._project._activeItems))){
+            console.log(before, Object.keys(this._project._activeItems))
+            this._changed(/*#=*/Change.ACTIVE);
+        }
     },
 
     /**

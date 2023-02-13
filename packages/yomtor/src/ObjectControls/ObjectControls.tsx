@@ -20,7 +20,7 @@ export const ObjectControls = (props: ObjectControlsProps) => {
 
     canvas.project.on('changed', (type) => {
       if (type & ChangeFlag.ACTIVE) {
-        console.log(canvas.project)
+        // console.log(canvas.project)
         setData([...canvas.project.activeLayer.children])
       }
     })
