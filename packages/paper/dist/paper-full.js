@@ -3731,6 +3731,7 @@ new function() {
 				this.setActived(props.actived);
 			}
 		}
+
 		return hasProps;
 	},
 
@@ -3981,6 +3982,9 @@ new function() {
 		this.translate(Point.read(arguments).subtract(this.getPosition(true)));
 	},
 
+	getFlipped: function(){
+		return this._flipped;
+	},
 	getConstraints: function(){
 		return this._constraints;
 	},
@@ -5271,10 +5275,6 @@ new function() {
 
 		var mx = new Matrix();
 		return this.transform(mx.translate.apply(mx, arguments));
-	},
-
-	getFlipped: function(){
-		return this._flipped;
 	},
 
 	transform: function(matrix, _applyRecursively, _setApplyMatrix, _skypChanges) {
@@ -7316,18 +7316,34 @@ var Selector = Item.extend(
 		setWidth: function(width, center) {
 			var items = this._project._activeItems;
 			var newWidth = this.width
-			var matrix = new Matrix().rotate(this.angle);
+			var matrix = new Matrix().rotate(this.inheritedAngle);
 			var factor = 1
-			if (Math.abs(width) > 0.0000001) {
-				factor = width / newWidth
-				console.log(factor)
+			if(newWidth === 0){
+				newWidth = 1
 			}
 
+			if (Math.abs(width) > 0.0000001) {
+				factor = width / newWidth
+			}
 			Base.each(items, function(item){
-				var matrix = new Matrix()
-				matrix.rotate(item.angle)
-				matrix.scale(new Point(factor, 1), center)
-				item.transform(matrix, center)
+				if(!item.mmatrix){
+					item.mmatrix = item.matrix.clone();
+				}
+
+				var scaleMatrix = new Matrix();
+				scaleMatrix.scale([factor, 1], center)
+
+				if(item.flipped.x){
+					var flipMatrix = new Matrix(-1, 0, 0, 1, center.x * 2, 0);
+					scaleMatrix = flipMatrix.concatenate(scaleMatrix);
+				}
+
+				item.matrix = item.mmatrix.clone().concatenate(scaleMatrix);
+
+				if(factor < 0){
+					item.flipped.x = true
+				}
+
 			})
 
 		},

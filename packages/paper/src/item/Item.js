@@ -189,6 +189,7 @@ new function() { // Injection scope for various item event handlers
                 this.setActived(props.actived);
             }
         }
+
         return hasProps;
     },
 
@@ -897,6 +898,15 @@ new function() { // Injection scope for various item event handlers
         this.translate(Point.read(arguments).subtract(this.getPosition(true)));
     },
 
+
+    /**
+     * @bean
+     * @type Object
+     */
+    getFlipped: function(){
+        return this._flipped;
+    },
+    
     /**
      * The if item is constraints.
      *
@@ -3944,14 +3954,6 @@ new function() { // Injection scope for hit-test functions shared with project
      * @see Matrix#shear(hor, ver[, center])
      */
 
-    /**
-     * @name Item#flipped
-     * @function
-     * @returns {Boolean}
-     */
-    getFlipped: function(){
-        return this._flipped;
-    },
 
     /**
      * Transform the item.

@@ -62,11 +62,19 @@ export const TransformTool = (props: TransformToolProps) => {
     delta?: Point
     point?: Point
   }>()
-  const activeCorner = useRef<string>(null)
+
   const lastPoint = useRef<Point>(null)
-  const corner = useRef<Item>(null)
+  const point = useRef<Point>(null)
+
   const activeHelpers = useRef<Item[]>([])
   const toolControls = useRef<Control[]>([])
+
+  const corner = useRef<Item>(null)
+  const size = useRef<Size>()
+  const cornerName = useRef<string>(null)
+  const privot = useRef<Point>(null)
+  const angle = useRef<number>()
+
   const scaleCorners = [
     'topCenter',
     'bottomCenter',
@@ -85,14 +93,17 @@ export const TransformTool = (props: TransformToolProps) => {
     activeHelpers.current = activeItems.current.map((item) => {
       const clone = item
         .set({
-          visible: false,
+          visible: true,
           highlighted: false
         })
         .clone({ keep: true })
+
       clone.set({
         visible: true,
-        actived: true
+        actived: true,
+        name: item.name
       })
+
       return clone
     })
   }
@@ -104,7 +115,7 @@ export const TransformTool = (props: TransformToolProps) => {
   const resize = (e: ToolEvent, helper = true) => {
     const selector = canvas.project.selector
 
-    let pivot = selector.getOposite(activeCorner.current)
+    let pivot = privot.current
     const matrix = new Matrix().rotate(
       -selector.inheritedAngle,
       selector.center
@@ -112,32 +123,24 @@ export const TransformTool = (props: TransformToolProps) => {
     const direction = sign(
       normalize(
         matrix
-          .transformPoint(selector[activeCorner.current])
+          .transformPoint(selector[cornerName.current])
           .subtract(matrix.transformPoint(pivot))
       )
     )
 
     const delta = e.point.subtract(lastPoint.current)
 
-    let size = selector.size.add(delta.multiply(direction))
-    // console.log(size)
-
-    /*
-    if (size.width === 0) {
-      size.width = 1
-    }
-    if (size.height === 0) {
-      size.height = 1
-    }
-    */
+    size.current = size.current.add(new Size(delta.multiply(direction)))
 
     if (e.modifiers.alt) {
       pivot = selector.center
-      size = size.multiply(0.5)
+      //  size = size.multiply(0.5)
     }
-    console.log(size.multiply(delta.sign()))
-    // console.log(pivot)
-    selector.setSize(size, pivot)
+
+    // console.log(size.current)
+
+    selector.setSize(size.current, pivot)
+
     /*
     const current = data.current
 
@@ -212,10 +215,11 @@ export const TransformTool = (props: TransformToolProps) => {
   }
 
   const rotate = (e: ToolEvent, helper = true) => {
+    /*
     const current = data.current
 
     if (helper && e) {
-      // helperControl()
+      helperControl()
     }
 
     const origin = data.current.handler.subtract(current.center).angle % 360
@@ -235,6 +239,7 @@ export const TransformTool = (props: TransformToolProps) => {
       canvas.project.fire('object:rotating', e)
     }
     showCursor(true, canvas.project.activeItems.length > 1 && delta)
+    */
   }
 
   const showCursor = (global = false, angle = 0) => {
@@ -349,8 +354,8 @@ export const TransformTool = (props: TransformToolProps) => {
     const selector = canvas.project.selector
 
     tool.onMouseDrag = (e: ToolEvent) => {
-      const delta = e.point.subtract(lastPoint.current)
-      data.current.point = data.current.point.add(delta)
+      //const delta = e.point.subtract(lastPoint.current)
+      //data.current.point = data.current.point.add(delta)
 
       transform(e)
 
@@ -452,14 +457,15 @@ export const TransformTool = (props: TransformToolProps) => {
       if (!tool.mainActived) return
       tool.activate()
 
-      const cornerName = e.target.name
+      activeItems.current = [...canvas.project.activeItems]
+      cornerName.current = e.target.name
         .replace('rotateB', 'b')
         .replace('rotateT', 't')
-      activeItems.current = [...canvas.project.activeItems]
-      activeCorner.current = cornerName
 
-      const angle = selector.inheritedAngle
-
+      angle.current = selector.inheritedAngle
+      privot.current = selector.getOposite(cornerName.current)
+      size.current = selector.size
+      /*
       const matrix = new Matrix().rotate(
         -selector.inheritedAngle,
         selector.center
@@ -488,10 +494,11 @@ export const TransformTool = (props: TransformToolProps) => {
         angle,
         point: round(selector[cornerName] as Point)
       }
+      */
 
       cursor.current = {
         angle: selector.angle,
-        point: selector[cornerName],
+        point: e.point,
         corner: e.target
       }
 
@@ -499,7 +506,7 @@ export const TransformTool = (props: TransformToolProps) => {
 
       showCursor(true)
 
-      lastPoint.current = selector[cornerName]
+      lastPoint.current = e.point
     })
   }, [tool])
 

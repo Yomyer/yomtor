@@ -1947,6 +1947,9 @@ declare namespace paper {
          */
         selectedColor: Color | null
 
+        
+        readonly flipped: any
+
         /** 
          * Item level handler function to be called on each frame of an animation.
          * The function receives an event object which contains information about
@@ -2760,9 +2763,6 @@ declare namespace paper {
          * @param ver - the vertical sskew angle in degrees
          */
         skew(hor: number, ver: number, center?: Point): void
-
-        
-        flipped(): boolean
 
         /** 
          * Transform the item.

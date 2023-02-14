@@ -146,20 +146,55 @@ var Selector = Item.extend(
         setWidth: function(width, center) {
             var items = this._project._activeItems;
             var newWidth = this.width
-            var matrix = new Matrix().rotate(this.angle);
+            var matrix = new Matrix().rotate(this.inheritedAngle);
             var factor = 1
             
-            if (Math.abs(width) > 0.0000001) {
-                factor = width / newWidth
-                console.log(factor)
+            if(newWidth === 0){
+                newWidth = 1
             }
 
+            if (Math.abs(width) > 0.0000001) {
+                factor = width / newWidth
+            }
+            // console.log(factor)
             Base.each(items, function(item){
-                var matrix = new Matrix()
-                matrix.rotate(item.angle)
+                var matrix = item.matrix.clone();
+
+                var scaleMatrix = new Matrix();
+                scaleMatrix.scale([factor, 1], center)
+
+                if(item.flipped.x){
+                    var flipMatrix = new Matrix(-1, 0, 0, 1, center.x * 2, 0);
+                    scaleMatrix = flipMatrix.concatenate(scaleMatrix);
+                }
+
+                item.matrix = matrix.clone().concatenate(scaleMatrix);
+
+                if(factor < 0){
+                    item.flipped.x = true
+                }
+
+                /*
+                var matrix = item.matrix.clone();
+                matrix.scale([factor, 1], center)
+
+                console.log(item.flipped.x, factor)
+                if(item.flipped.x){
+                    matrix.scale([-1, 1], center)
+                }
+
+                item.matrix.set(matrix)
+
+                if(factor < 0){
+                    item.flipped.x = true
+                }
+                */
+                
+                /*var matrix = new Matrix()
+                // matrix.rotate(item.inheritedAngle, item.center)
                 matrix.scale(new Point(factor, 1), center)
                 item.transform(matrix, center)
-                //YY item.scale(new Point(factor, 1), center)
+                */
             })
             
             
