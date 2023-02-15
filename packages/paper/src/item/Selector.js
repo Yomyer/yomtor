@@ -159,21 +159,12 @@ var Selector = Item.extend(
             // console.log(factor)
             Base.each(items, function(item){
                 var matrix = item.matrix.clone();
-
-                var scaleMatrix = new Matrix();
-                scaleMatrix.scale([factor, 1], center)
-
-                if(item.flipped.x){
-                    var flipMatrix = new Matrix(-1, 0, 0, 1, center.x * 2, 0);
-                    scaleMatrix = flipMatrix.concatenate(scaleMatrix);
-                }
-
-                item.matrix = matrix.clone().concatenate(scaleMatrix);
-
+                matrix.scale([factor, 1], center)   
+                item.matrix = matrix;
+                
                 if(factor < 0){
-                    item.flipped.x = true
+                    item.flipped.x = !item.flipped.x
                 }
-
                 /*
                 var matrix = item.matrix.clone();
                 matrix.scale([factor, 1], center)
@@ -185,9 +176,7 @@ var Selector = Item.extend(
 
                 item.matrix.set(matrix)
 
-                if(factor < 0){
-                    item.flipped.x = true
-                }
+               
                 */
                 
                 /*var matrix = new Matrix()
@@ -201,6 +190,8 @@ var Selector = Item.extend(
 
             // console.log(factor)
         },
+
+
 
         /**
          * @bean

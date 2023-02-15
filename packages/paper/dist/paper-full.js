@@ -7326,24 +7326,21 @@ var Selector = Item.extend(
 				factor = width / newWidth
 			}
 			Base.each(items, function(item){
-				if(!item.mmatrix){
-					item.mmatrix = item.matrix.clone();
+
+				if(factor < 0 && item.flipped.x){
+					setTimeout(function(){
+						const fix = item.matrix.clone()
+					fix.scale([-1, 1], center)
+					item.matrix = fix;
+					})
 				}
 
-				var scaleMatrix = new Matrix();
-				scaleMatrix.scale([factor, 1], center)
-
-				if(item.flipped.x){
-					var flipMatrix = new Matrix(-1, 0, 0, 1, center.x * 2, 0);
-					scaleMatrix = flipMatrix.concatenate(scaleMatrix);
-				}
-
-				item.matrix = item.mmatrix.clone().concatenate(scaleMatrix);
-
+				var matrix = item.matrix.clone();
+				matrix.scale([factor, 1], center)
+				item.matrix = matrix;
 				if(factor < 0){
-					item.flipped.x = true
+					item.flipped.x = !item.flipped.x
 				}
-
 			})
 
 		},
