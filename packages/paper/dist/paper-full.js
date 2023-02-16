@@ -7318,6 +7318,7 @@ var Selector = Item.extend(
 			var newWidth = this.width
 			var matrix = new Matrix().rotate(this.inheritedAngle);
 			var factor = 1
+
 			if(newWidth === 0){
 				newWidth = 1
 			}
@@ -7325,22 +7326,20 @@ var Selector = Item.extend(
 			if (Math.abs(width) > 0.0000001) {
 				factor = width / newWidth
 			}
+
 			Base.each(items, function(item){
-
-				if(factor < 0 && item.flipped.x){
-					setTimeout(function(){
-						const fix = item.matrix.clone()
-					fix.scale([-1, 1], center)
-					item.matrix = fix;
-					})
-				}
-
-				var matrix = item.matrix.clone();
-				matrix.scale([factor, 1], center)
-				item.matrix = matrix;
-				if(factor < 0){
+				var matrix = item.matrix.clone()
+				if(factor < 0 && !item.flipped.x || factor > 0 && item.flipped.x){
 					item.flipped.x = !item.flipped.x
+					matrix.scale(new Point(factor, 1), center)
+				}else{
+					matrix.scale(new Point(factor, 1).abs(), center)
 				}
+
+				console.log(factor)
+
+				item.transform(matrix, item.center)
+
 			})
 
 		},
