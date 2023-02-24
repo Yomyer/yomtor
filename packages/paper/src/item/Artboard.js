@@ -132,10 +132,10 @@ var Artboard = Group.extend(
             return false;
         },
 
-        copyContent: function copyContent(source) {
+        copyContent: function copyContent(source, keep) {
             this._background = source._background.clone();
             this._clipped = source._clipped;
-            copyContent.base.call(this, source);
+            copyContent.base.call(this, source, {keep: keep});
         },
 
         getStrokeBounds: function (matrix) {
@@ -206,15 +206,16 @@ var Artboard = Group.extend(
 
         _applyConstraints: function(children, matrix, applyRecursively, setApplyMatrix) {
             if (children) {
+                // console.log(this._transformType)
                 var scaling = matrix.scaling,
                     translation = matrix.translation,
                     isScaling = this._transformType == "scale",
-                    flipped = new Point(matrix.a, matrix.d).sign(),
+                    flipped = this.flipped,
                     info = this._background.getActiveInfo(),
                     diff = new Size(info)
                         .divide(matrix.a, matrix.d)
                         .subtract(new Size(info).multiply(flipped));
-
+                console.log(flipped)
                 for (var i = 0, l = children.length; i < l; i++) {
                     var item = children[i],
                         mx = new Matrix(),
@@ -229,7 +230,7 @@ var Artboard = Group.extend(
                                     .subtract(size)
                             )
                             .divide(size);
-
+                    
                     if (isScaling) {
                         var top =
                             info.center.y > this._constraintsPivot.y ==
@@ -237,7 +238,7 @@ var Artboard = Group.extend(
                         left =
                             info.center.x > this._constraintsPivot.x ==
                             (flipped.x != -1);
-
+                        
                         switch (horizontal) {
                             case "scale":
                                 mx.translate(translation.x, 0).scale(

@@ -74,7 +74,7 @@ var Item = Base.extend(Emitter, /** @lends Item# */{
     _selectBounds: true,
     _selectChildren: false,
     _serializeStyle: true,
-    _flipped: {x:false, y: false},
+    _flipped: {x: 1, y: 1},
     _constraintsPivot: null,
     _constraints: {},
     // Provide information about fields to be serialized, with their defaults
@@ -92,6 +92,7 @@ var Item = Base.extend(Emitter, /** @lends Item# */{
         clipMask: false,
         selected: false,
         data: {},
+        flipped: {x: 1, y: 1},
         uid: null,
         angle: 0,
         actived: false,
@@ -163,6 +164,8 @@ new function() { // Injection scope for various item event handlers
         this._parent = this._index = null;
         // Inherit the applyMatrix setting from settings.applyMatrix
         this._applyMatrix = this._canApplyMatrix && settings.applyMatrix;
+        this._flipped = {x: 1, y: 1};
+
         // Handle matrix before everything else, to avoid issues with
         // #addChild() calling _changed() and accessing _matrix already.
         if (point)
@@ -500,12 +503,27 @@ new function() { // Injection scope for various item event handlers
      * @name Item#blocked
      * @returns Boolean
      */
-    getBlocked: function(){
+     getBlocked: function(){
         return this._blocked;
     },
 
     setBlocked: function(blocked){
         this._blocked = blocked;
+    },
+
+
+    /**
+     * 
+     * @name Item#transformType
+     * @type String
+     * @values 'rotate', 'scale', 'shear', 'skew'
+     */
+     getTransformType: function(){
+        return this._transformType;
+    },
+
+    setTransformType: function(transformType){
+        this._transformType = transformType;
     },
 
 }, Base.each(['locked', 'visible', 'blendMode', 'opacity', 'guide'],
@@ -901,12 +919,31 @@ new function() { // Injection scope for various item event handlers
 
     /**
      * @bean
-     * @type Object
+     * @type Object {x: boolean: y: boolean}
      */
     getFlipped: function(){
         return this._flipped;
     },
+
+    setFlipped: function(flipped){
+        return this._flipped = flipped;
+    },
     
+
+    _flip: function(axis, value) {
+        var old = this.flipped[axis];
+        this.flipped[axis] = value !== undefined ? value : this.flipped[axis] === 1 ? -1 : 1;
+
+        if(this._children && old !== this.flipped[axis]){
+            this._children.forEach(function(item){
+                item._flip(axis);
+            })
+        }
+
+        return this
+    },
+    
+        
     /**
      * The if item is constraints.
      *
@@ -1766,6 +1803,7 @@ new function() { // Injection scope for various item event handlers
      *     above the original
      * @option [deep=true] specifies whether the item's children should also be
      *     cloned
+     * @option [keep=false] copy name and id
      *
      * @param {Object} [options={ insert: true, deep: true }]
      *
@@ -1793,7 +1831,10 @@ new function() { // Injection scope for various item event handlers
             children = this._children,
             // Both `insert` and `deep` are true by default:
             insert = Base.pick(options ? options.insert : undefined, true),
-            deep = Base.pick(options ? options.deep : undefined, true);
+            deep = Base.pick(options ? options.deep : undefined, true),
+            keep = Base.pick(options ? options.keep : undefined, false),
+            orig = this._name;
+
         // On items with children, for performance reasons due to the way that
         // styles are currently "flattened" into existing children, we need to
         // clone attributes first, then content.
@@ -1803,8 +1844,9 @@ new function() { // Injection scope for various item event handlers
             copy.copyAttributes(this);
         // Only copy content if we don't have children or if we're ask to create
         // a deep clone, which is the default.
-        if (!children || deep)
-            copy.copyContent(this);
+        if (!children || deep){
+            copy.copyContent(this, keep);
+        }
         if (!children)
             copy.copyAttributes(this);
         if (insert)
@@ -1814,16 +1856,16 @@ new function() { // Injection scope for various item event handlers
             parent = this._parent;
         if (name && parent) {
             var children = parent._children,
-                orig = name,
                 i = 1;
             while (children[name])
                 name = orig + ' ' + (i++);
             if (name !== orig)
                 copy.setName(name);
         }
-
-        if(options && options.keep){
+        
+        if(keep){
             copy._uid = this._uid;
+            copy._name = orig;
         }
         copy.angle = this.angle;
 
@@ -1834,13 +1876,14 @@ new function() { // Injection scope for various item event handlers
      * Copies the content of the specified item over to this item.
      *
      * @param {Item} source the item to copy the content from
+     * @param {boolean} [keep] the item to copy the content from
      */
-    copyContent: function(source) {
+    copyContent: function(source, keep) {
         var children = source._children;
         // Clone all children and add them to the copy. tell #addChild we're
         // cloning, as needed by CompoundPath#insertChild().
         for (var i = 0, l = children && children.length; i < l; i++) {
-            this.addChild(children[i].clone(false), true);
+            this.addChild(children[i].clone({keep: keep}), true);
         }
     },
 
@@ -1860,7 +1903,7 @@ new function() { // Injection scope for various item event handlers
         // meaning the default value has been overwritten (default is on
         // prototype).
         var keys = ['_locked', '_visible', '_blendMode', '_opacity',
-                '_clipMask', '_guide', '_angle'];
+                '_clipMask', '_guide', '_angle', '_flipped'];
         for (var i = 0, l = keys.length; i < l; i++) {
             var key = keys[i];
             if (source.hasOwnProperty(key))
@@ -3777,7 +3820,6 @@ new function() { // Injection scope for hit-test functions shared with project
             center = Point.read(args, 0, { readNull: true });
 
         if(rotate) this._angle += value;
-        if(scale) this._constraintsPivot = center || this.getPosition(true);
 
         this._transformType = key;
         this._lastPosition = null
@@ -4072,6 +4114,27 @@ new function() { // Injection scope for hit-test functions shared with project
         }
         
         // Allow chaining here, since transform() is related to Matrix functions
+
+        /*
+        var f1 = new Point(matrix.a, matrix.d).sign()
+        var f2 = new Point(this._lastMatrix ? this._lastMatrix.a : 1, this._lastMatrix ?  this._lastMatrix.d : 1).sign()
+        
+        if (f2.x != f1.x) {
+            console.log(this._lastContainsPoint.x,  this._project.selector.center.x)
+            /*if(f1.x * (this.flipped.x ? -1 : 1) < 0){
+                this._flip('x')
+            }
+        }
+                
+        if (f2.y != f1.y && f1.y === -1) {
+            this._flip('y')
+        }
+       
+        // console.log(this._constraintsPivot)
+        this._lastMatrix = matrix;
+        this._lastContainsPoint = this._constraintsPivot;
+        */
+
         return this;
     },
 

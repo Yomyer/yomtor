@@ -1615,6 +1615,9 @@ declare namespace paper {
          */
         blocked: any
 
+        
+        transformType: 'rotate' | 'scale' | 'shear' | 'skew'
+
         /** 
          * Specifies whether the item is locked. When set to `true`, item
          * interactions with the mouse are disabled.
@@ -1682,6 +1685,9 @@ declare namespace paper {
          * {@link #bounds} rectangle.
          */
         position: Point
+
+        
+        readonly flipped: any
 
         /** 
          * The if item is constraints.
@@ -1947,9 +1953,6 @@ declare namespace paper {
          */
         selectedColor: Color | null
 
-        
-        readonly flipped: any
-
         /** 
          * Item level handler function to be called on each frame of an animation.
          * The function receives an event object which contains information about
@@ -2091,6 +2094,7 @@ declare namespace paper {
          *     above the original
          * @option [deep=true] specifies whether the item's children should also be
          *     cloned
+         * @option [keep=false] copy name and id
          * 
          * @return the newly cloned item
          */
@@ -2100,8 +2104,9 @@ declare namespace paper {
          * Copies the content of the specified item over to this item.
          * 
          * @param source - the item to copy the content from
+         * @param keep - the item to copy the content from
          */
-        copyContent(source: Item): void
+        copyContent(source: Item, keep?: boolean): void
 
         /** 
          * Copies all attributes of the specified item over to this item. This
@@ -6596,13 +6601,13 @@ declare namespace paper {
 
 
         
-        setWidth(width: number, center?: Point): void
+        setWidth(width: number, center?: Point, preserve?: boolean): void
 
         
-        setHeight(heigth: number, center?: Point): void
+        setHeight(heigth: number, center?: Point, preserve?: boolean): void
 
         
-        setSize(Size: Size, center?: Point): void
+        setSize(Size: Size, center?: Point, preserve?: boolean): void
 
         
         getOposite(String: any): Point

@@ -32,8 +32,10 @@ var Selector = Item.extend(
         _bottomRight: null,
         _bottomLeft: null,
         _children: [],
+        _helpers: [],
         _cornerItems: {},
         _activeItemsInfo: null,
+        _cache: null,
         _info: null,
         _defaultStyles: {
             shadowColor: "rgba(0, 0, 0, 0.3)",
@@ -140,68 +142,12 @@ var Selector = Item.extend(
          * @function
          * @param {number} width 
          * @param {Point} [center] 
+         * @param {boolean} [preserve] 
          * @bean
          * @type Number
          */
-        setWidth: function(width, center) {
-            var items = this._project._activeItems;
-            var newWidth = this.width
-            var matrix = new Matrix().rotate(this.inheritedAngle);
-            var factor = 1
-
-
-            if(newWidth === 0){
-                newWidth = 1
-            }
-
-            if (Math.abs(width) > 0.0000001) {
-                factor = width / newWidth
-            }
-
-            // console.log(factor)
-            Base.each(items, function(item){
-                var matrix = item.matrix.clone()
-                
- 
-                if(factor < 0 && !item.flipped.x || factor > 0 && item.flipped.x){
-                    item.flipped.x = !item.flipped.x
-                    matrix.scale(new Point(factor, 1), center)   
-                }else{
-                    matrix.scale(new Point(factor, 1).abs(), center)   
-                }
-               
-               
-
-                console.log(factor)
-                
-              
-
-                item.transform(matrix, item.center)
-
-                /*
-                var matrix = item.matrix.clone();
-                matrix.scale([factor, 1], center)
-
-                console.log(item.flipped.x, factor)
-                if(item.flipped.x){
-                    matrix.scale([-1, 1], center)
-                }
-
-                item.matrix.set(matrix)
-
-               
-                */
-                
-                /*var matrix = new Matrix()
-                // matrix.rotate(item.inheritedAngle, item.center)
-                matrix.scale(new Point(factor, 1), center)
-                item.transform(matrix, center)
-                */
-            })
-            
-            
-
-            // console.log(factor)
+        setWidth: function(width, center, preserve) {
+            this.setSize([width, null], center, preserve);
         },
 
 
@@ -218,13 +164,12 @@ var Selector = Item.extend(
          * @function
          * @param {number} heigth 
          * @param {Point} [center] 
+         * @param {boolean} [preserve] 
          * @bean
          * @type Number
          */
-        setHeight: function(height, center) {
-            var items = this._project._activeItems;
-
-            // console.log(height)
+        setHeight: function(height, center, preserve) {
+            this.setSize([null, height], center, preserve)
         },
 
                 
@@ -241,15 +186,69 @@ var Selector = Item.extend(
          * @function
          * @param {Size} Size 
          * @param {Point} [center] 
+         * @param {boolean} [preserve] 
          * @bean
          * @type Size
          */
-        setSize: function(/* size, center */){
+        setSize: function(/* size, center, preserve */){
             var size = Size.read(arguments);
             var center = Point.read(arguments);
+            var preserve = Base.read(arguments);
             
-            this.setWidth(size.width, center)
-            this.setHeight(size.width, center)
+            this._checkHelpers();
+
+            var items = this._project._activeItems;
+            var width = this._cache.width;
+            var height = this._cache.height;
+            var factor = new Point(1, 1)
+            var helpers = this._helpers;
+
+            if(width === 0){
+                width = 1;
+            }
+            if(height === 0){
+                height = 1;
+            }
+ 
+            if (Math.abs(width) > 0.0000001) {
+                factor.x = size.width / width;
+            }
+            if (Math.abs(height) > 0.0000001) {
+                factor.y = size.height / height;
+            }
+
+            Base.each(items, function(item){
+                var helper = helpers[item.uid].clone({insert: false, keep: true});
+                item.set(Base.omit(helper, ['uid', 'actived', 'guide', 'parent']));
+                
+                var matrix = item.matrix.clone();
+                matrix.scale(new Point(factor.x, factor.y), center);
+                item.transformType = 'scale';
+                item.constraintsPivot = center;
+                item.transform(matrix, true);
+                
+                if(helpers[item.uid]._lastDirection){
+                    if(!helpers[item.uid]._cacheFlipped){
+                        helpers[item.uid]._cacheFlipped = Object.assign({}, helpers[item.uid].flipped);
+                    }
+    
+                    if(factor.sign().x && factor.sign().x !== helpers[item.uid]._lastDirection.x ){
+                        helpers[item.uid]._flip('x', (helpers[item.uid]._cacheFlipped.x === -1 ? factor.sign().x * -1 : factor.sign().x) === -1 ? -1 : 1);
+                    }
+                    if(factor.sign().y && factor.sign().y !== helpers[item.uid]._lastDirection.y ){
+                        helpers[item.uid]._flip('y', (helpers[item.uid]._cacheFlipped.y === -1 ? factor.sign().y * -1 : factor.sign().y) === -1 ? -1 : 1);
+                    }
+                }
+
+                helpers[item.uid]._lastDirection = factor.sign();
+                
+                helper.remove();
+            });
+
+
+            if(!preserve){
+                this._clearHelpers();
+            }
         },
 
         /**
@@ -401,6 +400,32 @@ var Selector = Item.extend(
             this._info = null;
         },
 
+        _checkHelpers: function(){
+            if(!Base.equals(
+                Base.simplify(this._project._activeItems, 'uid'),
+                Base.simplify(this._helpers, 'uid'))
+            ){
+                this._cache = this._getActiveItemsInfo();
+
+                this._helpers = this._project._activeItems.map(function(item){
+                    return item.clone({keep: true, insert: false});
+                });
+                var helpers = this._helpers;
+                this._helpers.forEach(function(item){
+                    helpers[item.uid] = item;
+                });
+            }
+        },
+
+        _clearHelpers: function(){
+            var helpers = this._helpers;
+            this._project._activeItems.forEach(function(item){
+                helpers[item.uid]._cacheFlipped = null;
+                helpers[item.uid]._lastDirection = null;
+            })
+            this._cache = null;
+            this._helpers = [];
+        },
 
         _addControl: function (name, item) {
             item.remove();

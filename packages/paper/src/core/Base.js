@@ -160,6 +160,30 @@ statics: /** @lends Base */{
         return false;
     },
 
+
+    simplify: function(array, path){
+        return array.map(function(item){
+            return item[path];
+        });
+    },
+
+    omit: function(object, paths){
+        var obj = {};
+        if(!Array.isArray(paths)) return object;
+
+        paths = paths.map(function(key){
+            return `_${key}`;
+        })
+
+        Object.keys(object).forEach(function(key){
+            if(!paths.includes(key)){
+                obj[key.replace('_', '')] = object[key];
+            }
+        });
+
+        return obj
+    },
+
     /**
      * When called on a subclass of Base, it reads arguments of the type of the
      * subclass from the passed arguments list or array, at the given index, up

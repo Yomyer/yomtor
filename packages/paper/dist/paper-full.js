@@ -319,6 +319,29 @@ statics: {
 		return false;
 	},
 
+	simplify: function(array, path){
+		return array.map(function(item){
+			return item[path];
+		});
+	},
+
+	omit: function(object, paths){
+		var obj = {};
+		if(!Array.isArray(paths)) return object;
+
+		paths = paths.map(function(key){
+			return `_${key}`;
+		})
+
+		Object.keys(object).forEach(function(key){
+			if(!paths.includes(key)){
+				obj[key.replace('_', '')] = object[key];
+			}
+		});
+
+		return obj
+	},
+
 	read: function(list, start, options, amount) {
 		if (this === Base) {
 			var value = this.peek(list, start);
@@ -3642,7 +3665,7 @@ var Item = Base.extend(Emitter, {
 	_selectBounds: true,
 	_selectChildren: false,
 	_serializeStyle: true,
-	_flipped: {x:false, y: false},
+	_flipped: {x: 1, y: 1},
 	_constraintsPivot: null,
 	_constraints: {},
 	_serializeFields: {
@@ -3658,6 +3681,7 @@ var Item = Base.extend(Emitter, {
 		clipMask: false,
 		selected: false,
 		data: {},
+		flipped: {x: 1, y: 1},
 		uid: null,
 		angle: 0,
 		actived: false,
@@ -3712,6 +3736,8 @@ new function() {
 		this._id = internal ? null : UID.get();
 		this._parent = this._index = null;
 		this._applyMatrix = this._canApplyMatrix && settings.applyMatrix;
+		this._flipped = {x: 1, y: 1};
+
 		if (point)
 			matrix.translate(point);
 		matrix._owner = this;
@@ -3852,12 +3878,20 @@ new function() {
 		return artboard;
 	},
 
-	getBlocked: function(){
+	 getBlocked: function(){
 		return this._blocked;
 	},
 
 	setBlocked: function(blocked){
 		this._blocked = blocked;
+	},
+
+	 getTransformType: function(){
+		return this._transformType;
+	},
+
+	setTransformType: function(transformType){
+		this._transformType = transformType;
 	},
 
 }, Base.each(['locked', 'visible', 'blendMode', 'opacity', 'guide'],
@@ -3984,6 +4018,23 @@ new function() {
 
 	getFlipped: function(){
 		return this._flipped;
+	},
+
+	setFlipped: function(flipped){
+		return this._flipped = flipped;
+	},
+
+	_flip: function(axis, value) {
+		var old = this.flipped[axis];
+		this.flipped[axis] = value !== undefined ? value : this.flipped[axis] === 1 ? -1 : 1;
+
+		if(this._children && old !== this.flipped[axis]){
+			this._children.forEach(function(item){
+				item._flip(axis);
+			})
+		}
+
+		return this
 	},
 	getConstraints: function(){
 		return this._constraints;
@@ -4404,11 +4455,15 @@ new function() {
 		var copy = new this.constructor(Item.NO_INSERT),
 			children = this._children,
 			insert = Base.pick(options ? options.insert : undefined, true),
-			deep = Base.pick(options ? options.deep : undefined, true);
+			deep = Base.pick(options ? options.deep : undefined, true),
+			keep = Base.pick(options ? options.keep : undefined, false),
+			orig = this._name;
+
 		if (children)
 			copy.copyAttributes(this);
-		if (!children || deep)
-			copy.copyContent(this);
+		if (!children || deep){
+			copy.copyContent(this, keep);
+		}
 		if (!children)
 			copy.copyAttributes(this);
 		if (insert)
@@ -4417,33 +4472,32 @@ new function() {
 			parent = this._parent;
 		if (name && parent) {
 			var children = parent._children,
-				orig = name,
 				i = 1;
 			while (children[name])
 				name = orig + ' ' + (i++);
 			if (name !== orig)
 				copy.setName(name);
 		}
-
-		if(options && options.keep){
+		if(keep){
 			copy._uid = this._uid;
+			copy._name = orig;
 		}
 		copy.angle = this.angle;
 
 		return copy;
 	},
 
-	copyContent: function(source) {
+	copyContent: function(source, keep) {
 		var children = source._children;
 		for (var i = 0, l = children && children.length; i < l; i++) {
-			this.addChild(children[i].clone(false), true);
+			this.addChild(children[i].clone({keep: keep}), true);
 		}
 	},
 
 	copyAttributes: function(source, excludeMatrix) {
 		this.setStyle(source._style);
 		var keys = ['_locked', '_visible', '_blendMode', '_opacity',
-				'_clipMask', '_guide', '_angle'];
+				'_clipMask', '_guide', '_angle', '_flipped'];
 		for (var i = 0, l = keys.length; i < l; i++) {
 			var key = keys[i];
 			if (source.hasOwnProperty(key))
@@ -5262,7 +5316,6 @@ new function() {
 			center = Point.read(args, 0, { readNull: true });
 
 		if(rotate) this._angle += value;
-		if(scale) this._constraintsPivot = center || this.getPosition(true);
 
 		this._transformType = key;
 		this._lastPosition = null
@@ -5336,6 +5389,7 @@ new function() {
 		} else if (transformMatrix && position && this._pivot) {
 			this._position = matrix._transformPoint(position, position);
 		}
+
 		return this;
 	},
 
@@ -5924,10 +5978,10 @@ var Artboard = Group.extend(
 			return false;
 		},
 
-		copyContent: function copyContent(source) {
+		copyContent: function copyContent(source, keep) {
 			this._background = source._background.clone();
 			this._clipped = source._clipped;
-			copyContent.base.call(this, source);
+			copyContent.base.call(this, source, {keep: keep});
 		},
 
 		getStrokeBounds: function (matrix) {
@@ -5992,12 +6046,12 @@ var Artboard = Group.extend(
 				var scaling = matrix.scaling,
 					translation = matrix.translation,
 					isScaling = this._transformType == "scale",
-					flipped = new Point(matrix.a, matrix.d).sign(),
+					flipped = this.flipped,
 					info = this._background.getActiveInfo(),
 					diff = new Size(info)
 						.divide(matrix.a, matrix.d)
 						.subtract(new Size(info).multiply(flipped));
-
+				console.log(flipped)
 				for (var i = 0, l = children.length; i < l; i++) {
 					var item = children[i],
 						mx = new Matrix(),
@@ -6012,7 +6066,6 @@ var Artboard = Group.extend(
 									.subtract(size)
 							)
 							.divide(size);
-
 					if (isScaling) {
 						var top =
 							info.center.y > this._constraintsPivot.y ==
@@ -6020,7 +6073,6 @@ var Artboard = Group.extend(
 						left =
 							info.center.x > this._constraintsPivot.x ==
 							(flipped.x != -1);
-
 						switch (horizontal) {
 							case "scale":
 								mx.translate(translation.x, 0).scale(
@@ -7233,8 +7285,10 @@ var Selector = Item.extend(
 		_bottomRight: null,
 		_bottomLeft: null,
 		_children: [],
+		_helpers: [],
 		_cornerItems: {},
 		_activeItemsInfo: null,
+		_cache: null,
 		_info: null,
 		_defaultStyles: {
 			shadowColor: "rgba(0, 0, 0, 0.3)",
@@ -7313,44 +7367,16 @@ var Selector = Item.extend(
 			return this._descomposeActiveItemsInfo("width") || 0;
 		},
 
-		setWidth: function(width, center) {
-			var items = this._project._activeItems;
-			var newWidth = this.width
-			var matrix = new Matrix().rotate(this.inheritedAngle);
-			var factor = 1
-
-			if(newWidth === 0){
-				newWidth = 1
-			}
-
-			if (Math.abs(width) > 0.0000001) {
-				factor = width / newWidth
-			}
-
-			Base.each(items, function(item){
-				var matrix = item.matrix.clone()
-				if(factor < 0 && !item.flipped.x || factor > 0 && item.flipped.x){
-					item.flipped.x = !item.flipped.x
-					matrix.scale(new Point(factor, 1), center)
-				}else{
-					matrix.scale(new Point(factor, 1).abs(), center)
-				}
-
-				console.log(factor)
-
-				item.transform(matrix, item.center)
-
-			})
-
+		setWidth: function(width, center, preserve) {
+			this.setSize([width, null], center, preserve);
 		},
 
 		getHeight: function () {
 			return this._descomposeActiveItemsInfo("height") || 0;
 		},
 
-		setHeight: function(height, center) {
-			var items = this._project._activeItems;
-
+		setHeight: function(height, center, preserve) {
+			this.setSize([null, height], center, preserve)
 		},
 
 		getSize: function(){
@@ -7360,8 +7386,55 @@ var Selector = Item.extend(
 		setSize: function(){
 			var size = Size.read(arguments);
 			var center = Point.read(arguments);
-			this.setWidth(size.width, center)
-			this.setHeight(size.width, center)
+			var preserve = Base.read(arguments);
+			this._checkHelpers();
+
+			var items = this._project._activeItems;
+			var width = this._cache.width;
+			var height = this._cache.height;
+			var factor = new Point(1, 1)
+			var helpers = this._helpers;
+
+			if(width === 0){
+				width = 1;
+			}
+			if(height === 0){
+				height = 1;
+			}
+			if (Math.abs(width) > 0.0000001) {
+				factor.x = size.width / width;
+			}
+			if (Math.abs(height) > 0.0000001) {
+				factor.y = size.height / height;
+			}
+
+			Base.each(items, function(item){
+				var helper = helpers[item.uid].clone({insert: false, keep: true});
+				item.set(Base.omit(helper, ['uid', 'actived', 'guide', 'parent']));
+				var matrix = item.matrix.clone();
+				matrix.scale(new Point(factor.x, factor.y), center);
+				item.transformType = 'scale';
+				item.constraintsPivot = center;
+				item.transform(matrix, true);
+				if(helpers[item.uid]._lastDirection){
+					if(!helpers[item.uid]._cacheFlipped){
+						helpers[item.uid]._cacheFlipped = Object.assign({}, helpers[item.uid].flipped);
+					}
+					if(factor.sign().x && factor.sign().x !== helpers[item.uid]._lastDirection.x ){
+						helpers[item.uid]._flip('x', (helpers[item.uid]._cacheFlipped.x === -1 ? factor.sign().x * -1 : factor.sign().x) === -1 ? -1 : 1);
+					}
+					if(factor.sign().y && factor.sign().y !== helpers[item.uid]._lastDirection.y ){
+						helpers[item.uid]._flip('y', (helpers[item.uid]._cacheFlipped.y === -1 ? factor.sign().y * -1 : factor.sign().y) === -1 ? -1 : 1);
+					}
+				}
+
+				helpers[item.uid]._lastDirection = factor.sign();
+				helper.remove();
+			});
+
+			if(!preserve){
+				this._clearHelpers();
+			}
 		},
 
 		getCenter: function () {
@@ -7447,6 +7520,33 @@ var Selector = Item.extend(
 
 		clearInfo: function () {
 			this._info = null;
+		},
+
+		_checkHelpers: function(){
+			if(!Base.equals(
+				Base.simplify(this._project._activeItems, 'uid'),
+				Base.simplify(this._helpers, 'uid'))
+			){
+				this._cache = this._getActiveItemsInfo();
+
+				this._helpers = this._project._activeItems.map(function(item){
+					return item.clone({keep: true, insert: false});
+				});
+				var helpers = this._helpers;
+				this._helpers.forEach(function(item){
+					helpers[item.uid] = item;
+				});
+			}
+		},
+
+		_clearHelpers: function(){
+			var helpers = this._helpers;
+			this._project._activeItems.forEach(function(item){
+				helpers[item.uid]._cacheFlipped = null;
+				helpers[item.uid]._lastDirection = null;
+			})
+			this._cache = null;
+			this._helpers = [];
 		},
 
 		_addControl: function (name, item) {

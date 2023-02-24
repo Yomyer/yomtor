@@ -62,19 +62,20 @@ export const TransformTool = (props: TransformToolProps) => {
     delta?: Point
     point?: Point
   }>()
-
-  const lastPoint = useRef<Point>(null)
   const point = useRef<Point>(null)
 
   const activeHelpers = useRef<Item[]>([])
   const toolControls = useRef<Control[]>([])
 
+  const lastPoint = useRef<Point>(null)
   const cornerItem = useRef<Item>(null)
   const size = useRef<Size>()
   const cornerName = useRef<string>(null)
   const pivot = useRef<Point>(null)
   const angle = useRef<number>()
   const corner = useRef<Point>(null)
+  const center = useRef<Point>(null)
+  const delta = useRef<Point>(null)
 
   const scaleCorners = [
     'topCenter',
@@ -110,107 +111,57 @@ export const TransformTool = (props: TransformToolProps) => {
   }
 
   const transform = (e: ToolEvent, helper = true) => {
+    if (!lastPoint.current) return
     mode.current === 'rotate' ? rotate(e, helper) : resize(e, helper)
   }
 
   const resize = (e: ToolEvent, helper = true) => {
     const selector = canvas.project.selector
 
-    let center = pivot.current
-    const matrix = new Matrix().rotate(
-      -selector.inheritedAngle,
-      selector.center
-    )
+    let origin = pivot.current
+    const matrix = new Matrix().rotate(-selector.inheritedAngle, origin)
     const direction = sign(
       normalize(
         matrix
           .transformPoint(corner.current)
-          .subtract(matrix.transformPoint(center))
+          .subtract(matrix.transformPoint(origin))
       )
     )
+    delta.current = delta.current.add(
+      e.point.subtract(lastPoint.current).multiply(direction)
+    )
 
-    const delta = e.point.subtract(lastPoint.current)
-    size.current = size.current.add(new Size(delta.multiply(direction)))
+    let factor = new Size(delta.current)
 
     if (e.modifiers.alt) {
-      center = selector.center
+      origin = center.current
+      factor = factor.add(new Size(delta.current))
     }
 
-    console.log(center.x)
-
-    selector.setSize(size.current, center)
-
-    /*
-    const current = data.current
-
-    if (helper && e) {
-      helperControl()
-    }
-
-    current.delta = rotateDelta(
-      current.point,
-      current.handler,
-      current.angle
-    ).multiply(current.direction)
-
-    let sizeModify = current.size
-    if (e.modifiers.alt) {
-      current.pivot = current.center
-      sizeModify = current.size.multiply(0.5)
-    } else {
-      current.pivot = current.pivotOrigin
-    }
-
-    const size = sizeModify.add(current.delta as unknown as Size).round()
-    if (size.width === 0) {
-      size.width = 1
-    }
-    if (size.height === 0) {
-      size.height = 1
-    }
-
-    const factor = new canvas.Point(1.0, 1.0)
-    if (Math.abs(sizeModify.width) > 0.0000001) {
-      factor.x = size.width / sizeModify.width
-    }
-    if (Math.abs(sizeModify.height) > 0.0000001) {
-      factor.y = size.height / sizeModify.height
-    }
+    let newSize = size.current.add(factor).round()
 
     if (e.modifiers.shift) {
-      const signx = factor.x > 0 ? 1 : -1
-      const signy = factor.y > 0 ? 1 : -1
+      const signx = newSize.width > 0 ? 1 : -1
+      const signy = newSize.height > 0 ? 1 : -1
 
-      factor.x = factor.y = Math.max(
-        Math.abs(factor.x * current.direction.x),
-        Math.abs(factor.y * current.direction.y)
-      )
-      factor.x *= signx
-      factor.y *= signy
+      const diff = newSize.abs().divide(size.current)
+      const max = Math.max(diff.width, diff.height)
+      newSize = size.current
+        .multiply(max)
+        .multiply(new Size(signx, signy))
+        .round()
     }
 
-    console.log(factor)
-    canvas.project.activeItems.forEach((item) => {
-      scaleWithRotate(
-        item,
-        factor,
-        current.pivot,
-        current.center,
-        canvas.project.activeItems.length === 1 ? undefined : current.angle
-      )
-    })
+    selector.setSize(newSize, origin, helper)
 
     canvas.project.selector.setInfo(
-      `${abs(round(sizeModify.width * factor.x))} x ${abs(
-        round(sizeModify.height * factor.y)
-      )}`,
-      current.point
+      `${newSize.abs().width} x ${newSize.abs().height}`,
+      e.point
     )
 
     if (helper) {
       canvas.project.fire('object:scaling', e)
     }
-    */
   }
 
   const rotate = (e: ToolEvent, helper = true) => {
@@ -353,19 +304,18 @@ export const TransformTool = (props: TransformToolProps) => {
     const selector = canvas.project.selector
 
     tool.onMouseDrag = (e: ToolEvent) => {
-      //const delta = e.point.subtract(lastPoint.current)
-      //data.current.point = data.current.point.add(delta)
-
       transform(e)
 
       lastPoint.current = e.point
     }
 
     tool.onKeyDown = (e: ToolEvent) => {
+      e.point = lastPoint.current
       transform(e)
     }
 
     tool.onKeyUp = (e: ToolEvent) => {
+      e.point = lastPoint.current
       transform(e)
     }
 
@@ -465,6 +415,8 @@ export const TransformTool = (props: TransformToolProps) => {
       pivot.current = selector.getOposite(cornerName.current)
       size.current = selector.size
       corner.current = selector[cornerName.current]
+      center.current = selector.center
+      delta.current = new Point(0, 0)
       /*
       const matrix = new Matrix().rotate(
         -selector.inheritedAngle,
@@ -521,12 +473,6 @@ export const TransformTool = (props: TransformToolProps) => {
             mode.current !== 'rotate' &&
             !scaleCorners.includes(cornerItem.current.name)
           ) {
-            console.log(
-              canvas.project.selector,
-              cornerItem.current,
-              mode.current,
-              !scaleCorners.includes(cornerItem.current.name)
-            )
             mode.current = 'rotate'
             cursor.current = {
               point: cornerItem.current.position,
