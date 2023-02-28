@@ -586,19 +586,17 @@ var Selector = Item.extend(
                 items[x]._drawActivation(ctx, matrix, items.length > 1);
             }
 
-            var bounds = matrix._transformBounds(this);
-
             if (items.length > 1) {
                 ctx.beginPath();
-                ctx.moveTo(bounds.topLeft.x, bounds.topLeft.y);
-                ctx.lineTo(bounds.topRight.x, bounds.topRight.y);
-                ctx.lineTo(bounds.bottomRight.x, bounds.bottomRight.y);
-                ctx.lineTo(bounds.bottomLeft.x, bounds.bottomLeft.y);
+                ctx.moveTo(this.topLeft.x, this.topLeft.y);
+                ctx.lineTo(this.topRight.x, this.topRight.y);
+                ctx.lineTo(this.bottomRight.x, this.bottomRight.y);
+                ctx.lineTo(this.bottomLeft.x, this.bottomLeft.y);
                 ctx.closePath();
                 ctx.stroke();
             }
 
-            matrix.applyToContext(ctx);
+           
 
             var param = new Base({
                 offset: new Point(0, 0),
@@ -608,7 +606,7 @@ var Selector = Item.extend(
                 updateMatrix: true,
             });
 
-            this._drawConstraints(ctx, param)
+            this._drawConstraints(ctx, param, matrix)
 
             for (var x = 0; x < Selector.length; x++) {
                 this._children[x].draw(ctx, param);
@@ -621,7 +619,7 @@ var Selector = Item.extend(
             }
         },
 
-        _drawConstraints: function(ctx, param){
+        _drawConstraints: function(ctx, param, matrix){
             var items = this._project._activeItems;
             if(items.length === 1){
                 var item = items[0]
@@ -629,29 +627,69 @@ var Selector = Item.extend(
                 if(!item.artboard) return;
 
                 var constraints = item._constraints,
-                    selector = this,
                     zoom = this._project.view.zoom,
                     horizontal = constraints.horizontal,
                     vertical = constraints.vertical,
                     bounds = item.artboard.bounds;
 
                 var params = {
-                    strokeColor: selector.strokeColor,
+                    strokeColor: this.strokeColor,
                     strokeWidth: 0.5 / zoom,
                     dashArray: [3/ zoom, 2/ zoom],
                     insert: false,
                 };
-    
-                var paramsV = paramsH = Object.assign({}, params);
+
+                var rect = new Path({insert: false});
+                rect.add(this.topLeft.x, this.topLeft.y);
+                rect.add(this.topRight.x, this.topRight.y);
+                rect.add(this.bottomRight.x, this.bottomRight.y);
+                rect.add(this.bottomLeft.x, this.bottomLeft.y);
+                rect.add(this.topLeft.x, this.topLeft.y);
+
+                var centerTop = rect.getIntersections(
+                    new Path.Line({
+                        insert: false, 
+                        to: this.center, 
+                        from:[this.center.x, this.top - rect.bounds.height]
+                    }))[0]?.point;
+                var centerBottom = rect.getIntersections(
+                    new Path.Line({
+                        insert: false, 
+                        to: this.center, 
+                        from:[this.center.x, bounds.bottom]
+                    }))[0]?.point;
+                var centerLeft = rect.getIntersections(
+                    new Path.Line({
+                        insert: false, 
+                        to: this.center, 
+                        from:[this.left - rect.bounds.width, this.center.y]
+                    }))[0]?.point;
+                var centerRight = rect.getIntersections(
+                    new Path.Line({
+                        insert: false, 
+                        to: this.center, 
+                        from:[bounds.right, this.center.y]
+                    }))[0]?.point;
+                    
+                var paramsV = Object.assign({}, params),
+                    paramsH = Object.assign({}, params);
                 
-                if(bounds.left < selector.center.x ){
-                    switch (vertical) {
-                        default:
-                            paramsV.from = [selector.center.x, bounds.top];
-                            paramsV.to = [selector.center.x, selector.center.y];
-                            break;
-                    }
+                switch (vertical) {
+                    default:
+                            paramsV.from = [centerTop.x, bounds.top];
+                            paramsV.to = [centerTop.x, centerTop.y];
+                        break;
                 }
+                
+                switch (horizontal) {
+                    default:
+                        //if(centerLeft){
+                            paramsH.from = [bounds.left, centerLeft.y];
+                            paramsH.to = [centerLeft.x, centerLeft.y];
+                        //}
+                        break;
+                }
+                
     
     
                 var vLine = new Path.Line(paramsV);

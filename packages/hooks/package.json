@@ -15,7 +15,7 @@
     "react-dom": "~17.0.2"
   },
   "dependencies": {
-    "@tanstack/virtual-core": "^3.0.0-alpha.1",
+    "@tanstack/virtual-core": "^3.0.0-beta.52",
     "@yomtor/paper": "*",
     "hotkeys-js": "^3.8.5",
     "lodash": "^4.17.21",

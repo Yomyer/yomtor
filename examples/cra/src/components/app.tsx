@@ -24,15 +24,16 @@ export const App = () => {
       from: [200, 200],
       to: [600, 600]
     })
+    const path = new Path.Rectangle({
+      from: [300, 300],
+      to: [500, 500],
+      fillColor: '#D9D9D9',
+      name: 'Rectangle'
+    })
 
-    artboard.addChild(
-      new Path.Rectangle({
-        from: [300, 300],
-        to: [500, 500],
-        fillColor: '#D9D9D9',
-        name: 'Rectangle'
-      })
-    )
+    path.rotate(27)
+
+    artboard.addChild(path)
   }, [])
 
   return (
