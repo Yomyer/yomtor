@@ -18,7 +18,7 @@ export interface TreeViewProps<T = NodeData> extends DefaultProps {
   wrapper?: React.ForwardRefExoticComponent<NodeProps>
   children?:
     | React.ReactNode
-    | ((node: NodeData<T>, item: VirtualItem) => React.ReactNode)
+    | ((node: NodeData<T>, item: VirtualItem<T>) => React.ReactNode)
   size?: number
   collapsed?: boolean
   indentWitdh?: number

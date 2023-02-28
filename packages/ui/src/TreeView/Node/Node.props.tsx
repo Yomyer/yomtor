@@ -16,9 +16,9 @@ export type NodeData<T = { [key: string]: unknown }> = T & {
 
 export interface NodeProps<T = unknown>
   extends Omit<DefaultProps<NodeStylesNames>, YomtorStyleSystemSize> {
-  item: VirtualItem
+  item: VirtualItem<T>
   onMouseDown?: (event) => void
   children?:
     | React.ReactNode
-    | ((node: NodeData<T>, item: VirtualItem) => React.ReactNode)
+    | ((node: NodeData<T>, item: VirtualItem<T>) => React.ReactNode)
 }

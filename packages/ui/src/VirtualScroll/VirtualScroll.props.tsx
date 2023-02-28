@@ -18,11 +18,13 @@ export interface VirtualScrollProps
   wrapper?:
     | React.ReactNode
     | ((
-        item: VirtualItem,
-        node: React.ReactNode | ((item: VirtualItem) => React.ReactNode),
+        item: VirtualItem<unknown>,
+        node:
+          | React.ReactNode
+          | ((item: VirtualItem<unknown>) => React.ReactNode),
         className: string
       ) => React.ReactNode)
-  node?: React.ReactNode | ((item: VirtualItem) => React.ReactNode)
+  node?: React.ReactNode | ((item: VirtualItem<unknown>) => React.ReactNode)
   onScrolling?: (status: boolean) => void
   children?: React.ReactNode
 }

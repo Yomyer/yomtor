@@ -19,8 +19,8 @@ export interface UseVirtualizer<
   TScrollElement extends Element | Window,
   TItemElement extends Element
 > extends Virtualizer<TScrollElement, TItemElement> {
-  getItem: (index) => VirtualItem
-  getForcedVirtualItems: (forced: number[]) => VirtualItem[]
+  getItem: (index) => VirtualItem<TItemElement>
+  getForcedVirtualItems: (forced: number[]) => VirtualItem<TItemElement>[]
 }
 
 const useIsomorphicLayoutEffect =

@@ -32,6 +32,8 @@ var Artboard = Group.extend(
         _getItemsInChildrens: true,
         _serializeStyle: true,
         _background: null,
+        _clipped: true,
+        _name: 'Artboard',
         _transformCache: {},
         _serializeFields: {
             size: null,
@@ -68,7 +70,9 @@ var Artboard = Group.extend(
         },
 
         setBackground: function (args) {
-            var args = Base.set(Object.assign({}, args), {
+            var args = Base.set(Object.assign({
+                fillColor: 'white'
+            }, args), {
                 insert: false,
                 children: undefined,
                 rotation: 0,
@@ -210,12 +214,13 @@ var Artboard = Group.extend(
                 var scaling = matrix.scaling,
                     translation = matrix.translation,
                     isScaling = this._transformType == "scale",
-                    flipped = this.flipped,
+                    // flipped = this.flipped,
+                    flipped = new Point(matrix.a, matrix.d).sign(),
                     info = this._background.getActiveInfo(),
                     diff = new Size(info)
                         .divide(matrix.a, matrix.d)
                         .subtract(new Size(info).multiply(flipped));
-                console.log(flipped)
+
                 for (var i = 0, l = children.length; i < l; i++) {
                     var item = children[i],
                         mx = new Matrix(),
@@ -459,6 +464,7 @@ var Artboard = Group.extend(
 
         _draw: function (ctx, param, viewMatrix, strokeMatrix) {
             this._drawRect(ctx, param);
+            this._drawConstraints(ctx, param, viewMatrix);
             this._drawChildren(ctx, param);
         },
 
@@ -487,5 +493,50 @@ var Artboard = Group.extend(
                 children[i].draw(ctx, param);
             }
         },
+
+        _drawConstraints: function(ctx, param, matrix, strokeMatrix){
+            var items = this._project._activeItems;
+            if(items.length === 1){
+                var item = items[0]
+
+                if(!item.artboard) return;
+
+                var constraints = item._constraints,
+                    selector = this._project.selector,
+                    horizontal = constraints.horizontal,
+                    vertical = constraints.vertical,
+                    bounds = item.artboard.bounds
+
+                 
+                    
+                var a = new Path.Line({
+                    from: [selector.center.x, bounds.top],
+                    to: [selector.center.x, selector.center.y],
+                    strokeColor: 'black',
+                    dashArray: [10, 4]
+                }).removeOn({
+                    drag: true,
+                    down: true
+                })
+                
+
+                ctx.lineWidth = 0.3;
+                ctx.strokeStyle = selector.strokeColor;
+                ctx.beginPath();
+                ctx.setLineDash([10, 4]);
+                switch (vertical) {
+                    default:
+                        const offset = selector.center.y - bounds.top;
+                        console.log(offset);
+                        ctx.moveTo(selector.center.x, bounds.top);
+                        ctx.lineTo(selector.center.x, selector.center.y);
+                        break;
+                }
+                ctx.closePath();
+                ctx.stroke();
+
+                matrix.applyToContext(ctx);
+            }
+        }
     }
 );

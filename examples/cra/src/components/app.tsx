@@ -12,17 +12,24 @@ import {
   ViewTool,
   ZoomTool
 } from '@yomtor/core'
-import { Path } from '@yomtor/paper'
+import { Path, Artboard } from '@yomtor/paper'
 import { ObjectControls } from '@yomtor/yomtor'
 
 export const App = () => {
   useEffect(() => {
-    new Path.Rectangle({
-      from: [10, 10],
-      to: [50, 50],
-      fillColor: 'red',
-      strokeColor: 'green'
+    const artboard = new Artboard({
+      from: [200, 200],
+      to: [600, 600]
     })
+
+    artboard.addChild(
+      new Path.Rectangle({
+        from: [300, 300],
+        to: [500, 500],
+        fillColor: '#D9D9D9',
+        name: 'Rectangle'
+      })
+    )
   }, [])
 
   return (

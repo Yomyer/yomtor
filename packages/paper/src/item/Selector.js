@@ -261,6 +261,46 @@ var Selector = Item.extend(
 
         /**
          * @bean
+         * @type Number
+         */
+        getTop: function () {
+            return (
+                this._descomposeActiveItemsInfo("topCenter").y || 0
+            );
+        },
+
+        /**
+         * @bean
+         * @type Number
+         */
+        getBottom: function () {
+            return (
+                this._descomposeActiveItemsInfo("bottomCenter").y || 0
+            );
+        },
+
+        /**
+         * @bean
+         * @type Number
+         */
+        getLeft: function () {
+            return (
+                this._descomposeActiveItemsInfo("leftCenter").x || 0
+            );
+        },
+
+        /**
+         * @bean
+         * @type Number
+         */
+        getRight: function () {
+            return (
+                this._descomposeActiveItemsInfo("rightCenter").x || 0
+            );
+        },
+
+        /**
+         * @bean
          * @type Point
          */
         getTopLeft: function () {
@@ -540,7 +580,7 @@ var Selector = Item.extend(
             matrix = matrix.appended(this.getGlobalMatrix(true));
 
             ctx.lineWidth = 0.3;
-            ctx.strokeStyle = this.strokeColor.toCanvasStyle(ctx, matrix);;
+            ctx.strokeStyle = this.strokeColor.toCanvasStyle(ctx, matrix);
 
             for (var x in items) {
                 items[x]._drawActivation(ctx, matrix, items.length > 1);
@@ -555,7 +595,6 @@ var Selector = Item.extend(
                 ctx.lineTo(bounds.bottomRight.x, bounds.bottomRight.y);
                 ctx.lineTo(bounds.bottomLeft.x, bounds.bottomLeft.y);
                 ctx.closePath();
-
                 ctx.stroke();
             }
 
@@ -571,7 +610,8 @@ var Selector = Item.extend(
 
             for (var x = 0; x < Selector.length; x++) {
                 this._children[x].draw(ctx, param);
-            }
+            }            
+           
         },
 
         drawInfo: function (ctx, matrix, pixelRatio) {

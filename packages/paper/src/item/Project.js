@@ -1282,6 +1282,7 @@ var Project = PaperScopeItem.extend(
       // Increase the _updateVersion before the draw-loop. After that, items
       // that are visible will have their _updateVersion set to the new value.
       this._updateVersion++
+
       ctx.save()
       matrix.applyToContext(ctx)
       // Use new Base() so we can use param.extend() to easily override values
@@ -1333,9 +1334,11 @@ var Project = PaperScopeItem.extend(
           this._selector.draw(ctx, matrix, pixelRatio)
           ctx.restore()
         }
-
-        this._selector.drawInfo(ctx, matrix, pixelRatio)
       }
+
+      ctx.save()
+      this._selector.drawInfo(ctx, matrix, pixelRatio)
+      ctx.restore()
     }
   }
 )

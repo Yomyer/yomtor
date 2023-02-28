@@ -167,7 +167,7 @@ export const ObjectPathTool = forwardRef<HTMLDivElement, ObjectPathToolProps>(
       <>
         {React.Children.map(children, (child) => {
           if (React.isValidElement(child)) {
-            return React.cloneElement(child, { onClick })
+            return React.cloneElement<any>(child, { onClick })
           }
           return child
         })}

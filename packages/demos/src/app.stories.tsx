@@ -15,7 +15,7 @@ import {
   ArtboardTool
 } from '@yomtor/core'
 import { ObjectControls } from '@yomtor/yomtor'
-import { Path } from '@yomtor/paper'
+import { Path, Artboard } from '@yomtor/paper'
 
 export default {
   title: 'App',
@@ -24,21 +24,20 @@ export default {
 
 export function Default() {
   useEffect(() => {
-    new Path.Rectangle({
-      from: [10, 10],
-      to: [50, 50],
-      fillColor: 'red',
-      strokeColor: 'green',
-      name: 'Rectangle'
+    const artboard = new Artboard({
+      from: [200, 200],
+      to: [600, 600]
     })
 
-    new Path.Rectangle({
-      from: [150, 200],
-      to: [300, 250],
-      fillColor: 'blue',
-      strokeColor: 'green',
-      name: 'Rectangle'
-    })
+    artboard.addChild(
+      new Path.Rectangle({
+        from: [150, 200],
+        to: [300, 250],
+        fillColor: 'blue',
+        strokeColor: 'green',
+        name: 'Rectangle'
+      })
+    )
   }, [])
 
   return (
