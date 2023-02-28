@@ -172,6 +172,8 @@ new function() { // Injection scope for various item event handlers
             matrix.translate(point);
         matrix._owner = this;
         this._style = new Style(project._currentStyle, this, project);
+
+        
         // Do not add to the project if it's an internal path,  or if
         // props.insert  or settings.isnertItems is false.
         if (internal || hasProps && props.insert == false
@@ -4922,6 +4924,7 @@ new function() { // Injection scope for hit-test functions shared with project
             if (pixelRatio !== 1)
                 ctx.scale(pixelRatio, pixelRatio);
         }
+        
         ctx.save();
         // Get the transformation matrix for non-scaling strokes.
         var strokeMatrix = parentStrokeMatrix

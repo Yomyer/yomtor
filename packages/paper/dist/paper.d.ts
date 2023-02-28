@@ -6591,6 +6591,18 @@ declare namespace paper {
         readonly center: Point
 
         
+        readonly top: number
+
+        
+        readonly bottom: number
+
+        
+        readonly left: number
+
+        
+        readonly right: number
+
+        
         readonly topLeft: Point
 
         

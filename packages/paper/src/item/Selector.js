@@ -261,6 +261,46 @@ var Selector = Item.extend(
 
         /**
          * @bean
+         * @type Number
+         */
+        getTop: function () {
+            return (
+                this._descomposeActiveItemsInfo("topCenter").y || 0
+            );
+        },
+
+        /**
+         * @bean
+         * @type Number
+         */
+        getBottom: function () {
+            return (
+                this._descomposeActiveItemsInfo("bottomCenter").y || 0
+            );
+        },
+
+        /**
+         * @bean
+         * @type Number
+         */
+        getLeft: function () {
+            return (
+                this._descomposeActiveItemsInfo("leftCenter").x || 0
+            );
+        },
+
+        /**
+         * @bean
+         * @type Number
+         */
+        getRight: function () {
+            return (
+                this._descomposeActiveItemsInfo("rightCenter").x || 0
+            );
+        },
+
+        /**
+         * @bean
          * @type Point
          */
         getTopLeft: function () {
@@ -539,8 +579,8 @@ var Selector = Item.extend(
 
             matrix = matrix.appended(this.getGlobalMatrix(true));
 
-            ctx.lineWidth = 0.3;
-            ctx.strokeStyle = this.strokeColor.toCanvasStyle(ctx, matrix);;
+            ctx.lineWidth = 0.5;
+            ctx.strokeStyle = this.strokeColor.toCanvasStyle(ctx, matrix);
 
             for (var x in items) {
                 items[x]._drawActivation(ctx, matrix, items.length > 1);
@@ -555,7 +595,6 @@ var Selector = Item.extend(
                 ctx.lineTo(bounds.bottomRight.x, bounds.bottomRight.y);
                 ctx.lineTo(bounds.bottomLeft.x, bounds.bottomLeft.y);
                 ctx.closePath();
-
                 ctx.stroke();
             }
 
@@ -569,6 +608,8 @@ var Selector = Item.extend(
                 updateMatrix: true,
             });
 
+            this._drawConstraints(ctx, param)
+
             for (var x = 0; x < Selector.length; x++) {
                 this._children[x].draw(ctx, param);
             }
@@ -579,6 +620,49 @@ var Selector = Item.extend(
                 this._info.draw(ctx, matrix, pixelRatio);
             }
         },
+
+        _drawConstraints: function(ctx, param){
+            var items = this._project._activeItems;
+            if(items.length === 1){
+                var item = items[0]
+
+                if(!item.artboard) return;
+
+                var constraints = item._constraints,
+                    selector = this,
+                    zoom = this._project.view.zoom,
+                    horizontal = constraints.horizontal,
+                    vertical = constraints.vertical,
+                    bounds = item.artboard.bounds;
+
+                var params = {
+                    strokeColor: selector.strokeColor,
+                    strokeWidth: 0.5 / zoom,
+                    dashArray: [3/ zoom, 2/ zoom],
+                    insert: false,
+                };
+    
+                var paramsV = paramsH = Object.assign({}, params);
+                
+                if(bounds.left < selector.center.x ){
+                    switch (vertical) {
+                        default:
+                            paramsV.from = [selector.center.x, bounds.top];
+                            paramsV.to = [selector.center.x, selector.center.y];
+                            break;
+                    }
+                }
+    
+    
+                var vLine = new Path.Line(paramsV);
+                var hLine = new Path.Line(paramsH);
+    
+    
+                vLine.draw(ctx, param);
+                hLine.draw(ctx, param);
+
+            }
+        }
     },
     {
         statics: {
