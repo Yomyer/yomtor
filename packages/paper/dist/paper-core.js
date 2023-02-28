@@ -18139,6 +18139,7 @@ var paper = new (PaperScope.inject(Base.exports, {
 	DomElement: DomElement,
 	ChangeFlag: ChangeFlag,
 	Change: Change,
+	Constraints: Constraints,
 	document: document,
 	window: window,
 	Symbol: SymbolDefinition,

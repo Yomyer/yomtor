@@ -581,6 +581,26 @@ declare namespace paper {
     }
 
     
+    class Constraints  {
+        
+        static START: 'start'
+
+        
+        static END: 'end'
+
+        
+        static BOTH: 'both'
+
+        
+        static CENTER: 'center'
+
+        
+        static SCALE: 'scale'
+
+
+    }
+
+    
     class Control extends Item {
         
         item: Item
@@ -1687,12 +1707,12 @@ declare namespace paper {
         position: Point
 
         
-        readonly flipped: any
+        flipped: {x: boolean, y: boolean}
 
         /** 
          * The if item is constraints.
          */
-        constraints: {horitonal: 'start' | 'end' | 'both' | 'center' | 'scale', vertical: 'start' | 'end' | 'both' | 'center' | 'scale'}
+        constraints: {horizontal: Lowercase<keyof Omit<typeof Constraints, 'prototype'>>, vertical: Lowercase<keyof Omit<typeof Constraints, 'prototype'>>}
 
         /** 
          * The if item is constraints.
@@ -3628,6 +3648,7 @@ declare namespace paper {
         ChangeFlag: typeof ChangeFlag
         Color: typeof Color
         CompoundPath: typeof CompoundPath
+        Constraints: typeof Constraints
         Control: typeof Control
         Curve: typeof Curve
         CurveLocation: typeof CurveLocation
@@ -8045,6 +8066,7 @@ declare module '@yomtor/paper'
     export class ChangeFlag extends paper.ChangeFlag {}
     export class Color extends paper.Color {}
     export class CompoundPath extends paper.CompoundPath {}
+    export class Constraints extends paper.Constraints {}
     export class Control extends paper.Control {}
     export class Curve extends paper.Curve {}
     export class CurveLocation extends paper.CurveLocation {}

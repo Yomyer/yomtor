@@ -17,7 +17,7 @@ import { ObjectControls } from '@yomtor/yomtor'
 
 export const App = () => {
   useEffect(() => {
-    new Path.Rectangle({
+    const a = new Path.Rectangle({
       from: [10, 10],
       to: [50, 50],
       fillColor: 'red',

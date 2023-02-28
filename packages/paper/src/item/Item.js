@@ -919,7 +919,7 @@ new function() { // Injection scope for various item event handlers
 
     /**
      * @bean
-     * @type Object {x: boolean: y: boolean}
+     * @type Object {x: boolean, y: boolean}
      */
     getFlipped: function(){
         return this._flipped;
@@ -948,7 +948,7 @@ new function() { // Injection scope for various item event handlers
      * The if item is constraints.
      *
      * @name Item#constraints
-     * @type Object {horitonal: 'start'|'end'|'both'|'center'|'scale', vertical: 'start'|'end'|'both'|'center'|'scale'}
+     * @type Object {horizontal: Lowercase<keyof Omit<typeof Constraints, 'prototype'>>, vertical: Lowercase<keyof Omit<typeof Constraints, 'prototype'>>}
      */
     getConstraints: function(){
         return this._constraints;

@@ -24,6 +24,7 @@ var paper = new (PaperScope.inject(Base.exports, {
     DomElement: DomElement,
     ChangeFlag: ChangeFlag,
     Change: Change,
+    Constraints: Constraints,
     // Export jsdom document and window too, for Node.js
     document: document,
     window: window,
