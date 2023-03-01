@@ -13,7 +13,8 @@ import {
   OvalTool,
   RectangleTool,
   PolygonTool,
-  ArtboardTool
+  ArtboardTool,
+  ConstraintsTool
 } from '@yomtor/core'
 import { Path, Artboard } from '@yomtor/paper'
 import { ObjectControls } from '@yomtor/yomtor'
@@ -69,6 +70,7 @@ export const App = () => {
             <GroupTool />
             <SelectorTool />
             <ManagementTool />
+            <ConstraintsTool />
             <TransformTool />
           </Canvas>
         </AppShell>

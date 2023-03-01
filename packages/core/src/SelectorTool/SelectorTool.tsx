@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useComponentDefaultProps } from '@mantine/styles'
 import { SelectorToolProps } from './SelectorTool.props'
-import { useEditorContext } from '../../Editor.context'
+import { useEditorContext } from '../Editor.context'
 import {
   Artboard,
   Control,

@@ -227,14 +227,15 @@ var Control = Item.extend(
             var zoom = this.getZoom();
             var shadowOffset = null;
 
-            this.setRotation(owner.inheritedAngle);
-            this.setPosition(owner.topLeft);
+            
 
             if(owner.onControlDraw){
                 owner.onControlDraw(new DrawControlEvent(this, owner))
-            }
-            if(this.onDraw){
+            }else if(this.onDraw){
                 this.onDraw(new DrawControlEvent(this, owner))
+            }else{
+                this.setRotation(owner.inheritedAngle);
+                this.setPosition(owner.topLeft);
             }
 
         

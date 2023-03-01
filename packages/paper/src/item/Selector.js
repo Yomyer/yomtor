@@ -220,18 +220,23 @@ var Selector = Item.extend(
             Base.each(items, function(item){
                 var helper = helpers[item.uid].clone({insert: false, keep: true});
                 item.set(Base.omit(helper, ['uid', 'actived', 'guide', 'parent']));
-                
-                var matrix = item.matrix.clone();
-                matrix.scale(new Point(factor.x, factor.y), center);
+            
+                const angle = item.angle;
+                const itemCenter = item.bounds.center.clone();
+                const rotateMatrix = new Matrix().rotate(-angle, itemCenter)
+                const pivot = rotateMatrix.transformPoint(center)
+
+                item.rotate(-angle, itemCenter);
+                item.scale(new Point(factor.x, factor.y), pivot);
+                item.rotate(angle, itemCenter);
                 item.transformType = 'scale';
                 item.constraintsPivot = center;
-                item.transform(matrix, true);
                 
                 if(helpers[item.uid]._lastDirection){
                     if(!helpers[item.uid]._cacheFlipped){
                         helpers[item.uid]._cacheFlipped = Object.assign({}, helpers[item.uid].flipped);
                     }
-    
+
                     if(factor.sign().x && factor.sign().x !== helpers[item.uid]._lastDirection.x ){
                         helpers[item.uid]._flip('x', (helpers[item.uid]._cacheFlipped.x === -1 ? factor.sign().x * -1 : factor.sign().x) === -1 ? -1 : 1);
                     }
@@ -575,7 +580,7 @@ var Selector = Item.extend(
 
         draw: function (ctx, matrix, pixelRatio) {
             var items = this._project._activeItems;
-            var Selector = this._children;
+            var children = this._children;
 
             matrix = matrix.appended(this.getGlobalMatrix(true));
 
@@ -596,7 +601,7 @@ var Selector = Item.extend(
                 ctx.stroke();
             }
 
-           
+            matrix.applyToContext(ctx);
 
             var param = new Base({
                 offset: new Point(0, 0),
@@ -606,9 +611,7 @@ var Selector = Item.extend(
                 updateMatrix: true,
             });
 
-            this._drawConstraints(ctx, param, matrix)
-
-            for (var x = 0; x < Selector.length; x++) {
+            for (var x = 0; x < children.length; x++) {
                 this._children[x].draw(ctx, param);
             }
         },
@@ -618,89 +621,6 @@ var Selector = Item.extend(
                 this._info.draw(ctx, matrix, pixelRatio);
             }
         },
-
-        _drawConstraints: function(ctx, param, matrix){
-            var items = this._project._activeItems;
-            if(items.length === 1){
-                var item = items[0]
-
-                if(!item.artboard) return;
-
-                var constraints = item._constraints,
-                    zoom = this._project.view.zoom,
-                    horizontal = constraints.horizontal,
-                    vertical = constraints.vertical,
-                    bounds = item.artboard.bounds;
-
-                var params = {
-                    strokeColor: this.strokeColor,
-                    strokeWidth: 0.5 / zoom,
-                    dashArray: [3/ zoom, 2/ zoom],
-                    insert: false,
-                };
-
-                var rect = new Path({insert: false});
-                rect.add(this.topLeft.x, this.topLeft.y);
-                rect.add(this.topRight.x, this.topRight.y);
-                rect.add(this.bottomRight.x, this.bottomRight.y);
-                rect.add(this.bottomLeft.x, this.bottomLeft.y);
-                rect.add(this.topLeft.x, this.topLeft.y);
-
-                var centerTop = rect.getIntersections(
-                    new Path.Line({
-                        insert: false, 
-                        to: this.center, 
-                        from:[this.center.x, this.top - rect.bounds.height]
-                    }))[0]?.point;
-                var centerBottom = rect.getIntersections(
-                    new Path.Line({
-                        insert: false, 
-                        to: this.center, 
-                        from:[this.center.x, bounds.bottom]
-                    }))[0]?.point;
-                var centerLeft = rect.getIntersections(
-                    new Path.Line({
-                        insert: false, 
-                        to: this.center, 
-                        from:[this.left - rect.bounds.width, this.center.y]
-                    }))[0]?.point;
-                var centerRight = rect.getIntersections(
-                    new Path.Line({
-                        insert: false, 
-                        to: this.center, 
-                        from:[bounds.right, this.center.y]
-                    }))[0]?.point;
-                    
-                var paramsV = Object.assign({}, params),
-                    paramsH = Object.assign({}, params);
-                
-                switch (vertical) {
-                    default:
-                            paramsV.from = [centerTop.x, bounds.top];
-                            paramsV.to = [centerTop.x, centerTop.y];
-                        break;
-                }
-                
-                switch (horizontal) {
-                    default:
-                        //if(centerLeft){
-                            paramsH.from = [bounds.left, centerLeft.y];
-                            paramsH.to = [centerLeft.x, centerLeft.y];
-                        //}
-                        break;
-                }
-                
-    
-    
-                var vLine = new Path.Line(paramsV);
-                var hLine = new Path.Line(paramsH);
-    
-    
-                vLine.draw(ctx, param);
-                hLine.draw(ctx, param);
-
-            }
-        }
     },
     {
         statics: {

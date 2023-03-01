@@ -1,6 +1,6 @@
 import { ObjectPathToolProps } from './ObjectPathTool.props'
 import { useComponentDefaultProps, useYomtorTheme } from '@yomtor/styles'
-import { useEditorContext } from '../../Editor.context'
+import { useEditorContext } from '../Editor.context'
 import React, {
   forwardRef,
   useCallback,

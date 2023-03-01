@@ -2,7 +2,7 @@ import React, { forwardRef, useState } from 'react'
 import { EditorProviderProps } from './EditorProvider.props'
 import { useComponentDefaultProps } from '@yomtor/styles'
 import { PaperScope } from '@yomtor/paper'
-import { EditorContext } from '../../Editor.context'
+import { EditorContext } from '../Editor.context'
 
 const defaultProps: Partial<EditorProviderProps> = {}
 

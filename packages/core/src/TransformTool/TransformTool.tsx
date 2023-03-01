@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { TransformToolProps } from './TransformTool.props'
 import { useComponentDefaultProps } from '@yomtor/styles'
-import { useEditorContext } from '../../Editor.context'
+import { useEditorContext } from '../Editor.context'
 import {
   Control,
   Item,
@@ -239,7 +239,7 @@ export const TransformTool = (props: TransformToolProps) => {
     const invisibleHandler = new Shape.Rectangle({
       size: 8,
       fillColor: 'red',
-      opacity: 0.0000001,
+      opacity: 0.000001,
       insert: false
     })
 
@@ -259,6 +259,7 @@ export const TransformTool = (props: TransformToolProps) => {
             control.position =
               selector[corner.replace('rotateB', 'b').replace('rotateT', 't')]
             control.offset = rotates[corner]
+            control.rotation = selector.inheritedAngle
           }
         )
       )
@@ -275,6 +276,7 @@ export const TransformTool = (props: TransformToolProps) => {
               (control.size.width = canvas.view.zoom * selector.width)
             ;['leftCenter', 'rightCenter'].includes(corner) &&
               (control.size.height = canvas.view.zoom * selector.height)
+            control.rotation = selector.inheritedAngle
           }
         )
       )
@@ -282,11 +284,10 @@ export const TransformTool = (props: TransformToolProps) => {
 
     corners.forEach((corner) => {
       controls.push(
-        new Control(
-          corner,
-          handler.clone(),
-          ({ control, selector }) => (control.position = selector[corner])
-        )
+        new Control(corner, handler.clone(), ({ control, selector }) => {
+          control.position = selector[corner]
+          control.rotation = selector.inheritedAngle
+        })
       )
     })
   }, [tool])
@@ -358,7 +359,7 @@ export const TransformTool = (props: TransformToolProps) => {
         e.target &&
         e.target.data &&
         e.target.name &&
-        e.target instanceof Control
+        toolControls.current.includes(e.target)
       ) {
         cornerItem.current = e.target || cornerItem.current
       } else {
@@ -371,7 +372,12 @@ export const TransformTool = (props: TransformToolProps) => {
     })
 
     selector.on('mouseenter', (e: MouseEvent & { target: Control }) => {
-      if ((tool.actived && !tool.mainActived) || canvas.mainTool.paused) return
+      if (
+        (tool.actived && !tool.mainActived) ||
+        canvas.mainTool.paused ||
+        !toolControls.current.includes(e.target)
+      )
+        return
 
       cursor.current = {
         angle: 0,
@@ -403,7 +409,7 @@ export const TransformTool = (props: TransformToolProps) => {
     })
 
     selector.on('mousedown', (e: MouseEvent & { target: Control }) => {
-      if (!tool.mainActived) return
+      if (!tool.mainActived || !toolControls.current.includes(e.target)) return
       tool.activate()
 
       activeItems.current = [...canvas.project.activeItems]

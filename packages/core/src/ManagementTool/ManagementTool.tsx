@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useComponentDefaultProps } from '@mantine/styles'
 import { ManagementToolProps } from './ManagementTool.props'
-import { useEditorContext } from '../../Editor.context'
+import { useEditorContext } from '../Editor.context'
 import {
   Item,
   KeyEvent,

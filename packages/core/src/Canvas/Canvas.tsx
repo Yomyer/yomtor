@@ -8,7 +8,7 @@ import React, {
 import { CanvasProps } from './Canvas.props'
 import { useComponentDefaultProps } from '@yomtor/styles'
 import useStyles from './Canvas.styles'
-import { useEditorContext } from '../../Editor.context'
+import { useEditorContext } from '../Editor.context'
 import { PaperScope, Point, Size } from '@yomtor/paper'
 import { cursorWithScope, Default, setCursor } from '@yomtor/cursors'
 import { debounce } from 'lodash'
