@@ -176,14 +176,7 @@ export const TransformTool = (props: TransformToolProps) => {
       delta = (round(delta / 15) * 15) % 360
     }
 
-    selector.setAngle(delta, pivot.current, helper)
-    console.log(delta)
-    // selector.serRotation()
-    /*
-    canvas.project.activeItems.forEach((item) => {
-      item.rotate(delta, data.current.center)
-    })
-    */
+    selector.setAngle(delta, center.current, helper)
 
     canvas.project.selector.setInfo(`${delta % 181}º`, corner.current)
     if (helper) {

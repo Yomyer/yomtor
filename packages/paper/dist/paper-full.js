@@ -7375,14 +7375,6 @@ var Selector = Item.extend(
 			return this._descomposeActiveItemsInfo("topLeft", "y") || 0;
 		},
 
-		getAngle: function () {
-			return this._descomposeActiveItemsInfo("angle") || 0;
-		},
-
-		getInheritedAngle: function(){
-			return this._descomposeActiveItemsInfo("inheritedAngle") || 0;
-		},
-
 		getWidth: function () {
 			return this._descomposeActiveItemsInfo("width") || 0;
 		},
@@ -7414,6 +7406,7 @@ var Selector = Item.extend(
 			var height = this._cache.height;
 			var factor = new Point(1, 1)
 			var helpers = this._helpers;
+			var angle = this.inheritedAngle;
 
 			if(width === 0){
 				width = 1;
@@ -7431,10 +7424,10 @@ var Selector = Item.extend(
 			Base.each(items, function(item){
 				var helper = helpers[item.uid].clone({insert: false, keep: true});
 				item.set(Base.omit(helper, ['uid', 'actived', 'guide', 'parent']));
-				const angle = item.angle;
-				const itemCenter = item.bounds.center.clone();
-				const rotateMatrix = new Matrix().rotate(-angle, itemCenter)
-				const pivot = rotateMatrix.transformPoint(center)
+
+				var itemCenter = item.bounds.center.clone();
+				var rotateMatrix = new Matrix().rotate(-angle, itemCenter)
+				var pivot = rotateMatrix.transformPoint(center)
 
 				item.rotate(-angle, itemCenter);
 				item.scale(new Point(factor.x, factor.y), pivot);
@@ -7461,13 +7454,28 @@ var Selector = Item.extend(
 			}
 		},
 
-		setAngle: function(){
+		setAngle: function(angle, center, preserve){
 			this._checkHelpers();
 			var items = this._project._activeItems;
+			var helpers = this._helpers;
+
+			Base.each(items, function(item){
+				var helper = helpers[item.uid].clone({insert: false, keep: true});
+				item.set(Base.omit(helper, ['uid', 'actived', 'guide', 'parent']));
+
+				item.rotate(angle, center)
+			});
 
 			if(!preserve){
 				this._clearHelpers();
 			}
+		},
+
+		getAngle: function () {
+			return this._descomposeActiveItemsInfo("angle") || 0;
+		},
+		getInheritedAngle: function(){
+			return this._descomposeActiveItemsInfo("inheritedAngle") || 0;
 		},
 
 		getCenter: function () {
