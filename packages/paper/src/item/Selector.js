@@ -114,21 +114,6 @@ var Selector = Item.extend(
             return this._descomposeActiveItemsInfo("topLeft", "y") || 0;
         },
 
-        /**
-         * @bean
-         * @type Number
-         */
-        getAngle: function () {
-            return this._descomposeActiveItemsInfo("angle") || 0;
-        },
-
-        /**
-         * @bean
-         * @type Number
-         */
-        getInheritedAngle: function(){
-            return this._descomposeActiveItemsInfo("inheritedAngle") || 0;
-        },
 
         /**
          * @bean
@@ -229,8 +214,6 @@ var Selector = Item.extend(
                 item.rotate(-angle, itemCenter);
                 item.scale(new Point(factor.x, factor.y), pivot);
                 item.rotate(angle, itemCenter);
-                item.transformType = 'scale';
-                item.constraintsPivot = center;
                 
                 if(helpers[item.uid]._lastDirection){
                     if(!helpers[item.uid]._cacheFlipped){
@@ -254,6 +237,46 @@ var Selector = Item.extend(
             if(!preserve){
                 this._clearHelpers();
             }
+        },
+
+        /**
+         * @function
+         * @param {Number} angle 
+         * @param {Point} [center] 
+         * @param {boolean} [preserve] 
+         * @bean
+         * @type Number
+         */
+        setAngle: function(angle, center, preserve){
+            this._checkHelpers();
+            var items = this._project._activeItems;
+
+            Base.each(items, function(item){
+                var helper = helpers[item.uid].clone({insert: false, keep: true});
+                item.set(Base.omit(helper, ['uid', 'actived', 'guide', 'parent']));
+
+            });
+            
+
+            if(!preserve){
+                this._clearHelpers();
+            }
+        },
+
+        /**
+         * @bean
+         * @type Number
+         */
+        getAngle: function () {
+            return this._descomposeActiveItemsInfo("angle") || 0;
+        },
+    
+        /**
+         * @bean
+         * @type Number
+         */
+        getInheritedAngle: function(){
+            return this._descomposeActiveItemsInfo("inheritedAngle") || 0;
         },
 
         /**

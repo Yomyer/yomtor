@@ -7436,8 +7436,6 @@ var Selector = Item.extend(
 				item.rotate(-angle, itemCenter);
 				item.scale(new Point(factor.x, factor.y), pivot);
 				item.rotate(angle, itemCenter);
-				item.transformType = 'scale';
-				item.constraintsPivot = center;
 				if(helpers[item.uid]._lastDirection){
 					if(!helpers[item.uid]._cacheFlipped){
 						helpers[item.uid]._cacheFlipped = Object.assign({}, helpers[item.uid].flipped);
@@ -7454,6 +7452,15 @@ var Selector = Item.extend(
 				helpers[item.uid]._lastDirection = factor.sign();
 				helper.remove();
 			});
+
+			if(!preserve){
+				this._clearHelpers();
+			}
+		},
+
+		setAngle: function(){
+			this._checkHelpers();
+			var items = this._project._activeItems;
 
 			if(!preserve){
 				this._clearHelpers();

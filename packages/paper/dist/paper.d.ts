@@ -6573,12 +6573,6 @@ declare namespace paper {
         readonly y: number
 
         
-        readonly angle: number
-
-        
-        readonly inheritedAngle: number
-
-        
         width: number
 
         
@@ -6586,6 +6580,12 @@ declare namespace paper {
 
         
         size: Size
+
+        
+        readonly angle: number
+
+        
+        readonly inheritedAngle: number
 
         
         readonly center: Point
@@ -6641,6 +6641,9 @@ declare namespace paper {
 
         
         setSize(Size: Size, center?: Point, preserve?: boolean): void
+
+        
+        setAngle(angle: number, center?: Point, preserve?: boolean): void
 
         
         getOposite(String: any): Point

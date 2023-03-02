@@ -165,31 +165,31 @@ export const TransformTool = (props: TransformToolProps) => {
   }
 
   const rotate = (e: ToolEvent, helper = true) => {
-    /*
     const current = data.current
+    const selector = canvas.project.selector
 
-    if (helper && e) {
-      helperControl()
-    }
-
-    const origin = data.current.handler.subtract(current.center).angle % 360
-    const rotate = data.current.point.subtract(current.center).angle % 360
+    const origin = corner.current.subtract(center.current).angle % 360
+    const rotate = lastPoint.current.subtract(center.current).angle % 360
     let delta = round(rotate - origin) % 360
 
     if (e.modifiers.shift) {
       delta = (round(delta / 15) * 15) % 360
     }
 
+    selector.setAngle(delta, pivot.current, helper)
+    console.log(delta)
+    // selector.serRotation()
+    /*
     canvas.project.activeItems.forEach((item) => {
       item.rotate(delta, data.current.center)
     })
+    */
 
-    canvas.project.selector.setInfo(`${delta % 181}º`, current.point)
+    canvas.project.selector.setInfo(`${delta % 181}º`, corner.current)
     if (helper) {
       canvas.project.fire('object:rotating', e)
     }
     showCursor(true, canvas.project.activeItems.length > 1 && delta)
-    */
   }
 
   const showCursor = (global = false, angle = 0) => {
