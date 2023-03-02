@@ -76,6 +76,7 @@ export const TransformTool = (props: TransformToolProps) => {
   const corner = useRef<Point>(null)
   const center = useRef<Point>(null)
   const delta = useRef<Point>(null)
+  const direction = useRef<Point>(null)
 
   const scaleCorners = [
     'topCenter',
@@ -119,17 +120,12 @@ export const TransformTool = (props: TransformToolProps) => {
     const selector = canvas.project.selector
 
     let origin = pivot.current
-    const matrix = new Matrix().rotate(-selector.inheritedAngle, origin)
-    const direction = sign(
-      normalize(
-        matrix
-          .transformPoint(corner.current)
-          .subtract(matrix.transformPoint(origin))
-      )
-    )
-    delta.current = delta.current.add(
-      e.point.subtract(lastPoint.current).multiply(direction)
-    )
+
+    delta.current = rotateDelta(
+      e.point,
+      point.current,
+      selector.inheritedAngle
+    ).multiply(direction.current)
 
     let factor = new Size(delta.current)
 
@@ -410,12 +406,26 @@ export const TransformTool = (props: TransformToolProps) => {
         .replace('rotateB', 'b')
         .replace('rotateT', 't')
 
+      point.current = e.point
       angle.current = selector.inheritedAngle
       pivot.current = selector.getOposite(cornerName.current)
       size.current = selector.size
       corner.current = selector[cornerName.current]
       center.current = selector.center
       delta.current = new Point(0, 0)
+
+      const matrix = new Matrix().rotate(
+        -selector.inheritedAngle,
+        selector.center
+      )
+      direction.current = sign(
+        normalize(
+          matrix
+            .transformPoint(corner.current)
+            .subtract(matrix.transformPoint(pivot.current))
+        )
+      )
+
       /*
       const matrix = new Matrix().rotate(
         -selector.inheritedAngle,

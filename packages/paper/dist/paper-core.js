@@ -7405,11 +7405,11 @@ var Selector = Item.extend(
 			var helpers = this._helpers;
 			var angle = this.inheritedAngle;
 
-			if(width === 0){
-				width = 1;
+			if(size.width === 0){
+				size.width = 1;
 			}
-			if(height === 0){
-				height = 1;
+			if(size.height === 0){
+				size.height = 1;
 			}
 			if (Math.abs(width) > 0.0000001) {
 				factor.x = size.width / width;
@@ -7422,10 +7422,9 @@ var Selector = Item.extend(
 				var helper = helpers[item.uid].clone({insert: false, keep: true});
 				item.set(Base.omit(helper, ['uid', 'actived', 'guide', 'parent']));
 
-				var itemCenter = item.bounds.center.clone();
+				var itemCenter = item.bounds.center;
 				var rotateMatrix = new Matrix().rotate(-angle, itemCenter)
 				var pivot = rotateMatrix.transformPoint(center)
-
 				item.rotate(-angle, itemCenter);
 				item.scale(new Point(factor.x, factor.y), pivot);
 				item.rotate(angle, itemCenter);
