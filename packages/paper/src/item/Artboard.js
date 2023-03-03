@@ -356,7 +356,7 @@ var Artboard = Group.extend(
                 })
             );
 
-            if (hit || (!this.isClipped() && !options.legacy)) {
+            if ((hit || (!this.isClipped() && !options.legacy)) || (options.selector || !options.selector && !this._actived)) {
                 return _hitTest.base.call(
                     this,
                     point,

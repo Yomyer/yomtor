@@ -283,17 +283,19 @@ var Project = PaperScopeItem.extend(
      *
      * @function
      * @param Point point
+     * @param Object options
      * @return {HitResult}
      */
-    hitTestArtboard: function (/* point */) {
+    hitTestArtboard: function (/* point, options */) {
         var point = Point.read(arguments);
+        var options = Base.read(arguments) | {};
 
-        return this.hitTest(point, {
+        return this.hitTest(point, Object.assign({
           fill: true,
           stroke: false,
           legacy: true,
           class: Artboard
-        })
+        }, options))
     },
     
 

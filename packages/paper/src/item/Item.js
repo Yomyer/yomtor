@@ -3822,6 +3822,8 @@ new function() { // Injection scope for hit-test functions shared with project
             center = Point.read(args, 0, { readNull: true });
 
         if(rotate) this._angle += value;
+        
+        this._constraintsPivot = center || this.getPosition(true);
 
         this._transformType = key;
         this._lastPosition = null

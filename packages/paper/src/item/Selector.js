@@ -499,6 +499,9 @@ var Selector = Item.extend(
 
         _addControl: function (name, item) {
             item.remove();
+            
+            if(this.getControl(name)) return;
+
             this._children.push(item);
             item._index = this._children.length - 1
 

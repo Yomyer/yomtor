@@ -337,6 +337,8 @@ var PaperScope = Base.extend(/** @lends PaperScope# */{
      * @return {Tool}
      */
     createTool: function(name, main, depth) {
+        // if(this.tools[name]) return;
+
         var tool = new this.Tool();
 
         if (name) {

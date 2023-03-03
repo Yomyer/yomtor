@@ -206,34 +206,40 @@ export const SelectorTool = (props: SelectorToolProps) => {
       })
 
       if (e instanceof ToolEvent) {
-        const artboard = canvas.project.hitTestArtboard(e.point)
-        let inserted = false
+        let artboard = canvas.project.hitTestArtboard(e.point)
+        if (artboard && canvas.project.activeItems.includes(artboard.item)) {
+          artboard = undefined
+        }
+
+        //let inserted = false
 
         canvas.project.activeItems.forEach((item) => {
-          if (!(item instanceof Artboard)) {
-            if (
-              (artboard && !item.artboard) ||
-              (artboard && artboard.item !== item.artboard)
-            ) {
-              artboard.item.insertChild(artboard.item.children.length + 1, item)
-              inserted = item.actived = true
-            } else if (
-              !artboard &&
-              item.artboard &&
-              (!outside.current || !item.intersects(item.artboard))
-            ) {
-              item.artboard.parent.insertChild(
-                item.artboard.parent.children.length + 1,
-                item
-              )
-              inserted = item.actived = true
-            }
+          //if (!(item instanceof Artboard)) {
+          if (
+            (artboard && !item.artboard) ||
+            (artboard && artboard.item !== item.artboard)
+          ) {
+            artboard.item.insertChild(artboard.item.children.length + 1, item)
+            item.actived = true
+          } else if (
+            !artboard &&
+            item.artboard &&
+            (!outside.current || !item.intersects(item.artboard))
+          ) {
+            item.artboard.parent.insertChild(
+              item.artboard.parent.children.length + 1,
+              item
+            )
+            item.actived = true
           }
+          //}
         })
 
+        /*
         if (inserted) {
           canvas.project.fire('object:created')
         }
+        */
       }
 
       if (mode.current === 'move') {

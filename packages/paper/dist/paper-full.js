@@ -923,6 +923,7 @@ var PaperScope = Base.extend({
 	},
 
 	createTool: function(name, main, depth) {
+
 		var tool = new this.Tool();
 
 		if (name) {
@@ -3201,13 +3202,14 @@ var Project = PaperScopeItem.extend(
 
 	hitTestArtboard: function () {
 		var point = Point.read(arguments);
+		var options = Base.read(arguments) | {};
 
-		return this.hitTest(point, {
+		return this.hitTest(point, Object.assign({
 		  fill: true,
 		  stroke: false,
 		  legacy: true,
 		  class: Artboard
-		})
+		}, options))
 	},
 
 	getActiveArtboard: function () {
@@ -5332,6 +5334,7 @@ new function() {
 			center = Point.read(args, 0, { readNull: true });
 
 		if(rotate) this._angle += value;
+		this._constraintsPivot = center || this.getPosition(true);
 
 		this._transformType = key;
 		this._lastPosition = null
@@ -6205,7 +6208,7 @@ var Artboard = Group.extend(
 				})
 			);
 
-			if (hit || (!this.isClipped() && !options.legacy)) {
+			if ((hit || (!this.isClipped() && !options.legacy)) || (options.selector || !options.selector && !this._actived)) {
 				return _hitTest.base.call(
 					this,
 					point,
@@ -7615,6 +7618,8 @@ var Selector = Item.extend(
 
 		_addControl: function (name, item) {
 			item.remove();
+			if(this.getControl(name)) return;
+
 			this._children.push(item);
 			item._index = this._children.length - 1
 
@@ -8002,6 +8007,13 @@ var Control = Item.extend(
 
 		getZoom: function(){
 			return this._project._view.getZoom();
+		},
+
+		_remove: function _remove(notifySelf, notifyParent) {
+			if(this._item){
+				this._item.remove();
+			}
+			return _remove.base.call(this, notifySelf, notifyParent);
 		},
 
 		_getOwner: function(){

@@ -1,4 +1,4 @@
-import React, { forwardRef, useState } from 'react'
+import React, { forwardRef, useEffect, useState } from 'react'
 import { EditorProviderProps } from './EditorProvider.props'
 import { useComponentDefaultProps } from '@yomtor/styles'
 import { PaperScope } from '@yomtor/paper'
@@ -18,6 +18,13 @@ export const EditorProvider = forwardRef<HTMLDivElement, EditorProviderProps>(
     const initCanvas = (c: PaperScope): void => {
       setCanvas(c)
     }
+
+    useEffect(() => {
+      return () => {
+        console.log('bdasdaad')
+        setCanvas(null)
+      }
+    }, [])
 
     return (
       <EditorContext.Provider

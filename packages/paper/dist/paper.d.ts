@@ -5479,8 +5479,9 @@ declare namespace paper {
          * The selected items contained within the project.
          * 
          * @param Point - point
+         * @param Object - options
          */
-        hitTestArtboard(Point: any): HitResult
+        hitTestArtboard(Point: any, Object: any): HitResult
 
         /** 
          * Clear the highlighted item

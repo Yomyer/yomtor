@@ -115,6 +115,13 @@ var Control = Item.extend(
             return this._project._view.getZoom();
         },
 
+        _remove: function _remove(notifySelf, notifyParent) {
+            if(this._item){
+                this._item.remove();
+            }
+            return _remove.base.call(this, notifySelf, notifyParent);
+        },
+
         _getOwner: function(){
             return this._owner
         },

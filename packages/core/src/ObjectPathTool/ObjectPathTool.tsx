@@ -88,15 +88,33 @@ export const ObjectPathTool = forwardRef<HTMLDivElement, ObjectPathToolProps>(
             dragging: true
           })
 
+          if (!(phantom.current instanceof Artboard)) {
+            const artboard = canvas.project.hitTest(event.downPoint, {
+              fill: true,
+              stroke: false,
+              legacy: true,
+              class: Artboard
+            })
+
+            if (artboard) {
+              artboard.item.insertChild(
+                artboard.item.children.length + 1,
+                phantom.current
+              )
+            }
+          }
+
           phantom.current.actived = true
           const transformTool = canvas.getTool('TransformTool')
           transformTool.activeMain()
           transformTool.idle = true
 
-          canvas.project.selector.emit('mousedown', {
-            ...event,
-            target: canvas.project.selector.getControl('bottomRight')
-          })
+          canvas.project.selector.emit(
+            'mousedown',
+            Object.assign(event, {
+              target: canvas.project.selector.getControl('bottomRight')
+            })
+          )
           setCursor(Cross, 0, cursor)
         }
       }
@@ -116,6 +134,7 @@ export const ObjectPathTool = forwardRef<HTMLDivElement, ObjectPathToolProps>(
               legacy: true,
               class: Artboard
             })
+
             if (artboard) {
               artboard.item.insertChild(artboard.item.children.length + 1, item)
             }
