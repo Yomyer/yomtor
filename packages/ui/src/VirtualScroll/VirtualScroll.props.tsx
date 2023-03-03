@@ -1,12 +1,12 @@
-import useStyles from './VirtualScroll.styles'
-import { Selectors, YomtorStyleSystemSize, DefaultProps } from '@yomtor/styles'
+import useStyles, { VirtualScrollStylesParams } from './VirtualScroll.styles'
+import { Selectors, DefaultProps } from '@yomtor/styles'
 import { ScrollAreaTypes } from '../ScrollArea/ScrollArea.props'
 import { VirtualItem, UseVirtualizer } from '@yomtor/hooks'
 
 type VirtualScrollStylesNames = Selectors<typeof useStyles>
 
 export interface VirtualScrollProps
-  extends Omit<DefaultProps<VirtualScrollStylesNames>, YomtorStyleSystemSize> {
+  extends DefaultProps<VirtualScrollStylesNames, VirtualScrollStylesParams> {
   component?: any
   size?: number
   count: number

@@ -6,6 +6,7 @@ export interface ResizePanelStylesParams {
   direction: ResizeDirections
   dragging: boolean
 }
+
 const getPosition = (direction: ResizeDirections) => {
   switch (direction) {
     case 'e':

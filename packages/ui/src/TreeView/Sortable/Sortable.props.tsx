@@ -1,11 +1,11 @@
 import { VirtualItem } from '@yomtor/hooks'
-import { DefaultProps, Selectors, YomtorStyleSystemSize } from '@yomtor/styles'
-import useStyles from './Sortable.styles'
+import { DefaultProps, Selectors } from '@yomtor/styles'
+import useStyles, { SortableStylesParams } from './Sortable.styles'
 
 type SortableStylesNames = Selectors<typeof useStyles>
 
 export interface SortableProps
-  extends Omit<DefaultProps<SortableStylesNames>, YomtorStyleSystemSize> {
+  extends DefaultProps<SortableStylesNames, SortableStylesParams> {
   children: React.ReactElement
   item: VirtualItem
 }

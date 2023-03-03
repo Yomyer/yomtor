@@ -18,7 +18,6 @@ export type {
   CSSObject,
   Tuple,
   MantineStyleSystemProps as YomtorStyleSystemProps,
-  MantineStyleSystemSize as YomtorStyleSystemSize,
   MantineNumberSize as YomtorNumberSize,
   MantineSize as YomtorSize,
   MantineSizes as YomtorSizes,

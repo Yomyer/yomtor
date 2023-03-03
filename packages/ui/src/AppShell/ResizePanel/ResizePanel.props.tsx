@@ -1,5 +1,5 @@
-import { YomtorStyleSystemSize, DefaultProps, Selectors } from '@yomtor/styles'
-import useStyles from './ResizePanel.styles'
+import { DefaultProps, Selectors } from '@yomtor/styles'
+import useStyles, { ResizePanelStylesParams } from './ResizePanel.styles'
 
 export type ResizeSizes = Partial<Record<string, string | number>>
 export type ResizeDirections = 'e' | 'w' | 'n' | 's'
@@ -13,7 +13,7 @@ export interface ResizePanelBaseProps {
 }
 
 export interface ResizePanelProps
-  extends Omit<DefaultProps<ResizePanelStylesNames>, YomtorStyleSystemSize>,
+  extends DefaultProps<ResizePanelStylesNames, ResizePanelStylesParams>,
     ResizePanelBaseProps {
   panel: any
   sizes?: ResizeSizes

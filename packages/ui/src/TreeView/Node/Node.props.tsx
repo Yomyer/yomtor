@@ -1,6 +1,6 @@
 import { VirtualItem } from '@yomtor/hooks'
-import { DefaultProps, Selectors, YomtorStyleSystemSize } from '@yomtor/styles'
-import useStyles from './Node.styles'
+import { DefaultProps, Selectors } from '@yomtor/styles'
+import useStyles, { NodeStylesParams } from './Node.styles'
 
 type NodeStylesNames = Selectors<typeof useStyles>
 
@@ -15,7 +15,7 @@ export type NodeData<T = { [key: string]: unknown }> = T & {
 }
 
 export interface NodeProps<T = unknown>
-  extends Omit<DefaultProps<NodeStylesNames>, YomtorStyleSystemSize> {
+  extends DefaultProps<NodeStylesNames, NodeStylesParams> {
   item: VirtualItem
   onMouseDown?: (event) => void
   children?:
