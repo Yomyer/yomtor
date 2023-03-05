@@ -5477,11 +5477,8 @@ declare namespace paper {
 
         /** 
          * The selected items contained within the project.
-         * 
-         * @param Point - point
-         * @param Object - options
          */
-        hitTestArtboard(Point: any, Object: any): HitResult
+        hitTestArtboard(point: Point, options?: object): HitResult
 
         /** 
          * Clear the highlighted item
@@ -6641,7 +6638,7 @@ declare namespace paper {
         setHeight(heigth: number, center?: Point, preserve?: boolean): void
 
         
-        setSize(Size: Size, center?: Point, preserve?: boolean): void
+        setSize(size: Size, center?: Point, preserve?: boolean): void
 
         
         setAngle(angle: number, center?: Point, preserve?: boolean): void

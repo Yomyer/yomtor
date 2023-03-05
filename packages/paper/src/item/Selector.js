@@ -169,7 +169,7 @@ var Selector = Item.extend(
 
         /**
          * @function
-         * @param {Size} Size 
+         * @param {Size} size 
          * @param {Point} [center] 
          * @param {boolean} [preserve] 
          * @bean

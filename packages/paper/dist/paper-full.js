@@ -3202,8 +3202,7 @@ var Project = PaperScopeItem.extend(
 
 	hitTestArtboard: function () {
 		var point = Point.read(arguments);
-		var options = Base.read(arguments) | {};
-
+		var options = Base.read(arguments) || {};
 		return this.hitTest(point, Object.assign({
 		  fill: true,
 		  stroke: false,
@@ -4819,12 +4818,16 @@ new function() {
 
 		var checkSelf = !(options.guides && !this._guide
 				|| options.selected && !this.isSelected()
+				|| options.actived && !this._actived
+				|| options.unactived && this._actived
 				|| options.type && options.type !== Base.hyphenate(this._class)
 				|| options.class && !(this instanceof options.class)),
 			match = options.match,
 			that = this,
 			bounds,
 			res;
+		if(this._name == 'Artboard')
+			console.log(this._actived, options.unactived, checkSelf)
 
 		function filter(hit) {
 			if (hit && match && !match(hit))
@@ -6208,7 +6211,7 @@ var Artboard = Group.extend(
 				})
 			);
 
-			if ((hit || (!this.isClipped() && !options.legacy)) || (options.selector || !options.selector && !this._actived)) {
+			if ((hit || (!this.isClipped() && !options.legacy))) {
 				return _hitTest.base.call(
 					this,
 					point,
@@ -7270,6 +7273,8 @@ var HitResult = Base.extend({
 				bounds: false,
 				guides: paper.settings.hitGuides,
 				selected: false,
+				actived: false,
+				unactived: false,
 
 				selector: true,
 

@@ -134,6 +134,10 @@ var HitResult = Base.extend(/** @lends HitResult# */{
                 guides: paper.settings.hitGuides, // Ver como  hacer que funcione :O
                 // Only hit selected objects
                 selected: false,
+                // Only hit actived objects
+                actived: false,
+                // Only hit unactived objects
+                unactived: false,
 
                 selector: true,
 

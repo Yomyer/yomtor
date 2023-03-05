@@ -2465,6 +2465,8 @@ new function() { // Injection scope for hit-test functions shared with project
         // guides and selected items if that's required.
         var checkSelf = !(options.guides && !this._guide
                 || options.selected && !this.isSelected()
+                || options.actived && !this._actived
+                || options.unactived && this._actived
                 // Support legacy Item#type property to match hyphenated
                 // class-names.
                 || options.type && options.type !== Base.hyphenate(this._class)
@@ -2473,6 +2475,9 @@ new function() { // Injection scope for hit-test functions shared with project
             that = this,
             bounds,
             res;
+        
+        if(this._name == 'Artboard')
+            console.log(this._actived, options.unactived, checkSelf)
 
         function filter(hit) {
             if (hit && match && !match(hit))

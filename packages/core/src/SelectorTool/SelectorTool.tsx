@@ -206,7 +206,11 @@ export const SelectorTool = (props: SelectorToolProps) => {
       })
 
       if (e instanceof ToolEvent) {
-        let artboard = canvas.project.hitTestArtboard(e.point)
+        let artboard = canvas.project.hitTestArtboard(e.point, {
+          unactived: true,
+          legacy: false
+        })
+        console.log(artboard.item)
         if (artboard && canvas.project.activeItems.includes(artboard.item)) {
           artboard = undefined
         }
