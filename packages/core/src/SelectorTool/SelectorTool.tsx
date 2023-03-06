@@ -210,7 +210,7 @@ export const SelectorTool = (props: SelectorToolProps) => {
           unactived: true,
           legacy: false
         })
-        console.log(artboard.item)
+        console.log(artboard)
         if (artboard && canvas.project.activeItems.includes(artboard.item)) {
           artboard = undefined
         }
