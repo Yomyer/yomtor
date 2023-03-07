@@ -3962,6 +3962,14 @@ new function() {
 		return !!(this._selection & 1);
 	},
 
+	isActived: function(){
+		if(!this._actived && this._parent && this._parent instanceof Item){
+			return this._parent.isActived();
+		}
+
+		return this._actived;
+	},
+
 	setSelected: function(selected) {
 		if (this._selectChildren) {
 			var children = this._children;
@@ -4815,17 +4823,12 @@ new function() {
 
 		var checkSelf = !(options.guides && !this._guide
 				|| options.selected && !this.isSelected()
-				|| options.actived && !this._actived
-				|| options.unactived && this._actived
 				|| options.type && options.type !== Base.hyphenate(this._class)
 				|| options.class && !(this instanceof options.class)),
 			match = options.match,
 			that = this,
 			bounds,
 			res;
-		if(this._name == 'Artboard')
-			console.log(this._actived, options.unactived, checkSelf)
-
 		function filter(hit) {
 			if (hit && match && !match(hit))
 				hit = null;
@@ -5020,8 +5023,8 @@ new function() {
 	},
 
 	insertChild: function(index, item) {
-		if(item.inheritedAngle){
-			item._angle = item.inheritedAngle - this.inheritedAngle ;
+		if(item.inheritedAngle || this instanceof Artboard){
+			item.angle = item.inheritedAngle - this.inheritedAngle ;
 		}
 		var res = item ? this.insertChildren(index, [item]) : null;
 		return res && res[0];
@@ -5333,7 +5336,7 @@ new function() {
 			value = (rotate ? Base : Point).read(args),
 			center = Point.read(args, 0, { readNull: true });
 
-		if(rotate) this._angle += value;
+		if(rotate) this.angle += value;
 		this._constraintsPivot = center || this.getPosition(true);
 
 		this._transformType = key;
@@ -5958,7 +5961,6 @@ var Artboard = Group.extend(
 			}, args), {
 				insert: false,
 				children: undefined,
-				rotation: 0,
 				actived: false,
 			});
 
@@ -6038,15 +6040,14 @@ var Artboard = Group.extend(
 			if (!matrix) {
 				return;
 			}
-
-			this._background.transform(
+			tranform.base.call(
+				this,
 				matrix,
 				_applyRecursively,
 				_setApplyMatrix
 			);
 
-			tranform.base.call(
-				this,
+			this._background.transform(
 				matrix,
 				_applyRecursively,
 				_setApplyMatrix
@@ -6293,6 +6294,8 @@ var Artboard = Group.extend(
 		},
 
 		_remove: function _remove(notifySelf, notifyParent) {
+			if(!this._background) return
+
 			this._background.remove();
 
 			if (this._project) {
@@ -7468,6 +7471,8 @@ var Selector = Item.extend(
 				item.set(Base.omit(helper, ['uid', 'actived', 'guide', 'parent']));
 
 				item.rotate(angle, center)
+
+				helper.remove();
 			});
 
 			if(!preserve){

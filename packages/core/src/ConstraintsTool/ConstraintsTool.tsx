@@ -9,7 +9,8 @@ import {
   Group,
   Path,
   Selector,
-  Rectangle
+  Rectangle,
+  Matrix
 } from '@yomtor/paper'
 import { useEventListener, useHotkeys } from '@yomtor/hooks'
 import { isFunction } from 'lodash'
@@ -92,7 +93,14 @@ export const ConstraintsTool = (props: ConstraintsToolProps) => {
       const zoom = canvas.view.zoom
       const horizontal = constraints.horizontal
       const vertical = constraints.vertical
-      const bounds = item.artboard.bounds
+      const angle = item.artboard.angle
+
+      const matrix = new Matrix().rotate(angle, item.artboard.bounds.center)
+      const bounds = matrix.transformBounds(
+        item.artboard.bounds,
+        item.artboard.bounds.clone()
+      )
+
       const { centerTop, centerBottom, centerLeft, centerRight } = getCenters({
         bounds,
         selector

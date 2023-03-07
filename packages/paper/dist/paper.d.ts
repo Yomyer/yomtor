@@ -2105,6 +2105,9 @@ declare namespace paper {
          */
         set(props: object): this
 
+        
+        isActived(): boolean
+
         /** 
          * Clones the item within the same project and places the copy above the
          * item.

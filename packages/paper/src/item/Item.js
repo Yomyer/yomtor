@@ -751,6 +751,20 @@ new function() { // Injection scope for various item event handlers
         return !!(this._selection & /*#=*/ItemSelection.ITEM);
     },
 
+    /**
+     * @name Item#isActived
+     * @function
+     * @return {Boolean}
+     * @default false
+     */ 
+    isActived: function(){
+        if(!this._actived && this._parent && this._parent instanceof Item){
+            return this._parent.isActived();
+        }
+
+        return this._actived;
+    },
+
     setSelected: function(selected) {
         if (this._selectChildren) {
             var children = this._children;
@@ -2465,8 +2479,6 @@ new function() { // Injection scope for hit-test functions shared with project
         // guides and selected items if that's required.
         var checkSelf = !(options.guides && !this._guide
                 || options.selected && !this.isSelected()
-                || options.actived && !this._actived
-                || options.unactived && this._actived
                 // Support legacy Item#type property to match hyphenated
                 // class-names.
                 || options.type && options.type !== Base.hyphenate(this._class)
@@ -2476,9 +2488,6 @@ new function() { // Injection scope for hit-test functions shared with project
             bounds,
             res;
         
-        if(this._name == 'Artboard')
-            console.log(this._actived, options.unactived, checkSelf)
-
         function filter(hit) {
             if (hit && match && !match(hit))
                 hit = null;
@@ -2947,8 +2956,8 @@ new function() { // Injection scope for hit-test functions shared with project
      * @return {Item} the inserted item, or `null` if inserting was not possible
      */
     insertChild: function(index, item) {
-        if(item.inheritedAngle){
-            item._angle = item.inheritedAngle - this.inheritedAngle ;
+        if(item.inheritedAngle || this instanceof Artboard){
+            item.angle = item.inheritedAngle - this.inheritedAngle ;
         }
         var res = item ? this.insertChildren(index, [item]) : null;
         return res && res[0];
@@ -3826,7 +3835,7 @@ new function() { // Injection scope for hit-test functions shared with project
             value = (rotate ? Base : Point).read(args),
             center = Point.read(args, 0, { readNull: true });
 
-        if(rotate) this._angle += value;
+        if(rotate) this.angle += value;
         
         this._constraintsPivot = center || this.getPosition(true);
 

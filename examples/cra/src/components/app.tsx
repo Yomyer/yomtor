@@ -32,9 +32,9 @@ export const App = () => {
       name: 'Rectangle'
     })
 
-    path.rotate(-180)
-
     artboard.addChild(path)
+
+    artboard.rotate(45)
   }, [])
 
   return (

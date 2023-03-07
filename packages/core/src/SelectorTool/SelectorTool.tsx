@@ -206,19 +206,13 @@ export const SelectorTool = (props: SelectorToolProps) => {
       })
 
       if (e instanceof ToolEvent) {
-        let artboard = canvas.project.hitTestArtboard(e.point, {
-          unactived: true,
-          legacy: false
+        const artboard = canvas.project.hitTestArtboard(e.point, {
+          match: (hit) => {
+            return !hit?.item?.actived
+          }
         })
-        console.log(artboard)
-        if (artboard && canvas.project.activeItems.includes(artboard.item)) {
-          artboard = undefined
-        }
-
-        //let inserted = false
 
         canvas.project.activeItems.forEach((item) => {
-          //if (!(item instanceof Artboard)) {
           if (
             (artboard && !item.artboard) ||
             (artboard && artboard.item !== item.artboard)
@@ -236,14 +230,7 @@ export const SelectorTool = (props: SelectorToolProps) => {
             )
             item.actived = true
           }
-          //}
         })
-
-        /*
-        if (inserted) {
-          canvas.project.fire('object:created')
-        }
-        */
       }
 
       if (mode.current === 'move') {

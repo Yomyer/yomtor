@@ -75,7 +75,6 @@ var Artboard = Group.extend(
             }, args), {
                 insert: false,
                 children: undefined,
-                rotation: 0,
                 actived: false,
             });
 
@@ -174,6 +173,7 @@ var Artboard = Group.extend(
                 : rect;
         },
 
+
         transform: function tranform(
             matrix,
             _applyRecursively,
@@ -182,15 +182,16 @@ var Artboard = Group.extend(
             if (!matrix) {
                 return;
             }
-
-            this._background.transform(
+            
+   
+            tranform.base.call(
+                this,
                 matrix,
                 _applyRecursively,
                 _setApplyMatrix
             );
 
-            tranform.base.call(
-                this,
+            this._background.transform(
                 matrix,
                 _applyRecursively,
                 _setApplyMatrix
@@ -210,7 +211,6 @@ var Artboard = Group.extend(
 
         _applyConstraints: function(children, matrix, applyRecursively, setApplyMatrix) {
             if (children) {
-                // console.log(this._transformType)
                 var scaling = matrix.scaling,
                     translation = matrix.translation,
                     isScaling = this._transformType == "scale",
@@ -441,6 +441,8 @@ var Artboard = Group.extend(
         },
 
         _remove: function _remove(notifySelf, notifyParent) {
+            if(!this._background) return 
+
             this._background.remove();
 
             if (this._project) {

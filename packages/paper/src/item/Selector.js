@@ -257,8 +257,9 @@ var Selector = Item.extend(
                 item.set(Base.omit(helper, ['uid', 'actived', 'guide', 'parent']));
 
                 item.rotate(angle, center)
+
+                helper.remove();
             });
-            
 
             if(!preserve){
                 this._clearHelpers();
