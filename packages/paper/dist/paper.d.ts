@@ -619,7 +619,7 @@ declare namespace paper {
 
 
         
-        constructor(name: string, item: Item, draw?: (event: DrawControlEvent) => void)
+        constructor(name: string, item: Item, draw?: (event: DrawControlEvent) => void, scale?: boolean)
 
     }
 

@@ -4690,7 +4690,6 @@ new function() {
 		var angle = this.getInheritedAngle();
 		var bounds = this.bounds;
 		var center =  this.bounds.center;
-
 		if (angle !== 0 && !unrotated) {
 			this.transform(new Matrix().rotate(-angle, center), false, false, true);
 			bounds = this.bounds.clone();
@@ -4702,7 +4701,8 @@ new function() {
 
 		return corners;
 	},
-	 getCornersPosition: function(unrotated) {
+
+	getCornersPosition: function(unrotated) {
 		var corners = this.getCorners(unrotated);
 
 		return {
@@ -7946,11 +7946,12 @@ var Control = Item.extend(
 	 {
 		_class: "Control",
 		_item: null,
+		_scale: null,
 		_control: true,
 		_owner: null,
 		_offset: null,
 
-		initialize: function Control(name, item, draw) {
+		initialize: function Control(name, item, draw, scale = true) {
 			this._project = paper.project;
 			this._owner = this._project.selector;
 
@@ -7958,6 +7959,7 @@ var Control = Item.extend(
 			this._item = item;
 			this._item._control = this;
 			this._style = this._item._style
+			this._scale = scale
 			this.onDraw = draw;
 
 			this._owner._addControl(name, this);
@@ -8045,12 +8047,14 @@ var Control = Item.extend(
 				return null;
 			}
 
-			this._item.transform(
-				new Matrix().scale(1 / zoom, this.getPosition()),
-				false,
-				false,
-				true
-			);
+			if(this._scale){
+				this._item.transform(
+					new Matrix().scale(1 / zoom, this.getPosition()),
+					false,
+					false,
+					true
+				);
+			}
 
 			options.tolerance = 5 / zoom;
 
@@ -8067,12 +8071,14 @@ var Control = Item.extend(
 				}
 			}
 
-			this._item.transform(
-				new Matrix().scale(zoom, this.getPosition()),
-				false,
-				false,
-				true
-			);
+			if(this._scale){
+				this._item.transform(
+					new Matrix().scale(zoom, this.getPosition()),
+					false,
+					false,
+					true
+				);
+			}
 
 			return hit;
 		},
@@ -8136,12 +8142,14 @@ var Control = Item.extend(
 				this.setPosition(owner.topLeft);
 			}
 
-			this._item.transform(
-				new Matrix().scale(1 / zoom, this.getPosition()),
-				false,
-				false,
-				true
-			);
+			if(this._scale){
+				this._item.transform(
+					new Matrix().scale(1 / zoom, this.getPosition()),
+					false,
+					false,
+					true
+				);
+			}
 
 			if (this._item.shadowOffset) {
 				shadowOffset = this._item.shadowOffset.clone();
@@ -8151,12 +8159,14 @@ var Control = Item.extend(
 			}
 
 			this._item.draw(ctx, param);
-			this._item.transform(
-				new Matrix().scale(zoom, this.getPosition()),
-				false,
-				false,
-				true
-			);
+			if(this._scale){
+				this._item.transform(
+					new Matrix().scale(zoom, this.getPosition()),
+					false,
+					false,
+					true
+				);
+			}
 
 			if (shadowOffset) {
 				this._item.shadowOffset = shadowOffset;

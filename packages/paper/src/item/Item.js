@@ -2231,19 +2231,21 @@ new function() { // Injection scope for various item event handlers
         var angle = this.getInheritedAngle();
         var bounds = this.bounds;
         var center =  this.bounds.center;
-
+        
         if (angle !== 0 && !unrotated) {
             this.transform(new Matrix().rotate(-angle, center), false, false, true);
             bounds = this.bounds.clone();
             this.transform(new Matrix().rotate(angle, center), false, false, true);
         }
+        
 
         var matrix = new Matrix().rotate(!unrotated && angle, center);
         var corners = matrix._transformCorners(bounds);
 
         return corners;
     },
-    
+
+
     /**
      * The corner positions
      *
@@ -2251,7 +2253,7 @@ new function() { // Injection scope for various item event handlers
      * @type Object {topLeft: Point, topRight: Point, bottomRight: Point, bottomLeft: Point}
      * 
     */
-     getCornersPosition: function(unrotated) {
+    getCornersPosition: function(unrotated) {
         var corners = this.getCorners(unrotated);
 
         return {

@@ -10,7 +10,8 @@ import {
   Path,
   Selector,
   Rectangle,
-  Matrix
+  Matrix,
+  Point
 } from '@yomtor/paper'
 import { useEventListener, useHotkeys } from '@yomtor/hooks'
 import { isFunction } from 'lodash'
@@ -32,112 +33,138 @@ export const ConstraintsTool = (props: ConstraintsToolProps) => {
 
   const getCenters = ({
     selector,
-    bounds
+    bounds,
+    angle
   }: {
     selector: Selector
     bounds: Rectangle
+    angle: number
   }) => {
-    const rect = new Path({ insert: false })
-    rect.add([selector.topLeft.x, selector.topLeft.y])
-    rect.add([selector.topRight.x, selector.topRight.y])
-    rect.add([selector.bottomRight.x, selector.bottomRight.y])
-    rect.add([selector.bottomLeft.x, selector.bottomLeft.y])
-    rect.add([selector.topLeft.x, selector.topLeft.y])
+    const start = new Path({ insert: false, fillColor: 'green', opacity: 0.2 })
+    start.add([selector.topLeft.x, selector.topLeft.y])
+    start.add([selector.topRight.x, selector.topRight.y])
+    start.add([selector.bottomRight.x, selector.bottomRight.y])
+    start.add([selector.bottomLeft.x, selector.bottomLeft.y])
+    start.add([selector.topLeft.x, selector.topLeft.y])
 
-    const centerTop = rect.getIntersections(
-      new Path.Line({
-        insert: false,
-        to: selector.center,
-        from: [selector.center.x, selector.top - rect.bounds.height]
-      })
-    )[0]?.point
+    const end = new Path({ insert: false, fillColor: 'yellow', opacity: 0.2 })
+    end.add([bounds.topLeft.x, bounds.topLeft.y])
+    end.add([bounds.topRight.x, bounds.topRight.y])
+    end.add([bounds.bottomRight.x, bounds.bottomRight.y])
+    end.add([bounds.bottomLeft.x, bounds.bottomLeft.y])
+    end.add([bounds.topLeft.x, bounds.topLeft.y])
 
-    const centerBottom = rect.getIntersections(
-      new Path.Line({
-        insert: false,
-        to: selector.center,
-        from: [selector.center.x, bounds.bottom]
-      })
-    )[0]?.point
+    const matrix = new Matrix().rotate(angle, start.bounds.center)
 
-    const centerLeft = rect.getIntersections(
-      new Path.Line({
-        insert: false,
-        to: selector.center,
-        from: [selector.left - rect.bounds.width, selector.center.y]
-      })
-    )[0]?.point
+    const lineTop = new Path.Line({
+      insert: false,
+      to: selector.bottomCenter,
+      from: matrix.transformPoint(
+        new Point([selector.center.x, selector.top - bounds.height]),
+        null
+      )
+    })
+    const lineBottom = new Path.Line({
+      insert: false,
+      to: selector.center,
+      from: matrix.transformPoint(
+        new Point([selector.center.x, selector.bottom + bounds.height]),
+        null
+      )
+    })
+    const lineLeft = new Path.Line({
+      insert: false,
+      to: selector.center,
+      from: matrix.transformPoint(
+        new Point([selector.left - bounds.width, selector.center.y]),
+        null
+      )
+    })
+    const lineRight = new Path.Line({
+      insert: false,
+      to: selector.center,
+      from: matrix.transformPoint(
+        new Point([selector.right + bounds.width, selector.center.y]),
+        null
+      )
+    })
 
-    const centerRight = rect.getIntersections(
-      new Path.Line({
-        insert: false,
-        to: selector.center,
-        from: [bounds.right, selector.center.y]
-      })
-    )[0]?.point
-
-    return { centerTop, centerBottom, centerLeft, centerRight }
+    return {
+      start: {
+        top: start.getIntersections(lineTop)[0]?.point,
+        bottom: start.getIntersections(lineBottom)[0]?.point,
+        left: start.getIntersections(lineLeft)[0]?.point,
+        right: start.getIntersections(lineRight)[0]?.point
+      },
+      end: {
+        top: end.getIntersections(lineTop)[0]?.point,
+        bottom: end.getIntersections(lineBottom)[0]?.point,
+        left: end.getIntersections(lineLeft)[0]?.point,
+        right: end.getIntersections(lineRight)[0]?.point
+      }
+    }
   }
 
   useEffect(() => {
     if (!tool) return
 
-    new Control('verticalConstraints', new Group(), ({ control, selector }) => {
-      const items = canvas.project.activeItems
-      control.item.removeChildren()
+    new Control(
+      'verticalConstraints',
+      new Group(),
+      ({ control, selector }) => {
+        const items = canvas.project.activeItems
+        control.item.removeChildren()
 
-      if (items.length !== 1 || (items.length && !items[0].artboard)) return
+        if (items.length !== 1 || (items.length && !items[0].artboard)) return
 
-      const item = items[0]
-      const constraints = item.constraints
-      const zoom = canvas.view.zoom
-      const horizontal = constraints.horizontal
-      const vertical = constraints.vertical
-      const angle = item.artboard.angle
+        const item = items[0]
+        const constraints = item.constraints
+        const zoom = canvas.view.zoom
+        const horizontal = constraints.horizontal
+        const vertical = constraints.vertical
+        const angle = item.artboard.angle
+        const bounds = item.artboard.activeInfo as unknown as Rectangle
 
-      const matrix = new Matrix().rotate(angle, item.artboard.bounds.center)
-      const bounds = matrix.transformBounds(
-        item.artboard.bounds,
-        item.artboard.bounds.clone()
-      )
+        const { start, end } = getCenters({
+          selector,
+          bounds,
+          angle
+        })
 
-      const { centerTop, centerBottom, centerLeft, centerRight } = getCenters({
-        bounds,
-        selector
-      })
+        const params = {
+          strokeColor: selector.strokeColor,
+          strokeWidth: 0.5 / zoom,
+          dashArray: [3 / zoom, 2 / zoom],
+          insert: true,
+          from: new Point([0, 0]),
+          to: new Point([0, 0])
+        }
 
-      const params = {
-        strokeColor: selector.strokeColor,
-        strokeWidth: 0.5 / zoom,
-        dashArray: [3 / zoom, 2 / zoom],
-        insert: false,
-        from: [0, 0],
-        to: [0, 0]
-      }
+        const paramsV = Object.assign({}, params)
+        const paramsH = Object.assign({}, params)
 
-      const paramsV = Object.assign({}, params)
-      const paramsH = Object.assign({}, params)
+        switch (vertical) {
+          default:
+            paramsV.from = end.top
+            paramsV.to = start.top
+            break
+        }
 
-      switch (vertical) {
-        default:
-          paramsV.from = [centerTop.x, bounds.top]
-          paramsV.to = [centerTop.x, centerTop.y]
-          break
-      }
+        switch (horizontal) {
+          default:
+            //paramsH.from = new Point([bounds.left, centerLeft.y])
+            //paramsH.to = new Point([centerLeft.x, centerLeft.y])
+            break
+        }
 
-      switch (horizontal) {
-        default:
-          paramsH.from = [bounds.left, centerLeft.y]
-          paramsH.to = [centerLeft.x, centerLeft.y]
-          break
-      }
+        const vLine = new Path.Line(paramsV)
+        const hLine = new Path.Line(paramsH)
 
-      const vLine = new Path.Line(paramsV)
-      const hLine = new Path.Line(paramsH)
-
-      control.item.addChild(vLine)
-      control.item.addChild(hLine)
-    })
+        control.item.addChild(vLine)
+        control.item.addChild(hLine)
+      },
+      false
+    )
   }, [tool])
 
   return <></>

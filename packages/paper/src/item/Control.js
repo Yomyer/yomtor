@@ -8,6 +8,7 @@ var Control = Item.extend(
     /** @lends Control# */ {
         _class: "Control",
         _item: null,
+        _scale: null,
         _control: true,
         _owner: null,
         _offset: null,
@@ -19,9 +20,10 @@ var Control = Item.extend(
          * @param {String} name
          * @param {Item} item
          * @param {(event: DrawControlEvent) => void} [draw]
+         * @param {Boolean} [scale]
          */
         
-        initialize: function Control(name, item, draw) {
+        initialize: function Control(name, item, draw, scale = true) {
             this._project = paper.project;
  
             this._owner = this._project.selector;
@@ -30,6 +32,7 @@ var Control = Item.extend(
             this._item = item;
             this._item._control = this;
             this._style = this._item._style
+            this._scale = scale
             this.onDraw = draw;
 
             this._owner._addControl(name, this);
@@ -142,12 +145,14 @@ var Control = Item.extend(
                 return null;
             }
 
-            this._item.transform(
-                new Matrix().scale(1 / zoom, this.getPosition()),
-                false,
-                false,
-                true
-            );
+            if(this._scale){
+                this._item.transform(
+                    new Matrix().scale(1 / zoom, this.getPosition()),
+                    false,
+                    false,
+                    true
+                );
+            }
 
             options.tolerance = 5 / zoom;
 
@@ -164,12 +169,14 @@ var Control = Item.extend(
                 }
             }
 
-            this._item.transform(
-                new Matrix().scale(zoom, this.getPosition()),
-                false,
-                false,
-                true
-            );
+            if(this._scale){
+                this._item.transform(
+                    new Matrix().scale(zoom, this.getPosition()),
+                    false,
+                    false,
+                    true
+                );
+            }
 
             return hit;
         },
@@ -246,12 +253,15 @@ var Control = Item.extend(
             }
 
         
-            this._item.transform(
-                new Matrix().scale(1 / zoom, this.getPosition()),
-                false,
-                false,
-                true
-            );
+            if(this._scale){
+                this._item.transform(
+                    new Matrix().scale(1 / zoom, this.getPosition()),
+                    false,
+                    false,
+                    true
+                );
+            }
+           
 
             if (this._item.shadowOffset) {
                 shadowOffset = this._item.shadowOffset.clone();
@@ -261,12 +271,15 @@ var Control = Item.extend(
             }
 
             this._item.draw(ctx, param);
-            this._item.transform(
-                new Matrix().scale(zoom, this.getPosition()),
-                false,
-                false,
-                true
-            );
+            
+            if(this._scale){
+                this._item.transform(
+                    new Matrix().scale(zoom, this.getPosition()),
+                    false,
+                    false,
+                    true
+                );
+            }
 
             if (shadowOffset) {
                 this._item.shadowOffset = shadowOffset;
