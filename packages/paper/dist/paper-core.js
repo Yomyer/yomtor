@@ -4723,17 +4723,13 @@ new function() {
 			height: corners.topLeft.subtract(corners.bottomLeft).length,
 			center: corners.topLeft.add(corners.bottomRight).divide(2),
 			topCenter: corners.topLeft.add(corners.topRight).divide(2),
-			rightCenter: corners.topRight
-				.add(corners.bottomRight)
-				.divide(2),
-			bottomCenter: corners.bottomRight
-				.add(corners.bottomLeft)
-				.divide(2),
+			rightCenter: corners.topRight.add(corners.bottomRight).divide(2),
+			bottomCenter: corners.bottomRight.add(corners.bottomLeft).divide(2),
 			leftCenter: corners.bottomLeft.add(corners.topLeft).divide(2),
-			top: corners.topLeft.y,
-			bottom: corners.bottomLeft.y,
-			left: corners.topLeft.x,
-			right: corners.topRight.x,
+			top: corners.topLeft.add(corners.topRight).divide(2).y,
+			bottom: corners.bottomRight.add(corners.bottomLeft).divide(2).y,
+			left: corners.bottomLeft.add(corners.topLeft).divide(2).x,
+			right: corners.topRight.add(corners.bottomRight).divide(2).x,
 		});
 	},
 

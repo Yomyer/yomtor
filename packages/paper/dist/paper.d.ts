@@ -2731,7 +2731,7 @@ declare namespace paper {
          * 
          * @param angle - the rotation angle
          */
-        rotate(angle: number, center?: Point): void
+        rotate(angle: number, center?: Point): this
 
         /** 
          * Scales the item by the given value from its center point, or optionally
@@ -2739,7 +2739,7 @@ declare namespace paper {
          * 
          * @param scale - the scale factor
          */
-        scale(scale: number, center?: Point): void
+        scale(scale: number, center?: Point): this
 
         /** 
          * Scales the item by the given values from its center point, or optionally
@@ -2748,7 +2748,7 @@ declare namespace paper {
          * @param hor - the horizontal scale factor
          * @param ver - the vertical scale factor
          */
-        scale(hor: number, ver: number, center?: Point): void
+        scale(hor: number, ver: number, center?: Point): this
 
         /** 
          * Shears the item by the given value from its center point, or optionally
@@ -2758,7 +2758,7 @@ declare namespace paper {
          * 
          * @param shear - the horizontal and vertical shear factors as a point
          */
-        shear(shear: Point, center?: Point): void
+        shear(shear: Point, center?: Point): this
 
         /** 
          * Shears the item by the given values from its center point, or optionally
@@ -2769,7 +2769,7 @@ declare namespace paper {
          * @param hor - the horizontal shear factor
          * @param ver - the vertical shear factor
          */
-        shear(hor: number, ver: number, center?: Point): void
+        shear(hor: number, ver: number, center?: Point): this
 
         /** 
          * Skews the item by the given angles from its center point, or optionally
@@ -2779,7 +2779,7 @@ declare namespace paper {
          * 
          * @param skew - the horizontal and vertical skew angles in degrees
          */
-        skew(skew: Point, center?: Point): void
+        skew(skew: Point, center?: Point): this
 
         /** 
          * Skews the item by the given angles from its center point, or optionally
@@ -2790,14 +2790,14 @@ declare namespace paper {
          * @param hor - the horizontal skew angle in degrees
          * @param ver - the vertical sskew angle in degrees
          */
-        skew(hor: number, ver: number, center?: Point): void
+        skew(hor: number, ver: number, center?: Point): this
 
         /** 
          * Transform the item.
          * 
          * @param matrix - the matrix by which the item shall be transformed
          */
-        transform(matrix: Matrix): void
+        transform(matrix: Matrix): this
 
         /** 
          * Converts the specified point from global project coordinate space to the

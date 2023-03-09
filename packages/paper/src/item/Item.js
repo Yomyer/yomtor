@@ -2285,17 +2285,13 @@ new function() { // Injection scope for various item event handlers
             height: corners.topLeft.subtract(corners.bottomLeft).length,
             center: corners.topLeft.add(corners.bottomRight).divide(2),
             topCenter: corners.topLeft.add(corners.topRight).divide(2),
-            rightCenter: corners.topRight
-                .add(corners.bottomRight)
-                .divide(2),
-            bottomCenter: corners.bottomRight
-                .add(corners.bottomLeft)
-                .divide(2),
+            rightCenter: corners.topRight.add(corners.bottomRight).divide(2),
+            bottomCenter: corners.bottomRight.add(corners.bottomLeft).divide(2),
             leftCenter: corners.bottomLeft.add(corners.topLeft).divide(2),
-            top: corners.topLeft.y,
-            bottom: corners.bottomLeft.y,
-            left: corners.topLeft.x,
-            right: corners.topRight.x,
+            top: corners.topLeft.add(corners.topRight).divide(2).y,
+            bottom: corners.bottomRight.add(corners.bottomLeft).divide(2).y,
+            left: corners.bottomLeft.add(corners.topLeft).divide(2).x,
+            right: corners.topRight.add(corners.bottomRight).divide(2).x,
         });
     },
 
@@ -3871,6 +3867,7 @@ new function() { // Injection scope for hit-test functions shared with project
      * @function
      * @param {Number} angle the rotation angle
      * @param {Point} [center={@link Item#position}]
+     * @return {this}
      * @see Matrix#rotate(angle[, center])
      *
      * @example {@paperscript}
@@ -3917,7 +3914,7 @@ new function() { // Injection scope for hit-test functions shared with project
      * @function
      * @param {Number} scale the scale factor
      * @param {Point} [center={@link Item#position}]
-     *
+     * @return {this}
      * @example {@paperscript}
      * // Scaling an item from its center point:
      *
@@ -3955,7 +3952,7 @@ new function() { // Injection scope for hit-test functions shared with project
      * @param {Number} hor the horizontal scale factor
      * @param {Number} ver the vertical scale factor
      * @param {Point} [center={@link Item#position}]
-     *
+     * @return {this}
      * @example {@paperscript}
      * // Scaling an item horizontally by 300%:
      *
@@ -3980,6 +3977,7 @@ new function() { // Injection scope for hit-test functions shared with project
      * @function
      * @param {Point} shear the horizontal and vertical shear factors as a point
      * @param {Point} [center={@link Item#position}]
+     * @return {this}
      * @see Matrix#shear(shear[, center])
      */
     /**
@@ -3991,6 +3989,7 @@ new function() { // Injection scope for hit-test functions shared with project
      * @param {Number} hor the horizontal shear factor
      * @param {Number} ver the vertical shear factor
      * @param {Point} [center={@link Item#position}]
+     * @return {this}
      * @see Matrix#shear(hor, ver[, center])
      */
 
@@ -4002,6 +4001,7 @@ new function() { // Injection scope for hit-test functions shared with project
      * @function
      * @param {Point} skew the horizontal and vertical skew angles in degrees
      * @param {Point} [center={@link Item#position}]
+     * @return {this}
      * @see Matrix#shear(skew[, center])
      */
     /**
@@ -4013,6 +4013,7 @@ new function() { // Injection scope for hit-test functions shared with project
      * @param {Number} hor the horizontal skew angle in degrees
      * @param {Number} ver the vertical sskew angle in degrees
      * @param {Point} [center={@link Item#position}]
+     * @return {this}
      * @see Matrix#shear(hor, ver[, center])
      */
 
@@ -4021,6 +4022,7 @@ new function() { // Injection scope for hit-test functions shared with project
      * Transform the item.
      *
      * @param {Matrix} matrix the matrix by which the item shall be transformed
+     * @return {this}
      */
     // TODO: Implement flags:
     // @param {String[]} flags array of any of the following: 'objects',

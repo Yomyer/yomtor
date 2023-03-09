@@ -26,8 +26,8 @@ export const App = () => {
       to: [600, 600]
     })
     const path = new Path.Rectangle({
-      from: [300, 300],
-      to: [500, 500],
+      from: [350, 350],
+      to: [550, 550],
       fillColor: '#D9D9D9',
       name: 'Rectangle'
     })
