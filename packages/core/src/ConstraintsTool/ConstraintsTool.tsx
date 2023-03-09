@@ -57,23 +57,17 @@ export const ConstraintsTool = (props: ConstraintsToolProps) => {
     const matrix = new Matrix().rotate(angle, end.bounds.center)
     const rotation = new Matrix().rotate(-angle, end.bounds.center)
 
-    const unite = start
-      .clone()
-      .transform(rotation)
-      .unite(end.clone().transform(rotation))
-    unite.fillColor = 'red'
-
+    const normalSelector = start.clone().transform(rotation)
+    const normalBound = end.clone().transform(rotation)
+    const unite = normalSelector.unite(normalBound)
+    const diff = normalSelector.position.subtract(normalBound.position)
     const uniteBounds = unite.activeInfo
-    const a = new Path(unite.pathData)
-    a.fillColor = 'blue'
 
     const lineTop = new Path.Line({
-      insert: true,
-      strokeColor: 'red',
-      to: uniteBounds.topCenter,
-      from: uniteBounds.bottomCenter
-    })
-    lineTop.rotate(angle, bounds.center)
+      insert: false,
+      to: uniteBounds.topCenter.add(new Point([diff.x, 0])),
+      from: uniteBounds.bottomCenter.add(new Point([diff.x, 0]))
+    }).transform(matrix)
 
     const lineBottom = new Path.Line({
       insert: false,
