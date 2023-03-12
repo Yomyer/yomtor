@@ -959,19 +959,18 @@ new function() { // Injection scope for various item event handlers
         return this
     },
     
-        
     /**
      * The if item is constraints.
      *
-     * @name Item#constraints
-     * @type Object {horizontal: Lowercase<keyof Omit<typeof Constraints, 'prototype'>>, vertical: Lowercase<keyof Omit<typeof Constraints, 'prototype'>>}
+     * @bean
+     * @type Constraints
      */
     getConstraints: function(){
         return this._constraints;
     },
-    
-    setConstraints: function(constraints){
-        return this._constraints = constraints;
+
+    setConstraints: function(/* constraints */){
+        return this._constraints = Constraints.read(arguments);
     },
 
     /**

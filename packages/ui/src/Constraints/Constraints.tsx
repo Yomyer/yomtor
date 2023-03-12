@@ -8,12 +8,15 @@ const defaultProps: Partial<ConstraintsProps> = {}
 
 export const _Constraints = forwardRef<HTMLButtonElement, ConstraintsProps>(
   (props, ref) => {
-    const { unstyled, vertical, horizontal, ...others } =
-      useComponentDefaultProps('Constraints', defaultProps, props)
+    const { vertical, horizontal, ...others } = useComponentDefaultProps(
+      'Constraints',
+      defaultProps,
+      props
+    )
 
     const { classes, cx } = useStyles(
       { vertical, horizontal, ...others },
-      { name: 'Constraints', unstyled }
+      { name: 'Constraints' }
     )
 
     return (
@@ -23,8 +26,23 @@ export const _Constraints = forwardRef<HTMLButtonElement, ConstraintsProps>(
             <div className={classes.verticalHandler} />
           </div>
         </div>
-        <div className={classes.inner}></div>
-        <div className={classes.outer}></div>
+        <div className={classes.inner}>
+          <div className={classes.horizontal}>
+            <div className={classes.horizontalHandler} />
+          </div>
+          <div className={classes.target}>
+            <div className={classes.horizontalCenterHandler} />
+            <div className={classes.verticalCenterHandler} />
+          </div>
+          <div className={classes.horizontal}>
+            <div className={classes.horizontalHandler} />
+          </div>
+        </div>
+        <div className={classes.outer}>
+          <div className={classes.vertical}>
+            <div className={classes.verticalHandler} />
+          </div>
+        </div>
       </div>
     )
   }

@@ -1,7 +1,7 @@
 import { ConstraintsToolProps } from './ConstraintsTool.props'
 import { useComponentDefaultProps } from '@yomtor/styles'
 import { useEditorContext } from '../Editor.context'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import {
   Tool,
   Grid,
@@ -11,7 +11,8 @@ import {
   Selector,
   Rectangle,
   Matrix,
-  Point
+  Point,
+  CurveLocation
 } from '@yomtor/paper'
 import { useEventListener, useHotkeys } from '@yomtor/hooks'
 import { isFunction } from 'lodash'
@@ -33,79 +34,97 @@ export const ConstraintsTool = (props: ConstraintsToolProps) => {
 
   const getCenters = ({
     selector,
-    bounds,
+    artboard,
     angle
   }: {
     selector: Selector
-    bounds: Rectangle
+    artboard: Rectangle
     angle: number
   }) => {
-    const start = new Path({ insert: false, fillColor: 'green', opacity: 0.2 })
-    start.add([selector.topLeft.x, selector.topLeft.y])
-    start.add([selector.topRight.x, selector.topRight.y])
-    start.add([selector.bottomRight.x, selector.bottomRight.y])
-    start.add([selector.bottomLeft.x, selector.bottomLeft.y])
-    start.add([selector.topLeft.x, selector.topLeft.y])
+    const selectorRect = new Path({ insert: false })
+    selectorRect.add([selector.topLeft.x, selector.topLeft.y])
+    selectorRect.add([selector.topRight.x, selector.topRight.y])
+    selectorRect.add([selector.bottomRight.x, selector.bottomRight.y])
+    selectorRect.add([selector.bottomLeft.x, selector.bottomLeft.y])
+    selectorRect.add([selector.topLeft.x, selector.topLeft.y])
 
-    const end = new Path({ insert: false, fillColor: 'yellow', opacity: 0.2 })
-    end.add([bounds.topLeft.x, bounds.topLeft.y])
-    end.add([bounds.topRight.x, bounds.topRight.y])
-    end.add([bounds.bottomRight.x, bounds.bottomRight.y])
-    end.add([bounds.bottomLeft.x, bounds.bottomLeft.y])
-    end.add([bounds.topLeft.x, bounds.topLeft.y])
+    const artboardRect = new Path({ insert: false })
+    artboardRect.add([artboard.topLeft.x, artboard.topLeft.y])
+    artboardRect.add([artboard.topRight.x, artboard.topRight.y])
+    artboardRect.add([artboard.bottomRight.x, artboard.bottomRight.y])
+    artboardRect.add([artboard.bottomLeft.x, artboard.bottomLeft.y])
+    artboardRect.add([artboard.topLeft.x, artboard.topLeft.y])
 
-    const matrix = new Matrix().rotate(angle, end.bounds.center)
-    const rotation = new Matrix().rotate(-angle, end.bounds.center)
+    const rotate = new Matrix().rotate(angle, artboardRect.bounds.center)
+    const rotateNormalize = new Matrix().rotate(
+      -angle,
+      artboardRect.bounds.center
+    )
 
-    const normalSelector = start.clone().transform(rotation)
-    const normalBound = end.clone().transform(rotation)
-    const unite = normalSelector.unite(normalBound)
-    const diff = normalSelector.position.subtract(normalBound.position)
+    const selectorNormalize = selectorRect.clone().transform(rotateNormalize)
+    const artboardNormalize = artboardRect.clone().transform(rotateNormalize)
+    const unite = selectorNormalize.unite(artboardNormalize)
     const uniteBounds = unite.activeInfo
 
-    const lineTop = new Path.Line({
+    const vertical = new Path.Line({
       insert: false,
-      to: uniteBounds.topCenter.add(new Point([diff.x, 0])),
-      from: uniteBounds.bottomCenter.add(new Point([diff.x, 0]))
-    }).transform(matrix)
+      to: [selectorNormalize.bounds.center.x, uniteBounds.topCenter.y],
+      from: [selectorNormalize.bounds.center.x, uniteBounds.bottomCenter.y]
+    })
 
-    const lineBottom = new Path.Line({
+    const horizontal = new Path.Line({
       insert: false,
-      to: selector.center,
-      from: matrix.transformPoint(
-        new Point([selector.center.x, selector.bottom + bounds.height]),
-        null
-      )
+      to: [uniteBounds.leftCenter.x, selectorNormalize.bounds.center.y],
+      from: [uniteBounds.rightCenter.x, selectorNormalize.bounds.center.y]
     })
-    const lineLeft = new Path.Line({
-      insert: false,
-      to: selector.center,
-      from: matrix.transformPoint(
-        new Point([selector.left - bounds.width, selector.center.y]),
-        null
+
+    const getNereastPoint = (
+      line: Path,
+      direction: 'x' | 'y' = 'x',
+      math: 'max' | 'min' = 'min'
+    ): Point => {
+      const curveLoactaions = selectorNormalize.getIntersections(line)
+
+      const value = Math[math](
+        ...curveLoactaions.map((curve) => curve.point[direction])
       )
-    })
-    const lineRight = new Path.Line({
-      insert: false,
-      to: selector.center,
-      from: matrix.transformPoint(
-        new Point([selector.right + bounds.width, selector.center.y]),
-        null
-      )
-    })
+
+      return curveLoactaions.find((curve) => curve.point[direction] === value)
+        ?.point
+    }
 
     return {
-      start: {
-        top: start.getIntersections(lineTop)[0]?.point,
-        bottom: start.getIntersections(lineBottom)[0]?.point,
-        left: start.getIntersections(lineLeft)[0]?.point,
-        right: start.getIntersections(lineRight)[0]?.point
+      selectorRect: {
+        top: rotate.transformPoint(getNereastPoint(vertical, 'y', 'min')),
+        bottom: rotate.transformPoint(getNereastPoint(vertical, 'y', 'max')),
+        left: rotate.transformPoint(getNereastPoint(horizontal, 'x', 'min')),
+        right: rotate.transformPoint(getNereastPoint(horizontal, 'x', 'max'))
       },
-      end: {
-        top: end.getIntersections(lineTop)[0]?.point,
-        bottom: end.getIntersections(lineBottom)[0]?.point,
-        left: end.getIntersections(lineLeft)[0]?.point,
-        right: end.getIntersections(lineRight)[0]?.point
+      artboardRect: {
+        top: rotate.transformPoint(
+          new Point([
+            selectorNormalize.activeInfo.center.x,
+            artboardNormalize.bounds.top
+          ])
+        ),
+        bottom: rotate.transformPoint(
+          new Point([
+            selectorNormalize.activeInfo.center.x,
+            artboardNormalize.bounds.bottom
+          ])
+        ),
+        left: rotate.transformPoint(
+          new Point([
+            artboardNormalize.bounds.left,
+            selectorNormalize.activeInfo.center.y
+          ])
+        ),
+        right: rotate.transformPoint(
+          new Point([
+            artboardNormalize.bounds.right,
+            selectorNormalize.activeInfo.center.y
+          ])
+        )
       }
     }
   }
@@ -115,7 +134,7 @@ export const ConstraintsTool = (props: ConstraintsToolProps) => {
 
     new Control(
       'verticalConstraints',
-      new Group(),
+      new Group({ guide: true }),
       ({ control, selector }) => {
         const items = canvas.project.activeItems
         control.item.removeChildren()
@@ -128,11 +147,11 @@ export const ConstraintsTool = (props: ConstraintsToolProps) => {
         const horizontal = constraints.horizontal
         const vertical = constraints.vertical
         const angle = item.artboard.angle
-        const bounds = item.artboard.activeInfo as unknown as Rectangle
+        const artboard = item.artboard.activeInfo as unknown as Rectangle
 
-        const { start, end } = getCenters({
+        const { selectorRect, artboardRect } = getCenters({
           selector,
-          bounds,
+          artboard,
           angle
         })
 
@@ -145,28 +164,43 @@ export const ConstraintsTool = (props: ConstraintsToolProps) => {
           to: new Point([0, 0])
         }
 
-        const paramsV = Object.assign({}, params)
-        const paramsH = Object.assign({}, params)
+        const addConstraint = (
+          direction: 'top' | 'bottom' | 'left' | 'right' | 'center'
+        ) => {
+          control.item.addChild(
+            new Path.Line({
+              ...params,
+              from: artboardRect[direction],
+              to: selectorRect[direction]
+            })
+          )
+        }
 
         switch (vertical) {
-          default:
-            paramsV.from = end.top
-            paramsV.to = start.top
+          case 'end':
+            addConstraint('bottom')
+            break
+          case 'start':
+          case 'both':
+            addConstraint('top')
+            if (vertical === 'both') {
+              addConstraint('bottom')
+            }
             break
         }
 
         switch (horizontal) {
-          default:
-            //paramsH.from = new Point([bounds.left, centerLeft.y])
-            //paramsH.to = new Point([centerLeft.x, centerLeft.y])
+          case 'end':
+            addConstraint('right')
+            break
+          case 'start':
+          case 'both':
+            addConstraint('left')
+            if (horizontal === 'both') {
+              addConstraint('right')
+            }
             break
         }
-
-        const vLine = new Path.Line(paramsV)
-        const hLine = new Path.Line(paramsH)
-
-        control.item.addChild(vLine)
-        control.item.addChild(hLine)
       },
       false
     )

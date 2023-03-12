@@ -4,11 +4,12 @@ import { useComponentDefaultProps } from '@yomtor/styles'
 import { Aside as BaseAside } from '@mantine/core'
 import { AsideProps } from './Aside.props'
 import useStyles from './Aside.styles'
+import { ResizePanel } from '../ResizePanel'
 
 const defaultProps: Partial<AsideProps> = {}
 
 export const Aside = forwardRef<HTMLDivElement, AsideProps>((props, ref) => {
-  const { unstyled, className, ...others } = useComponentDefaultProps(
+  const { unstyled, width, className, ...others } = useComponentDefaultProps(
     'Aside',
     defaultProps,
     props
@@ -17,7 +18,13 @@ export const Aside = forwardRef<HTMLDivElement, AsideProps>((props, ref) => {
   const { classes, cx } = useStyles({ ...others }, { name: 'Aside', unstyled })
 
   return (
-    <BaseAside {...others} ref={ref} className={cx(className, classes.root)} />
+    <ResizePanel
+      {...others}
+      sizes={width}
+      direction='w'
+      ref={ref}
+      panel={BaseAside}
+    />
   )
 })
 

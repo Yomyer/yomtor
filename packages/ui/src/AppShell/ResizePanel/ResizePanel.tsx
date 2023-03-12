@@ -72,12 +72,15 @@ export const ResizePanel = forwardRef<HTMLDivElement, ResizePanelProps>(
     }
 
     const dragHandler = (event: any, ui: any) => {
-      const s = internalSize ||
+      const s = (internalSize ||
         sizes || {
           base: getSize()
-        }
+        }) as Record<string, number>
 
-      setSizeRange(s.base + (isH ? ui.deltaX : ui.deltaY))
+      const deltaX = ui.deltaX * (direction === 'w' ? -1 : 1)
+      const deltaY = ui.deltaY * (direction === 's' ? -1 : 1)
+
+      setSizeRange(s.base + (isH ? deltaX : deltaY))
     }
 
     const setSizeRange = (size: number) => {

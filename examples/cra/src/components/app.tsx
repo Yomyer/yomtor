@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { YomtorProvider } from '@yomtor/styles'
-import { AppShell, Header, Navbar } from '@yomtor/ui'
+import { AppShell, Header, Navbar, Aside } from '@yomtor/ui'
 import {
   EditorProvider,
   Canvas,
@@ -17,7 +17,7 @@ import {
   ConstraintsTool
 } from '@yomtor/core'
 import { Path, Artboard } from '@yomtor/paper'
-import { ObjectControls } from '@yomtor/yomtor'
+import { ConstraintsControls, ObjectControls } from '@yomtor/yomtor'
 
 export const App = () => {
   useEffect(() => {
@@ -29,12 +29,13 @@ export const App = () => {
       from: [350, 350],
       to: [550, 550],
       fillColor: '#D9D9D9',
-      name: 'Rectangle'
+      name: 'Rectangle',
+      constraints: ['center', 'center']
     })
 
     artboard.addChild(path)
 
-    artboard.rotate(45)
+    // artboard.rotate(200)
   }, [])
 
   return (
@@ -46,6 +47,11 @@ export const App = () => {
             <Navbar width={{ base: 200 }} resize min={100} max={500}>
               <ObjectControls />
             </Navbar>
+          }
+          aside={
+            <Aside width={{ base: 200 }} resize min={100} max={500}>
+              <ConstraintsControls />
+            </Aside>
           }
           header={
             <Header height={40}>

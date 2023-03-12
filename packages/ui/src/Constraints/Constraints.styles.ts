@@ -1,4 +1,5 @@
 import { createStyles } from '@yomtor/styles'
+import { transform } from 'lodash'
 import { ConstraintsProps, ConstraintsType } from './Constraints.props'
 
 export interface ConstraintsStylesParams {
@@ -8,6 +9,8 @@ export interface ConstraintsStylesParams {
 
 export default createStyles(
   (theme, { vertical, horizontal }: ConstraintsStylesParams) => {
+    const color =
+      theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.colors.gray[0]
     return {
       root: {
         width: 64,
@@ -29,7 +32,12 @@ export default createStyles(
         justifyContent: 'center',
         alignItems: 'center'
       },
-      inner: {},
+      inner: {
+        flex: '1 0 auto',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+      },
       vertical: {
         flex: '0 0 25px',
         height: 12,
@@ -37,15 +45,54 @@ export default createStyles(
         justifyContent: 'center',
         alignItems: 'center'
       },
-      horizontal: {},
-      target: {},
+      horizontal: {
+        flex: '0 0 auto',
+        height: '25px',
+        width: '12px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+      },
+      target: {
+        flex: '0 0 auto',
+        position: 'relative',
+        height: '38px',
+        width: '38px',
+        border: `1px solid ${color}`,
+        borderRadius: '1px'
+      },
       verticalHandler: {
         flex: '0 0 auto',
         height: 8,
-        width: 3,
-        backgroundColor: 'red'
+        width: 1,
+        backgroundColor: color
       },
-      horizontalHandler: {}
+      horizontalHandler: {
+        flex: '0 0 auto',
+        height: 1,
+        width: 8,
+        backgroundColor: color
+      },
+      horizontalCenterHandler: {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        flex: '0 0 auto',
+        height: 1,
+        width: 16,
+        backgroundColor: color
+      },
+      verticalCenterHandler: {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        flex: '0 0 auto',
+        height: 16,
+        width: 1,
+        backgroundColor: color
+      }
     }
   }
 )

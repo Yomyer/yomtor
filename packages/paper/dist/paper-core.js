@@ -3021,17 +3021,71 @@ var Line = Base.extend({
 	}
 });
 
-var Constraints = {
-	START: 'start',
+var Constraints = Base.extend({
+	_class: 'Constraints',
+	_vertical: null,
+	_horizontal: null,
 
-	END: 'end',
+	initialize: function Constraints(arg0, arg1) {
+		var type = typeof arg0,
+			reading = this.__read,
+			read = 0;
 
-	BOTH: 'both',
+		if (type === 'string') {
+			var hasY = typeof arg1 === 'string';
+			this._set(arg0, hasY ? arg1 : arg0);
+			if (reading)
+				read = hasY ? 2 : 1;
+		} else if (type === 'undefined' || arg0 === null) {
+			this._set('start', 'start');
+			if (reading)
+				read = arg0 === null ? 1 : 0;
+		} else {
+			var obj = type === 'string' ? arg0.split(/[\s,]+/) || [] : arg0;
+			read = 1;
+			if (Array.isArray(obj)) {
+				this._set(obj[0], (obj.length > 1 ? obj[1] : obj[0]));
+			} else if ('horizontal' in obj) {
+				this._set(obj.horizontal || 0, obj.vertical || 0);
+			}  else {
+				this._set('start', 'start');
+				read = 0;
+			}
+		}
+		if (reading)
+			this.__read = read;
+		return this;
+	},
 
-	CENTER: 'center',
+	set: '#initialize',
 
-	SCALE: 'scale',
-};
+	_set: function(horizontal, vertical) {
+		this.horizontal = horizontal;
+		this.vertical = vertical;
+
+		return this;
+	},
+
+	equals: function(constraists) {
+		return this === constraists || constraists
+				&& (this.horizontal === constraists.horizontal && this.vertical === constraists.vertical
+					|| Array.isArray(constraists)
+						&& this.horizontal === constraists[0] && this.vertical === constraists[1])
+				|| false;
+	},
+
+	clone: function() {
+		return new Constraints(this.horizontal, this.vertical);
+	},
+
+	toString: function() {
+		return '{ horizontal: ' + this.horizontal + ', vertical: ' + this.vertical + ' }';
+	},
+
+	_serialize: function(options) {
+		return [this.horizontal, this.vertical];
+	},
+});
 
 var ChangeFlag = {
 	APPEARANCE: 0x1,
@@ -4061,8 +4115,9 @@ new function() {
 	getConstraints: function(){
 		return this._constraints;
 	},
-	setConstraints: function(constraints){
-		return this._constraints = constraints;
+
+	setConstraints: function(){
+		return this._constraints = Constraints.read(arguments);
 	},
 
 	getConstraintsPivot: function(){
@@ -18227,7 +18282,6 @@ var paper = new (PaperScope.inject(Base.exports, {
 	DomElement: DomElement,
 	ChangeFlag: ChangeFlag,
 	Change: Change,
-	Constraints: Constraints,
 	document: document,
 	window: window,
 	Symbol: SymbolDefinition,

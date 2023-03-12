@@ -1,5 +1,5 @@
-import { YomtorStyleSystemSize, DefaultProps, Selectors } from '@yomtor/styles'
-import useStyles from './Constraints.styles'
+import { DefaultProps, Selectors } from '@yomtor/styles'
+import useStyles, { ConstraintsStylesParams } from './Constraints.styles'
 import { Constraints } from '@yomtor/paper'
 
 type ConstraintsStylesNames = Selectors<typeof useStyles>
@@ -11,7 +11,7 @@ export type ConstraintsType = Lowercase<
 const a: ConstraintsType = 'scale'
 
 export interface ConstraintsProps
-  extends Omit<DefaultProps<ConstraintsStylesNames>, YomtorStyleSystemSize> {
+  extends DefaultProps<ConstraintsStylesNames, ConstraintsStylesParams> {
   compact?: boolean
   actived?: boolean
   horizontal?: ConstraintsType
