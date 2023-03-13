@@ -25,5 +25,5 @@ export const ConstraintsControls = (props: ConstraintsControlsProps) => {
     // canvas.project.
   }, [canvas])
 
-  return <Constraints></Constraints>
+  return <Constraints />
 }

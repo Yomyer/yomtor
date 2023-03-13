@@ -1,13 +1,14 @@
-import React, { forwardRef } from 'react'
+import React, { forwardRef, useState } from 'react'
 import { createPolymorphicComponent } from '@yomtor/utils'
 import { useComponentDefaultProps } from '@yomtor/styles'
-import { ConstraintsProps } from './Constraints.props'
+import { ConstraintsProps, ConstraintsType } from './Constraints.props'
 import useStyles from './Constraints.styles'
 
 const defaultProps: Partial<ConstraintsProps> = {}
 
 export const _Constraints = forwardRef<HTMLButtonElement, ConstraintsProps>(
   (props, ref) => {
+    const [verticalHover, setVerticalHover] = useState<ConstraintsType>(null)
     const { vertical, horizontal, ...others } = useComponentDefaultProps(
       'Constraints',
       defaultProps,
