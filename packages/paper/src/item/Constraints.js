@@ -12,8 +12,8 @@ var Constraints = Base.extend(/** @lends Constraints# */{
      * Creates a Constraints object using the directions of the given Constraints object.
      *
      * @name Constraints#initialize
-     * @param {String} horizontal the x coordinate
-     * @param {String} vertical the y coordinate
+     * @param {'start' | 'end' | 'center' | 'both' | 'scale'} horizontal the x coordinate
+     * @param {'start' | 'end' | 'center' | 'both' | 'scale'} vertical the y coordinate
      */
     /**
      * Creates a Constraints object using the directions of the given Constraints object.
@@ -119,4 +119,12 @@ var Constraints = Base.extend(/** @lends Constraints# */{
     _serialize: function(options) {
         return [this.horizontal, this.vertical];
     },
+    statics: /** @lends Constraints */{
+        /**
+         * @type 'start' | 'end' | 'center' | 'both' | 'scale'
+         * @static
+         * @ben
+         */
+        TYPES: ''
+    }
 });

@@ -23,7 +23,10 @@ export const _Constraints = forwardRef<HTMLButtonElement, ConstraintsProps>(
     return (
       <div className={classes.root}>
         <div className={classes.outer}>
-          <div className={classes.vertical}>
+          <div
+            className={classes.vertical}
+            onMouseEnter={() => setVerticalHover('start')}
+          >
             <div className={classes.verticalHandler} />
           </div>
         </div>

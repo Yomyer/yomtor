@@ -582,21 +582,57 @@ declare namespace paper {
 
     
     class Constraints  {
-        
-        static START: 'start'
+        /** 
+         * The horizontal direction of the constraint
+         */
+        vertical: 'start'  |  'end'  |  'center'  |  'both'  |  'scale'
+
+        /** 
+         * The horizontal direction of the constraint
+         */
+        horizontal: 'start'  |  'end'  |  'center'  |  'both'  |  'scale'
 
         
-        static END: 'end'
+        static TYPES: 'start'  |  'end'  |  'center'  |  'both'  |  'scale'
+
+
+        /** 
+         * Creates a Constraints object using the directions of the given Constraints object.
+         * 
+         * @param horizontal - the x coordinate
+         * @param vertical - the y coordinate
+         */
+        constructor(horizontal: 'start'  |  'end'  |  'center'  |  'both'  |  'scale', vertical: 'start'  |  'end'  |  'center'  |  'both'  |  'scale')
+
+        /** 
+         * Creates a Constraints object using the directions of the given Constraints object.
+         */
+        constructor(array: any[])
+
+        /** 
+         * Creates a Constraints object using the directions of the given Constraints object.
+         */
+        constructor(constraints: Constraints)
 
         
-        static BOTH: 'both'
+        set(...values: any[]): Constraints
 
-        
-        static CENTER: 'center'
+        /** 
+         * @return true if the points are equal
+         */
+        equals(constraists: Constraints): boolean
 
-        
-        static SCALE: 'scale'
+        /** 
+         * Returns a copy of the constraints.
+         * 
+         * @return the cloned constraints
+         */
+        clone(): Constraints
 
+        /** 
+         * @return a string representation of the constraints
+         */
+        toString(): string
 
     }
 
@@ -1712,7 +1748,7 @@ declare namespace paper {
         /** 
          * The if item is constraints.
          */
-        constraints: {horizontal: Lowercase<keyof Omit<typeof Constraints, 'prototype'>>, vertical: Lowercase<keyof Omit<typeof Constraints, 'prototype'>>}
+        constraints: Constraints
 
         /** 
          * The if item is constraints.

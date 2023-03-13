@@ -4,11 +4,7 @@ import { Constraints } from '@yomtor/paper'
 
 type ConstraintsStylesNames = Selectors<typeof useStyles>
 
-export type ConstraintsType = Lowercase<
-  keyof Omit<typeof Constraints, 'prototype'>
->
-
-const a: ConstraintsType = 'scale'
+export type ConstraintsType = typeof Constraints.TYPES
 
 export interface ConstraintsProps
   extends DefaultProps<ConstraintsStylesNames, ConstraintsStylesParams> {
