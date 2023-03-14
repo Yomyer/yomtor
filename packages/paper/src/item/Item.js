@@ -966,11 +966,14 @@ new function() { // Injection scope for various item event handlers
      * @type Constraints
      */
     getConstraints: function(){
-        return this._constraints;
+        var constraints = this._constraints;
+        return new LinkedConstraints(constraints.horizontal, constraints.vertical, this, 'setConstraints');
     },
 
     setConstraints: function(/* constraints */){
-        return this._constraints = Constraints.read(arguments);
+        this._constraints = Constraints.read(arguments);
+        this._changed(/*#=*/Change.ATTRIBUTE | Change.GEOMETRY);
+        return this._constraints
     },
 
     /**
@@ -1796,6 +1799,7 @@ new function() { // Injection scope for various item event handlers
                 && this._opacity === item._opacity
                 && this._clipMask === item._clipMask
                 && this._guide === item._guide
+                && this._constraints === item._constraints
                 && this._equals(item)
                 || false;
     },
@@ -1918,7 +1922,7 @@ new function() { // Injection scope for various item event handlers
         // meaning the default value has been overwritten (default is on
         // prototype).
         var keys = ['_locked', '_visible', '_blendMode', '_opacity',
-                '_clipMask', '_guide', '_angle', '_flipped'];
+                '_clipMask', '_guide', '_angle', '_flipped', '_constraints'];
         for (var i = 0, l = keys.length; i < l; i++) {
             var key = keys[i];
             if (source.hasOwnProperty(key))

@@ -30,7 +30,7 @@ export const App = () => {
       to: [550, 550],
       fillColor: '#D9D9D9',
       name: 'Rectangle',
-      constraints: ['center', 'center']
+      constraints: ['center', 'both']
     })
 
     artboard.addChild(path)

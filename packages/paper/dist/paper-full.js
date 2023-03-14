@@ -3088,6 +3088,43 @@ var Constraints = Base.extend({
 	_serialize: function(options) {
 		return [this.horizontal, this.vertical];
 	},
+	statics: {
+		POSITIONS: ''
+	}
+});
+
+var LinkedConstraints = Constraints.extend({
+	initialize: function Constraints(horizontal, vertical, owner, setter) {
+		this._horizontal = horizontal;
+		this._vertical = vertical;
+		this._owner = owner;
+		this._setter = setter;
+	},
+
+	_set: function(horizontal, vertical, _dontNotify) {
+		this._horizontal = horizontal;
+		this._vertical = vertical;
+		if (!_dontNotify)
+			this._owner[this._setter](this);
+		return this;
+	},
+
+	getHorizontal: function() {
+		return this._horizontal;
+	},
+
+	setHorizontal: function(horizontal) {
+		this._horizontal = horizontal;
+		this._owner[this._setter](this);
+	},
+	getVertical: function() {
+		return this._vertical;
+	},
+
+	setVertical: function(vertical) {
+		this._vertical = vertical;
+		this._owner[this._setter](this);
+	},
 });
 
 var ChangeFlag = {
@@ -4116,11 +4153,14 @@ new function() {
 		return this
 	},
 	getConstraints: function(){
-		return this._constraints;
+		var constraints = this._constraints;
+		return new LinkedConstraints(constraints.horizontal, constraints.vertical, this, 'setConstraints');
 	},
 
 	setConstraints: function(){
-		return this._constraints = Constraints.read(arguments);
+		this._constraints = Constraints.read(arguments);
+		this._changed(257 | Change.GEOMETRY);
+		return this._constraints
 	},
 
 	getConstraintsPivot: function(){
@@ -4523,6 +4563,7 @@ new function() {
 				&& this._opacity === item._opacity
 				&& this._clipMask === item._clipMask
 				&& this._guide === item._guide
+				&& this._constraints === item._constraints
 				&& this._equals(item)
 				|| false;
 	},
@@ -4577,7 +4618,7 @@ new function() {
 	copyAttributes: function(source, excludeMatrix) {
 		this.setStyle(source._style);
 		var keys = ['_locked', '_visible', '_blendMode', '_opacity',
-				'_clipMask', '_guide', '_angle', '_flipped'];
+				'_clipMask', '_guide', '_angle', '_flipped', '_constraints'];
 		for (var i = 0, l = keys.length; i < l; i++) {
 			var key = keys[i];
 			if (source.hasOwnProperty(key))

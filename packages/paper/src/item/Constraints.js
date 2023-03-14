@@ -125,6 +125,49 @@ var Constraints = Base.extend(/** @lends Constraints# */{
          * @static
          * @ben
          */
-        TYPES: ''
+        POSITIONS: ''
     }
+});
+
+/**
+ * @name LinkedConstraints
+ *
+ *
+ * @private
+ */
+var LinkedConstraints = Constraints.extend({
+    // Have LinkedPoint appear as a normal Point in debugging
+    initialize: function Constraints(horizontal, vertical, owner, setter) {
+        this._horizontal = horizontal;
+        this._vertical = vertical;
+        this._owner = owner;
+        this._setter = setter;
+    },
+
+    // See Point#_set() for an explanation of #_set():
+    _set: function(horizontal, vertical, _dontNotify) {
+        this._horizontal = horizontal;
+        this._vertical = vertical;
+        if (!_dontNotify)
+            this._owner[this._setter](this);
+        return this;
+    },
+
+    getHorizontal: function() {
+        return this._horizontal;
+    },
+
+    setHorizontal: function(horizontal) {
+        this._horizontal = horizontal;
+        this._owner[this._setter](this);
+    },
+    
+    getVertical: function() {
+        return this._vertical;
+    },
+
+    setVertical: function(vertical) {
+        this._vertical = vertical;
+        this._owner[this._setter](this);
+    },
 });

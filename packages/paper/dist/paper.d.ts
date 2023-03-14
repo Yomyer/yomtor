@@ -593,7 +593,7 @@ declare namespace paper {
         horizontal: 'start'  |  'end'  |  'center'  |  'both'  |  'scale'
 
         
-        static TYPES: 'start'  |  'end'  |  'center'  |  'both'  |  'scale'
+        static POSITIONS: 'start'  |  'end'  |  'center'  |  'both'  |  'scale'
 
 
         /** 
