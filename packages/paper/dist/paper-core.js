@@ -3841,6 +3841,7 @@ new function() {
 		this._parent = this._index = null;
 		this._applyMatrix = this._canApplyMatrix && settings.applyMatrix;
 		this._flipped = {x: 1, y: 1};
+		this.constraints = ['start'];
 
 		if (point)
 			matrix.translate(point);
@@ -4156,7 +4157,7 @@ new function() {
 
 	setConstraints: function(){
 		this._constraints = Constraints.read(arguments);
-		this._changed(257 | Change.GEOMETRY);
+		this._changed(257 | Change.APPEARANCE);
 		return this._constraints
 	},
 

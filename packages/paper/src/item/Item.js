@@ -165,6 +165,7 @@ new function() { // Injection scope for various item event handlers
         // Inherit the applyMatrix setting from settings.applyMatrix
         this._applyMatrix = this._canApplyMatrix && settings.applyMatrix;
         this._flipped = {x: 1, y: 1};
+        this.constraints = ['start'];
 
         // Handle matrix before everything else, to avoid issues with
         // #addChild() calling _changed() and accessing _matrix already.
@@ -972,7 +973,7 @@ new function() { // Injection scope for various item event handlers
 
     setConstraints: function(/* constraints */){
         this._constraints = Constraints.read(arguments);
-        this._changed(/*#=*/Change.ATTRIBUTE | Change.GEOMETRY);
+        this._changed(/*#=*/Change.ATTRIBUTE | Change.APPEARANCE);
         return this._constraints
     },
 
