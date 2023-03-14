@@ -25,6 +25,9 @@ export const ConstraintsControls = (props: ConstraintsControlsProps) => {
   ) => {
     canvas.project.activeItems.forEach((item) => {
       item.constraints[direction] = position
+      constraints[direction] = position
+
+      setConstraints(new Constraints(constraints))
     })
   }
 
@@ -32,7 +35,7 @@ export const ConstraintsControls = (props: ConstraintsControlsProps) => {
     if (!canvas) return
 
     canvas.project.on('changed', (type) => {
-      if (type & (ChangeFlag.ACTIVE | ChangeFlag.ATTRIBUTE)) {
+      if (type & ChangeFlag.ACTIVE) {
         const vertical = countBy(
           canvas.project.activeItems.map((item) => item.constraints.vertical)
         )
