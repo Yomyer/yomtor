@@ -7,7 +7,7 @@ import {
   ConstraintPositions,
   Constraints as ConstraintsBase
 } from '@yomtor/ui'
-import { ChangeFlag, Constraints } from '@yomtor/paper'
+import { Artboard, ChangeFlag, Constraints } from '@yomtor/paper'
 import { countBy } from 'lodash'
 
 const defaultProps: Partial<ConstraintsControlsProps> = {
@@ -18,6 +18,7 @@ export const ConstraintsControls = (props: ConstraintsControlsProps) => {
   const {} = useComponentDefaultProps('ObjectControls', defaultProps, props)
   const { canvas } = useEditorContext()
   const [constraints, setConstraints] = useState<Constraints>()
+  const [artboard, setArtboard] = useState<Artboard>()
 
   const changeHandler = (
     direction: ConstraintDirections,
@@ -58,5 +59,8 @@ export const ConstraintsControls = (props: ConstraintsControlsProps) => {
     // canvas.project.
   }, [canvas])
 
-  return <ConstraintsBase {...constraints} onChange={changeHandler} />
+  return (
+    constraints &&
+    artboard && <ConstraintsBase {...constraints} onChange={changeHandler} />
+  )
 }
