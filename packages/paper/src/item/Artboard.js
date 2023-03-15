@@ -138,7 +138,7 @@ var Artboard = Group.extend(
         copyContent: function copyContent(source, keep) {
             this._background = source._background.clone();
             this._clipped = source._clipped;
-            copyContent.base.call(this, source, {keep: keep});
+            copyContent.base.call(this, source, keep);
         },
 
         getStrokeBounds: function (matrix) {

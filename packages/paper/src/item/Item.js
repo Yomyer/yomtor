@@ -1854,7 +1854,7 @@ new function() { // Injection scope for various item event handlers
             deep = Base.pick(options ? options.deep : undefined, true),
             keep = Base.pick(options ? options.keep : undefined, false),
             orig = this._name;
-
+        
         // On items with children, for performance reasons due to the way that
         // styles are currently "flattened" into existing children, we need to
         // clone attributes first, then content.
@@ -1887,6 +1887,7 @@ new function() { // Injection scope for various item event handlers
             copy._uid = this._uid;
             copy._name = orig;
         }
+
         copy.angle = this.angle;
 
         return copy;
@@ -1946,6 +1947,7 @@ new function() { // Injection scope for various item event handlers
         var data = source._data,
             name = source._name;
         this._data = data ? Base.clone(data) : null;
+        
         if (name)
             this.setName(name);
     },

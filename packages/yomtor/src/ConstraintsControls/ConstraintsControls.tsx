@@ -18,7 +18,7 @@ export const ConstraintsControls = (props: ConstraintsControlsProps) => {
   const {} = useComponentDefaultProps('ObjectControls', defaultProps, props)
   const { canvas } = useEditorContext()
   const [constraints, setConstraints] = useState<Constraints>()
-  const [artboard, setArtboard] = useState<Artboard>()
+  const [artboard, setArtboard] = useState<boolean>()
 
   const changeHandler = (
     direction: ConstraintDirections,
@@ -43,6 +43,12 @@ export const ConstraintsControls = (props: ConstraintsControlsProps) => {
         const horizontal = countBy(
           canvas.project.activeItems.map((item) => item.constraints.horizontal)
         )
+
+        const hasArtboard = countBy(
+          canvas.project.activeItems.map((item) => item.artboard)
+        )
+
+        setArtboard(!hasArtboard || !hasArtboard.null)
 
         setConstraints(
           new Constraints([

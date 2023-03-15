@@ -4577,7 +4577,6 @@ new function() {
 			deep = Base.pick(options ? options.deep : undefined, true),
 			keep = Base.pick(options ? options.keep : undefined, false),
 			orig = this._name;
-
 		if (children)
 			copy.copyAttributes(this);
 		if (!children || deep){
@@ -4601,6 +4600,7 @@ new function() {
 			copy._uid = this._uid;
 			copy._name = orig;
 		}
+
 		copy.angle = this.angle;
 
 		return copy;
@@ -6099,7 +6099,7 @@ var Artboard = Group.extend(
 		copyContent: function copyContent(source, keep) {
 			this._background = source._background.clone();
 			this._clipped = source._clipped;
-			copyContent.base.call(this, source, {keep: keep});
+			copyContent.base.call(this, source, keep);
 		},
 
 		getStrokeBounds: function (matrix) {

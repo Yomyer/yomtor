@@ -12,7 +12,6 @@ import {
 } from '@yomtor/paper'
 import { useHotkeys } from '@yomtor/hooks'
 import { clearCursor, Clone, Default, setCursor } from '@yomtor/cursors'
-import { clone } from 'lodash'
 
 const defaultProps: Partial<ManagementToolProps> = {}
 
