@@ -1,10 +1,15 @@
 import { createStyles } from '@yomtor/styles'
 import { PanelProps } from './Panel.props'
 
-export interface PanelStylesParams {}
+export interface PanelStylesParams {
+  span: number
+}
 
-export default createStyles((theme, {}: PanelStylesParams) => ({
+export default createStyles((theme, { span }: PanelStylesParams) => ({
   root: {
-    overflow: 'hidden'
+    gridColumnEnd: `span ${span}`,
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center'
   }
 }))

@@ -1,3 +1,5 @@
+import { PropsType } from './Configurator/Props'
+
 type YomtorDemoControlType =
   | 'boolean'
   | 'color'
@@ -40,7 +42,7 @@ interface YomtorCodeDemo extends YomtorDemoBase {
 
 interface YomtorConfiguratorDemo extends YomtorDemoBase {
   type: 'configurator'
-  codeTemplate(props: string, children?: string): string
+  codeTemplate(props: PropsType, children?: string): string
   configurator?: MantineDemoControlProps[]
   configuratorProps?: {
     previewBackground?: string

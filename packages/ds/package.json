@@ -13,7 +13,7 @@
     "react-dom": ">=16.8.0"
   },
   "dependencies": {
-    "@mantine/ds": "^5.5.5",
+    "@mantine/ds": "^6.0.2",
     "@yomtor/icons": "*"
   }
 }

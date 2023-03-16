@@ -9,7 +9,7 @@ import useStyles from './Box.styles'
 const defaultProps: Partial<BoxProps> = {}
 
 export const _Box = forwardRef<HTMLDivElement, BoxProps>((props, ref) => {
-  const { unstyled, ...others } = useComponentDefaultProps(
+  const { unstyled, className, ...others } = useComponentDefaultProps(
     'Box',
     defaultProps,
     props
@@ -18,11 +18,7 @@ export const _Box = forwardRef<HTMLDivElement, BoxProps>((props, ref) => {
   const { classes, cx } = useStyles({ ...others }, { name: 'Box', unstyled })
 
   return (
-    <BaseBox
-      {...others}
-      ref={ref}
-      className={cx(classes.root, others.className)}
-    />
+    <BaseBox {...others} ref={ref} className={cx(classes.root, className)} />
   )
 }) as any
 

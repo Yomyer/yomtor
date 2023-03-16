@@ -12,7 +12,7 @@
     "@emotion/cache": "^11.10.3",
     "@emotion/react": ">=11.9.0",
     "@emotion/server": ">=11.4.0",
-    "@mantine/ssr": "^5.4.0",
+    "@mantine/ssr": "^6.0.2",
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0"
   },

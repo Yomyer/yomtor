@@ -1,5 +1,5 @@
 import React from 'react'
-import { Control, ControlProps } from '@yomtor/ui'
+import { Constraints, Control, ControlProps } from '@yomtor/ui'
 import { YomtorDemo } from '@yomtor/ds'
 
 const codeTemplate = (props: string) => `
@@ -16,10 +16,15 @@ function Wrapper(props: ControlProps) {
   return (
     <>
       <Control>
-        <Control.Title />
+        <Control.Title>Mola mazo xD</Control.Title>
       </Control>
       <Control>
-        <Control.Title />
+        <Control.Title>Constraints</Control.Title>
+        <Control.Group>
+          <Control.Panel>
+            <Constraints />
+          </Control.Panel>
+        </Control.Group>
       </Control>
     </>
   )

@@ -1,36 +1,36 @@
 {
-    "name": "@yomtor/styles",
-    "version": "1.0.0",
-    "description": "Yomtor css-in-js styles engine, based on emotion",
-    "main": "cjs/index.js",
-    "module": "esm/index.js",
-    "types": "lib/index.d.ts",
-    "license": "MIT",
-    "author": "Sergio Caballero<scaballero@yomyer.com>",
-    "sideEffects": false,
-    "homepage": "https://yomtor.dev",
-    "repository": {
-        "url": "https://github.com/yomyer/yomtor.git",
-        "type": "git",
-        "directory": "packages/styles"
-    },
-    "files": [
-        "dist"
-    ],
-    "scripts": {
-        "clean": "rimraf -rf ./dist",
-        "compile": "tsc -p tsconfig.build.json"
-    },
-    "peerDependencies": {
-        "@emotion/cache": "^11.10.3",
-        "@mantine/styles": "^5.3.0",
-        "react": "~17.0.2",
-        "react-dom": "~17.0.2"
-    },
-    "dependencies": {
-        "clsx": "^1.1.1",
-        "csstype": "^3.0.9",
-        "lodash": "^4.17.21",
-        "rimraf": "~3.0.2"
-    }
+  "name": "@yomtor/styles",
+  "version": "1.0.0",
+  "description": "Yomtor css-in-js styles engine, based on emotion",
+  "main": "cjs/index.js",
+  "module": "esm/index.js",
+  "types": "lib/index.d.ts",
+  "license": "MIT",
+  "author": "Sergio Caballero<scaballero@yomyer.com>",
+  "sideEffects": false,
+  "homepage": "https://yomtor.dev",
+  "repository": {
+    "url": "https://github.com/yomyer/yomtor.git",
+    "type": "git",
+    "directory": "packages/styles"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rimraf -rf ./dist",
+    "compile": "tsc -p tsconfig.build.json"
+  },
+  "peerDependencies": {
+    "@emotion/cache": "^11.10.3",
+    "@mantine/styles": "^6.0.2",
+    "react": "~17.0.2",
+    "react-dom": "~17.0.2"
+  },
+  "dependencies": {
+    "clsx": "^1.1.1",
+    "csstype": "^3.0.9",
+    "lodash": "^4.17.21",
+    "rimraf": "~3.0.2"
+  }
 }

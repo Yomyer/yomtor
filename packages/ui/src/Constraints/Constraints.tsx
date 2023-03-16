@@ -9,7 +9,9 @@ import {
 import useStyles from './Constraints.styles'
 import { startCase } from 'lodash'
 
-const defaultProps: Partial<ConstraintsProps> = {}
+const defaultProps: Partial<ConstraintsProps> = {
+  onChange: () => {}
+}
 
 export const _Constraints = forwardRef<HTMLButtonElement, ConstraintsProps>(
   (props, ref) => {

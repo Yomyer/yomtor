@@ -4,11 +4,11 @@ import { Prism } from '@mantine/prism'
 import controls, { ControlProps } from './controls'
 import { propsToString } from './props-to-string'
 import useStyles from './Configurator.styles'
-import { pickBy, identity } from 'lodash'
+import Props, { PropsType } from './Props'
 
 interface ConfiguratorProps {
   component: any
-  codeTemplate(props: string, children?: string): string
+  codeTemplate(props: PropsType, children?: string, data?: any): string
   previewBackground?: string
   multiline?: boolean | number
   includeCode?: boolean
@@ -68,7 +68,7 @@ export default function Configurator({
   })
 
   const code = codeTemplate(
-    propsCode.length > 0 ? ` ${propsCode}` : propsCode,
+    Props(propsCode.length > 0 ? ` ${propsCode}` : propsCode),
     (state as any).children
   )
 

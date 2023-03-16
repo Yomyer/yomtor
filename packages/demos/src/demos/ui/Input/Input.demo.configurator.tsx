@@ -2,19 +2,23 @@ import React from 'react'
 import { Input, InputProps } from '@yomtor/ui'
 import { ArtboardIcon } from '@yomtor/icons'
 import { YomtorDemo } from '@yomtor/ds'
+import { PropsType } from '@yomtor/ds/src/Demo/Demo'
 
-const codeTemplate = (props: string, a: any) => `
-import { Input } from '@yomtor/ui'
-import { ArtboardIcon } from '@yomtor/icons'
-
-function Demo() {
-  return (
-    <Input${props} icon={<ArtboardIcon />} />
-  );
+const codeTemplate = (props: PropsType<InputProps>) => {
+  console.log(`${props}`)
+  return `
+  import { Input } from '@yomtor/ui'
+  import { ArtboardIcon } from '@yomtor/icons'
+  
+  function Demo() {
+    return (
+      <Input icon={<ArtboardIcon />} />
+    );
+  }
+  `
 }
-`
 function Wrapper(props: InputProps) {
-  return <Input {...props} icon={<ArtboardIcon />} />
+  return <Input {...props} icon={<ArtboardIcon size={props.size} />} />
 }
 export const configurator: YomtorDemo = {
   type: 'configurator',
@@ -56,7 +60,7 @@ export const configurator: YomtorDemo = {
       initialValue: false
     },
     {
-      name: 'invalid',
+      name: 'error',
       type: 'boolean',
       defaultValue: false,
       initialValue: false

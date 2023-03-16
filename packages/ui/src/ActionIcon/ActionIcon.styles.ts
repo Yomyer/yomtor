@@ -1,12 +1,5 @@
-import { ActionIconVariant, INPUT_SIZES } from '@mantine/core'
-import {
-  createStyles,
-  CSSObject,
-  YomtorColor,
-  YomtorNumberSize,
-  YomtorTheme,
-  YomtorGradient
-} from '@yomtor/styles'
+import { INPUT_SIZES } from '@mantine/core'
+import { createStyles, CSSObject, YomtorNumberSize } from '@yomtor/styles'
 import { ActionIconProps } from './ActionIcon.props'
 
 export const sizes = {
@@ -61,8 +54,8 @@ export default createStyles(
         }),
         '& svg': {
           position: 'relative',
-          width: theme.fn.size({ size, sizes: iconSizes }),
-          height: theme.fn.size({ size, sizes: iconSizes })
+          width: iconSizes[size],
+          height: iconSizes[size]
         }
       }
     }

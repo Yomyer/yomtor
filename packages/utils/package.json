@@ -9,7 +9,7 @@
   "module": "esm/index.js",
   "types": "lib/index.d.ts",
   "peerDependencies": {
-    "@mantine/utils": "^5.4.0"
+    "@mantine/utils": "^6.0.2"
   },
   "dependencies": {
     "@yomtor/paper": "*",

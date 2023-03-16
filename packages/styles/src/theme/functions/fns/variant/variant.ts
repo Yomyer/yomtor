@@ -3,15 +3,7 @@ import type { YomtorColor, YomtorTheme } from '../../../types'
 import { MantineGradient } from '@mantine/styles'
 
 export interface VariantInput {
-  variant:
-    | 'filled'
-    | 'light'
-    | 'outline'
-    | 'default'
-    | 'gradient'
-    | 'white'
-    | 'subtle'
-    | 'transparent'
+  variant: string
   color?: YomtorColor
   gradient?: MantineGradient
   primaryFallback?: boolean

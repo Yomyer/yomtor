@@ -4,7 +4,9 @@ import { useComponentDefaultProps } from '@yomtor/styles'
 import { PanelProps } from './Panel.props'
 import useStyles from './Panel.styles'
 
-const defaultProps: Partial<PanelProps> = {}
+const defaultProps: Partial<PanelProps> = {
+  span: 32
+}
 
 export const Panel = forwardRef<HTMLDivElement, PanelProps>((props, ref) => {
   const { unstyled, className, ...others } = useComponentDefaultProps(
