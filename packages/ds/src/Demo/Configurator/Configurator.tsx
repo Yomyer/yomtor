@@ -4,7 +4,8 @@ import { Prism } from '@mantine/prism'
 import controls, { ControlProps } from './controls'
 import { propsToString } from './props-to-string'
 import useStyles from './Configurator.styles'
-import Props, { PropsType } from './Props'
+import Props from './Props'
+import { PropsType } from '../types'
 
 interface ConfiguratorProps {
   component: any

@@ -21,10 +21,10 @@ export const DEFAULT_THEME: YomtorThemeBase = {
     }
   },
   icons: {
-    xs: rem(12),
-    sm: rem(17),
-    md: rem(22),
-    lg: rem(27),
-    xl: rem(35)
+    xs: rem(13),
+    sm: rem(16),
+    md: rem(20),
+    lg: rem(25),
+    xl: rem(30)
   }
 }

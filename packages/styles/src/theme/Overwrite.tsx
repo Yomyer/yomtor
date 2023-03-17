@@ -1,11 +1,11 @@
 import { useMantineTheme } from '@mantine/styles'
-import React, { useContext, useEffect } from 'react'
+import { pick } from 'lodash'
+import React from 'react'
 import { attachFunctions } from './functions/attach-functions'
-import { YomtorTheme, YomtorThemeOverride } from './types'
+import { YomtorThemeOverride } from './types'
 
 export const Overwrite = ({ theme }: { theme: YomtorThemeOverride }) => {
-  Object.assign(useMantineTheme(), theme)
+  Object.assign(useMantineTheme(), pick(theme, ['icons']))
   Object.assign(useMantineTheme(), attachFunctions(useMantineTheme()))
-
   return <></>
 }

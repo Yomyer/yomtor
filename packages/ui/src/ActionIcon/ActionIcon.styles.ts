@@ -9,8 +9,8 @@ export const sizes = {
   lg: { height: INPUT_SIZES.lg, width: INPUT_SIZES.lg },
   xl: { height: INPUT_SIZES.xl, width: INPUT_SIZES.xl },
   'compact-xs': { height: 22, width: 22 },
-  'compact-sm': { height: 26, width: 26 },
-  'compact-md': { height: 30, width: 30 },
+  'compact-sm': { height: 24, width: 26 },
+  'compact-md': { height: 28, width: 30 },
   'compact-lg': { height: 34, width: 34 },
   'compact-xl': { height: 40, width: 40 }
 }
