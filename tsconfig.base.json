@@ -4,7 +4,6 @@
     "jest-config.js",
     "configuration/storybook/main.js",
     "**/*.test.*",
-    "**/*.stories.*",
     "scripts/**/*",
     "lib/**/*",
     "esm/**/*",

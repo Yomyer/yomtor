@@ -1,9 +1,9 @@
 import React from 'react'
 import { ActionIconProps, ActionIcon, Group, Input } from '@yomtor/ui'
 import { ArtboardIcon } from '@yomtor/icons'
-import { YomtorDemo } from '@yomtor/ds'
+import { YomtorDemo, PropsType } from '@yomtor/ds'
 
-const codeTemplate = (props: string) => `
+const codeTemplate = (props: PropsType<ActionIconProps>) => `
 import { ArtboardIcon } from '@yomtor/icons'
 import { ActionIcon } from '@yomtor/ui'
 

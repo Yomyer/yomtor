@@ -1,4 +1,4 @@
-import { MantineThemeColors, MantineTheme, CSSObject } from '@mantine/styles'
+import { MantineTheme, CSSObject, MantineSizes } from '@mantine/styles'
 import { YomtorThemeColors } from './YomtorColor'
 import { VariantInput, VariantOutput } from '../functions/fns/variant/variant'
 
@@ -18,6 +18,7 @@ export type YomtorTheme = Omit<MantineTheme, 'colors' | 'fn'> & {
   colors: YomtorThemeColors
   primaryColor: keyof YomtorThemeColors
   fn: YomtorThemeFunctions
+  icons: MantineSizes
 }
 
 export type YomtorThemeBase = Omit<YomtorTheme, 'fn'>

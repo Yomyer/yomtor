@@ -1,11 +1,6 @@
 {
   "extends": "../../tsconfig.json",
-  "include": [
-    "./src",
-    "../../configuration/types",
-    "../../configuration/types/yomtor.d.ts",
-    "../core/src/ZoomTool"
-  ],
+  "include": ["./src", "../../configuration/types", "./src/**/*.stories.*"],
   "compilerOptions": {
     "rootDir": "src",
     "baseUrl": ".",

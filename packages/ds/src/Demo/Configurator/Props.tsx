@@ -1,7 +1,5 @@
-export type PropsType<T = unknown> = {
-  toString: () => {}
-  props: string
-} & T
+import { isString } from 'lodash'
+import { PropsType } from '../types'
 
 const Props = (props: string) => {
   const pattern = /(\w+)=((\{.*?\})|(".*?"))/g
@@ -23,7 +21,14 @@ const Props = (props: string) => {
     },
     {
       get(target, prop) {
-        return target.toString()
+        if (prop === 'toString') {
+          return function () {
+            return target.props
+          }
+        }
+        if (isString(prop)) {
+          return target[prop] || ''
+        }
       }
     }
   )

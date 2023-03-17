@@ -8,10 +8,6 @@ export default {
   title: 'UI/Inputs/Input'
 }
 
-export function Default() {
-  return <Input />
-}
-
 export function InlineForm() {
   return (
     <Group>

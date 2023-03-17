@@ -3,9 +3,9 @@ import { useMantineTheme } from '@mantine/core'
 import { YomtorDemo } from './types'
 import CodeDemo from './CodeDemo/CodeDemo'
 import Configurator from './Configurator/Configurator'
-import Props, { PropsType } from './Configurator/Props'
+import Props from './Configurator/Props'
 
-export { CodeDemo, Configurator, Props, PropsType }
+export { CodeDemo, Configurator, Props }
 
 type ConfiguratorProps = React.ComponentProps<typeof Configurator>
 type CodeDemoProps = React.ComponentProps<typeof CodeDemo>

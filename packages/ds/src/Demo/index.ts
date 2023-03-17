@@ -1,2 +1,2 @@
-export { Demo, CodeDemo, Configurator, Props } from './Demo'
-export type { YomtorDemo } from './types'
+export { Demo, CodeDemo, Configurator } from './Demo'
+export type { YomtorDemo, PropsType } from './types'

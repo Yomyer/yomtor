@@ -1,4 +1,4 @@
-import { DEFAULT_THEME as MANTINE_DEFAULT_THEME } from '@mantine/styles'
+import { DEFAULT_THEME as MANTINE_DEFAULT_THEME, rem } from '@mantine/styles'
 import { YomtorThemeBase } from './types'
 
 import { DEFAULT_COLORS } from './default-colors'
@@ -12,12 +12,19 @@ export const DEFAULT_THEME: YomtorThemeBase = {
   headings: {
     ...MANTINE_DEFAULT_THEME.headings,
     sizes: {
-      h1: { fontSize: '1.625rem', lineHeight: 1.35, fontWeight: undefined },
-      h2: { fontSize: '1.375rem', lineHeight: 1.4, fontWeight: undefined },
-      h3: { fontSize: '1.125rem', lineHeight: 1.45, fontWeight: undefined },
-      h4: { fontSize: '1rem', lineHeight: 1.5, fontWeight: undefined },
-      h5: { fontSize: '0.875rem', lineHeight: 1.5, fontWeight: undefined },
-      h6: { fontSize: '0.685rem', lineHeight: 1.5, fontWeight: undefined }
+      h1: { fontSize: rem(26), lineHeight: 1.35, fontWeight: undefined },
+      h2: { fontSize: rem(22), lineHeight: 1.4, fontWeight: undefined },
+      h3: { fontSize: rem(18), lineHeight: 1.45, fontWeight: undefined },
+      h4: { fontSize: rem(16), lineHeight: 1.5, fontWeight: undefined },
+      h5: { fontSize: rem(14), lineHeight: 1.5, fontWeight: undefined },
+      h6: { fontSize: rem(11), lineHeight: 1.5, fontWeight: undefined }
     }
+  },
+  icons: {
+    xs: rem(12),
+    sm: rem(17),
+    md: rem(22),
+    lg: rem(27),
+    xl: rem(35)
   }
 }

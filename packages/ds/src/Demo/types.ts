@@ -1,5 +1,3 @@
-import { PropsType } from './Configurator/Props'
-
 type YomtorDemoControlType =
   | 'boolean'
   | 'color'
@@ -8,6 +6,11 @@ type YomtorDemoControlType =
   | 'size'
   | 'number'
   | 'segmented'
+
+export type PropsType<T = unknown> = {
+  toString: () => {}
+  props: string
+} & T
 
 interface MantineDemoControlProps {
   type: YomtorDemoControlType

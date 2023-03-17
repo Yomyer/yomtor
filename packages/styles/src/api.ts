@@ -3,6 +3,8 @@ export {
   ColorSchemeProvider,
   GlobalStyles,
   NormalizeCSS,
+  getSize,
+  rem,
   // extractSystemStyles,
   useMantineColorScheme as useYomtorColorScheme,
   useMantineTheme as useYomtorTheme,

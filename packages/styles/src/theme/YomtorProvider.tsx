@@ -34,7 +34,7 @@ export function YomtorProvider({
       withNormalizeCSS
       emotionCache={YomtorCache}
     >
-      <Overwrite />
+      <Overwrite theme={theme} />
       {children}
     </MantineProvider>
   )

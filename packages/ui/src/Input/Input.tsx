@@ -7,7 +7,7 @@ import { InputProps } from './Input.props'
 import useStyles from './Input.styles'
 
 const defaultProps: Partial<InputProps> = {
-  size: 'sm',
+  size: 'md',
   radius: 'xs',
   compact: true,
   variant: 'transparent'

@@ -15,14 +15,6 @@ export const sizes = {
   'compact-xl': { height: 40, width: 40 }
 }
 
-const iconSizes = {
-  xs: 12,
-  sm: 17,
-  md: 22,
-  lg: 27,
-  xl: 35
-}
-
 interface GetSizeStyles {
   compact: boolean
   size: YomtorNumberSize
@@ -54,8 +46,8 @@ export default createStyles(
         }),
         '& svg': {
           position: 'relative',
-          width: iconSizes[size],
-          height: iconSizes[size]
+          width: theme.icons[size],
+          height: theme.icons[size]
         }
       }
     }

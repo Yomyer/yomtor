@@ -1,18 +1,16 @@
 import React from 'react'
 import { Input, InputProps } from '@yomtor/ui'
 import { ArtboardIcon } from '@yomtor/icons'
-import { YomtorDemo } from '@yomtor/ds'
-import { PropsType } from '@yomtor/ds/src/Demo/Demo'
+import { YomtorDemo, PropsType } from '@yomtor/ds'
 
 const codeTemplate = (props: PropsType<InputProps>) => {
-  console.log(`${props}`)
   return `
   import { Input } from '@yomtor/ui'
   import { ArtboardIcon } from '@yomtor/icons'
   
   function Demo() {
     return (
-      <Input icon={<ArtboardIcon />} />
+      <Input ${props} icon={<ArtboardIcon ${props.size}/>} />
     );
   }
   `
@@ -27,13 +25,16 @@ export const configurator: YomtorDemo = {
   configurator: [
     {
       name: 'variant',
-      type: 'segmented',
+      type: 'select',
       initialValue: 'default',
       defaultValue: 'default',
       data: [
-        { label: 'default', value: 'default' },
+        { label: 'transparent', value: 'transparent' },
+        { label: 'subtle', value: 'subtle' },
         { label: 'filled', value: 'filled' },
-        { label: 'unstyled', value: 'unstyled' }
+        { label: 'light', value: 'light' },
+        { label: 'outline', value: 'outline' },
+        { label: 'default', value: 'default' }
       ]
     },
     {
@@ -44,14 +45,14 @@ export const configurator: YomtorDemo = {
     {
       name: 'radius',
       type: 'size',
-      initialValue: 'sm',
-      defaultValue: 'sm'
+      initialValue: 'xs',
+      defaultValue: 'xs'
     },
     {
       name: 'size',
       type: 'size',
-      initialValue: 'sm',
-      defaultValue: 'sm'
+      initialValue: 'md',
+      defaultValue: 'md'
     },
     {
       name: 'disabled',
