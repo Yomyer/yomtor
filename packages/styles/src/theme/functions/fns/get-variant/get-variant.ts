@@ -10,9 +10,18 @@ export function getVariant(theme: YomtorTheme) {
     color,
     gradient,
     actived,
-    withFocus
+    withFocus,
+    withPrimaryColor = true,
+    primaryFallback
   }: VariantInput): CSSObject => {
-    const colors = theme.fn.variant({ color, variant, gradient, actived })
+    const colors = theme.fn.variant({
+      color,
+      variant,
+      gradient,
+      actived,
+      withPrimaryColor,
+      primaryFallback
+    })
 
     if (variant === 'gradient') {
       return {

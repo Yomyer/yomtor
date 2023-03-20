@@ -1,5 +1,5 @@
 import { CSSProperties } from 'react'
-import type { YomtorColor, YomtorTheme } from '../../../types'
+import type { YomtorColor, YomtorTheme, YomtorThemeBase } from '../../../types'
 import { MantineGradient } from '@mantine/styles'
 
 export interface VariantInput {
@@ -9,6 +9,7 @@ export interface VariantInput {
   primaryFallback?: boolean
   actived?: boolean
   withFocus?: boolean
+  withPrimaryColor?: boolean
 }
 
 export interface VariantOutput {
@@ -21,6 +22,29 @@ export interface VariantOutput {
 }
 
 let OLD_VARIANT = null
+
+interface ColorInfo {
+  isSplittedColor: boolean
+  key?: string
+  shade?: number
+}
+
+function getColorIndexInfo(color: string, theme: YomtorThemeBase): ColorInfo {
+  if (typeof color === 'string' && color.includes('.')) {
+    const [splittedColor, _splittedShade] = color.split('.')
+    const splittedShade = parseInt(_splittedShade, 10)
+
+    if (
+      splittedColor in theme.colors &&
+      splittedShade >= 0 &&
+      splittedShade < 10
+    ) {
+      return { isSplittedColor: true, key: splittedColor, shade: splittedShade }
+    }
+  }
+
+  return { isSplittedColor: false }
+}
 
 export function variant(theme: YomtorTheme) {
   const getThemeColor = theme.fn.themeColor
@@ -36,7 +60,8 @@ export function variant(theme: YomtorTheme) {
     variant,
     color,
     gradient,
-    primaryFallback
+    primaryFallback,
+    withPrimaryColor = true
   }: VariantInput): VariantOutput => {
     const variants = OLD_VARIANT({
       variant,
@@ -46,6 +71,28 @@ export function variant(theme: YomtorTheme) {
     })
 
     switch (variant) {
+      case 'filled':
+        if (!withPrimaryColor) {
+          return {
+            border: 'transparent',
+            background:
+              theme.colorScheme === 'dark'
+                ? theme.colors.dark[6]
+                : theme.colors.gray[0],
+            color:
+              theme.colorScheme === 'dark'
+                ? theme.colors.dark[0]
+                : theme.colors.dark[9],
+            hover: {
+              background:
+                theme.colorScheme === 'dark'
+                  ? theme.colors.dark[5]
+                  : theme.colors.gray[1]
+            }
+          }
+        }
+        return OLD_VARIANT({ variant: 'filled', color })
+
       case 'toggle':
         return {
           border: 'transparent',

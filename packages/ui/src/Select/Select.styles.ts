@@ -27,7 +27,11 @@ const sizes = {
 export default createStyles(
   (theme, { variant, size, compact }: SelectProps) => ({
     input: {
-      ...theme.fn.getVariant({ variant, withFocus: true }),
+      ...theme.fn.getVariant({
+        variant,
+        withFocus: true,
+        withPrimaryColor: false
+      }),
       ...(compact
         ? { ...compactSizes[`compact-${size}`], minHeight: 'unset' }
         : undefined),
