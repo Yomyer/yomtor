@@ -61,7 +61,7 @@ export function getVariant(theme: YomtorTheme) {
     }
 
     let active
-    if (actived) {
+    if (actived && colors.active) {
       const global = {
         content: '""',
         position: 'absolute',

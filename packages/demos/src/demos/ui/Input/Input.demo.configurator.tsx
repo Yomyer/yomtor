@@ -30,10 +30,8 @@ export const configurator: YomtorDemo = {
       defaultValue: 'default',
       data: [
         { label: 'transparent', value: 'transparent' },
-        { label: 'subtle', value: 'subtle' },
+        { label: 'toggle', value: 'toggle' },
         { label: 'filled', value: 'filled' },
-        { label: 'light', value: 'light' },
-        { label: 'outline', value: 'outline' },
         { label: 'default', value: 'default' }
       ]
     },

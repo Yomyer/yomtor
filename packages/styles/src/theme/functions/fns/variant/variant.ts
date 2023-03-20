@@ -46,7 +46,7 @@ export function variant(theme: YomtorTheme) {
     })
 
     switch (variant) {
-      case 'transparent':
+      case 'toggle':
         return {
           border: 'transparent',
           color:
@@ -66,6 +66,22 @@ export function variant(theme: YomtorTheme) {
               theme.colorScheme === 'dark'
                 ? theme.colors.dark[5]
                 : theme.colors.gray[2]
+          },
+          focus: theme.colors.primary[5]
+        }
+      case 'transparent':
+        return {
+          border: 'transparent',
+          color:
+            theme.colorScheme === 'dark'
+              ? theme.colors.dark[0]
+              : theme.colors.dark[9],
+          background: 'transparent',
+          hover: {
+            background:
+              theme.colorScheme === 'dark'
+                ? theme.colors.dark[6]
+                : theme.colors.gray[1]
           },
           focus: theme.colors.primary[5]
         }

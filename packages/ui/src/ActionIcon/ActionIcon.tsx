@@ -9,7 +9,7 @@ import useStyles from './ActionIcon.styles'
 
 const defaultProps: Partial<ActionIconProps> = {
   size: 'md',
-  variant: 'transparent',
+  variant: 'toggle',
   radius: 'xs',
   compact: true,
   actived: false

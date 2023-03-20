@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Group, Button, Input, ActionIcon } from '@yomtor/ui'
+import { Group, Button, Input, ActionIcon, Title } from '@yomtor/ui'
 import { ArtboardIcon } from '@yomtor/icons'
 
 export default {
@@ -8,15 +8,14 @@ export default {
 
 export function InlineForm() {
   return (
-    <Group>
-      <ActionIcon>
-        <ArtboardIcon />
-      </ActionIcon>
-      <Input icon={<ArtboardIcon size='md' />} />
-      <Input />
-      <Button>
-        <ArtboardIcon />
-      </Button>
-    </Group>
+    <>
+      <Title order={3}>Inline Height</Title>
+      <Group>
+        <ActionIcon>
+          <ArtboardIcon />
+        </ActionIcon>
+        <Input icon={<ArtboardIcon size='md' />} />
+      </Group>
+    </>
   )
 }

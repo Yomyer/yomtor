@@ -10,22 +10,26 @@ const defaultProps: Partial<InputProps> = {
   size: 'md',
   radius: 'xs',
   compact: true,
-  variant: 'transparent'
+  variant: 'toggle'
 }
 
 export const _Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
-  const { unstyled, compact, variant, ...others } = useComponentDefaultProps(
-    'Input',
-    defaultProps,
-    props
-  )
+  const { unstyled, className, compact, variant, ...others } =
+    useComponentDefaultProps('Input', defaultProps, props)
 
   const { classes, cx } = useStyles(
     { compact, variant, ...others },
     { name: 'Input', unstyled }
   )
 
-  return <BaseInput {...others} ref={ref} classNames={classes} />
+  return (
+    <BaseInput
+      {...others}
+      ref={ref}
+      className={className}
+      classNames={classes}
+    />
+  )
 }) as any
 
 _Input.displayName = '@yomtor/ui/Input'
