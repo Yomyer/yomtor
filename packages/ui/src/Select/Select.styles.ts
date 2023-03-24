@@ -25,20 +25,53 @@ const sizes = {
 }
 
 export default createStyles(
-  (theme, { variant, size, compact }: SelectProps) => ({
-    input: {
-      ...theme.fn.getVariant({
-        variant,
-        withFocus: true,
-        withPrimaryColor: false
-      }),
-      ...(compact
-        ? { ...compactSizes[`compact-${size}`], minHeight: 'unset' }
-        : undefined),
-      fontSize: getSize({ size, sizes }),
-      '&[data-with-icon]': {
-        paddingLeft: rem(getSize({ size, sizes: iconSizes }))
+  (theme, { variant, size, compact }: SelectProps) => {
+    return {
+      input: {
+        ...theme.fn.getVariant({
+          variant,
+          withFocus: true,
+          withPrimaryColor: false
+        }),
+        '&:focus-visible': {
+          outline: 'none'
+        },
+        ...(compact && {
+          ...compactSizes[`compact-${size}`],
+          minHeight: 'unset',
+          fontSize: getSize({ size, sizes }),
+          '&[data-with-icon]': {
+            paddingLeft: rem(getSize({ size, sizes: iconSizes }))
+          }
+        })
+      },
+      icon: {
+        ...(compact && {
+          width: rem(getSize({ size, sizes: iconSizes }))
+        })
+      },
+      item: {
+        ...(compact && {
+          fontSize: getSize({ size, sizes }),
+          padding: 0,
+          ...compactSizes[`compact-${size}`],
+          display: 'flex',
+          alignItems: 'center',
+          '&[data-hovered]': {
+            backgroundColor: theme.fn.variant({
+              variant: 'filled'
+            }).background
+          },
+          '&[data-selected]': {
+            backgroundColor: 'unset',
+            color: 'unset'
+          }
+        })
+      },
+      separator: {},
+      separatorLabel: {
+        display: 'none'
       }
     }
-  })
+  }
 )

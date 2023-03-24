@@ -27,17 +27,24 @@ const sizes = {
 export default createStyles(
   (theme, { size, variant, compact }: InputProps) => ({
     input: {
-      ...theme.fn.getVariant({ variant, withFocus: true }),
-      ...(compact
-        ? { ...compactSizes[`compact-${size}`], minHeight: 'unset' }
-        : undefined),
-      fontSize: getSize({ size, sizes }),
-      '&[data-with-icon]': {
-        paddingLeft: rem(getSize({ size, sizes: iconSizes }))
-      }
+      ...theme.fn.getVariant({
+        variant,
+        withFocus: true,
+        withPrimaryColor: false
+      }),
+      ...(compact && {
+        ...compactSizes[`compact-${size}`],
+        minHeight: 'unset',
+        fontSize: getSize({ size, sizes }),
+        '&[data-with-icon]': {
+          paddingLeft: rem(getSize({ size, sizes: iconSizes }))
+        }
+      })
     },
     icon: {
-      width: rem(getSize({ size, sizes: iconSizes }))
+      ...(compact && {
+        width: rem(getSize({ size, sizes: iconSizes }))
+      })
     }
   })
 )

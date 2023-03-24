@@ -26,8 +26,8 @@ export const configurator: YomtorDemo = {
     {
       name: 'variant',
       type: 'select',
-      initialValue: 'default',
-      defaultValue: 'default',
+      initialValue: 'toggle',
+      defaultValue: 'defautogglelt',
       data: [
         { label: 'transparent', value: 'transparent' },
         { label: 'toggle', value: 'toggle' },
@@ -51,6 +51,12 @@ export const configurator: YomtorDemo = {
       type: 'size',
       initialValue: 'md',
       defaultValue: 'md'
+    },
+    {
+      name: 'compact',
+      type: 'boolean',
+      defaultValue: true,
+      initialValue: true
     },
     {
       name: 'disabled',
