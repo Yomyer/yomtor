@@ -68,9 +68,22 @@ export default createStyles(
           }
         })
       },
-      separator: {},
-      separatorLabel: {
-        display: 'none'
+      separator: {
+        height: 1,
+        padding: 0,
+        background: theme.fn.variant({
+          variant: 'default'
+        }).border,
+        margin: '10px 0',
+        '& > *': {
+          display: 'none'
+        },
+        '&:first-of-type': {
+          display: 'none'
+        }
+      },
+      itemsWrapper: {
+        padding: '10px 0'
       }
     }
   }
