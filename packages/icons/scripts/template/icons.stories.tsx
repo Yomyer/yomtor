@@ -23,7 +23,7 @@ const Canvas: React.FC<Props> = ({ icon: Icon, rotate }) => {
                 fontSize: 32
             }}
         >
-            <Icon rotate={rotate} />
+            <Icon rotate={rotate} size="xl" />
         </div>
     )
 }

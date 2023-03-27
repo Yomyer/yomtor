@@ -25,7 +25,7 @@ const sizes = {
 }
 
 export default createStyles(
-  (theme, { variant, size, compact }: SelectProps) => {
+  (theme, { variant, ticked, size, compact }: SelectProps) => {
     return {
       input: {
         ...theme.fn.getVariant({
@@ -56,34 +56,44 @@ export default createStyles(
           padding: 0,
           ...compactSizes[`compact-${size}`],
           display: 'flex',
-          alignItems: 'center',
-          '&[data-hovered]': {
-            backgroundColor: theme.fn.variant({
-              variant: 'filled'
-            }).background
-          },
+          alignItems: 'center'
+        }),
+        ...(ticked && {
           '&[data-selected]': {
             backgroundColor: 'unset',
             color: 'unset'
+          },
+          '&[data-hovered]': {
+            backgroundColor: theme.fn.variant({
+              variant: 'filled'
+            }).background,
+            borderRadius: 0
+          },
+          '& svg': {
+            width: rem(getSize({ size, sizes: iconSizes }))
           }
         })
       },
       separator: {
-        height: 1,
-        padding: 0,
-        background: theme.fn.variant({
-          variant: 'default'
-        }).border,
-        margin: '10px 0',
-        '& > *': {
-          display: 'none'
-        },
-        '&:first-of-type': {
-          display: 'none'
-        }
+        ...(ticked && {
+          height: 1,
+          padding: 0,
+          background: theme.fn.variant({
+            variant: 'default'
+          }).border,
+          margin: '10px 0',
+          '& > *': {
+            display: 'none'
+          },
+          '&:first-of-type': {
+            display: 'none'
+          }
+        })
       },
       itemsWrapper: {
-        padding: '10px 0'
+        ...(ticked && {
+          padding: '10px 0'
+        })
       }
     }
   }

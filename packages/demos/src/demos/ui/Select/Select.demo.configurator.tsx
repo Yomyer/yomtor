@@ -97,6 +97,12 @@ export const configurator: YomtorDemo = {
       initialValue: false
     },
     {
+      name: 'ticked',
+      type: 'boolean',
+      defaultValue: true,
+      initialValue: true
+    },
+    {
       name: 'error',
       type: 'boolean',
       defaultValue: false,

@@ -1,7 +1,7 @@
-import { YomtorNumberSize } from '@yomtor/styles'
+import { YomtorNumberSize, DefaultProps } from '@yomtor/styles'
 import { CSSProperties, MouseEventHandler } from 'react'
 
-export type SvgIconProps = {
+export interface SvgIconProps extends DefaultProps {
   children?: React.ReactNode
   rotate?: number
   viewbox?: string

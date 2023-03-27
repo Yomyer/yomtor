@@ -3,7 +3,7 @@ import { SvgIconProps } from './SvgIcon.props'
 
 type Classes = 'root'
 
-export const SvgIconStyles = createStyles<Classes, SvgIconProps>(
+export default createStyles<Classes, SvgIconProps>(
   (theme, { hidden, rotate, size, style }) => ({
     ...style,
     root: {

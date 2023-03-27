@@ -5,25 +5,33 @@ import { Select as BaseSelect } from '@mantine/core'
 import { SelectProps } from './Select.props'
 import useStyles from './Select.styles'
 import { useMergedRef } from '@yomtor/hooks'
+import { SelectItem } from './SelectItem/SelectItem'
 
 const defaultProps: Partial<SelectProps> = {
   size: 'md',
   radius: 'xs',
   compact: true,
+  ticked: true,
   variant: 'toggle',
-  initiallyOpened: true
+  initiallyOpened: true,
+  itemComponent: undefined
 }
 
 export const Select = forwardRef<HTMLInputElement, SelectProps>(
   (props, ref) => {
-    const { unstyled, compact, className, ...others } =
+    const { unstyled, ticked, compact, className, ...others } =
       useComponentDefaultProps('Select', defaultProps, props)
+
     const select = useRef<HTMLElement>()
 
     const { classes, cx } = useStyles(
-      { compact, ...others },
+      { compact, ticked, ...others },
       { name: 'Select', unstyled }
     )
+
+    if (ticked) {
+      others.itemComponent = SelectItem
+    }
 
     return (
       <BaseSelect
@@ -31,6 +39,11 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
         ref={useMergedRef(ref, select)}
         className={className}
         classNames={classes}
+        transitionProps={{
+          transition: 'fade',
+          duration: 80,
+          timingFunction: 'ease'
+        }}
       />
     )
   }
