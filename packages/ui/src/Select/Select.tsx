@@ -23,7 +23,6 @@ const defaultProps: Partial<SelectProps> = {
   compact: true,
   ticked: true,
   variant: 'toggle',
-  initiallyOpened: true,
   itemComponent: undefined,
   dropdownComponent: SelectScrollArea
 }

@@ -67,12 +67,18 @@ export default createStyles(
             backgroundColor: theme.fn.variant({
               variant: 'filled'
             }).background,
+            color: theme.fn.variant({
+              variant: 'filled'
+            }).color,
             borderRadius: 0
           },
           '& svg': {
             width: rem(getSize({ size, sizes: iconSizes }))
           }
         })
+      },
+      rightSection: {
+        pointerEvents: 'none'
       },
       separator: {
         ...(ticked && {

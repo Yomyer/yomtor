@@ -17,7 +17,7 @@ export default createStyles(
           ? theme.colors.dark[5]
           : theme.colors.gray[2]
       }`,
-      overflow: 'hidden',
+      // overflow: 'hidden',
       borderTopLeftRadius: theme.fn.radius(radius),
       borderTopRightRadius: theme.fn.radius(radius),
       borderBottom: 0,

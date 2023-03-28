@@ -32,15 +32,19 @@ export const SelectScrollArea = forwardRef<HTMLDivElement, ScrollAreaProps>(
       scrollIntoView({ alignment: 'center' })
 
       if (ticked) {
-        const dropdownRect = dropdown.getBoundingClientRect()
-        const selectedRect = selected.getBoundingClientRect()
-        const rootRect = root.getBoundingClientRect()
+        const resizeObserver = new ResizeObserver(() => {
+          const dropdownRect = dropdown.getBoundingClientRect()
+          const selectedRect = selected.getBoundingClientRect()
+          const rootRect = root.getBoundingClientRect()
 
-        const diff =
-          rootRect.top -
-          dropdownRect.top +
-          (dropdownRect.top - selectedRect.top)
-        dropdown.style.marginTop = diff + 'px'
+          const diff =
+            rootRect.top -
+            dropdownRect.top +
+            (dropdownRect.top - selectedRect.top)
+          dropdown.style.marginTop = diff + 'px'
+          resizeObserver.disconnect()
+        })
+        resizeObserver.observe(dropdown)
       }
     }, [])
 

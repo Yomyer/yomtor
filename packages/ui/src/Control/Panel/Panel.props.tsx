@@ -7,5 +7,7 @@ type PanelStylesNames = Selectors<typeof useStyles>
 export interface PanelProps
   extends DefaultProps<PanelStylesNames, PanelStylesParams> {
   children: ReactNode
-  span?: number
+  columns?: number | 'auto'
+  rows?: number | 'auto'
+  gap?: number
 }

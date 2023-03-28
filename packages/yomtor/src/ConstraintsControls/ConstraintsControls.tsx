@@ -1,15 +1,17 @@
 import { ConstraintsControlsProps } from './ConstraintsControls.props'
 import { useComponentDefaultProps } from '@yomtor/styles'
 import { useEditorContext } from '@yomtor/core'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   ConstraintDirections,
   ConstraintPositions,
   Constraints as ConstraintsBase,
-  Control
+  Control,
+  Select
 } from '@yomtor/ui'
 import { Artboard, ChangeFlag, Constraints } from '@yomtor/paper'
 import { countBy } from 'lodash'
+import { HorizontalData, VerticalData } from './data'
 
 const defaultProps: Partial<ConstraintsControlsProps> = {
   visible: false
@@ -75,9 +77,27 @@ export const ConstraintsControls = (props: ConstraintsControlsProps) => {
   return (constraints && artboard) || visible ? (
     <Control>
       <Control.Title>Constraints</Control.Title>
-      <Control.Group>
-        <Control.Panel>
+      <Control.Group columnGap={10}>
+        <Control.Panel columns={1} rows={2}>
           <ConstraintsBase {...constraints} onChange={changeHandler} />
+        </Control.Panel>
+        <Control.Panel columns={31} gap={10}>
+          <Select
+            data={HorizontalData}
+            value={constraints.horizontal}
+            onChange={(value: ConstraintPositions) =>
+              changeHandler('horizontal', value)
+            }
+          />
+        </Control.Panel>
+        <Control.Panel columns={31}>
+          <Select
+            data={VerticalData}
+            value={constraints.vertical}
+            onChange={(value: ConstraintPositions) =>
+              changeHandler('vertical', value)
+            }
+          />
         </Control.Panel>
       </Control.Group>
     </Control>

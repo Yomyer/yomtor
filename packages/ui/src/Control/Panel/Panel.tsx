@@ -5,7 +5,8 @@ import { PanelProps } from './Panel.props'
 import useStyles from './Panel.styles'
 
 const defaultProps: Partial<PanelProps> = {
-  span: 32
+  columns: 32,
+  rows: 1
 }
 
 export const Panel = forwardRef<HTMLDivElement, PanelProps>((props, ref) => {

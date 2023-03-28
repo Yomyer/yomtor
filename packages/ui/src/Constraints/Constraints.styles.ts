@@ -59,7 +59,7 @@ export default createStyles(
     }: ConstraintsStylesParams
   ) => {
     const color =
-      theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.colors.gray[0]
+      theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.colors.gray[8]
     return {
       root: {
         width: 64,
