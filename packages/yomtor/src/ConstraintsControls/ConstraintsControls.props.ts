@@ -1,1 +1,3 @@
-export interface ConstraintsControlsProps {}
+export interface ConstraintsControlsProps {
+  visible?: boolean
+}

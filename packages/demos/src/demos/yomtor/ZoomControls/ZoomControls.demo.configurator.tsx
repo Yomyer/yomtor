@@ -1,10 +1,10 @@
 import React, { useRef, useEffect } from 'react'
-import { YomtorDemo } from '@yomtor/ds'
+import { YomtorDemo, PropsType } from '@yomtor/ds'
 import { EditorProvider, Canvas, ZoomTool } from '@yomtor/core'
 import { ZoomControls, ZoomControlsProps } from '@yomtor/yomtor'
 import { Path } from '@yomtor/paper'
 
-const codeTemplate = (props: string) => `
+const codeTemplate = (props: PropsType<ZoomControlsProps>) => `
 import { YomtorProvider, Canvas, ViewToolProps, ZoomTool } from '@yomtor/core'
 import { Path } from '@yomtor/paper'
 

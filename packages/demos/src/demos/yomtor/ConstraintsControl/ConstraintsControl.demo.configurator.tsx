@@ -1,6 +1,7 @@
 import React from 'react'
 import { Constraints, Control, ControlProps } from '@yomtor/ui'
 import { PropsType, YomtorDemo } from '@yomtor/ds'
+import { ConstraintsControls } from '@yomtor/yomtor'
 
 const codeTemplate = (props: PropsType<ControlProps>) => `
 import { Control } from '@yomtor/ui'
@@ -15,17 +16,7 @@ function Demo() {
 function Wrapper(props: ControlProps) {
   return (
     <>
-      <Control>
-        <Control.Title>Mola mazo xD</Control.Title>
-      </Control>
-      <Control>
-        <Control.Title>Constraints</Control.Title>
-        <Control.Group>
-          <Control.Panel>
-            <Constraints />
-          </Control.Panel>
-        </Control.Group>
-      </Control>
+      <ConstraintsControls visible />
     </>
   )
 }

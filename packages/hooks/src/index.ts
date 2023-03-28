@@ -4,7 +4,8 @@ export {
   useDebouncedValue,
   useHover,
   useMergedRef,
-  usePrevious
+  usePrevious,
+  useScrollIntoView
 } from '@mantine/hooks'
 
 export * from './use-clear-props/use-clear-props'

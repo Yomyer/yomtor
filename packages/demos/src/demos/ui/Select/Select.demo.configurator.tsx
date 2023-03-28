@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Select, SelectProps } from '@yomtor/ui'
 import { PropsType, YomtorDemo } from '@yomtor/ds'
 import { ArtboardIcon } from '@yomtor/icons'
@@ -15,10 +15,13 @@ function Demo() {
 }
 `
 function Wrapper(props: SelectProps) {
+  const [value, setValue] = useState('')
+
   return (
     <Select
       {...props}
       icon={<ArtboardIcon size={props.size} />}
+      onChange={setValue}
       data={[
         { value: 'python', label: 'Python', group: 'Test' },
         { value: 'java', label: 'Java', group: 'Test' },
@@ -46,7 +49,7 @@ function Wrapper(props: SelectProps) {
         { value: 'julia', label: 'Julia' },
         { value: 'prolog', label: 'Prolog' }
       ]}
-      value='julia'
+      value={value}
     />
   )
 }

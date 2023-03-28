@@ -1,4 +1,4 @@
-import { createStyles } from '@yomtor/styles'
+import { createStyles, getSize } from '@yomtor/styles'
 import { SvgIconProps } from './SvgIcon.props'
 
 type Classes = 'root'
@@ -13,8 +13,8 @@ export default createStyles<Classes, SvgIconProps>(
       fillOpacity: 1,
       stroke: 'currentcolor',
       strokeOpacity: 0,
-      width: theme.icons[size],
-      height: theme.icons[size],
+      width: getSize({ sizes: theme.icons, size }),
+      height: getSize({ sizes: theme.icons, size }),
       display: hidden ? 'none' : 'inline-block',
       flexShrink: 0,
       userSelect: 'none',

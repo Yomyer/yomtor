@@ -1,11 +1,21 @@
-import React, { forwardRef, useEffect, useRef } from 'react'
-import { useComponentDefaultProps } from '@yomtor/styles'
+import React, { forwardRef, useRef } from 'react'
+import { useComponentDefaultProps, getSize } from '@yomtor/styles'
 
 import { Select as BaseSelect } from '@mantine/core'
 import { SelectProps } from './Select.props'
 import useStyles from './Select.styles'
 import { useMergedRef } from '@yomtor/hooks'
 import { SelectItem } from './SelectItem/SelectItem'
+import { SelectScrollArea } from './SelectScrollArea/SelectScrollArea'
+import { ArrowIcon } from '@yomtor/icons'
+
+const arrowSizes = {
+  xs: 10,
+  sm: 11,
+  md: 12,
+  lg: 15,
+  xl: 18
+}
 
 const defaultProps: Partial<SelectProps> = {
   size: 'md',
@@ -14,23 +24,25 @@ const defaultProps: Partial<SelectProps> = {
   ticked: true,
   variant: 'toggle',
   initiallyOpened: true,
-  itemComponent: undefined
+  itemComponent: undefined,
+  dropdownComponent: SelectScrollArea
 }
 
 export const Select = forwardRef<HTMLInputElement, SelectProps>(
   (props, ref) => {
-    const { unstyled, ticked, compact, className, ...others } =
+    const { unstyled, ticked, size, compact, className, ...others } =
       useComponentDefaultProps('Select', defaultProps, props)
 
     const select = useRef<HTMLElement>()
 
     const { classes, cx } = useStyles(
-      { compact, ticked, ...others },
+      { compact, ticked, size, ...others },
       { name: 'Select', unstyled }
     )
 
     if (ticked) {
       others.itemComponent = SelectItem
+      others['data-ticked'] = true
     }
 
     return (
@@ -39,11 +51,7 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
         ref={useMergedRef(ref, select)}
         className={className}
         classNames={classes}
-        transitionProps={{
-          transition: 'fade',
-          duration: 80,
-          timingFunction: 'ease'
-        }}
+        rightSection={<ArrowIcon size={getSize({ sizes: arrowSizes, size })} />}
       />
     )
   }

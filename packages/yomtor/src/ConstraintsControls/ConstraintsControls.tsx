@@ -5,31 +5,39 @@ import React, { useCallback, useEffect, useState } from 'react'
 import {
   ConstraintDirections,
   ConstraintPositions,
-  Constraints as ConstraintsBase
+  Constraints as ConstraintsBase,
+  Control
 } from '@yomtor/ui'
 import { Artboard, ChangeFlag, Constraints } from '@yomtor/paper'
 import { countBy } from 'lodash'
 
 const defaultProps: Partial<ConstraintsControlsProps> = {
-  zoom: 1
+  visible: false
 }
 
 export const ConstraintsControls = (props: ConstraintsControlsProps) => {
-  const {} = useComponentDefaultProps('ObjectControls', defaultProps, props)
+  const { visible } = useComponentDefaultProps(
+    'ObjectControls',
+    defaultProps,
+    props
+  )
   const { canvas } = useEditorContext()
-  const [constraints, setConstraints] = useState<Constraints>()
+  const [constraints, setConstraints] = useState<Constraints>(
+    new Constraints(['start'])
+  )
   const [artboard, setArtboard] = useState<boolean>()
 
   const changeHandler = (
     direction: ConstraintDirections,
     position: ConstraintPositions
   ) => {
-    canvas.project.activeItems.forEach((item) => {
-      item.constraints[direction] = position
-      constraints[direction] = position
+    canvas &&
+      canvas.project.activeItems.forEach((item) => {
+        item.constraints[direction] = position
+      })
 
-      setConstraints(new Constraints(constraints))
-    })
+    constraints[direction] = position
+    setConstraints(new Constraints(constraints))
   }
 
   useEffect(() => {
@@ -62,11 +70,16 @@ export const ConstraintsControls = (props: ConstraintsControlsProps) => {
         )
       }
     })
-    // canvas.project.
   }, [canvas])
 
-  return (
-    constraints &&
-    artboard && <ConstraintsBase {...constraints} onChange={changeHandler} />
-  )
+  return (constraints && artboard) || visible ? (
+    <Control>
+      <Control.Title>Constraints</Control.Title>
+      <Control.Group>
+        <Control.Panel>
+          <ConstraintsBase {...constraints} onChange={changeHandler} />
+        </Control.Panel>
+      </Control.Group>
+    </Control>
+  ) : null
 }
