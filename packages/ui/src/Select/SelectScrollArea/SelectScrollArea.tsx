@@ -54,6 +54,13 @@ export const SelectScrollArea = forwardRef<HTMLDivElement, ScrollAreaProps>(
         style={{ width: '100%', ...style }}
         viewportProps={{ tabIndex: -1 }}
         viewportRef={ref}
+        styles={{
+          viewport: {
+            '& > div': {
+              display: 'flex !important'
+            }
+          }
+        }}
         ref={useMergedRef(area, scrollableRef)}
       >
         {others.children}

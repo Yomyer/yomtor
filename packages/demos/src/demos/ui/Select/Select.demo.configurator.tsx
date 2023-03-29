@@ -15,11 +15,12 @@ function Demo() {
 }
 `
 function Wrapper(props: SelectProps) {
-  const [value, setValue] = useState('')
+  const [value, setValue] = useState('typescript')
 
   return (
     <Select
       {...props}
+      // initiallyOpened
       icon={<ArtboardIcon size={props.size} />}
       onChange={setValue}
       data={[
@@ -30,7 +31,7 @@ function Wrapper(props: SelectProps) {
         { value: 'csharp', label: 'C#', group: 'c' },
         { value: 'go', label: 'Go', group: 'c' },
         { value: 'php', label: 'PHP' },
-        { value: 'typescript', label: 'TypeScript' },
+        { value: 'typescript', label: 'TypeScript asdasd asdasd asdas da' },
         { value: 'scala', label: 'Scala' },
         { value: 'dart', label: 'Dart' },
         { value: 'elixir', label: 'Elixir' },

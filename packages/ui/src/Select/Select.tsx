@@ -1,10 +1,10 @@
-import React, { forwardRef, useRef } from 'react'
+import React, { forwardRef, useEffect, useRef } from 'react'
 import { useComponentDefaultProps, getSize } from '@yomtor/styles'
 
 import { Select as BaseSelect } from '@mantine/core'
 import { SelectProps } from './Select.props'
 import useStyles from './Select.styles'
-import { useMergedRef } from '@yomtor/hooks'
+import { useMergedRef, useResizeObserver } from '@yomtor/hooks'
 import { SelectItem } from './SelectItem/SelectItem'
 import { SelectScrollArea } from './SelectScrollArea/SelectScrollArea'
 import { ArrowIcon } from '@yomtor/icons'
@@ -29,7 +29,7 @@ const defaultProps: Partial<SelectProps> = {
 
 export const Select = forwardRef<HTMLInputElement, SelectProps>(
   (props, ref) => {
-    const { unstyled, ticked, size, compact, className, ...others } =
+    const { unstyled, onChange, ticked, size, compact, className, ...others } =
       useComponentDefaultProps('Select', defaultProps, props)
 
     const select = useRef<HTMLElement>()
@@ -44,6 +44,18 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
       others['data-ticked'] = true
     }
 
+    const changeHandler = (value) => {
+      onChange && onChange(value)
+
+      if (ticked) {
+        const resizeObserver = new ResizeObserver(() => {
+          select.current.blur()
+          resizeObserver.disconnect()
+        })
+        resizeObserver.observe(select.current)
+      }
+    }
+
     return (
       <BaseSelect
         {...others}
@@ -51,6 +63,7 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
         className={className}
         classNames={classes}
         rightSection={<ArrowIcon size={getSize({ sizes: arrowSizes, size })} />}
+        onChange={changeHandler}
       />
     )
   }

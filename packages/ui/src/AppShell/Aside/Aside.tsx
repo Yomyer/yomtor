@@ -7,9 +7,9 @@ import useStyles from './Aside.styles'
 import { ResizePanel } from '../ResizePanel'
 
 const defaultProps: Partial<AsideProps> = {
-  min: 250,
+  min: 200,
   max: 500,
-  width: { base: 250 }
+  width: { base: 200 }
 }
 
 export const Aside = forwardRef<HTMLDivElement, AsideProps>((props, ref) => {

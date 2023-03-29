@@ -1,5 +1,5 @@
 import React from 'react'
-import { Constraints, Control, ControlProps } from '@yomtor/ui'
+import { ControlProps } from '@yomtor/ui'
 import { PropsType, YomtorDemo } from '@yomtor/ds'
 import { ConstraintsControls } from '@yomtor/yomtor'
 

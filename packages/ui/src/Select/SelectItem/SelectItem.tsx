@@ -11,7 +11,7 @@ export const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
     return (
       <div ref={ref} className={cx(className, classes.root)} {...others}>
         <CheckIcon size='md' className={classes.check} />
-        {label}
+        <div className={classes.ellipsis}>{label}</div>
       </div>
     )
   }

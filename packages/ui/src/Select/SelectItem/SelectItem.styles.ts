@@ -8,6 +8,11 @@ export default createStyles((theme, { selected }: SelectItemProps) => {
     },
     root: {
       paddingLeft: 0
+    },
+    ellipsis: {
+      whiteSpace: 'nowrap',
+      textOverflow: 'ellipsis',
+      overflow: 'hidden'
     }
   }
 })

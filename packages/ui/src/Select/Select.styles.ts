@@ -25,7 +25,7 @@ const sizes = {
 }
 
 export default createStyles(
-  (theme, { variant, ticked, size, compact }: SelectProps) => {
+  (theme, { variant, ticked, size, compact, searchable }: SelectProps) => {
     return {
       input: {
         ...theme.fn.getVariant({
@@ -43,6 +43,13 @@ export default createStyles(
           '&[data-with-icon]': {
             paddingLeft: rem(getSize({ size, sizes: iconSizes }))
           }
+        }),
+        ...(ticked && {
+          paddingRight: rem(getSize({ size, sizes: iconSizes }))
+        }),
+        ...(!searchable && {
+          overflow: 'hidden',
+          textOverflow: 'ellipsis'
         })
       },
       icon: {
@@ -59,6 +66,7 @@ export default createStyles(
           alignItems: 'center'
         }),
         ...(ticked && {
+          whiteSpace: 'nowrap',
           '&[data-selected]': {
             backgroundColor: 'unset',
             color: 'unset'
