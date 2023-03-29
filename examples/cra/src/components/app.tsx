@@ -44,12 +44,12 @@ export const App = () => {
         <AppShell
           padding={0}
           navbar={
-            <Navbar width={{ base: 200 }} resize min={100} max={500}>
+            <Navbar resize>
               <ObjectControls />
             </Navbar>
           }
           aside={
-            <Aside width={{ base: 200 }} resize min={100} max={500}>
+            <Aside resize>
               <ConstraintsControls />
             </Aside>
           }

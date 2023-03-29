@@ -10,4 +10,5 @@ export interface GroupProps
   gap?: number
   rowGap?: number
   columnGap?: number
+  columns?: number
 }

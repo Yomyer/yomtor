@@ -5,13 +5,14 @@ export interface GroupStylesParams {
   gap: number
   rowGap: number
   columnGap: number
+  columns: number
 }
 
 export default createStyles(
-  (theme, { gap, rowGap, columnGap }: GroupStylesParams) => ({
+  (theme, { gap, rowGap, columnGap, columns }: GroupStylesParams) => ({
     root: {
       display: 'grid',
-      gridTemplateColumns: 'repeat(32,1fr)',
+      gridTemplateColumns: `repeat(${columns},1fr)`,
       gap,
       rowGap,
       columnGap,

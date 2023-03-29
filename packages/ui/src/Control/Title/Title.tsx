@@ -20,7 +20,7 @@ export const Title = forwardRef<HTMLDivElement, TitleProps>((props, ref) => {
 
   return (
     <Group {...others} ref={ref} className={cx(className, classes.root)}>
-      <Panel span={28}>
+      <Panel columns={28}>
         <TitleBase order={6} className={classes.title}>
           {children}
         </TitleBase>

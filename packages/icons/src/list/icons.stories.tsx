@@ -7,6 +7,7 @@ import Artboard2Icon from './Artboard2'
 import CenterIcon from './Center'
 import CheckIcon from './Check'
 import CodeIcon from './Code'
+import ConstraintsBarIcon from './ConstraintsBar'
 import DistributeIcon from './Distribute'
 import DotsVerticalIcon from './DotsVertical'
 import GroupIcon from './Group'
@@ -15,7 +16,7 @@ import LockIcon from './Lock'
 import MoreIcon from './More'
 import PlayIcon from './Play'
 
-const icons = { ArrageIcon, ArrowIcon, ArtboardIcon, Artboard2Icon, CenterIcon, CheckIcon, CodeIcon, DistributeIcon, DotsVerticalIcon, GroupIcon, HideIcon, LockIcon, MoreIcon, PlayIcon }
+const icons = { ArrageIcon, ArrowIcon, ArtboardIcon, Artboard2Icon, CenterIcon, CheckIcon, CodeIcon, ConstraintsBarIcon, DistributeIcon, DotsVerticalIcon, GroupIcon, HideIcon, LockIcon, MoreIcon, PlayIcon }
 
 
 type Props = {

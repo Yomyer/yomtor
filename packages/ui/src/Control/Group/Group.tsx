@@ -4,7 +4,9 @@ import { useComponentDefaultProps } from '@yomtor/styles'
 import { GroupProps } from './Group.props'
 import useStyles from './Group.styles'
 
-const defaultProps: Partial<GroupProps> = {}
+const defaultProps: Partial<GroupProps> = {
+  columns: 32
+}
 
 export const Group = forwardRef<HTMLDivElement, GroupProps>((props, ref) => {
   const { unstyled, className, ...others } = useComponentDefaultProps(

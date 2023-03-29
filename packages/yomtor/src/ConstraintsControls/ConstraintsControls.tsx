@@ -9,6 +9,7 @@ import {
   Control,
   Select
 } from '@yomtor/ui'
+import { ConstraintsBarIcon } from '@yomtor/icons'
 import { Artboard, ChangeFlag, Constraints } from '@yomtor/paper'
 import { countBy } from 'lodash'
 import { HorizontalData, VerticalData } from './data'
@@ -77,23 +78,25 @@ export const ConstraintsControls = (props: ConstraintsControlsProps) => {
   return (constraints && artboard) || visible ? (
     <Control>
       <Control.Title>Constraints</Control.Title>
-      <Control.Group columnGap={10}>
-        <Control.Panel columns={1} rows={2}>
+      <Control.Group>
+        <Control.Panel start={2} end={3} rows={2}>
           <ConstraintsBase {...constraints} onChange={changeHandler} />
         </Control.Panel>
-        <Control.Panel columns={31} gap={10}>
+        <Control.Panel start={4} end={32}>
           <Select
             data={HorizontalData}
             value={constraints.horizontal}
+            icon={<ConstraintsBarIcon size='sm' />}
             onChange={(value: ConstraintPositions) =>
               changeHandler('horizontal', value)
             }
           />
         </Control.Panel>
-        <Control.Panel columns={31}>
+        <Control.Panel start={4} end={32}>
           <Select
             data={VerticalData}
             value={constraints.vertical}
+            icon={<ConstraintsBarIcon size='sm' rotate={90} />}
             onChange={(value: ConstraintPositions) =>
               changeHandler('vertical', value)
             }

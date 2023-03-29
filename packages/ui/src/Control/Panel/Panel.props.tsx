@@ -10,4 +10,6 @@ export interface PanelProps
   columns?: number | 'auto'
   rows?: number | 'auto'
   gap?: number
+  start?: number | 'none'
+  end?: number | 'none'
 }

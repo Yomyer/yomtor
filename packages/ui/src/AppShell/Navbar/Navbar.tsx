@@ -8,7 +8,11 @@ import { ForwardRefWithStaticComponents } from '@mantine/utils'
 
 import { ResizePanel } from '../ResizePanel'
 
-const defaultProps: Partial<NavbarProps> = {}
+const defaultProps: Partial<NavbarProps> = {
+  min: 250,
+  max: 500,
+  width: { base: 250 }
+}
 
 export const _Navbar = forwardRef<HTMLDivElement, NavbarProps>((props, ref) => {
   const { unstyled, width, ...others } = useComponentDefaultProps(
