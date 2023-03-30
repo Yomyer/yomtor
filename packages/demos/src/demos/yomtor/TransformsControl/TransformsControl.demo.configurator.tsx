@@ -1,20 +1,20 @@
 import React from 'react'
 import { PropsType, YomtorDemo } from '@yomtor/ds'
-import { ConstraintsControls, ConstraintsControlsProps } from '@yomtor/yomtor'
+import { TransformsControls, TransformsControlsProps } from '@yomtor/yomtor'
 
-const codeTemplate = (props: PropsType<ConstraintsControlsProps>) => `
+const codeTemplate = (props: PropsType<TransformsControlsProps>) => `
 import { Control } from '@yomtor/ui'
 
 function Demo() {
   return (
-    <ConstraintsControls${props} />
+    <TransformsControls${props} />
   );
 }
 `
-function Wrapper(props: ConstraintsControlsProps) {
+function Wrapper(props: TransformsControlsProps) {
   return (
     <>
-      <ConstraintsControls {...props} />
+      <TransformsControls {...props} />
     </>
   )
 }

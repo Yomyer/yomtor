@@ -17,11 +17,8 @@ const defaultProps: Partial<ActionIconProps> = {
 
 export const _ActionIcon = forwardRef<HTMLButtonElement, ActionIconProps>(
   (props, ref) => {
-    const { unstyled, compact, children, ...others } = useComponentDefaultProps(
-      'ActionIcon',
-      defaultProps,
-      props
-    )
+    const { unstyled, icon, compact, children, ...others } =
+      useComponentDefaultProps('ActionIcon', defaultProps, props)
 
     const { classes, cx } = useStyles(
       { ...others, compact },
@@ -31,7 +28,7 @@ export const _ActionIcon = forwardRef<HTMLButtonElement, ActionIconProps>(
     return (
       <BaseActionIcon {...others} ref={ref} className={classes.root}>
         <Ink hasTouch={false} opacity={0.05} />
-        {children}
+        {(icon && <>{icon}</>) || <>{children}</>}
       </BaseActionIcon>
     )
   }

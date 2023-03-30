@@ -5,7 +5,7 @@ export {
   NormalizeCSS,
   getSize,
   rem,
-  // extractSystemStyles,
+  getStylesRef,
   useMantineColorScheme as useYomtorColorScheme,
   useMantineTheme as useYomtorTheme,
   MANTINE_SIZES as YOMTOR_SIZES

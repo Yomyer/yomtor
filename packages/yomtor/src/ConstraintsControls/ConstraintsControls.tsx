@@ -11,7 +11,7 @@ import {
 } from '@yomtor/ui'
 import { ConstraintsBarIcon } from '@yomtor/icons'
 import { Artboard, ChangeFlag, Constraints } from '@yomtor/paper'
-import { countBy } from 'lodash'
+import { countBy, isEmpty } from 'lodash'
 import { HorizontalData, VerticalData } from './data'
 
 const defaultProps: Partial<ConstraintsControlsProps> = {
@@ -59,7 +59,7 @@ export const ConstraintsControls = (props: ConstraintsControlsProps) => {
           canvas.project.activeItems.map((item) => item.artboard)
         )
 
-        setArtboard(!hasArtboard || !hasArtboard.null)
+        setArtboard(!isEmpty(hasArtboard) && !hasArtboard.null)
 
         setConstraints(
           new Constraints([

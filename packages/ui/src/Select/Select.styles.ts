@@ -1,4 +1,4 @@
-import { createStyles, getSize, rem } from '@yomtor/styles'
+import { createStyles, getSize, rem, getStylesRef } from '@yomtor/styles'
 import { SelectProps } from './Select.props'
 
 const compactSizes = {
@@ -45,7 +45,11 @@ export default createStyles(
           }
         }),
         ...(ticked && {
-          paddingRight: rem(getSize({ size, sizes: iconSizes }))
+          paddingRight: rem(getSize({ size, sizes: iconSizes })),
+          [`&:hover + .${getStylesRef('rightSection')}`]: {
+            opacity: 1,
+            transform: 'scale(1)'
+          }
         }),
         ...(!searchable && {
           overflow: 'hidden',
@@ -86,7 +90,10 @@ export default createStyles(
         })
       },
       rightSection: {
-        pointerEvents: 'none'
+        ref: getStylesRef('rightSection'),
+        pointerEvents: 'none',
+        opacity: 0.3,
+        transform: 'scale(0.7)'
       },
       separator: {
         ...(ticked && {

@@ -17,7 +17,11 @@ import {
   ConstraintsTool
 } from '@yomtor/core'
 import { Path, Artboard } from '@yomtor/paper'
-import { ConstraintsControls, ObjectControls } from '@yomtor/yomtor'
+import {
+  ConstraintsControls,
+  ObjectControls,
+  TransformsControls
+} from '@yomtor/yomtor'
 
 export const App = () => {
   useEffect(() => {
@@ -50,6 +54,7 @@ export const App = () => {
           }
           aside={
             <Aside resize>
+              <TransformsControls visible />
               <ConstraintsControls />
             </Aside>
           }

@@ -1,5 +1,11 @@
 import { INPUT_SIZES } from '@mantine/core'
-import { createStyles, CSSObject, YomtorNumberSize } from '@yomtor/styles'
+import {
+  createStyles,
+  CSSObject,
+  getSize,
+  rem,
+  YomtorNumberSize
+} from '@yomtor/styles'
 import { ActionIconProps } from './ActionIcon.props'
 
 export const sizes = {
@@ -8,11 +14,19 @@ export const sizes = {
   md: { height: INPUT_SIZES.md, width: INPUT_SIZES.md },
   lg: { height: INPUT_SIZES.lg, width: INPUT_SIZES.lg },
   xl: { height: INPUT_SIZES.xl, width: INPUT_SIZES.xl },
-  'compact-xs': { height: 22, width: 22 },
-  'compact-sm': { height: 24, width: 26 },
-  'compact-md': { height: 28, width: 30 },
-  'compact-lg': { height: 34, width: 34 },
-  'compact-xl': { height: 40, width: 40 }
+  'compact-xs': { height: rem(22), width: rem(22) },
+  'compact-sm': { height: rem(24), width: rem(26) },
+  'compact-md': { height: rem(28), width: rem(30) },
+  'compact-lg': { height: rem(34), width: rem(34) },
+  'compact-xl': { height: rem(40), width: rem(40) }
+}
+
+const icons = {
+  xs: rem(13),
+  sm: rem(16),
+  md: rem(20),
+  lg: rem(25),
+  xl: rem(30)
 }
 
 interface GetSizeStyles {
@@ -46,8 +60,8 @@ export default createStyles(
         }),
         '& svg': {
           position: 'relative',
-          width: theme.icons[size],
-          height: theme.icons[size]
+          width: getSize({ sizes: icons, size }),
+          height: getSize({ sizes: icons, size })
         }
       }
     }
