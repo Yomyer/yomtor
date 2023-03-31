@@ -13,16 +13,18 @@ import DotsVerticalIcon from './DotsVertical'
 import GroupIcon from './Group'
 import HeightIcon from './Height'
 import HideIcon from './Hide'
+import LinkIcon from './Link'
 import LockIcon from './Lock'
 import MoreIcon from './More'
 import PlayIcon from './Play'
 import RadiusIcon from './Radius'
 import RotationIcon from './Rotation'
+import UnlinkIcon from './Unlink'
 import WidthIcon from './Width'
 import XAxisIcon from './XAxis'
 import YAxisIcon from './YAxis'
 
-const icons = { ArrageIcon, ArrowIcon, ArtboardIcon, Artboard2Icon, CenterIcon, CheckIcon, CodeIcon, ConstraintsBarIcon, DistributeIcon, DotsVerticalIcon, GroupIcon, HeightIcon, HideIcon, LockIcon, MoreIcon, PlayIcon, RadiusIcon, RotationIcon, WidthIcon, XAxisIcon, YAxisIcon }
+const icons = { ArrageIcon, ArrowIcon, ArtboardIcon, Artboard2Icon, CenterIcon, CheckIcon, CodeIcon, ConstraintsBarIcon, DistributeIcon, DotsVerticalIcon, GroupIcon, HeightIcon, HideIcon, LinkIcon, LockIcon, MoreIcon, PlayIcon, RadiusIcon, RotationIcon, UnlinkIcon, WidthIcon, XAxisIcon, YAxisIcon }
 
 
 type Props = {

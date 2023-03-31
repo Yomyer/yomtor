@@ -1756,6 +1756,11 @@ declare namespace paper {
         constraintsPivot: Point
 
         /** 
+         * The if item is constraints.
+         */
+        constraintProportions: Point
+
+        /** 
          * The item's pivot point specified in the item coordinate system, defining
          * the point around which all transformations are hinging. This is also the
          * reference point for {@link #position}. By default, it is set to `null`,

@@ -11,7 +11,7 @@ import {
 } from '@yomtor/ui'
 import { ConstraintsBarIcon } from '@yomtor/icons'
 import { Artboard, ChangeFlag, Constraints } from '@yomtor/paper'
-import { countBy, isEmpty } from 'lodash'
+import { countBy, findKey, isEmpty, size } from 'lodash'
 import { HorizontalData, VerticalData } from './data'
 
 const defaultProps: Partial<ConstraintsControlsProps> = {
@@ -63,12 +63,8 @@ export const ConstraintsControls = (props: ConstraintsControlsProps) => {
 
         setConstraints(
           new Constraints([
-            Object.keys(horizontal).length === 1
-              ? Object.keys(horizontal)[0]
-              : 'mixed',
-            Object.keys(vertical).length === 1
-              ? Object.keys(vertical)[0]
-              : 'mixed'
+            size(horizontal) === 1 ? findKey(horizontal) : 'mixed',
+            size(vertical) === 1 ? findKey(vertical) : 'mixed'
           ])
         )
       }

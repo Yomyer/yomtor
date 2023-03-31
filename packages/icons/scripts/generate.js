@@ -1,6 +1,4 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const { generateTemplateFiles } = require('generate-template-files')
-
 const SVGFixer = require('oslllo-svg-fixer')
 const cliProgress = require('cli-progress')
 const path = require('path')

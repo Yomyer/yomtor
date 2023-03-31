@@ -1,3 +1,6 @@
+const { demos } = require('../../demos/scripts/generate')
+const { generateTemplateFilesBatch } = require('generate-template-files')
+
 exports.ui = [
   {
     option: '[UI] Create Mantine Component',
@@ -6,10 +9,6 @@ exports.ui = [
       folderPath: './packages/ui/scripts/templates/mantine'
     },
     stringReplacers: [
-      {
-        question: 'Story Group Name',
-        slot: '__folder__'
-      },
       { question: 'Mantine Component', slot: '__mantine__' },
       { question: 'Insert your component name', slot: '__name__' }
     ],
@@ -17,6 +16,9 @@ exports.ui = [
       path: './packages/ui/src/__name__(pascalCase)',
       pathAndFileNameDefaultCase: '(pascalCase)',
       overwrite: false
+    },
+    onComplete: (results) => {
+      generateTemplateFilesBatch([demos[2]])
     }
   },
   {
@@ -26,10 +28,6 @@ exports.ui = [
       folderPath: './packages/ui/scripts/templates/polymorphic'
     },
     stringReplacers: [
-      {
-        question: 'Story Group Name',
-        slot: '__folder__'
-      },
       { question: 'Mantine Component', slot: '__mantine__' },
       { question: 'HTML Component', slot: '__html__' },
       { question: 'Insert your component name', slot: '__name__' }

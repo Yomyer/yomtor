@@ -77,6 +77,7 @@ var Item = Base.extend(Emitter, /** @lends Item# */{
     _flipped: {x: 1, y: 1},
     _constraintsPivot: null,
     _constraints: {},
+    _constraintProportions: false,
     // Provide information about fields to be serialized, with their defaults
     // that can be omitted.
     _serializeFields: {
@@ -989,6 +990,20 @@ new function() { // Injection scope for various item event handlers
     
     setConstraintsPivot: function(/* point */){
         return this._constraintsPivot = Point.read(arguments);
+    },
+
+    /**
+     * The if item is constraints.
+     *
+     * @name Item#constraintProportions
+     * @type Point
+     */
+    getConstraintProportions: function(){
+        return this._constraintProportions;
+    },
+    
+    setConstraintProportions: function(status){
+        return this._constraintProportions = status;
     },
 
 

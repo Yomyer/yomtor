@@ -3772,6 +3772,7 @@ var Item = Base.extend(Emitter, {
 	_flipped: {x: 1, y: 1},
 	_constraintsPivot: null,
 	_constraints: {},
+	_constraintProportions: false,
 	_serializeFields: {
 		name: null,
 		applyMatrix: null,
@@ -4166,6 +4167,13 @@ new function() {
 	},
 	setConstraintsPivot: function(){
 		return this._constraintsPivot = Point.read(arguments);
+	},
+
+	getConstraintProportions: function(){
+		return this._constraintProportions;
+	},
+	setConstraintProportions: function(status){
+		return this._constraintProportions = status;
 	},
 
 	_getPositionFromBounds: function(bounds) {

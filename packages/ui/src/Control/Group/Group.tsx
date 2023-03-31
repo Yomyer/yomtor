@@ -9,13 +9,16 @@ const defaultProps: Partial<GroupProps> = {
 }
 
 export const Group = forwardRef<HTMLDivElement, GroupProps>((props, ref) => {
-  const { unstyled, className, ...others } = useComponentDefaultProps(
+  const { unstyled, className, rowGap, ...others } = useComponentDefaultProps(
     'Group',
     defaultProps,
     props
   )
 
-  const { classes, cx } = useStyles({ ...others }, { name: 'Group', unstyled })
+  const { classes, cx } = useStyles(
+    { rowGap, ...others },
+    { name: 'Group', unstyled }
+  )
 
   return <div {...others} ref={ref} className={cx(className, classes.root)} />
 })
