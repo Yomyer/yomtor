@@ -934,6 +934,24 @@ new function() { // Injection scope for various item event handlers
         this.translate(Point.read(arguments).subtract(this.getPosition(true)));
     },
 
+    /**
+     * @bean
+     * @type Point
+     */
+
+    getBoundPosition: function(){
+        return this.getPosition();
+    },
+
+    setBoundPosition: function(/* point */) {
+        const offset = new Point(
+            this.getPosition().x % 1 ? -0.5 : 0,
+            this.getPosition().y % 1 ? -0.5 : 0
+        );
+
+        this.setPosition(Point.read(arguments).add(offset));
+    },
+
 
     /**
      * @bean

@@ -1,4 +1,5 @@
 export * from './abs'
 export * from './normalize'
+export * from './round-tp-nearest-even'
 export * from './round'
 export * from './sign'

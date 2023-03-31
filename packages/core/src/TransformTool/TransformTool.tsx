@@ -19,7 +19,8 @@ import {
   round,
   abs,
   rotateDelta,
-  scaleWithRotate
+  scaleWithRotate,
+  roundToNearestEven
 } from '@yomtor/utils'
 import { useEventListener, useHotkeys } from '@yomtor/hooks'
 import {
@@ -131,7 +132,7 @@ export const TransformTool = (props: TransformToolProps) => {
 
     if (e.modifiers.alt) {
       origin = center.current
-      factor = factor.add(new Size(delta.current))
+      factor = roundToNearestEven(factor.add(new Size(delta.current)).round())
     }
 
     let newSize = size.current.add(factor).round()

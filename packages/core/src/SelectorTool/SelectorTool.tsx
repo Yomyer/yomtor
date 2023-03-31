@@ -14,7 +14,13 @@ import {
   Tool,
   ToolEvent
 } from '@yomtor/paper'
-import { differenceWith, find, intersectionWith, isEqual } from 'lodash'
+import {
+  differenceWith,
+  find,
+  intersectionWith,
+  isEqual,
+  isInteger
+} from 'lodash'
 import { useYomtorTheme } from '@yomtor/styles'
 import { HotKeysEvent, useHotkeys } from '@yomtor/hooks'
 import { round } from '@yomtor/utils'
@@ -197,12 +203,13 @@ export const SelectorTool = (props: SelectorToolProps) => {
         if (e instanceof ToolEvent) {
           delta = e.point.subtract(lastPoint.current)
         }
+
         if (!positions.current[item.uid])
           positions.current[item.uid] = item.position
 
         positions.current[item.uid] = positions.current[item.uid].add(delta)
 
-        item.position = positions.current[item.uid].round()
+        item.boundPosition = round(positions.current[item.uid])
       })
 
       if (e instanceof ToolEvent) {

@@ -1743,6 +1743,9 @@ declare namespace paper {
         position: Point
 
         
+        boundPosition: Point
+
+        
         flipped: {x: boolean, y: boolean}
 
         /** 

@@ -4134,6 +4134,19 @@ new function() {
 		this.translate(Point.read(arguments).subtract(this.getPosition(true)));
 	},
 
+	getBoundPosition: function(){
+		return this.getPosition();
+	},
+
+	setBoundPosition: function() {
+		const offset = new Point(
+			this.getPosition().x % 1 ? -0.5 : 0,
+			this.getPosition().y % 1 ? -0.5 : 0
+		);
+
+		this.setPosition(Point.read(arguments).add(offset));
+	},
+
 	getFlipped: function(){
 		return this._flipped;
 	},
@@ -7839,6 +7852,9 @@ var Selector = Item.extend(
 				items[x]._drawActivation(ctx, matrix, items.length > 1);
 			}
 
+			matrix.applyToContext(ctx);
+			ctx.lineWidth = 0.5 / this._project.view.zoom;
+
 			if (items.length > 1) {
 				ctx.beginPath();
 				ctx.moveTo(this.topLeft.x, this.topLeft.y);
@@ -7848,8 +7864,6 @@ var Selector = Item.extend(
 				ctx.closePath();
 				ctx.stroke();
 			}
-
-			matrix.applyToContext(ctx);
 
 			var param = new Base({
 				offset: new Point(0, 0),

@@ -620,6 +620,9 @@ var Selector = Item.extend(
                 items[x]._drawActivation(ctx, matrix, items.length > 1);
             }
 
+            matrix.applyToContext(ctx);
+            ctx.lineWidth = 0.5 / this._project.view.zoom;
+
             if (items.length > 1) {
                 ctx.beginPath();
                 ctx.moveTo(this.topLeft.x, this.topLeft.y);
@@ -629,8 +632,6 @@ var Selector = Item.extend(
                 ctx.closePath();
                 ctx.stroke();
             }
-
-            matrix.applyToContext(ctx);
 
             var param = new Base({
                 offset: new Point(0, 0),
