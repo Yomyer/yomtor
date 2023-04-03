@@ -20,6 +20,7 @@ import { Path, Artboard } from '@yomtor/paper'
 import {
   ConstraintsControls,
   ObjectControls,
+  AlignmentsControls,
   TransformsControls
 } from '@yomtor/yomtor'
 
@@ -56,6 +57,7 @@ export const App = () => {
             <Aside resize>
               <TransformsControls visible />
               <ConstraintsControls />
+              <AlignmentsControls visible />
             </Aside>
           }
           header={

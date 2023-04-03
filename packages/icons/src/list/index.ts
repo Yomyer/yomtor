@@ -1,3 +1,8 @@
+export { default as AlignBoxBottomIcon } from './AlignBoxBottom'
+export { default as AlignBoxCenterIcon } from './AlignBoxCenter'
+export { default as AlignBoxLeftIcon } from './AlignBoxLeft'
+export { default as AlignBoxRightIcon } from './AlignBoxRight'
+export { default as AlignBoxTopIcon } from './AlignBoxTop'
 export { default as ArrageIcon } from './Arrage'
 export { default as ArrowIcon } from './Arrow'
 export { default as ArtboardIcon } from './Artboard'

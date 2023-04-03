@@ -1,5 +1,10 @@
 import React, { useEffect, useRef } from 'react'
 import { ComponentStory, ComponentMeta } from '@storybook/react'
+import AlignBoxBottomIcon from './AlignBoxBottom'
+import AlignBoxCenterIcon from './AlignBoxCenter'
+import AlignBoxLeftIcon from './AlignBoxLeft'
+import AlignBoxRightIcon from './AlignBoxRight'
+import AlignBoxTopIcon from './AlignBoxTop'
 import ArrageIcon from './Arrage'
 import ArrowIcon from './Arrow'
 import ArtboardIcon from './Artboard'
@@ -24,56 +29,84 @@ import WidthIcon from './Width'
 import XAxisIcon from './XAxis'
 import YAxisIcon from './YAxis'
 
-const icons = { ArrageIcon, ArrowIcon, ArtboardIcon, Artboard2Icon, CenterIcon, CheckIcon, CodeIcon, ConstraintsBarIcon, DistributeIcon, DotsVerticalIcon, GroupIcon, HeightIcon, HideIcon, LinkIcon, LockIcon, MoreIcon, PlayIcon, RadiusIcon, RotationIcon, UnlinkIcon, WidthIcon, XAxisIcon, YAxisIcon }
-
+const icons = {
+  AlignBoxBottomIcon,
+  AlignBoxCenterIcon,
+  AlignBoxLeftIcon,
+  AlignBoxRightIcon,
+  AlignBoxTopIcon,
+  ArrageIcon,
+  ArrowIcon,
+  ArtboardIcon,
+  Artboard2Icon,
+  CenterIcon,
+  CheckIcon,
+  CodeIcon,
+  ConstraintsBarIcon,
+  DistributeIcon,
+  DotsVerticalIcon,
+  GroupIcon,
+  HeightIcon,
+  HideIcon,
+  LinkIcon,
+  LockIcon,
+  MoreIcon,
+  PlayIcon,
+  RadiusIcon,
+  RotationIcon,
+  UnlinkIcon,
+  WidthIcon,
+  XAxisIcon,
+  YAxisIcon
+}
 
 type Props = {
-    rotate: number
-    icon: React.ReactNode
+  rotate: number
+  icon: React.ReactNode
 }
 
 const Canvas: React.FC<Props> = ({ icon: Icon, rotate }) => {
-    return (
-        <div
-            style={{
-                background: 'rgba(0,0,0,0.1)',
-                height: 100,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexWrap: 'wrap',
-                fontSize: 32
-            }}
-        >
-            <Icon rotate={rotate} size="xl" />
-        </div>
-    )
+  return (
+    <div
+      style={{
+        background: 'rgba(0,0,0,0.1)',
+        height: 100,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexWrap: 'wrap',
+        fontSize: 32
+      }}
+    >
+      <Icon rotate={rotate} size='xl' />
+    </div>
+  )
 }
 
 export default {
-    title: 'Utils/Icons',
-    component: Canvas,
-    argTypes: {}
+  title: 'Utils/Icons',
+  component: Canvas,
+  argTypes: {}
 } as ComponentMeta<typeof Canvas>
 
 const Template: ComponentStory<typeof Canvas> = ({ rotate, ...props }) => {
-    return (
-        <div
-            style={{
-                display: 'grid',
-                gap: 10,
-                gridTemplateColumns: 'repeat(6, 1fr)'
-            }}
-        >
-            {Object.keys(icons).map((key) => (
-                <Canvas key={key} icon={icons[key]} rotate={rotate} />
-            ))}
-        </div>
-    )
+  return (
+    <div
+      style={{
+        display: 'grid',
+        gap: 10,
+        gridTemplateColumns: 'repeat(6, 1fr)'
+      }}
+    >
+      {Object.keys(icons).map((key) => (
+        <Canvas key={key} icon={icons[key]} rotate={rotate} />
+      ))}
+    </div>
+  )
 }
 
 export const Playground = Template.bind({})
 
 Playground.args = {
-    rotate: 0
+  rotate: 0
 }

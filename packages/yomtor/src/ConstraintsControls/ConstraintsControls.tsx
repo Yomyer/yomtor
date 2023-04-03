@@ -54,7 +54,6 @@ export const ConstraintsControls = (props: ConstraintsControlsProps) => {
         const horizontal = countBy(
           canvas.project.activeItems.map((item) => item.constraints.horizontal)
         )
-
         const hasArtboard = countBy(
           canvas.project.activeItems.map((item) => item.artboard)
         )
