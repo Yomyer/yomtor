@@ -1,8 +1,8 @@
 import React from 'react'
 import { Badge, DraggableProps, Group, Draggable } from '@yomtor/ui'
-import { YomtorDemo } from '@yomtor/ds'
+import { YomtorDemo, PropsType } from '@yomtor/ds'
 
-const codeTemplate = (props: string, children: string) => `
+const codeTemplate = (props: PropsType<DraggableProps>, children: string) => `
 import { Draggable, Badge } from '@yomtor/ui';
 
 function Demo() {

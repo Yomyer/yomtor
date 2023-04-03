@@ -1,7 +1,7 @@
 import { TransformsControlsProps } from './TransformsControls.props'
 import { useComponentDefaultProps } from '@yomtor/styles'
 import { useEditorContext } from '@yomtor/core'
-import React, { useEffect, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import { ActionIcon, Control, Input } from '@yomtor/ui'
 import {
   HeightIcon,
@@ -80,20 +80,35 @@ export const TransformsControls = (props: TransformsControlsProps) => {
             round(item.activeInfo.angle, 2)
           )
         )
-        setX(size(x) === 1 ? findKey(x) : 'Mixed')
-        setY(size(y) === 1 ? findKey(y) : 'Mixed')
-        setWidth(size(width) === 1 ? findKey(width) : 'Mixed')
-        setHeight(size(height) === 1 ? findKey(height) : 'Mixed')
-        setAngle(size(angle) === 1 ? findKey(angle) : 'Mixed')
+        setX(size(x) === 1 ? findKey(x) : 'Mixeda')
+        setY(size(y) === 1 ? findKey(y) : 'Mixeda')
+        setWidth(size(width) === 1 ? findKey(width) : 'Mixeda')
+        setHeight(size(height) === 1 ? findKey(height) : 'Mixeda')
+        setAngle(size(angle) === 1 ? findKey(angle) : 'Mixeda')
       }
     })
   }, [canvas])
+
+  const changeHandler = (key: string, value: string) => {
+    canvas.project.activeItems.forEach((item) => {
+      if (['x', 'y'].includes(key)) {
+        console.log(value)
+        item.position[key] = value
+      }
+    })
+  }
 
   return visible ? (
     <Control>
       <Control.Group rowGap={8}>
         <Control.Panel start={1} end={14}>
-          <Input icon={<XAxisIcon />} defaultValue={x} />
+          <Input
+            icon={<XAxisIcon />}
+            defaultValue={x}
+            onChange={(event: ChangeEvent<HTMLInputElement>) =>
+              changeHandler('x', event.currentTarget.value)
+            }
+          />
         </Control.Panel>
         <Control.Panel start={16} end={30}>
           <Input icon={<YAxisIcon />} defaultValue={y} />
