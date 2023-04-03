@@ -1,7 +1,7 @@
 import { useComponentDefaultProps } from '@yomtor/styles'
 import { useEditorContext } from '@yomtor/core'
 import React, { useEffect, useState } from 'react'
-import { ActionIcon, Control, Input } from '@yomtor/ui'
+import { ActionIcon, Control } from '@yomtor/ui'
 import {
   AlignBoxBottomIcon,
   AlignBoxCenterIcon,
@@ -10,8 +10,7 @@ import {
   AlignBoxTopIcon
 } from '@yomtor/icons'
 import { ChangeFlag } from '@yomtor/paper'
-import { countBy, find, findKey, size } from 'lodash'
-import { round } from '@yomtor/utils'
+import { countBy, isEmpty } from 'lodash'
 import { AlignmentsControlsProps } from './AlignmentsControls.props'
 
 const defaultProps: Partial<AlignmentsControlsProps> = {
@@ -34,78 +33,68 @@ export const AlignmentsControls = (props: AlignmentsControlsProps) => {
     props
   )
   const { canvas } = useEditorContext()
-  const [x, setX] = useState<number | string>()
-  const [y, setY] = useState<number | string>()
-  const [width, setWidth] = useState<number | string>()
-  const [height, setHeight] = useState<number | string>()
-  const [angle, setAngle] = useState<number | string>()
+  const [artboard, setArtboard] = useState<boolean>()
+
+  const align = (position: 'left' | 'right' | 'center' | 'bottom' | 'top') => {
+    canvas &&
+      canvas.project.activeItems.forEach((item) => {
+        item.bounds[position] = item.artboard.activeInfo[position]
+      })
+  }
 
   useEffect(() => {
     if (!canvas) return
 
     canvas.project.on('changed', (type) => {
-      if (type & (ChangeFlag.ACTIVE | ChangeFlag.MATRIX)) {
-        const x = countBy(
-          canvas.project.activeItems.map((item) =>
-            round(
-              item.activeInfo.topLeft.x -
-                (item.artboard && item.artboard.activeInfo.topLeft.x),
-              2
-            )
-          )
+      if (type & ChangeFlag.ACTIVE) {
+        const hasArtboard = countBy(
+          canvas.project.activeItems.map((item) => item.artboard)
         )
-        const y = countBy(
-          canvas.project.activeItems.map((item) =>
-            round(
-              item.activeInfo.topLeft.y -
-                (item.artboard && item.artboard.activeInfo.topLeft.y),
-              2
-            )
-          )
-        )
-        const width = countBy(
-          canvas.project.activeItems.map((item) =>
-            round(item.activeInfo.width, 2)
-          )
-        )
-        const height = countBy(
-          canvas.project.activeItems.map((item) =>
-            round(item.activeInfo.height, 2)
-          )
-        )
-        const angle = countBy(
-          canvas.project.activeItems.map((item) =>
-            round(item.activeInfo.angle, 2)
-          )
-        )
-        setX(size(x) === 1 ? findKey(x) : 'Mixed')
-        setY(size(y) === 1 ? findKey(y) : 'Mixed')
-        setWidth(size(width) === 1 ? findKey(width) : 'Mixed')
-        setHeight(size(height) === 1 ? findKey(height) : 'Mixed')
-        setAngle(size(angle) === 1 ? findKey(angle) : 'Mixed')
+
+        setArtboard(!isEmpty(hasArtboard) && !hasArtboard.null)
       }
     })
   }, [canvas])
 
-  return (
+  return visible ? (
     <Control>
       <Control.Group columns={10}>
         <Control.Panel start={1} end={2}>
-          <ActionIcon icon={<AlignBoxLeftIcon />} />
+          <ActionIcon
+            disabled={!artboard}
+            onClick={() => align('left')}
+            icon={<AlignBoxLeftIcon />}
+          />
         </Control.Panel>
         <Control.Panel start={3} end={4}>
-          <ActionIcon icon={<AlignBoxBottomIcon />} />
+          <ActionIcon
+            disabled={!artboard}
+            onClick={() => align('bottom')}
+            icon={<AlignBoxBottomIcon />}
+          />
         </Control.Panel>
         <Control.Panel start={5} end={6}>
-          <ActionIcon icon={<AlignBoxCenterIcon />} />
+          <ActionIcon
+            disabled={!artboard}
+            onClick={() => align('center')}
+            icon={<AlignBoxCenterIcon />}
+          />
         </Control.Panel>
         <Control.Panel start={7} end={8}>
-          <ActionIcon icon={<AlignBoxTopIcon />} />
+          <ActionIcon
+            disabled={!artboard}
+            onClick={() => align('top')}
+            icon={<AlignBoxTopIcon />}
+          />
         </Control.Panel>
         <Control.Panel start={9} end={10}>
-          <ActionIcon icon={<AlignBoxRightIcon />} />
+          <ActionIcon
+            disabled={!artboard}
+            onClick={() => align('right')}
+            icon={<AlignBoxRightIcon />}
+          />
         </Control.Panel>
       </Control.Group>
     </Control>
-  )
+  ) : null
 }
