@@ -97,13 +97,22 @@ export function getVariant(theme: YomtorTheme) {
       }
     }
 
+    const disabled = {
+      '&[data-disabled]': {
+        background: 'unset',
+        border: 'unset',
+        opacity: 0.5
+      }
+    }
+
     return {
       border: `1px solid ${colors.border}`,
       backgroundColor: colors.background,
       color: colors.color,
       ...active,
       ...hover,
-      ...focus
+      ...focus,
+      ...disabled
     }
   }
 }

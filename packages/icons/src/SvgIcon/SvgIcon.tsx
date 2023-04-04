@@ -5,6 +5,8 @@ import useStyles from './SvgIcon.styles'
 
 const defaultProps: Partial<SvgIconProps> = {
   rotate: null,
+  flipX: false,
+  flipY: false,
   viewbox: '0 0 32 32',
   hidden: false,
   size: 'md'

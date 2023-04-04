@@ -55,9 +55,9 @@ export const App = () => {
           }
           aside={
             <Aside resize>
+              <AlignmentsControls visible />
               <TransformsControls visible />
               <ConstraintsControls />
-              <AlignmentsControls visible />
             </Aside>
           }
           header={

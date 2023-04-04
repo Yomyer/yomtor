@@ -2,13 +2,7 @@ import { useComponentDefaultProps } from '@yomtor/styles'
 import { useEditorContext } from '@yomtor/core'
 import React, { useEffect, useState } from 'react'
 import { ActionIcon, Control } from '@yomtor/ui'
-import {
-  AlignBoxBottomIcon,
-  AlignBoxCenterIcon,
-  AlignBoxLeftIcon,
-  AlignBoxRightIcon,
-  AlignBoxTopIcon
-} from '@yomtor/icons'
+import { AligmentStartIcon, AligmentCenterIcon } from '@yomtor/icons'
 import { ChangeFlag } from '@yomtor/paper'
 import { countBy, isEmpty } from 'lodash'
 import { AlignmentsControlsProps } from './AlignmentsControls.props'
@@ -58,40 +52,47 @@ export const AlignmentsControls = (props: AlignmentsControlsProps) => {
 
   return visible ? (
     <Control>
-      <Control.Group columns={10}>
+      <Control.Group columns={11}>
         <Control.Panel start={1} end={2}>
           <ActionIcon
             disabled={!artboard}
             onClick={() => align('left')}
-            icon={<AlignBoxLeftIcon />}
+            icon={<AligmentStartIcon />}
           />
         </Control.Panel>
         <Control.Panel start={3} end={4}>
           <ActionIcon
             disabled={!artboard}
-            onClick={() => align('bottom')}
-            icon={<AlignBoxBottomIcon />}
+            onClick={() => align('center')}
+            icon={<AligmentCenterIcon />}
           />
         </Control.Panel>
         <Control.Panel start={5} end={6}>
           <ActionIcon
             disabled={!artboard}
             onClick={() => align('center')}
-            icon={<AlignBoxCenterIcon />}
+            icon={<AligmentStartIcon flipX />}
           />
         </Control.Panel>
         <Control.Panel start={7} end={8}>
           <ActionIcon
             disabled={!artboard}
             onClick={() => align('top')}
-            icon={<AlignBoxTopIcon />}
+            icon={<AligmentStartIcon rotate={90} />}
           />
         </Control.Panel>
         <Control.Panel start={9} end={10}>
           <ActionIcon
             disabled={!artboard}
             onClick={() => align('right')}
-            icon={<AlignBoxRightIcon />}
+            icon={<AligmentCenterIcon rotate={90} />}
+          />
+        </Control.Panel>
+        <Control.Panel start={11} end={12}>
+          <ActionIcon
+            disabled={!artboard}
+            onClick={() => align('right')}
+            icon={<AligmentStartIcon rotate={90} flipX />}
           />
         </Control.Panel>
       </Control.Group>
