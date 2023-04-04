@@ -5863,6 +5863,8 @@ new function(){
 		});
 	},
 
+	getActiveInfo: '#getInfo',
+
 	_drawActivation: function(ctx, matrix, unrotated) {
 		var corners = matrix._transformCoordinates(this.getCorners(unrotated), this.getCorners(unrotated), 4);
 		ctx.beginPath();
@@ -7783,7 +7785,7 @@ var Selector = Item.extend(
 
 			var items = this._project._activeItems;
 			if (items.length) {
-				var info = items[0].activeInfo;
+				var info = items[0].info;
 
 				if (items.length > 1) {
 					var cornerIntems = this._getCornerItems();

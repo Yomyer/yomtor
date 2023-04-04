@@ -5492,6 +5492,12 @@ new function(){
         });
     },
 
+    /**
+     * @bean
+     * @deprecated use {@link #info} instead.
+     */
+    getActiveInfo: '#getInfo',
+
     _drawActivation: function(ctx, matrix, unrotated) {
         var corners = matrix._transformCoordinates(this.getCorners(unrotated), this.getCorners(unrotated), 4);
        

@@ -50,8 +50,8 @@ export const TransformsControls = (props: TransformsControlsProps) => {
         const x = countBy(
           canvas.project.activeItems.map((item) =>
             round(
-              item.activeInfo.topLeft.x -
-                (item.artboard && item.artboard.activeInfo.topLeft.x),
+              item.info.topLeft.x -
+                (item.artboard && item.artboard.info.topLeft.x),
               2
             )
           )
@@ -59,26 +59,20 @@ export const TransformsControls = (props: TransformsControlsProps) => {
         const y = countBy(
           canvas.project.activeItems.map((item) =>
             round(
-              item.activeInfo.topLeft.y -
-                (item.artboard && item.artboard.activeInfo.topLeft.y),
+              item.info.topLeft.y -
+                (item.artboard && item.artboard.info.topLeft.y),
               2
             )
           )
         )
         const width = countBy(
-          canvas.project.activeItems.map((item) =>
-            round(item.activeInfo.width, 2)
-          )
+          canvas.project.activeItems.map((item) => round(item.info.width, 2))
         )
         const height = countBy(
-          canvas.project.activeItems.map((item) =>
-            round(item.activeInfo.height, 2)
-          )
+          canvas.project.activeItems.map((item) => round(item.info.height, 2))
         )
         const angle = countBy(
-          canvas.project.activeItems.map((item) =>
-            round(item.activeInfo.angle, 2)
-          )
+          canvas.project.activeItems.map((item) => round(item.info.angle, 2))
         )
         setX(size(x) === 1 ? parseFloat(findKey(x)) : 0)
         /*
@@ -95,10 +89,10 @@ export const TransformsControls = (props: TransformsControlsProps) => {
     canvas.project.activeItems.forEach((item) => {
       if (['x', 'y'].includes(key)) {
         if (item.artboard) {
-          value += item.artboard.activeInfo.topLeft[key]
+          value += item.artboard.info.topLeft[key]
         }
         console.log(value)
-        item.activeInfo.topLeft[key] = value
+        item.info.topLeft[key] = value
       }
     })
   }

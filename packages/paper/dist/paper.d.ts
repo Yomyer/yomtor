@@ -1918,21 +1918,6 @@ declare namespace paper {
          */
         activeItems: boolean
 
-        /** 
-         * The corners
-         */
-        corners: Array<number>
-
-        /** 
-         * The corner positions
-         */
-        cornersPosition: {topLeft: Point, topRight: Point, bottomRight: Point, bottomLeft: Point}
-
-        /** 
-         * The info of active object
-         */
-        activeInfo: {angle: number, inheritedAngle: number, width: number, height: number, top: number, left: number, rigth: number, bottom: number, center: Point, topCenter: Point, rightCenter: Point, bottomCenter: Point, leftCenter: Point, topLeft: Point, topRight: Point, bottomRight: Point, bottomLeft: Point}
-
         
         grid: Grid
 
@@ -2129,6 +2114,21 @@ declare namespace paper {
          * @see View#onMouseLeave
          */
         onMouseLeave: Function | null
+
+        /** 
+         * The corners
+         */
+        corners: Array<number>
+
+        /** 
+         * The corner positions
+         */
+        cornersPosition: {topLeft: Point, topRight: Point, bottomRight: Point, bottomLeft: Point}
+
+        /** 
+         * The info of active object
+         */
+        info: {angle: number, inheritedAngle: number, width: number, height: number, top: number, left: number, rigth: number, bottom: number, center: Point, topCenter: Point, rightCenter: Point, bottomCenter: Point, leftCenter: Point, topLeft: Point, topRight: Point, bottomRight: Point, bottomLeft: Point}
 
 
         /** 

@@ -533,7 +533,7 @@ var Selector = Item.extend(
 
             var items = this._project._activeItems;
             if (items.length) {
-                var info = items[0].activeInfo;
+                var info = items[0].info;
 
                 if (items.length > 1) {
                     var cornerIntems = this._getCornerItems();
