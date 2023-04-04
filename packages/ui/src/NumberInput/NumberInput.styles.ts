@@ -44,13 +44,13 @@ export default createStyles(
     icon: {
       ...(compact && {
         width: rem(getSize({ size, sizes: iconSizes }))
+      }),
+      ...(draggable && {
+        pointerEvents: 'all',
+        '& > *': {
+          display: 'flex'
+        }
       })
-    },
-    drggable: {
-      pointerEvents: draggable ? 'all' : 'none',
-      '& > *': {
-        display: 'flex'
-      }
     }
   })
 )
