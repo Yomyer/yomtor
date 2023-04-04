@@ -245,7 +245,7 @@ new function() { // Injection scope for various item event handlers
         if (flags & /*#=*/ (ChangeFlag.GEOMETRY | ChangeFlag.ACTIVE)) {
             // Clear cached bounds, position and decomposed matrix whenever
             // geometry changes.
-            this._bounds = this._position = this._decomposed = this._activeInfo = undefined;
+            this._bounds = this._position = this._decomposed = this._info = undefined;
         }
         if (flags & /*#=*/ChangeFlag.MATRIX) {
             this._globalMatrix = undefined;
@@ -1278,7 +1278,7 @@ new function() { // Injection scope for various item event handlers
             var cache = item._boundsCache;
             if (cache) {
                 // Erase cache before looping, to prevent circular recursion.
-                item._bounds = item._position = item._boundsCache = item._activeInfo = undefined;
+                item._bounds = item._position = item._boundsCache = item._info = undefined;
                 for (var i = 0, list = cache.list, l = list.length; i < l; i++){
                     var other = list[i];
                     if (other !== item) {
@@ -2241,112 +2241,24 @@ new function() { // Injection scope for various item event handlers
      * @type Boolean
      * 
     */
-    getActiveItems: function(){
-        var children = this._children,
-            activedItems = [];
-
-        if(children){
-            for (var i = 0, l = children.length; i < l; i++) {
-                var item = children[i];
-                if (item.actived){
-                    activedItems.push(item);
+         getActiveItems: function(){
+            var children = this._children,
+                activedItems = [];
+    
+            if(children){
+                for (var i = 0, l = children.length; i < l; i++) {
+                    var item = children[i];
+                    if (item.actived){
+                        activedItems.push(item);
+                    }
+                    activedItems = activedItems.concat(item.getActiveItems());
                 }
-                activedItems = activedItems.concat(item.getActiveItems());
             }
-        }
-
-        return activedItems;
-    },
-
-    /**
-     * The corners
-     *
-     * @name Item#corners
-     * @type Array<number>
-     * 
-    */
-    getCorners: function(unrotated) {
-        
-        var angle = this.getInheritedAngle();
-        var bounds = this.bounds;
-        var center =  this.bounds.center;
-        
-        if (angle !== 0 && !unrotated) {
-            this.transform(new Matrix().rotate(-angle, center), false, false, true);
-            bounds = this.bounds.clone();
-            this.transform(new Matrix().rotate(angle, center), false, false, true);
-        }
-        
-
-        var matrix = new Matrix().rotate(!unrotated && angle, center);
-        var corners = matrix._transformCorners(bounds);
-
-        return corners;
-    },
-
-
-    /**
-     * The corner positions
-     *
-     * @name Item#cornersPosition
-     * @type Object {topLeft: Point, topRight: Point, bottomRight: Point, bottomLeft: Point}
-     * 
-    */
-    getCornersPosition: function(unrotated) {
-        var corners = this.getCorners(unrotated);
-
-        return {
-            topLeft: new Point(corners[0], corners[1]),
-            topRight: new Point(corners[2], corners[3]),
-            bottomRight: new Point(corners[4], corners[5]),
-            bottomLeft: new Point(corners[6], corners[7]),
-        };
-    },
-
-    /**
-     * The info of active object
-     *
-     * @name Item#activeInfo
-     * @type Object {angle: number, inheritedAngle: number, width: number, height: number, top: number, left: number, rigth: number, bottom: number, center: Point, topCenter: Point, rightCenter: Point, bottomCenter: Point, leftCenter: Point, topLeft: Point, topRight: Point, bottomRight: Point, bottomLeft: Point}
-     * 
-    */
-    getActiveInfo: function() {
-        if(this._activeInfo){
-            return this._activeInfo;
-        }
-        
-        var corners = this.getCornersPosition();
-
-        return this._activeInfo = Base.set(corners, {
-            angle: this.angle,
-            inheritedAngle: this.inheritedAngle,
-            width: corners.topLeft.subtract(corners.topRight).length,
-            height: corners.topLeft.subtract(corners.bottomLeft).length,
-            center: corners.topLeft.add(corners.bottomRight).divide(2),
-            topCenter: corners.topLeft.add(corners.topRight).divide(2),
-            rightCenter: corners.topRight.add(corners.bottomRight).divide(2),
-            bottomCenter: corners.bottomRight.add(corners.bottomLeft).divide(2),
-            leftCenter: corners.bottomLeft.add(corners.topLeft).divide(2),
-            top: corners.topLeft.add(corners.topRight).divide(2).y,
-            bottom: corners.bottomRight.add(corners.bottomLeft).divide(2).y,
-            left: corners.bottomLeft.add(corners.topLeft).divide(2).x,
-            right: corners.topRight.add(corners.bottomRight).divide(2).x,
-        });
-    },
-
-    _drawActivation: function(ctx, matrix, unrotated) {
-        var corners = matrix._transformCoordinates(this.getCorners(unrotated), this.getCorners(unrotated), 4);
-       
-        ctx.beginPath();
-        ctx.moveTo(corners[0], corners[1]);
-        ctx.lineTo(corners[2], corners[3]);
-        ctx.lineTo(corners[4], corners[5]);
-        ctx.lineTo(corners[6], corners[7]);
-        ctx.closePath();
-        
-        ctx.stroke();
-    }
+    
+            return activedItems;
+        },
 },
+
 new function() { // Injection scope for hit-test functions shared with project
     function hitTest(/* point, options */) {
         var args = arguments;
@@ -5168,7 +5080,7 @@ new function() { // Injection scope for hit-test functions shared with project
     },
 
     _getHigthlightItem: function() {
-        var info = this.getActiveInfo();
+        var info = this.getInfo();
         return new Path.Rectangle({
             position: info.center,
             size: info,
@@ -5499,4 +5411,105 @@ new function() { // Injection scope for hit-test functions shared with project
     tweenFrom: function(from, options) {
         return this.tween(from, null, options);
     }
-});
+},
+new function(){
+
+}, /** @lends Item# */ {
+
+    /**
+     * The corners
+     *
+     * @name Item#corners
+     * @type Array<number>
+     * 
+    */
+    getCorners: function(unrotated) {
+        
+        var angle = this.getInheritedAngle();
+        var bounds = this.bounds;
+        var center =  this.bounds.center;
+        
+        if (angle !== 0 && !unrotated) {
+            this.transform(new Matrix().rotate(-angle, center), false, false, true);
+            bounds = this.bounds.clone();
+            this.transform(new Matrix().rotate(angle, center), false, false, true);
+        }
+        
+
+        var matrix = new Matrix().rotate(!unrotated && angle, center);
+        var corners = matrix._transformCorners(bounds);
+
+        return corners;
+    },
+
+
+    /**
+     * The corner positions
+     *
+     * @name Item#cornersPosition
+     * @type Object {topLeft: Point, topRight: Point, bottomRight: Point, bottomLeft: Point}
+     * 
+    */
+    getCornersPosition: function(unrotated) {
+        var corners = this.getCorners(unrotated);
+
+        return {
+            topLeft: new LinkedPoint(corners[0], corners[1], this, '_setInfoTopLeft'),
+            topRight: new Point(corners[2], corners[3]),
+            bottomRight: new Point(corners[4], corners[5]),
+            bottomLeft: new Point(corners[6], corners[7]),
+        };
+    },
+
+    /**
+     * The info of active object
+     *
+     * @name Item#info
+     * @type Object {angle: number, inheritedAngle: number, width: number, height: number, top: number, left: number, rigth: number, bottom: number, center: Point, topCenter: Point, rightCenter: Point, bottomCenter: Point, leftCenter: Point, topLeft: Point, topRight: Point, bottomRight: Point, bottomLeft: Point}
+     * 
+    */
+    getInfo: function() {
+        if(this._info){
+            return this._info;
+        }
+        
+        var corners = this.getCornersPosition();
+
+        return this._info = Base.set(corners, {
+            angle: this.angle,
+            inheritedAngle: this.inheritedAngle,
+            width: corners.topLeft.subtract(corners.topRight).length,
+            height: corners.topLeft.subtract(corners.bottomLeft).length,
+            center: corners.topLeft.add(corners.bottomRight).divide(2),
+            topCenter: corners.topLeft.add(corners.topRight).divide(2),
+            rightCenter: corners.topRight.add(corners.bottomRight).divide(2),
+            bottomCenter: corners.bottomRight.add(corners.bottomLeft).divide(2),
+            leftCenter: corners.bottomLeft.add(corners.topLeft).divide(2),
+            top: corners.topLeft.add(corners.topRight).divide(2).y,
+            bottom: corners.bottomRight.add(corners.bottomLeft).divide(2).y,
+            left: corners.bottomLeft.add(corners.topLeft).divide(2).x,
+            right: corners.topRight.add(corners.bottomRight).divide(2).x,
+        });
+    },
+
+    _drawActivation: function(ctx, matrix, unrotated) {
+        var corners = matrix._transformCoordinates(this.getCorners(unrotated), this.getCorners(unrotated), 4);
+       
+        ctx.beginPath();
+        ctx.moveTo(corners[0], corners[1]);
+        ctx.lineTo(corners[2], corners[3]);
+        ctx.lineTo(corners[4], corners[5]);
+        ctx.lineTo(corners[6], corners[7]);
+        ctx.closePath();
+        
+        ctx.stroke();
+    }
+}, Base.each(['_setInfoTopLeft'], function(key) {
+    this[key] = function(/* value, center */) {
+       var real = key.replace('_setInfo', '').charAt(0).toLowerCase() + "TopLeft".slice(1)
+       var point = Point.read(arguments)
+
+       this.position = point
+       console.log(real, point);
+    };
+}));

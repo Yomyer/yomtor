@@ -3897,7 +3897,7 @@ new function() {
 			cacheParent = this._parent || symbol,
 			project = this._project;
 		if (flags & 1048584) {
-			this._bounds = this._position = this._decomposed = this._activeInfo = undefined;
+			this._bounds = this._position = this._decomposed = this._info = undefined;
 		}
 		if (flags & 16) {
 			this._globalMatrix = undefined;
@@ -4337,7 +4337,7 @@ new function() {
 		_clearBoundsCache: function(item) {
 			var cache = item._boundsCache;
 			if (cache) {
-				item._bounds = item._position = item._boundsCache = item._activeInfo = undefined;
+				item._bounds = item._position = item._boundsCache = item._info = undefined;
 				for (var i = 0, list = cache.list, l = list.length; i < l; i++){
 					var other = list[i];
 					if (other !== item) {
@@ -4787,84 +4787,22 @@ new function() {
 		this._changed(2097409);
 	},
 
-	getActiveItems: function(){
-		var children = this._children,
-			activedItems = [];
-
-		if(children){
-			for (var i = 0, l = children.length; i < l; i++) {
-				var item = children[i];
-				if (item.actived){
-					activedItems.push(item);
+		 getActiveItems: function(){
+			var children = this._children,
+				activedItems = [];
+			if(children){
+				for (var i = 0, l = children.length; i < l; i++) {
+					var item = children[i];
+					if (item.actived){
+						activedItems.push(item);
+					}
+					activedItems = activedItems.concat(item.getActiveItems());
 				}
-				activedItems = activedItems.concat(item.getActiveItems());
 			}
-		}
-
-		return activedItems;
-	},
-
-	getCorners: function(unrotated) {
-		var angle = this.getInheritedAngle();
-		var bounds = this.bounds;
-		var center =  this.bounds.center;
-		if (angle !== 0 && !unrotated) {
-			this.transform(new Matrix().rotate(-angle, center), false, false, true);
-			bounds = this.bounds.clone();
-			this.transform(new Matrix().rotate(angle, center), false, false, true);
-		}
-
-		var matrix = new Matrix().rotate(!unrotated && angle, center);
-		var corners = matrix._transformCorners(bounds);
-
-		return corners;
-	},
-
-	getCornersPosition: function(unrotated) {
-		var corners = this.getCorners(unrotated);
-
-		return {
-			topLeft: new Point(corners[0], corners[1]),
-			topRight: new Point(corners[2], corners[3]),
-			bottomRight: new Point(corners[4], corners[5]),
-			bottomLeft: new Point(corners[6], corners[7]),
-		};
-	},
-
-	getActiveInfo: function() {
-		if(this._activeInfo){
-			return this._activeInfo;
-		}
-		var corners = this.getCornersPosition();
-
-		return this._activeInfo = Base.set(corners, {
-			angle: this.angle,
-			inheritedAngle: this.inheritedAngle,
-			width: corners.topLeft.subtract(corners.topRight).length,
-			height: corners.topLeft.subtract(corners.bottomLeft).length,
-			center: corners.topLeft.add(corners.bottomRight).divide(2),
-			topCenter: corners.topLeft.add(corners.topRight).divide(2),
-			rightCenter: corners.topRight.add(corners.bottomRight).divide(2),
-			bottomCenter: corners.bottomRight.add(corners.bottomLeft).divide(2),
-			leftCenter: corners.bottomLeft.add(corners.topLeft).divide(2),
-			top: corners.topLeft.add(corners.topRight).divide(2).y,
-			bottom: corners.bottomRight.add(corners.bottomLeft).divide(2).y,
-			left: corners.bottomLeft.add(corners.topLeft).divide(2).x,
-			right: corners.topRight.add(corners.bottomRight).divide(2).x,
-		});
-	},
-
-	_drawActivation: function(ctx, matrix, unrotated) {
-		var corners = matrix._transformCoordinates(this.getCorners(unrotated), this.getCorners(unrotated), 4);
-		ctx.beginPath();
-		ctx.moveTo(corners[0], corners[1]);
-		ctx.lineTo(corners[2], corners[3]);
-		ctx.lineTo(corners[4], corners[5]);
-		ctx.lineTo(corners[6], corners[7]);
-		ctx.closePath();
-		ctx.stroke();
-	}
+			return activedItems;
+		},
 },
+
 new function() {
 	function hitTest() {
 		var args = arguments;
@@ -5803,7 +5741,7 @@ new function() {
 	},
 
 	_getHigthlightItem: function() {
-		var info = this.getActiveInfo();
+		var info = this.getInfo();
 		return new Path.Rectangle({
 			position: info.center,
 			size: info,
@@ -5870,7 +5808,80 @@ new function() {
 	tweenFrom: function(from, options) {
 		return this.tween(from, null, options);
 	}
-});
+},
+new function(){
+
+},  {
+
+	getCorners: function(unrotated) {
+		var angle = this.getInheritedAngle();
+		var bounds = this.bounds;
+		var center =  this.bounds.center;
+		if (angle !== 0 && !unrotated) {
+			this.transform(new Matrix().rotate(-angle, center), false, false, true);
+			bounds = this.bounds.clone();
+			this.transform(new Matrix().rotate(angle, center), false, false, true);
+		}
+
+		var matrix = new Matrix().rotate(!unrotated && angle, center);
+		var corners = matrix._transformCorners(bounds);
+
+		return corners;
+	},
+
+	getCornersPosition: function(unrotated) {
+		var corners = this.getCorners(unrotated);
+
+		return {
+			topLeft: new LinkedPoint(corners[0], corners[1], this, '_setInfoTopLeft'),
+			topRight: new Point(corners[2], corners[3]),
+			bottomRight: new Point(corners[4], corners[5]),
+			bottomLeft: new Point(corners[6], corners[7]),
+		};
+	},
+
+	getInfo: function() {
+		if(this._info){
+			return this._info;
+		}
+		var corners = this.getCornersPosition();
+
+		return this._info = Base.set(corners, {
+			angle: this.angle,
+			inheritedAngle: this.inheritedAngle,
+			width: corners.topLeft.subtract(corners.topRight).length,
+			height: corners.topLeft.subtract(corners.bottomLeft).length,
+			center: corners.topLeft.add(corners.bottomRight).divide(2),
+			topCenter: corners.topLeft.add(corners.topRight).divide(2),
+			rightCenter: corners.topRight.add(corners.bottomRight).divide(2),
+			bottomCenter: corners.bottomRight.add(corners.bottomLeft).divide(2),
+			leftCenter: corners.bottomLeft.add(corners.topLeft).divide(2),
+			top: corners.topLeft.add(corners.topRight).divide(2).y,
+			bottom: corners.bottomRight.add(corners.bottomLeft).divide(2).y,
+			left: corners.bottomLeft.add(corners.topLeft).divide(2).x,
+			right: corners.topRight.add(corners.bottomRight).divide(2).x,
+		});
+	},
+
+	_drawActivation: function(ctx, matrix, unrotated) {
+		var corners = matrix._transformCoordinates(this.getCorners(unrotated), this.getCorners(unrotated), 4);
+		ctx.beginPath();
+		ctx.moveTo(corners[0], corners[1]);
+		ctx.lineTo(corners[2], corners[3]);
+		ctx.lineTo(corners[4], corners[5]);
+		ctx.lineTo(corners[6], corners[7]);
+		ctx.closePath();
+		ctx.stroke();
+	}
+}, Base.each(['_setInfoTopLeft'], function(key) {
+	this[key] = function() {
+	   var real = key.replace('_setInfo', '').charAt(0).toLowerCase() + "TopLeft".slice(1)
+	   var point = Point.read(arguments)
+
+	   this.position = point
+	   console.log(real, point);
+	};
+}));
 
 var Group = Item.extend(
 	 {

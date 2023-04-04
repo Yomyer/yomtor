@@ -2,7 +2,7 @@ import { TransformsControlsProps } from './TransformsControls.props'
 import { useComponentDefaultProps } from '@yomtor/styles'
 import { useEditorContext } from '@yomtor/core'
 import React, { ChangeEvent, useEffect, useState } from 'react'
-import { ActionIcon, Control, Input } from '@yomtor/ui'
+import { ActionIcon, Control, Input, NumberInput } from '@yomtor/ui'
 import {
   HeightIcon,
   RadiusIcon,
@@ -36,11 +36,11 @@ export const TransformsControls = (props: TransformsControlsProps) => {
     props
   )
   const { canvas } = useEditorContext()
-  const [x, setX] = useState<number | string>()
-  const [y, setY] = useState<number | string>()
-  const [width, setWidth] = useState<number | string>()
-  const [height, setHeight] = useState<number | string>()
-  const [angle, setAngle] = useState<number | string>()
+  const [x, setX] = useState<number>()
+  const [y, setY] = useState<number>()
+  const [width, setWidth] = useState<number>()
+  const [height, setHeight] = useState<number>()
+  const [angle, setAngle] = useState<number>()
 
   useEffect(() => {
     if (!canvas) return
@@ -80,20 +80,25 @@ export const TransformsControls = (props: TransformsControlsProps) => {
             round(item.activeInfo.angle, 2)
           )
         )
-        setX(size(x) === 1 ? findKey(x) : 'Mixeda')
+        setX(size(x) === 1 ? parseFloat(findKey(x)) : 0)
+        /*
         setY(size(y) === 1 ? findKey(y) : 'Mixeda')
         setWidth(size(width) === 1 ? findKey(width) : 'Mixeda')
         setHeight(size(height) === 1 ? findKey(height) : 'Mixeda')
         setAngle(size(angle) === 1 ? findKey(angle) : 'Mixeda')
+        */
       }
     })
   }, [canvas])
 
-  const changeHandler = (key: string, value: string) => {
+  const changeHandler = (key: string, value: number) => {
     canvas.project.activeItems.forEach((item) => {
       if (['x', 'y'].includes(key)) {
+        if (item.artboard) {
+          value += item.artboard.activeInfo.topLeft[key]
+        }
         console.log(value)
-        item.position[key] = value
+        item.activeInfo.topLeft[key] = value
       }
     })
   }
@@ -102,34 +107,11 @@ export const TransformsControls = (props: TransformsControlsProps) => {
     <Control>
       <Control.Group rowGap={8}>
         <Control.Panel start={1} end={14}>
-          <Input
+          <NumberInput
             icon={<XAxisIcon />}
-            defaultValue={x}
-            onChange={(event: ChangeEvent<HTMLInputElement>) =>
-              changeHandler('x', event.currentTarget.value)
-            }
+            value={x}
+            onChange={(value: number) => changeHandler('x', value)}
           />
-        </Control.Panel>
-        <Control.Panel start={16} end={30}>
-          <Input icon={<YAxisIcon />} defaultValue={y} />
-        </Control.Panel>
-        <Control.Panel start={1} end={14}>
-          <Input icon={<WidthIcon />} defaultValue={width} />
-        </Control.Panel>
-        <Control.Panel start={16} end={30}>
-          <Input icon={<HeightIcon />} defaultValue={height} />
-        </Control.Panel>
-        <Control.Panel start={32} end={33}>
-          <ActionIcon icon={<UnlinkIcon />} />
-        </Control.Panel>
-        <Control.Panel start={1} end={14}>
-          <Input icon={<RotationIcon />} defaultValue={angle} />
-        </Control.Panel>
-        <Control.Panel start={16} end={30}>
-          <Input icon={<RadiusIcon />} />
-        </Control.Panel>
-        <Control.Panel start={32} end={33}>
-          <ActionIcon icon={<RotationIcon />} />
         </Control.Panel>
       </Control.Group>
     </Control>
