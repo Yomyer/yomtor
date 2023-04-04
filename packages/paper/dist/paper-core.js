@@ -5831,14 +5831,14 @@ new function(){
 
 		return {
 			topLeft: new LinkedPoint(corners[0], corners[1], this, '_setInfoTopLeft'),
-			topRight: new Point(corners[2], corners[3]),
+			topRight: new LinkedPoint(corners[2], corners[3], this, '_setInfoTopRight'),
 			bottomRight: new Point(corners[4], corners[5]),
 			bottomLeft: new Point(corners[6], corners[7]),
 		};
 	},
 
-	getInfo: function() {
-		if(this._info){
+	getInfo: function(cache = true) {
+		if(cache && this._info){
 			return this._info;
 		}
 		var corners = this.getCornersPosition();
@@ -5872,13 +5872,13 @@ new function(){
 		ctx.closePath();
 		ctx.stroke();
 	}
-}, Base.each(['_setInfoTopLeft'], function(key) {
+}, Base.each(['_setInfoTopLeft', '_setInfoTopRight'], function(key) {
 	this[key] = function() {
-	   var real = key.replace('_setInfo', '').charAt(0).toLowerCase() + "TopLeft".slice(1)
+	   var real = key.replace('_setInfo', '').charAt(0).toLowerCase() + key.replace('_setInfo', '').slice(1)
 	   var point = Point.read(arguments)
+	   var diff = point.subtract(this.getInfo(false)[real])
 
-	   this.position = point
-	   console.log(real, point);
+	   this.bounds.center = this.bounds.center.add(diff)
 	};
 }));
 

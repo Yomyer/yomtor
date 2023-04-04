@@ -12,7 +12,7 @@ import {
   XAxisIcon,
   YAxisIcon
 } from '@yomtor/icons'
-import { ChangeFlag } from '@yomtor/paper'
+import { ChangeFlag, Point } from '@yomtor/paper'
 import { countBy, find, findKey, size } from 'lodash'
 import { round } from '@yomtor/utils'
 
@@ -74,13 +74,11 @@ export const TransformsControls = (props: TransformsControlsProps) => {
         const angle = countBy(
           canvas.project.activeItems.map((item) => round(item.info.angle, 2))
         )
-        setX(size(x) === 1 ? parseFloat(findKey(x)) : 0)
-        /*
-        setY(size(y) === 1 ? findKey(y) : 'Mixeda')
-        setWidth(size(width) === 1 ? findKey(width) : 'Mixeda')
-        setHeight(size(height) === 1 ? findKey(height) : 'Mixeda')
-        setAngle(size(angle) === 1 ? findKey(angle) : 'Mixeda')
-        */
+        setX(size(x) === 1 ? parseFloat(findKey(x)) : null)
+        setY(size(y) === 1 ? parseFloat(findKey(y)) : null)
+        setWidth(size(width) === 1 ? parseFloat(findKey(width)) : null)
+        setHeight(size(height) === 1 ? parseFloat(findKey(height)) : null)
+        setAngle(size(angle) === 1 ? parseFloat(findKey(angle)) : null)
       }
     })
   }, [canvas])
@@ -91,8 +89,7 @@ export const TransformsControls = (props: TransformsControlsProps) => {
         if (item.artboard) {
           value += item.artboard.info.topLeft[key]
         }
-        console.log(value)
-        item.info.topLeft[key] = value
+        item.info.topLeft = new Point(value, value)
       }
     })
   }
@@ -106,6 +103,31 @@ export const TransformsControls = (props: TransformsControlsProps) => {
             value={x}
             onChange={(value: number) => changeHandler('x', value)}
           />
+        </Control.Panel>
+        <Control.Panel start={16} end={30}>
+          <NumberInput
+            icon={<YAxisIcon />}
+            value={y}
+            onChange={(value: number) => changeHandler('y', value)}
+          />
+        </Control.Panel>
+        <Control.Panel start={1} end={14}>
+          <Input icon={<WidthIcon />} defaultValue={width} />
+        </Control.Panel>
+        <Control.Panel start={16} end={30}>
+          <Input icon={<HeightIcon />} defaultValue={height} />
+        </Control.Panel>
+        <Control.Panel start={32} end={33}>
+          <ActionIcon icon={<UnlinkIcon />} />
+        </Control.Panel>
+        <Control.Panel start={1} end={14}>
+          <Input icon={<RotationIcon />} defaultValue={angle} />
+        </Control.Panel>
+        <Control.Panel start={16} end={30}>
+          <Input icon={<RadiusIcon />} />
+        </Control.Panel>
+        <Control.Panel start={32} end={33}>
+          <ActionIcon icon={<RotationIcon />} />
         </Control.Panel>
       </Control.Group>
     </Control>

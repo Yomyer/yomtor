@@ -67,10 +67,9 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
 
     useEffect(() => {
       if (!drag) return
-      range(0, abs(delta)).forEach((index) => {
-        console.log(index)
-        inputRef.current[delta > 0 ? 'increment' : 'decrement']()
-      })
+      //range(0, abs(delta)).forEach((index) => {
+      inputRef.current[delta > 0 ? 'increment' : 'decrement']()
+      //})
     }, [drag])
 
     return (
