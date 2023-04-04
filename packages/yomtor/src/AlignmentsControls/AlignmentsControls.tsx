@@ -3,7 +3,7 @@ import { useEditorContext } from '@yomtor/core'
 import React, { useEffect, useState } from 'react'
 import { ActionIcon, Control } from '@yomtor/ui'
 import { AligmentStartIcon, AligmentCenterIcon } from '@yomtor/icons'
-import { ChangeFlag } from '@yomtor/paper'
+import { ChangeFlag, Point } from '@yomtor/paper'
 import { countBy, isEmpty } from 'lodash'
 import { AlignmentsControlsProps } from './AlignmentsControls.props'
 
@@ -29,11 +29,24 @@ export const AlignmentsControls = (props: AlignmentsControlsProps) => {
   const { canvas } = useEditorContext()
   const [artboard, setArtboard] = useState<boolean>()
 
-  const align = (position: 'left' | 'right' | 'center' | 'bottom' | 'top') => {
-    canvas &&
-      canvas.project.activeItems.forEach((item) => {
-        item.bounds[position] = item.artboard.activeInfo[position]
-      })
+  const align = (position) => {
+    if (!canvas) return
+
+    canvas.project.activeItems.forEach((item) => {
+      const { activeInfo } = item.artboard
+
+      switch (position) {
+        case 'horizontal-center':
+          item.bounds.center.x = activeInfo.center.x
+          break
+        case 'vertical-center':
+          item.bounds.center.y = activeInfo.center.y
+          break
+        default:
+          item.bounds[position] = activeInfo[position]
+          break
+      }
+    })
   }
 
   useEffect(() => {
@@ -63,14 +76,14 @@ export const AlignmentsControls = (props: AlignmentsControlsProps) => {
         <Control.Panel start={3} end={4}>
           <ActionIcon
             disabled={!artboard}
-            onClick={() => align('center')}
+            onClick={() => align('horizontal-center')}
             icon={<AligmentCenterIcon />}
           />
         </Control.Panel>
         <Control.Panel start={5} end={6}>
           <ActionIcon
             disabled={!artboard}
-            onClick={() => align('center')}
+            onClick={() => align('right')}
             icon={<AligmentStartIcon flipX />}
           />
         </Control.Panel>
@@ -84,14 +97,14 @@ export const AlignmentsControls = (props: AlignmentsControlsProps) => {
         <Control.Panel start={9} end={10}>
           <ActionIcon
             disabled={!artboard}
-            onClick={() => align('right')}
+            onClick={() => align('vertical-center')}
             icon={<AligmentCenterIcon rotate={90} />}
           />
         </Control.Panel>
         <Control.Panel start={11} end={12}>
           <ActionIcon
             disabled={!artboard}
-            onClick={() => align('right')}
+            onClick={() => align('bottom')}
             icon={<AligmentStartIcon rotate={90} flipX />}
           />
         </Control.Panel>
