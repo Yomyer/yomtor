@@ -3,9 +3,10 @@ import React, {
   useRef,
   useState,
   useEffect,
-  FormEvent,
+  KeyboardEvent,
   FocusEvent,
-  useCallback
+  FormEvent,
+  SyntheticEvent
 } from 'react'
 import { useComponentDefaultProps } from '@yomtor/styles'
 
@@ -16,9 +17,9 @@ import {
 import { NumberInputProps } from './NumberInput.props'
 import { Draggable, DraggableData, DraggableEvent } from '../Draggable'
 import useStyles from './NumberInput.styles'
-import { isEqual, range } from 'lodash'
+import { isEqual, omit, range } from 'lodash'
 import { abs } from '@yomtor/utils'
-import { useMergedRef } from '@yomtor/hooks'
+import { useEventListener, useMergedRef } from '@yomtor/hooks'
 
 const defaultProps: Partial<NumberInputProps> = {
   size: 'md',
@@ -87,22 +88,24 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
       }
     }
 
-    const inputHandler = (event: FormEvent<HTMLInputElement>) => {
-      disabled.current = true
+    const keyDownHandler = (event: KeyboardEvent<HTMLInputElement>) => {
+      if (['Enter', 'Tab'].includes(event.key)) {
+        disabled.current = false
+        changeHandler(parseFloat(inputRef.current.value))
+        inputRef.current.blur()
+      } else {
+        disabled.current = true
+      }
     }
 
-    useEffect(() => {
-      const blurEffect = (event: MouseEvent) => {
-        if (disabled.current && !isEqual(event.target, inputRef.current)) {
-          disabled.current = false
-          changeHandler(parseFloat(inputRef.current.value))
-        }
+    const blurHandler = (event: SyntheticEvent | MouseEvent) => {
+      if (disabled.current && !isEqual(event.target, inputRef.current)) {
+        disabled.current = false
+        changeHandler(parseFloat(inputRef.current.value))
       }
+    }
 
-      document.addEventListener('mousedown', blurEffect)
-
-      return () => document.removeEventListener('mousedown', blurEffect)
-    }, [])
+    useEventListener('mousedown', blurHandler, document)
 
     return (
       <BaseNumberInput
@@ -113,10 +116,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
         handlersRef={handlersRef}
         step={step}
         onChange={changeHandler}
-        onInput={inputHandler}
-        onFocus={() => {
-          console.log('xD')
-        }}
+        onKeyDown={keyDownHandler}
         icon={
           <Draggable move={false} axis='x' onDrag={dragHandler} distance={0}>
             <div>{icon}</div>

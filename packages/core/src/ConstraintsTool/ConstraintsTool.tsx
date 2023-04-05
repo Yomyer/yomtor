@@ -1,21 +1,17 @@
 import { ConstraintsToolProps } from './ConstraintsTool.props'
 import { useComponentDefaultProps } from '@yomtor/styles'
 import { useEditorContext } from '../Editor.context'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Tool,
-  Grid,
   Control,
   Group,
   Path,
   Selector,
   Rectangle,
   Matrix,
-  Point,
-  CurveLocation
+  Point
 } from '@yomtor/paper'
-import { useEventListener, useHotkeys } from '@yomtor/hooks'
-import { isFunction } from 'lodash'
 
 const defaultProps: Partial<ConstraintsToolProps> = {
   factor: 8,

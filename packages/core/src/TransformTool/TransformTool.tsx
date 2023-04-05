@@ -22,7 +22,7 @@ import {
   scaleWithRotate,
   roundToNearestEven
 } from '@yomtor/utils'
-import { useEventListener, useHotkeys } from '@yomtor/hooks'
+import { useHotkeys } from '@yomtor/hooks'
 import {
   clearCursor,
   clearGlobalCursor,
