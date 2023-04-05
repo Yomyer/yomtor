@@ -31,7 +31,7 @@ export const AlignmentsControls = (props: AlignmentsControlsProps) => {
 
   const align = (position) => {
     if (!canvas) return
-    let biggestObject: paper.Item
+    let biggestObject: paper.Item | undefined
 
     if (canvas.project.activeItems.length > 1) {
       biggestObject = findBiggest()
@@ -61,12 +61,12 @@ export const AlignmentsControls = (props: AlignmentsControlsProps) => {
   }
 
   const findBiggest = () => {
-    let biggestWidthObject = null
+    let biggestWidthObject: paper.Item | undefined
 
     canvas.project.activeItems.forEach((obj) => {
       if (
         !biggestWidthObject ||
-        obj.activeInfo.width > biggestWidthObject.width
+        obj.activeInfo.width > biggestWidthObject.activeInfo.width
       ) {
         biggestWidthObject = obj
       }
