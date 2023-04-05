@@ -11,4 +11,5 @@ export interface NumberInputProps
   compact?: boolean
   variant?: NumberInputVariants
   draggable?: boolean
+  blur?: boolean
 }

@@ -3124,6 +3124,219 @@ var LinkedConstraints = Constraints.extend({
 	},
 });
 
+var Info = Base.extend({
+	_class: 'Info',
+
+	beans: true,
+	initialize: function Info(owner) {
+		this._set(owner);
+		return this;
+	},
+
+	set: '#initialize',
+
+	_set: function(owner) {
+		this._owner = owner;
+
+		return this;
+	},
+
+	equals: function(info) {
+		return this === info || false;
+	},
+
+	clone: function() {
+		return new Info(this.owner);
+	},
+
+	toString: function() {
+	},
+
+	_serialize: function(options) {
+	},
+
+	getTopLeft: function (_dontLink) {
+		var corners = this.getCorners();
+
+		if(!_dontLink && this._topLeft){
+			return this._topLeft;
+		}
+
+		return this._topLeft = new LinkedPoint(corners[0], corners[1], this, '_setInfoTopLeft');
+	},
+
+	setTopLeft: function() {
+		var point = Point.read(arguments);
+		this.topLeft.x = point.x;
+		this.topLeft.y = point.y;
+	},
+
+	getTopRight: function (_dontLink) {
+		var corners = this.getCorners();
+
+		if(!_dontLink && this._topRight){
+			return this._topRight;
+		}
+
+		return this._topRight = new LinkedPoint(corners[2], corners[3], this, '_setInfoTopRight');
+	},
+
+	setTopRight: function() {
+		var point = Point.read(arguments);
+		this.topRigth.x = point.x;
+		this.topRigth.y = point.y;
+	},
+
+	getBottomRight: function (_dontLink) {
+		var corners = this.getCorners();
+
+		if(!_dontLink && this._bottomRight){
+			return this._bottomRight;
+		}
+
+		return this._bottomRight =new LinkedPoint(corners[4], corners[5], this, '_setInfoBottomRight');
+	},
+
+	setBottomRight: function() {
+		var point = Point.read(arguments);
+		this.bottomRight.x = point.x;
+		this.bottomRight.y = point.y;
+	},
+
+	getBottomLeft: function (_dontLink) {
+		var corners = this.getCorners();
+
+		if(!_dontLink && this._bottomLeft){
+			return this._bottomLeft;
+		}
+
+		return this._bottomLeft = new LinkedPoint(corners[6], corners[7], this, '_setInfoBottomLeft');
+	},
+
+	setBottomLeft: function() {
+		var point = Point.read(arguments);
+		this.bottomLeft.x = point.x;
+		this.bottomLeft.y = point.y;
+	},
+	getCenter: function (_dontLink) {
+		var point = this.getTopLeft(_dontLink).add(this.getBottomRight(_dontLink)).divide(2);
+
+		return new LinkedPoint(point.x, point.y, this, '_setInfoCenter');
+	},
+
+	setCenter: function() {
+		var point = Point.read(arguments);
+		this.center.x = point.x;
+		this.center.y = point.y;
+	},
+
+	getTopCenter: function (_dontLink) {
+		var point = this.getTopLeft(_dontLink).add(this.getTopRight(_dontLink)).divide(2);
+
+		return new LinkedPoint(point.x, point.y, this, '_setInfoTopCenter');
+	},
+
+	setTopCenter: function() {
+		var point = Point.read(arguments);
+		this.topCenter.x = point.x;
+		this.topCenter.y = point.y;
+	},
+
+	getRightCenter: function (_dontLink) {
+		var point = this.getTopRight(_dontLink).add(this.getBottomRight(_dontLink)).divide(2);
+
+		return new LinkedPoint(point.x, point.y, this, '_setInfoRightCenter');
+	},
+
+	setRightCenter: function() {
+		var point = Point.read(arguments);
+		this.rightCenter.x = point.x;
+		this.rightCenter.y = point.y;
+	},
+
+	getLeftCenter: function (_dontLink) {
+		var point = this.getBottomLeft(_dontLink).add(this.getTopLeft(_dontLink)).divide(2);
+
+		return new LinkedPoint(point.x, point.y, this, '_setInfoLeftCenter');
+	},
+
+	setLeftCenter: function() {
+		var point = Point.read(arguments);
+		this.leftCenter.x = point.x;
+		this.leftCenter.y = point.y;
+	},
+
+	getBottomCenter: function (_dontLink) {
+		var point = this.getBottomRight(_dontLink).add(this.getBottomLeft(_dontLink)).divide(2);
+
+		return new LinkedPoint(point.x, point.y, this, '_setInfoBottomCenter');
+	},
+
+	setBottomCenter: function() {
+		var point = Point.read(arguments);
+		this.bottomCenter.x = point.x;
+		this.bottomCenter.y = point.y;
+	},
+
+	getTop: function () {
+		return this.topCenter.y;
+	},
+
+	getRight: function () {
+		return this.rightCenter.x;
+	},
+
+	getBottom: function () {
+		return this.bottomCenter.x;
+	},
+
+	getLeft: function () {
+		return this.leftCenter.x;
+	},
+
+	getAngle: function () {
+		return this._owner.angle;
+	},
+
+	getInheritedAngle: function () {
+		return this._owner.inheritedAngle;
+	},
+
+	getWidth: function () {
+		return this.topLeft.subtract(this.topRight).length
+	},
+
+	getHeight: function () {
+		return this.topLeft.subtract(this.bottomLeft).length
+	},
+
+	getCorners: function(unrotated) {
+		var owner = this._owner
+		var angle = owner.getInheritedAngle();
+		var bounds = owner.bounds;
+		var center =  owner.bounds.center;
+		if (angle !== 0 && !unrotated) {
+			owner.transform(new Matrix().rotate(-angle, center), false, false, true);
+			bounds = owner.bounds.clone();
+			owner.transform(new Matrix().rotate(angle, center), false, false, true);
+		}
+
+		var matrix = new Matrix().rotate(!unrotated && angle, center);
+		var corners = matrix._transformCorners(bounds);
+
+		return corners;
+	},
+
+}, Base.each(['_setInfoTopLeft', '_setInfoTopRight', '_setInfoBottomRight', '_setInfoBottomLeft', '_setInfoCenter', '_setInfoTopCenter', '_setInfoRightCenter', '_setInfoLeftCenter', '_setInfoBottomCenter'], function(key) {
+	this[key] = function() {
+	   var get = 'get' + key.replace('_setInfo', '');
+	   var point = Point.read(arguments)
+	   var diff = point.subtract(this[get](true))
+
+	   this._owner.bounds.center = this._owner.bounds.center.add(diff)
+	};
+}));
+
 var ChangeFlag = {
 	APPEARANCE: 0x1,
 
@@ -5810,60 +6023,19 @@ new function(){
 
 },  {
 
-	getCorners: function(unrotated) {
-		var angle = this.getInheritedAngle();
-		var bounds = this.bounds;
-		var center =  this.bounds.center;
-		if (angle !== 0 && !unrotated) {
-			this.transform(new Matrix().rotate(-angle, center), false, false, true);
-			bounds = this.bounds.clone();
-			this.transform(new Matrix().rotate(angle, center), false, false, true);
-		}
-
-		var matrix = new Matrix().rotate(!unrotated && angle, center);
-		var corners = matrix._transformCorners(bounds);
-
-		return corners;
-	},
-
-	getCornersPosition: function(unrotated) {
-		var corners = this.getCorners(unrotated);
-
-		return {
-			topLeft: new LinkedPoint(corners[0], corners[1], this, '_setInfoTopLeft'),
-			topRight: new LinkedPoint(corners[2], corners[3], this, '_setInfoTopRight'),
-			bottomRight: new Point(corners[4], corners[5]),
-			bottomLeft: new Point(corners[6], corners[7]),
-		};
-	},
-
 	getInfo: function(cache = true) {
 		if(cache && this._info){
 			return this._info;
 		}
-		var corners = this.getCornersPosition();
 
-		return this._info = Base.set(corners, {
-			angle: this.angle,
-			inheritedAngle: this.inheritedAngle,
-			width: corners.topLeft.subtract(corners.topRight).length,
-			height: corners.topLeft.subtract(corners.bottomLeft).length,
-			center: corners.topLeft.add(corners.bottomRight).divide(2),
-			topCenter: corners.topLeft.add(corners.topRight).divide(2),
-			rightCenter: corners.topRight.add(corners.bottomRight).divide(2),
-			bottomCenter: corners.bottomRight.add(corners.bottomLeft).divide(2),
-			leftCenter: corners.bottomLeft.add(corners.topLeft).divide(2),
-			top: corners.topLeft.add(corners.topRight).divide(2).y,
-			bottom: corners.bottomRight.add(corners.bottomLeft).divide(2).y,
-			left: corners.bottomLeft.add(corners.topLeft).divide(2).x,
-			right: corners.topRight.add(corners.bottomRight).divide(2).x,
-		});
+		return this._info = new Info(this);
 	},
 
 	getActiveInfo: '#getInfo',
 
 	_drawActivation: function(ctx, matrix, unrotated) {
-		var corners = matrix._transformCoordinates(this.getCorners(unrotated), this.getCorners(unrotated), 4);
+		var corners = this.info.getCorners(unrotated)
+		corners = matrix._transformCoordinates(corners, corners, 4);
 		ctx.beginPath();
 		ctx.moveTo(corners[0], corners[1]);
 		ctx.lineTo(corners[2], corners[3]);
@@ -5872,15 +6044,7 @@ new function(){
 		ctx.closePath();
 		ctx.stroke();
 	}
-}, Base.each(['_setInfoTopLeft', '_setInfoTopRight'], function(key) {
-	this[key] = function() {
-	   var real = key.replace('_setInfo', '').charAt(0).toLowerCase() + key.replace('_setInfo', '').slice(1)
-	   var point = Point.read(arguments)
-	   var diff = point.subtract(this.getInfo(false)[real])
-
-	   this.bounds.center = this.bounds.center.add(diff)
-	};
-}));
+});
 
 var Group = Item.extend(
 	 {

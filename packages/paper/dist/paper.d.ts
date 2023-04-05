@@ -1616,6 +1616,92 @@ declare namespace paper {
 
     }
 
+    
+    class Info  {
+        
+        topLeft: Point
+
+        
+        topRight: Point
+
+        
+        bottomRight: Point
+
+        
+        bottomLeft: Point
+
+        
+        center: Point
+
+        
+        topCenter: Point
+
+        
+        rightCenter: Point
+
+        
+        leftCenter: Point
+
+        
+        bottomCenter: Point
+
+        
+        readonly top: number
+
+        
+        readonly right: number
+
+        
+        readonly bottom: number
+
+        
+        readonly left: number
+
+        
+        readonly angle: number
+
+        
+        readonly inheritedAngle: number
+
+        
+        readonly width: number
+
+        
+        readonly height: number
+
+        /** 
+         * The corners
+         */
+        corners: Array<number>
+
+
+        /** 
+         * Creates a Info object using the directions of the given Info object.
+         */
+        constructor(owner: Item)
+
+        
+        set(...values: any[]): Info
+
+        /** 
+         * @return true if the points are equal
+         */
+        equals(info: Info): boolean
+
+        /** 
+         * Returns a copy of the info.
+         * 
+         * @return the cloned info
+         */
+        clone(): Info
+
+        /** 
+         * @return a string representation of the info
+         */
+        toString(): string
+
+    }
+
     /** 
      * The Item type allows you to access and modify the items in
      * Paper.js projects. Its functionality is inherited by different project
@@ -2116,19 +2202,9 @@ declare namespace paper {
         onMouseLeave: Function | null
 
         /** 
-         * The corners
-         */
-        corners: Array<number>
-
-        /** 
-         * The corner positions
-         */
-        cornersPosition: {topLeft: Point, topRight: Point, bottomRight: Point, bottomLeft: Point}
-
-        /** 
          * The info of active object
          */
-        info: {angle: number, inheritedAngle: number, width: number, height: number, top: number, left: number, rigth: number, bottom: number, center: Point, topCenter: Point, rightCenter: Point, bottomCenter: Point, leftCenter: Point, topLeft: Point, topRight: Point, bottomRight: Point, bottomLeft: Point}
+        info: Info
 
 
         /** 
@@ -3706,6 +3782,7 @@ declare namespace paper {
         Grid: typeof Grid
         Group: typeof Group
         HitResult: typeof HitResult
+        Info: typeof Info
         Item: typeof Item
         Key: typeof Key
         KeyEvent: typeof KeyEvent
@@ -8137,6 +8214,7 @@ declare module '@yomtor/paper'
     export class Grid extends paper.Grid {}
     export class Group extends paper.Group {}
     export class HitResult extends paper.HitResult {}
+    export class Info extends paper.Info {}
     export class Item extends paper.Item {}
     export class Key extends paper.Key {}
     export class KeyEvent extends paper.KeyEvent {}

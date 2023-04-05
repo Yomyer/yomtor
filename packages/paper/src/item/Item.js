@@ -5417,80 +5417,20 @@ new function(){
 }, /** @lends Item# */ {
 
     /**
-     * The corners
-     *
-     * @name Item#corners
-     * @type Array<number>
-     * 
-    */
-    getCorners: function(unrotated) {
-        
-        var angle = this.getInheritedAngle();
-        var bounds = this.bounds;
-        var center =  this.bounds.center;
-        
-        if (angle !== 0 && !unrotated) {
-            this.transform(new Matrix().rotate(-angle, center), false, false, true);
-            bounds = this.bounds.clone();
-            this.transform(new Matrix().rotate(angle, center), false, false, true);
-        }
-        
-
-        var matrix = new Matrix().rotate(!unrotated && angle, center);
-        var corners = matrix._transformCorners(bounds);
-
-        return corners;
-    },
-
-
-    /**
-     * The corner positions
-     *
-     * @name Item#cornersPosition
-     * @type Object {topLeft: Point, topRight: Point, bottomRight: Point, bottomLeft: Point}
-     * 
-    */
-    getCornersPosition: function(unrotated) {
-        var corners = this.getCorners(unrotated);
-
-        return {
-            topLeft: new LinkedPoint(corners[0], corners[1], this, '_setInfoTopLeft'),
-            topRight: new LinkedPoint(corners[2], corners[3], this, '_setInfoTopRight'),
-            bottomRight: new Point(corners[4], corners[5]),
-            bottomLeft: new Point(corners[6], corners[7]),
-        };
-    },
-
-    /**
      * The info of active object
      *
      * @name Item#info
-     * @type Object {angle: number, inheritedAngle: number, width: number, height: number, top: number, left: number, rigth: number, bottom: number, center: Point, topCenter: Point, rightCenter: Point, bottomCenter: Point, leftCenter: Point, topLeft: Point, topRight: Point, bottomRight: Point, bottomLeft: Point}
+     * @type Info
      * 
     */
     getInfo: function(cache = true) {
         if(cache && this._info){
             return this._info;
         }
-        
-        var corners = this.getCornersPosition();
 
-        return this._info = Base.set(corners, {
-            angle: this.angle,
-            inheritedAngle: this.inheritedAngle,
-            width: corners.topLeft.subtract(corners.topRight).length,
-            height: corners.topLeft.subtract(corners.bottomLeft).length,
-            center: corners.topLeft.add(corners.bottomRight).divide(2),
-            topCenter: corners.topLeft.add(corners.topRight).divide(2),
-            rightCenter: corners.topRight.add(corners.bottomRight).divide(2),
-            bottomCenter: corners.bottomRight.add(corners.bottomLeft).divide(2),
-            leftCenter: corners.bottomLeft.add(corners.topLeft).divide(2),
-            top: corners.topLeft.add(corners.topRight).divide(2).y,
-            bottom: corners.bottomRight.add(corners.bottomLeft).divide(2).y,
-            left: corners.bottomLeft.add(corners.topLeft).divide(2).x,
-            right: corners.topRight.add(corners.bottomRight).divide(2).x,
-        });
+        return this._info = new Info(this);
     },
+
 
     /**
      * @bean
@@ -5499,7 +5439,8 @@ new function(){
     getActiveInfo: '#getInfo',
 
     _drawActivation: function(ctx, matrix, unrotated) {
-        var corners = matrix._transformCoordinates(this.getCorners(unrotated), this.getCorners(unrotated), 4);
+        var corners = this.info.getCorners(unrotated)
+        corners = matrix._transformCoordinates(corners, corners, 4);
        
         ctx.beginPath();
         ctx.moveTo(corners[0], corners[1]);
@@ -5510,12 +5451,4 @@ new function(){
         
         ctx.stroke();
     }
-}, Base.each(['_setInfoTopLeft', '_setInfoTopRight'], function(key) {
-    this[key] = function(/* value, center */) {
-       var real = key.replace('_setInfo', '').charAt(0).toLowerCase() + key.replace('_setInfo', '').slice(1)
-       var point = Point.read(arguments)
-       var diff = point.subtract(this.getInfo(false)[real])
-
-       this.bounds.center = this.bounds.center.add(diff)
-    };
-}));
+});

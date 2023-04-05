@@ -89,7 +89,7 @@ export const TransformsControls = (props: TransformsControlsProps) => {
         if (item.artboard) {
           value += item.artboard.info.topLeft[key]
         }
-        item.info.topLeft = new Point(value, value)
+        item.info.topLeft[key] = value
       }
     })
   }

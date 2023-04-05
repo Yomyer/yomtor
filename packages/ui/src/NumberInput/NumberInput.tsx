@@ -1,9 +1,11 @@
 import React, {
   forwardRef,
-  useReducer,
   useRef,
   useState,
-  useEffect
+  useEffect,
+  FormEvent,
+  FocusEvent,
+  useCallback
 } from 'react'
 import { useComponentDefaultProps } from '@yomtor/styles'
 
@@ -14,8 +16,9 @@ import {
 import { NumberInputProps } from './NumberInput.props'
 import { Draggable, DraggableData, DraggableEvent } from '../Draggable'
 import useStyles from './NumberInput.styles'
-import { range } from 'lodash'
+import { isEqual, range } from 'lodash'
 import { abs } from '@yomtor/utils'
+import { useMergedRef } from '@yomtor/hooks'
 
 const defaultProps: Partial<NumberInputProps> = {
   size: 'md',
@@ -25,7 +28,9 @@ const defaultProps: Partial<NumberInputProps> = {
   hideControls: true,
   draggable: true,
   precision: 2,
-  removeTrailingZeros: true
+  removeTrailingZeros: true,
+  blur: true,
+  noClampOnBlur: true
 }
 
 export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
@@ -37,6 +42,8 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
       className,
       compact,
       variant,
+      blur,
+      onChange,
       ...others
     } = useComponentDefaultProps('NumberInput', defaultProps, props)
 
@@ -48,38 +55,68 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
     const [drag, setDrag] = useState<number>(0)
     const [delta, setDelta] = useState<number>(0)
     const [step, setStep] = useState<number>(1)
-
-    const inputRef = useRef<NumberInputHandlers>()
+    const disabled = useRef<boolean>()
+    const inputRef = useRef<HTMLInputElement>()
+    const handlersRef = useRef<NumberInputHandlers>()
 
     const dragHandler = (event: DraggableEvent, data: DraggableData) => {
       if (!data.deltaX) return
 
+      const step = abs(data.deltaX)
+
       if (event.shiftKey) {
-        setStep(10)
+        setStep(10 * step)
       } else if (event.altKey) {
-        setStep(0.1)
+        setStep(0.1 * step)
       } else {
-        setStep(1)
+        setStep(1 * step)
       }
+
       setDelta(data.deltaX)
       setDrag(drag + 1)
     }
 
     useEffect(() => {
       if (!drag) return
-      //range(0, abs(delta)).forEach((index) => {
-      inputRef.current[delta > 0 ? 'increment' : 'decrement']()
-      //})
+      handlersRef.current[delta > 0 ? 'increment' : 'decrement']()
     }, [drag])
+
+    const changeHandler = (value: number) => {
+      if (!disabled.current) {
+        onChange && onChange(value)
+      }
+    }
+
+    const inputHandler = (event: FormEvent<HTMLInputElement>) => {
+      disabled.current = true
+    }
+
+    useEffect(() => {
+      const blurEffect = (event: MouseEvent) => {
+        if (disabled.current && !isEqual(event.target, inputRef.current)) {
+          disabled.current = false
+          changeHandler(parseFloat(inputRef.current.value))
+        }
+      }
+
+      document.addEventListener('mousedown', blurEffect)
+
+      return () => document.removeEventListener('mousedown', blurEffect)
+    }, [])
 
     return (
       <BaseNumberInput
         {...others}
-        ref={ref}
+        ref={useMergedRef(ref, inputRef)}
         className={className}
         classNames={classes}
-        handlersRef={inputRef}
+        handlersRef={handlersRef}
         step={step}
+        onChange={changeHandler}
+        onInput={inputHandler}
+        onFocus={() => {
+          console.log('xD')
+        }}
         icon={
           <Draggable move={false} axis='x' onDrag={dragHandler} distance={0}>
             <div>{icon}</div>

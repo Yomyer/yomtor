@@ -56,8 +56,9 @@ var paper = function(self, undefined) {
 /*#*/ include('basic/Rectangle.js');
 /*#*/ include('basic/Matrix.js');
 /*#*/ include('basic/Line.js');
+/*#*/ include('basic/Constraints.js');
+/*#*/ include('basic/Info.js');
 
-/*#*/ include('item/Constraints.js');
 /*#*/ include('item/ChangeFlag.js');
 /*#*/ include('item/Project.js');
 /*#*/ include('item/Item.js');
