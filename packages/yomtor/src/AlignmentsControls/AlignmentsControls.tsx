@@ -31,22 +31,48 @@ export const AlignmentsControls = (props: AlignmentsControlsProps) => {
 
   const align = (position) => {
     if (!canvas) return
+    let biggestObject: paper.Item
+
+    if (canvas.project.activeItems.length > 1) {
+      biggestObject = findBiggest()
+    }
 
     canvas.project.activeItems.forEach((item) => {
       const { activeInfo } = item.artboard
 
       switch (position) {
         case 'horizontal-center':
-          item.bounds.center.x = activeInfo.center.x
+          item.bounds.center.x = biggestObject
+            ? biggestObject.activeInfo.center.x
+            : activeInfo.center.x
           break
         case 'vertical-center':
-          item.bounds.center.y = activeInfo.center.y
+          item.bounds.center.y = biggestObject
+            ? biggestObject.activeInfo.center.y
+            : activeInfo.center.y
           break
         default:
-          item.bounds[position] = activeInfo[position]
+          item.bounds[position] = biggestObject
+            ? biggestObject.activeInfo[position]
+            : activeInfo[position]
           break
       }
     })
+  }
+
+  const findBiggest = () => {
+    let biggestWidthObject = null
+
+    canvas.project.activeItems.forEach((obj) => {
+      if (
+        !biggestWidthObject ||
+        obj.activeInfo.width > biggestWidthObject.width
+      ) {
+        biggestWidthObject = obj
+      }
+    })
+
+    return biggestWidthObject
   }
 
   useEffect(() => {
