@@ -11,15 +11,6 @@ const defaultProps: Partial<AlignmentsControlsProps> = {
   visible: false
 }
 
-type Data = {
-  x: number | string
-  y: number | string
-  width: number | string
-  height: number | string
-  angle: number | string
-  radius: number | string
-}
-
 export const AlignmentsControls = (props: AlignmentsControlsProps) => {
   const { visible } = useComponentDefaultProps(
     'ObjectControls',
