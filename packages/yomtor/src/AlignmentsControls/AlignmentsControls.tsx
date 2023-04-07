@@ -22,10 +22,10 @@ export const AlignmentsControls = (props: AlignmentsControlsProps) => {
 
   const align = (position) => {
     if (!canvas) return
-    let biggestObject: paper.Item | undefined
+    let limitObject: paper.Item | undefined
 
     if (canvas.project.activeItems.length > 1) {
-      biggestObject = findBiggest()
+      limitObject = findLimitObject(position)
     }
 
     canvas.project.activeItems.forEach((item) => {
@@ -33,37 +33,52 @@ export const AlignmentsControls = (props: AlignmentsControlsProps) => {
 
       switch (position) {
         case 'horizontal-center':
-          item.bounds.center.x = biggestObject
-            ? biggestObject.activeInfo.center.x
+          item.bounds.center.x = limitObject
+            ? limitObject.activeInfo.center.x
             : activeInfo.center.x
           break
         case 'vertical-center':
-          item.bounds.center.y = biggestObject
-            ? biggestObject.activeInfo.center.y
+          item.bounds.center.y = limitObject
+            ? limitObject.activeInfo.center.y
             : activeInfo.center.y
           break
         default:
-          item.bounds[position] = biggestObject
-            ? biggestObject.activeInfo[position]
+          item.bounds[position] = limitObject
+            ? limitObject.activeInfo[position]
             : activeInfo[position]
           break
       }
     })
   }
 
-  const findBiggest = () => {
-    let biggestWidthObject: paper.Item | undefined
+  const findLimitObject = (position) => {
+    let item: paper.Item | undefined
 
-    canvas.project.activeItems.forEach((obj) => {
-      if (
-        !biggestWidthObject ||
-        obj.activeInfo.width > biggestWidthObject.activeInfo.width
-      ) {
-        biggestWidthObject = obj
-      }
-    })
+    if (position === 'left') {
+      item = canvas.project.activeItems.reduce((stack, obj) =>
+        obj.activeInfo.left < stack.activeInfo.left ? obj : stack
+      )
+    } else if (position === 'right') {
+      item = canvas.project.activeItems.reduce((stack, obj) =>
+        obj.activeInfo.left > stack.activeInfo.left ? obj : stack
+      )
+    } else if (position === 'center') {
+      const sortedItems = canvas.project.activeItems.sort(
+        (a, b) => a.activeInfo.left - b.activeInfo.left
+      )
+      const middleIndex = Math.floor(sortedItems.length / 2)
+      item = sortedItems[middleIndex]
+    } else if (position === 'top') {
+      item = canvas.project.activeItems.reduce((stack, obj) =>
+        obj.activeInfo.top < stack.activeInfo.top ? obj : stack
+      )
+    } else if (position === 'bottom') {
+      item = canvas.project.activeItems.reduce((stack, obj) =>
+        obj.activeInfo.top > stack.activeInfo.top ? obj : stack
+      )
+    }
 
-    return biggestWidthObject
+    return item
   }
 
   useEffect(() => {
