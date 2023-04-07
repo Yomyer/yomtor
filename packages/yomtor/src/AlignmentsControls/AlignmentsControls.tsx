@@ -61,7 +61,7 @@ export const AlignmentsControls = (props: AlignmentsControlsProps) => {
 
   const findLimitObject = (position) => {
     let item: paper.Item | undefined
-    const middleIndex = (sortedItems) => Math.floor(sortedItems.length / 2)
+    const middleIndex = (items) => Math.floor(items.length / 2)
 
     if (position === 'left') {
       item = canvas.project.activeItems.reduce((stack, obj) =>
@@ -75,7 +75,6 @@ export const AlignmentsControls = (props: AlignmentsControlsProps) => {
       const sortedItems = canvas.project.activeItems.sort(
         (a, b) => a.activeInfo.left - b.activeInfo.left
       )
-
       item = sortedItems[middleIndex(sortedItems)]
     } else if (position === 'vertical-center') {
       const sortedItems = canvas.project.activeItems.sort(
