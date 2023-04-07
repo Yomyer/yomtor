@@ -20,7 +20,15 @@ export const AlignmentsControls = (props: AlignmentsControlsProps) => {
   const { canvas } = useEditorContext()
   const [artboard, setArtboard] = useState<boolean>()
 
-  const align = (position) => {
+  const align = (
+    position:
+      | 'top'
+      | 'right'
+      | 'left'
+      | 'bottom'
+      | 'horizontal-center'
+      | 'vertical-center'
+  ) => {
     if (!canvas) return
     let limitObject: paper.Item | undefined
 
@@ -53,6 +61,7 @@ export const AlignmentsControls = (props: AlignmentsControlsProps) => {
 
   const findLimitObject = (position) => {
     let item: paper.Item | undefined
+    const middleIndex = (sortedItems) => Math.floor(sortedItems.length / 2)
 
     if (position === 'left') {
       item = canvas.project.activeItems.reduce((stack, obj) =>
@@ -62,12 +71,17 @@ export const AlignmentsControls = (props: AlignmentsControlsProps) => {
       item = canvas.project.activeItems.reduce((stack, obj) =>
         obj.activeInfo.left > stack.activeInfo.left ? obj : stack
       )
-    } else if (position === 'center') {
+    } else if (position === 'horizontal-center') {
       const sortedItems = canvas.project.activeItems.sort(
         (a, b) => a.activeInfo.left - b.activeInfo.left
       )
-      const middleIndex = Math.floor(sortedItems.length / 2)
-      item = sortedItems[middleIndex]
+
+      item = sortedItems[middleIndex(sortedItems)]
+    } else if (position === 'vertical-center') {
+      const sortedItems = canvas.project.activeItems.sort(
+        (a, b) => a.activeInfo.top - b.activeInfo.top
+      )
+      item = sortedItems[middleIndex(sortedItems)]
     } else if (position === 'top') {
       item = canvas.project.activeItems.reduce((stack, obj) =>
         obj.activeInfo.top < stack.activeInfo.top ? obj : stack
