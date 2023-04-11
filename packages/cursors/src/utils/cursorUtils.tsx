@@ -1,4 +1,4 @@
-import { isNumber, omitBy } from 'lodash'
+import { isNumber, isString, isUndefined, omitBy } from 'lodash'
 
 export type Cursor = {
   id: string
@@ -12,10 +12,18 @@ export type Cursor = {
 
 type Props = {
   cursor?: Cursor
-  rotation: number
+  rotation?: number
   action?: Cursor
   global?: boolean
   clear?: boolean
+  id?: string
+}
+
+type SetCursor = {
+  cursor: Cursor
+  rotation?: number
+  action?: Cursor
+  id?: string
 }
 
 const styles: { [key: string]: HTMLStyleElement } = {}
@@ -33,12 +41,16 @@ export const setCursor = (
   setAction({ cursor, rotation, action, global: false, clear: false })
 }
 
-export const setGlobalCursor = (
+export function setGlobalCursor(data: SetCursor)
+export function setGlobalCursor(cursor: Cursor, id?: string)
+export function setGlobalCursor(
   cursor: Cursor,
   rotation?: number,
-  action?: Cursor
-) => {
-  setAction({ cursor, rotation, action, global: true, clear: false })
+  action?: Cursor,
+  id?: string
+)
+export function setGlobalCursor(...args: any[]) {
+  setActionArgs(args, true, false)
 }
 
 export const clearCursor = (
@@ -49,12 +61,47 @@ export const clearCursor = (
   setAction({ cursors, rotation, action, global: false, clear: true })
 }
 
-export const clearGlobalCursor = (
+export function clearGlobalCursor(
   cursors: Cursor | Cursor[],
   rotation?: number,
-  action?: Cursor
-) => {
-  setAction({ cursors, rotation, action, global: true, clear: true })
+  action?: Cursor,
+  id?: string
+) {
+  setAction({ cursors, rotation, action, global: true, clear: true, id })
+}
+
+/*
+export function clearGlobalCursor(data: SetCursor)
+export function clearGlobalCursor(cursor: Cursor | Cursor[], id?: string)
+export function clearGlobalCursor(
+  cursors: Cursor | Cursor[],
+  rotation?: number,
+  action?: Cursor,
+  id?: string
+)
+export function clearGlobalCursor(...args: any[]) {
+  setActionArgs(args, true, true)
+}
+*/
+
+const setActionArgs = (args: any[], global: boolean, clear: boolean) => {
+  if (isUndefined(args[0].cursor)) {
+    if (isString(args[1])) {
+      setAction({ cursors: args[0], global, clear, id: args[1] })
+    } else {
+      setAction({
+        cursors: args[0],
+        rotation: args[1],
+        action: args[2],
+        global: true,
+        clear: false,
+        id: args[3]
+      })
+    }
+  } else {
+    setAction({ ...args[0] })
+  }
+  console.log(args[0])
 }
 
 const setAction = ({
@@ -68,10 +115,10 @@ const setAction = ({
 }
 
 async function setClass(
-  { cursor, action, rotation, clear, global }: Props,
+  { cursor, action, rotation, clear, global, id }: Props,
   all?: boolean
 ) {
-  const name = cursor.id + ((action && action.id) || '') + (rotation || '')
+  const name = cursor.id + ((action && action.id) || '') + (rotation || '') + id
 
   if (global) {
     clear && all

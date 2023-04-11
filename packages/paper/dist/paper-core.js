@@ -3306,8 +3306,16 @@ var Info = Base.extend({
 		return this.topLeft.subtract(this.topRight).length
 	},
 
+	setWidth: function(value){
+		this._setSize('width', value)
+	},
+
 	getHeight: function () {
 		return this.topLeft.subtract(this.bottomLeft).length
+	},
+
+	setHeight: function(value){
+		this._setSize('height', value)
 	},
 
 	getCorners: function(unrotated) {
@@ -3326,6 +3334,21 @@ var Info = Base.extend({
 
 		return corners;
 	},
+
+	_setSize: function(direction, value){
+		var angle = this.inheritedAngle;
+		var pivot = this.topLeft;
+		if(value <= 0){
+			value = 1;
+		}
+
+		factor = value / this[direction];
+		factor = direction === 'width' ? [factor, 1] : [1, factor];
+
+		this._owner.rotate(-angle, pivot);
+		this._owner.scale(factor, pivot);
+		this._owner.rotate(angle, pivot);
+	}
 
 }, Base.each(['_setInfoTopLeft', '_setInfoTopRight', '_setInfoBottomRight', '_setInfoBottomLeft', '_setInfoCenter', '_setInfoTopCenter', '_setInfoRightCenter', '_setInfoLeftCenter', '_setInfoBottomCenter'], function(key) {
 	this[key] = function() {

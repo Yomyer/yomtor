@@ -91,6 +91,9 @@ export const TransformsControls = (props: TransformsControlsProps) => {
         }
         item.info.topLeft[key] = value
       }
+      if (['width', 'height'].includes(key)) {
+        item.info[key] = value
+      }
     })
   }
 
@@ -112,10 +115,20 @@ export const TransformsControls = (props: TransformsControlsProps) => {
           />
         </Control.Panel>
         <Control.Panel start={1} end={14}>
-          <Input icon={<WidthIcon />} defaultValue={width} />
+          <NumberInput
+            icon={<WidthIcon />}
+            value={width}
+            min={1}
+            onChange={(value: number) => changeHandler('width', value)}
+          />
         </Control.Panel>
         <Control.Panel start={16} end={30}>
-          <Input icon={<HeightIcon />} defaultValue={height} />
+          <NumberInput
+            icon={<HeightIcon />}
+            value={height}
+            min={1}
+            onChange={(value: number) => changeHandler('height', value)}
+          />
         </Control.Panel>
         <Control.Panel start={32} end={33}>
           <ActionIcon icon={<UnlinkIcon />} />

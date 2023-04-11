@@ -4,8 +4,6 @@ import React, {
   useState,
   useEffect,
   KeyboardEvent,
-  FocusEvent,
-  FormEvent,
   SyntheticEvent
 } from 'react'
 import { useComponentDefaultProps } from '@yomtor/styles'
@@ -17,9 +15,14 @@ import {
 import { NumberInputProps } from './NumberInput.props'
 import { Draggable, DraggableData, DraggableEvent } from '../Draggable'
 import useStyles from './NumberInput.styles'
-import { isEqual, omit, range } from 'lodash'
+import { isEqual, omit, random, range } from 'lodash'
 import { abs } from '@yomtor/utils'
 import { useEventListener, useMergedRef } from '@yomtor/hooks'
+import {
+  setGlobalCursor,
+  ResizePanel,
+  clearGlobalCursor
+} from '@yomtor/cursors'
 
 const defaultProps: Partial<NumberInputProps> = {
   size: 'md',
@@ -57,8 +60,14 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
     const [delta, setDelta] = useState<number>(0)
     const [step, setStep] = useState<number>(1)
     const disabled = useRef<boolean>()
+    const id = useRef<string>(random(16).toString(36))
     const inputRef = useRef<HTMLInputElement>()
     const handlersRef = useRef<NumberInputHandlers>()
+
+    useEffect(() => {
+      if (!drag) return
+      handlersRef.current[delta > 0 ? 'increment' : 'decrement']()
+    }, [drag])
 
     const dragHandler = (event: DraggableEvent, data: DraggableData) => {
       if (!data.deltaX) return
@@ -77,14 +86,25 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
       setDrag(drag + 1)
     }
 
-    useEffect(() => {
-      if (!drag) return
-      handlersRef.current[delta > 0 ? 'increment' : 'decrement']()
-    }, [drag])
+    const startHandler = () => {
+      setGlobalCursor(ResizePanel, id.current)
+    }
+    const endHandler = () => {
+      clearGlobalCursor(ResizePanel, 0, null, id.current)
+    }
 
     const changeHandler = (value: number) => {
       if (!disabled.current) {
         onChange && onChange(value)
+      }
+    }
+
+    const cursorHandlers = {
+      onMouseEnter: () => {
+        setGlobalCursor(ResizePanel)
+      },
+      onMouseLeave: () => {
+        clearGlobalCursor(ResizePanel)
       }
     }
 
@@ -118,8 +138,14 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
         onChange={changeHandler}
         onKeyDown={keyDownHandler}
         icon={
-          <Draggable move={false} axis='x' onDrag={dragHandler} distance={0}>
-            <div>{icon}</div>
+          <Draggable
+            move={false}
+            axis='x'
+            onDrag={dragHandler}
+            onStart={startHandler}
+            distance={0}
+          >
+            <div {...cursorHandlers}>{icon}</div>
           </Draggable>
         }
       />
