@@ -5,7 +5,9 @@ export {
   useHover,
   useMergedRef,
   usePrevious,
-  useScrollIntoView
+  useScrollIntoView,
+  useHash,
+  useId
 } from '@mantine/hooks'
 
 export * from './use-clear-props/use-clear-props'

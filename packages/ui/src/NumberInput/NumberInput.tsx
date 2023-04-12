@@ -17,7 +17,7 @@ import { Draggable, DraggableData, DraggableEvent } from '../Draggable'
 import useStyles from './NumberInput.styles'
 import { isEqual, omit, random, range } from 'lodash'
 import { abs } from '@yomtor/utils'
-import { useEventListener, useMergedRef } from '@yomtor/hooks'
+import { useEventListener, useId, useMergedRef } from '@yomtor/hooks'
 import {
   setGlobalCursor,
   ResizePanel,
@@ -60,9 +60,9 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
     const [delta, setDelta] = useState<number>(0)
     const [step, setStep] = useState<number>(1)
     const disabled = useRef<boolean>()
-    const id = useRef<string>(random(16).toString(36))
     const inputRef = useRef<HTMLInputElement>()
     const handlersRef = useRef<NumberInputHandlers>()
+    const id = useId()
 
     useEffect(() => {
       if (!drag) return
@@ -87,10 +87,10 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
     }
 
     const startHandler = () => {
-      setGlobalCursor(ResizePanel, id.current)
+      setGlobalCursor(ResizePanel, id)
     }
-    const endHandler = () => {
-      clearGlobalCursor(ResizePanel, 0, null, id.current)
+    const stopHandler = () => {
+      clearGlobalCursor(ResizePanel, id)
     }
 
     const changeHandler = (value: number) => {
@@ -143,6 +143,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
             axis='x'
             onDrag={dragHandler}
             onStart={startHandler}
+            onStop={stopHandler}
             distance={0}
           >
             <div {...cursorHandlers}>{icon}</div>

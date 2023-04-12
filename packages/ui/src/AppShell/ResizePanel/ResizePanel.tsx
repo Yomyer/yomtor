@@ -12,6 +12,7 @@ import {
 
 import { useMergedRef } from '@mantine/hooks'
 import { flushSync } from 'react-dom'
+import { random } from 'lodash'
 
 const defaultProps: Partial<ResizePanelProps> = {
   resize: false,

@@ -43,6 +43,7 @@ export const setCursor = (
 
 export function setGlobalCursor(data: SetCursor)
 export function setGlobalCursor(cursor: Cursor, id?: string)
+export function setGlobalCursor(cursor: Cursor, rotation: number, id?: string)
 export function setGlobalCursor(
   cursor: Cursor,
   rotation?: number,
@@ -61,18 +62,13 @@ export const clearCursor = (
   setAction({ cursors, rotation, action, global: false, clear: true })
 }
 
-export function clearGlobalCursor(
-  cursors: Cursor | Cursor[],
-  rotation?: number,
-  action?: Cursor,
-  id?: string
-) {
-  setAction({ cursors, rotation, action, global: true, clear: true, id })
-}
-
-/*
 export function clearGlobalCursor(data: SetCursor)
 export function clearGlobalCursor(cursor: Cursor | Cursor[], id?: string)
+export function clearGlobalCursor(
+  cursor: Cursor | Cursor[],
+  rotation: number,
+  id?: string
+)
 export function clearGlobalCursor(
   cursors: Cursor | Cursor[],
   rotation?: number,
@@ -82,26 +78,33 @@ export function clearGlobalCursor(
 export function clearGlobalCursor(...args: any[]) {
   setActionArgs(args, true, true)
 }
-*/
 
 const setActionArgs = (args: any[], global: boolean, clear: boolean) => {
   if (isUndefined(args[0].cursor)) {
     if (isString(args[1])) {
       setAction({ cursors: args[0], global, clear, id: args[1] })
+    }
+    if (isString(args[2])) {
+      setAction({
+        cursors: args[0],
+        rotation: args[1],
+        global,
+        clear,
+        id: args[2]
+      })
     } else {
       setAction({
         cursors: args[0],
         rotation: args[1],
         action: args[2],
-        global: true,
-        clear: false,
+        global,
+        clear,
         id: args[3]
       })
     }
   } else {
     setAction({ ...args[0] })
   }
-  console.log(args[0])
 }
 
 const setAction = ({
@@ -115,7 +118,7 @@ const setAction = ({
 }
 
 async function setClass(
-  { cursor, action, rotation, clear, global, id }: Props,
+  { cursor, action, rotation, clear, global, id = '' }: Props,
   all?: boolean
 ) {
   const name = cursor.id + ((action && action.id) || '') + (rotation || '') + id
@@ -134,7 +137,8 @@ async function setClass(
     const tag = await generateStyleTag(name, {
       cursor,
       action,
-      rotation
+      rotation,
+      id
     })
     if (tag) {
       styles[name] = tag
@@ -269,10 +273,22 @@ const generateStyle = async (className: string, props: Props) => {
   const svg64 = toBase64SVG(generateSVGCursor(props, 0.5))
   const png64 = toBase64SVG(generateSVGCursor(props))
 
-  return `body.${className} *, .${className}{
+  const events =
+    props.id &&
+    `
+    body.${className} *{
+      pointer-events: none;
+    }
+  `
+
+  return `
+    body.${className} *, .${className}{
         cursor: url(${png64})${data.x} ${data.y},auto !important;
         cursor: url(${svg64})${data.x} ${data.y},auto !important;
-        cursor: -webkit-image-set(url(${png64})2x,url(${png64})1x)${data.x} ${data.y},auto !important;`
+        cursor: -webkit-image-set(url(${png64})2x,url(${png64})1x)${data.x} ${data.y},auto !important;
+    }
+    ${events}
+    `
 }
 
 const generateStyleTag = async (
