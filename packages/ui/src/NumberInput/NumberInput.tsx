@@ -43,7 +43,10 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
       compact,
       variant,
       blur,
+      onStop,
+      onStart,
       onChange,
+      draggingRef,
       ...others
     } = useComponentDefaultProps('NumberInput', defaultProps, props)
 
@@ -82,11 +85,15 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
       setDrag(drag + 1)
     }
 
-    const startHandler = () => {
+    const startHandler = (event: DraggableEvent, data: DraggableData) => {
       showCursor(true)
+      onStart && onStart(event, data)
+      draggingRef && (draggingRef.current = true)
     }
-    const stopHandler = () => {
+    const stopHandler = (event: DraggableEvent, data: DraggableData) => {
       hideCursor()
+      onStop && onStop(event, data)
+      draggingRef && (draggingRef.current = false)
     }
 
     const changeHandler = (value: number) => {

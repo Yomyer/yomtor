@@ -1,7 +1,7 @@
 import { TransformsControlsProps } from './TransformsControls.props'
 import { useComponentDefaultProps } from '@yomtor/styles'
 import { useEditorContext } from '@yomtor/core'
-import React, { ChangeEvent, useEffect, useState } from 'react'
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { ActionIcon, Control, Input, NumberInput } from '@yomtor/ui'
 import {
   HeightIcon,
@@ -41,12 +41,16 @@ export const TransformsControls = (props: TransformsControlsProps) => {
   const [width, setWidth] = useState<number>()
   const [height, setHeight] = useState<number>()
   const [angle, setAngle] = useState<number>()
+  const draggingRef = useRef<boolean>(false)
 
   useEffect(() => {
     if (!canvas) return
 
     canvas.project.on('changed', (type) => {
-      if (type & (ChangeFlag.ACTIVE | ChangeFlag.MATRIX)) {
+      if (
+        type & (ChangeFlag.ACTIVE | ChangeFlag.MATRIX) &&
+        !draggingRef.current
+      ) {
         const x = countBy(
           canvas.project.activeItems.map((item) =>
             round(
@@ -94,6 +98,9 @@ export const TransformsControls = (props: TransformsControlsProps) => {
       if (['width', 'height'].includes(key)) {
         item.info[key] = value
       }
+      if (['angle'].includes(key)) {
+        item.info[key] = value
+      }
     })
   }
 
@@ -105,6 +112,7 @@ export const TransformsControls = (props: TransformsControlsProps) => {
             icon={<XAxisIcon />}
             value={x}
             onChange={(value: number) => changeHandler('x', value)}
+            draggingRef={draggingRef}
           />
         </Control.Panel>
         <Control.Panel start={16} end={30}>
@@ -112,6 +120,7 @@ export const TransformsControls = (props: TransformsControlsProps) => {
             icon={<YAxisIcon />}
             value={y}
             onChange={(value: number) => changeHandler('y', value)}
+            draggingRef={draggingRef}
           />
         </Control.Panel>
         <Control.Panel start={1} end={14}>
@@ -120,6 +129,7 @@ export const TransformsControls = (props: TransformsControlsProps) => {
             value={width}
             min={1}
             onChange={(value: number) => changeHandler('width', value)}
+            draggingRef={draggingRef}
           />
         </Control.Panel>
         <Control.Panel start={16} end={30}>
@@ -128,13 +138,19 @@ export const TransformsControls = (props: TransformsControlsProps) => {
             value={height}
             min={1}
             onChange={(value: number) => changeHandler('height', value)}
+            draggingRef={draggingRef}
           />
         </Control.Panel>
         <Control.Panel start={32} end={33}>
           <ActionIcon icon={<UnlinkIcon />} />
         </Control.Panel>
         <Control.Panel start={1} end={14}>
-          <Input icon={<RotationIcon />} defaultValue={angle} />
+          <NumberInput
+            icon={<RotationIcon />}
+            value={angle}
+            onChange={(value: number) => changeHandler('angle', value)}
+            draggingRef={draggingRef}
+          />
         </Control.Panel>
         <Control.Panel start={16} end={30}>
           <Input icon={<RadiusIcon />} />
