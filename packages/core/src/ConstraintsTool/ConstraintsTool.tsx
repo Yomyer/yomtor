@@ -1,21 +1,17 @@
 import { ConstraintsToolProps } from './ConstraintsTool.props'
 import { useComponentDefaultProps } from '@yomtor/styles'
 import { useEditorContext } from '../Editor.context'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Tool,
-  Grid,
   Control,
   Group,
   Path,
   Selector,
   Rectangle,
   Matrix,
-  Point,
-  CurveLocation
+  Point
 } from '@yomtor/paper'
-import { useEventListener, useHotkeys } from '@yomtor/hooks'
-import { isFunction } from 'lodash'
 
 const defaultProps: Partial<ConstraintsToolProps> = {
   factor: 8,
@@ -64,7 +60,7 @@ export const ConstraintsTool = (props: ConstraintsToolProps) => {
     const selectorNormalize = selectorRect.clone().transform(rotateNormalize)
     const artboardNormalize = artboardRect.clone().transform(rotateNormalize)
     const unite = selectorNormalize.unite(artboardNormalize)
-    const uniteBounds = unite.activeInfo
+    const uniteBounds = unite.info
 
     const vertical = new Path.Line({
       insert: false,
@@ -103,26 +99,26 @@ export const ConstraintsTool = (props: ConstraintsToolProps) => {
       artboardRect: {
         top: rotate.transformPoint(
           new Point([
-            selectorNormalize.activeInfo.center.x,
+            selectorNormalize.info.center.x,
             artboardNormalize.bounds.top
           ])
         ),
         bottom: rotate.transformPoint(
           new Point([
-            selectorNormalize.activeInfo.center.x,
+            selectorNormalize.info.center.x,
             artboardNormalize.bounds.bottom
           ])
         ),
         left: rotate.transformPoint(
           new Point([
             artboardNormalize.bounds.left,
-            selectorNormalize.activeInfo.center.y
+            selectorNormalize.info.center.y
           ])
         ),
         right: rotate.transformPoint(
           new Point([
             artboardNormalize.bounds.right,
-            selectorNormalize.activeInfo.center.y
+            selectorNormalize.info.center.y
           ])
         )
       }
@@ -147,7 +143,7 @@ export const ConstraintsTool = (props: ConstraintsToolProps) => {
         const horizontal = constraints.horizontal
         const vertical = constraints.vertical
         const angle = item.artboard.angle
-        const artboard = item.artboard.activeInfo as unknown as Rectangle
+        const artboard = item.artboard.info as unknown as Rectangle
 
         const { selectorRect, artboardRect } = getCenters({
           selector,

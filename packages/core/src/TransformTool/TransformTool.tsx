@@ -22,15 +22,8 @@ import {
   scaleWithRotate,
   roundToNearestEven
 } from '@yomtor/utils'
-import { useEventListener, useHotkeys } from '@yomtor/hooks'
-import {
-  clearCursor,
-  clearGlobalCursor,
-  Resize,
-  Rotate,
-  setCursor,
-  setGlobalCursor
-} from '@yomtor/cursors'
+import { useHotkeys } from '@yomtor/hooks'
+import { Resize, Rotate, useCursor, useGlobalCursor } from '@yomtor/cursors'
 
 const defaultProps: Partial<TransformToolProps> = {}
 
@@ -78,6 +71,10 @@ export const TransformTool = (props: TransformToolProps) => {
   const center = useRef<Point>(null)
   const delta = useRef<Point>(null)
   const direction = useRef<Point>(null)
+
+  const [showRotate, hideRotate] = useGlobalCursor(Rotate)
+  const [showResize, hideResize] = useGlobalCursor(Resize)
+  const { showCursor, hideCursors } = useCursor()
 
   const scaleCorners = [
     'topCenter',
@@ -179,18 +176,19 @@ export const TransformTool = (props: TransformToolProps) => {
     if (helper) {
       canvas.project.fire('object:rotating', e)
     }
-    showCursor(true, canvas.project.activeItems.length > 1 && delta)
+    setCursor(true, canvas.project.activeItems.length > 1 && delta)
   }
 
-  const showCursor = (global = false, angle = 0) => {
+  const setCursor = (global = false, angle = 0) => {
     if (tool.idle) return
 
     const cursorIcon = mode.current === 'rotate' ? Rotate : Resize
-    clearCursor([Rotate, Resize])
-    clearGlobalCursor(Rotate, cursorAngle.current)
+    const globalCursor = mode.current === 'rotate' ? showRotate : showResize
+    hideCursors([Rotate, Resize])
+    hideRotate(cursorAngle.current)
 
     if (!cursor.current) {
-      return setCursor(cursorIcon)
+      return showCursor(cursorIcon)
     }
 
     angle =
@@ -206,10 +204,9 @@ export const TransformTool = (props: TransformToolProps) => {
       181
 
     if (cursorAngle.current !== angle) {
-      global ? setGlobalCursor(cursorIcon, angle) : setCursor(cursorIcon, angle)
-      clearGlobalCursor(Rotate, cursorAngle.current)
+      global ? globalCursor(angle, true) : showCursor(cursorIcon, angle)
     } else {
-      global ? setGlobalCursor(cursorIcon, angle) : setCursor(cursorIcon, angle)
+      global ? globalCursor(angle, true) : showCursor(cursorIcon, angle)
     }
 
     cursorAngle.current = angle
@@ -319,7 +316,8 @@ export const TransformTool = (props: TransformToolProps) => {
 
       transform(e, false)
 
-      clearGlobalCursor([Rotate, Resize])
+      hideRotate()
+      hideResize()
       tool.activeMain()
 
       if (e.item) {
@@ -357,7 +355,7 @@ export const TransformTool = (props: TransformToolProps) => {
       }
 
       if (!cornerItem.current) {
-        clearCursor([Rotate, Resize])
+        hideCursors([Rotate, Resize])
       }
     })
 
@@ -387,7 +385,7 @@ export const TransformTool = (props: TransformToolProps) => {
 
       canvas.project.clearHighlightedItem()
 
-      showCursor()
+      setCursor()
     })
 
     selector.on('mouseleave', () => {
@@ -395,7 +393,7 @@ export const TransformTool = (props: TransformToolProps) => {
         cursor.current = null
         mode.current = 'resize'
       }
-      clearCursor([Rotate, Resize])
+      hideCursors([Rotate, Resize])
     })
 
     selector.on('mousedown', (e: MouseEvent & { target: Control }) => {
@@ -466,7 +464,7 @@ export const TransformTool = (props: TransformToolProps) => {
 
       cursorAngle.current = null
 
-      showCursor(true)
+      setCursor(true)
 
       lastPoint.current = e.point
     })
@@ -489,7 +487,7 @@ export const TransformTool = (props: TransformToolProps) => {
               corner: cornerItem.current,
               angle: canvas.project.selector.angle
             }
-            showCursor()
+            setCursor()
           }
         }
       },
@@ -498,7 +496,7 @@ export const TransformTool = (props: TransformToolProps) => {
           mode.current = cornerItem.current.name.startsWith('rotate')
             ? 'rotate'
             : 'resize'
-          showCursor()
+          setCursor()
         }
       }
     },

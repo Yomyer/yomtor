@@ -1,1 +1,1 @@
-export * from './cursorUtils'
+export * from './create-svg-cursor'

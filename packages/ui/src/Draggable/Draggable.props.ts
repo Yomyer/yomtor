@@ -3,7 +3,12 @@ import {
   DraggableEvent,
   DraggableProps as ReactDraggableProps
 } from 'react-draggable'
-export type { DraggableEvent, DraggableData } from 'react-draggable'
+
+export type {
+  DraggableEvent,
+  DraggableData,
+  DraggableEventHandler
+} from 'react-draggable'
 
 export type DraggableProps = Partial<ReactDraggableProps> & {
   phantom?: boolean

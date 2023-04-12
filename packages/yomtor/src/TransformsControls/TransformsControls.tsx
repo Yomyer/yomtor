@@ -1,8 +1,8 @@
 import { TransformsControlsProps } from './TransformsControls.props'
 import { useComponentDefaultProps } from '@yomtor/styles'
 import { useEditorContext } from '@yomtor/core'
-import React, { useEffect, useState } from 'react'
-import { ActionIcon, Control, Input } from '@yomtor/ui'
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
+import { ActionIcon, Control, Input, NumberInput } from '@yomtor/ui'
 import {
   HeightIcon,
   RadiusIcon,
@@ -12,7 +12,7 @@ import {
   XAxisIcon,
   YAxisIcon
 } from '@yomtor/icons'
-import { ChangeFlag } from '@yomtor/paper'
+import { ChangeFlag, Point } from '@yomtor/paper'
 import { countBy, find, findKey, size } from 'lodash'
 import { round } from '@yomtor/utils'
 
@@ -36,22 +36,26 @@ export const TransformsControls = (props: TransformsControlsProps) => {
     props
   )
   const { canvas } = useEditorContext()
-  const [x, setX] = useState<number | string>()
-  const [y, setY] = useState<number | string>()
-  const [width, setWidth] = useState<number | string>()
-  const [height, setHeight] = useState<number | string>()
-  const [angle, setAngle] = useState<number | string>()
+  const [x, setX] = useState<number>()
+  const [y, setY] = useState<number>()
+  const [width, setWidth] = useState<number>()
+  const [height, setHeight] = useState<number>()
+  const [angle, setAngle] = useState<number>()
+  const draggingRef = useRef<boolean>(false)
 
   useEffect(() => {
     if (!canvas) return
 
     canvas.project.on('changed', (type) => {
-      if (type & (ChangeFlag.ACTIVE | ChangeFlag.MATRIX)) {
+      if (
+        type & (ChangeFlag.ACTIVE | ChangeFlag.MATRIX) &&
+        !draggingRef.current
+      ) {
         const x = countBy(
           canvas.project.activeItems.map((item) =>
             round(
-              item.activeInfo.topLeft.x -
-                (item.artboard && item.artboard.activeInfo.topLeft.x),
+              item.info.topLeft.x -
+                (item.artboard && item.artboard.info.topLeft.x),
               2
             )
           )
@@ -59,56 +63,94 @@ export const TransformsControls = (props: TransformsControlsProps) => {
         const y = countBy(
           canvas.project.activeItems.map((item) =>
             round(
-              item.activeInfo.topLeft.y -
-                (item.artboard && item.artboard.activeInfo.topLeft.y),
+              item.info.topLeft.y -
+                (item.artboard && item.artboard.info.topLeft.y),
               2
             )
           )
         )
         const width = countBy(
-          canvas.project.activeItems.map((item) =>
-            round(item.activeInfo.width, 2)
-          )
+          canvas.project.activeItems.map((item) => round(item.info.width, 2))
         )
         const height = countBy(
-          canvas.project.activeItems.map((item) =>
-            round(item.activeInfo.height, 2)
-          )
+          canvas.project.activeItems.map((item) => round(item.info.height, 2))
         )
         const angle = countBy(
-          canvas.project.activeItems.map((item) =>
-            round(item.activeInfo.angle, 2)
-          )
+          canvas.project.activeItems.map((item) => round(item.info.angle, 2))
         )
-        setX(size(x) === 1 ? findKey(x) : 'Mixed')
-        setY(size(y) === 1 ? findKey(y) : 'Mixed')
-        setWidth(size(width) === 1 ? findKey(width) : 'Mixed')
-        setHeight(size(height) === 1 ? findKey(height) : 'Mixed')
-        setAngle(size(angle) === 1 ? findKey(angle) : 'Mixed')
+        setX(size(x) === 1 ? parseFloat(findKey(x)) : null)
+        setY(size(y) === 1 ? parseFloat(findKey(y)) : null)
+        setWidth(size(width) === 1 ? parseFloat(findKey(width)) : null)
+        setHeight(size(height) === 1 ? parseFloat(findKey(height)) : null)
+        setAngle(size(angle) === 1 ? parseFloat(findKey(angle)) : null)
       }
     })
   }, [canvas])
+
+  const changeHandler = (key: string, value: number) => {
+    canvas.project.activeItems.forEach((item) => {
+      if (['x', 'y'].includes(key)) {
+        if (item.artboard) {
+          value += item.artboard.info.topLeft[key]
+        }
+        item.info.topLeft[key] = value
+      }
+      if (['width', 'height'].includes(key)) {
+        item.info[key] = value
+      }
+      if (['angle'].includes(key)) {
+        item.info[key] = value
+      }
+    })
+  }
 
   return visible ? (
     <Control>
       <Control.Group rowGap={8}>
         <Control.Panel start={1} end={14}>
-          <Input icon={<XAxisIcon />} defaultValue={x} />
+          <NumberInput
+            icon={<XAxisIcon />}
+            value={x}
+            onChange={(value: number) => changeHandler('x', value)}
+            draggingRef={draggingRef}
+          />
         </Control.Panel>
         <Control.Panel start={16} end={30}>
-          <Input icon={<YAxisIcon />} defaultValue={y} />
+          <NumberInput
+            icon={<YAxisIcon />}
+            value={y}
+            onChange={(value: number) => changeHandler('y', value)}
+            draggingRef={draggingRef}
+          />
         </Control.Panel>
         <Control.Panel start={1} end={14}>
-          <Input icon={<WidthIcon />} defaultValue={width} />
+          <NumberInput
+            icon={<WidthIcon />}
+            value={width}
+            min={1}
+            onChange={(value: number) => changeHandler('width', value)}
+            draggingRef={draggingRef}
+          />
         </Control.Panel>
         <Control.Panel start={16} end={30}>
-          <Input icon={<HeightIcon />} defaultValue={height} />
+          <NumberInput
+            icon={<HeightIcon />}
+            value={height}
+            min={1}
+            onChange={(value: number) => changeHandler('height', value)}
+            draggingRef={draggingRef}
+          />
         </Control.Panel>
         <Control.Panel start={32} end={33}>
           <ActionIcon icon={<UnlinkIcon />} />
         </Control.Panel>
         <Control.Panel start={1} end={14}>
-          <Input icon={<RotationIcon />} defaultValue={angle} />
+          <NumberInput
+            icon={<RotationIcon />}
+            value={angle}
+            onChange={(value: number) => changeHandler('angle', value)}
+            draggingRef={draggingRef}
+          />
         </Control.Panel>
         <Control.Panel start={16} end={30}>
           <Input icon={<RadiusIcon />} />

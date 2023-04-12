@@ -3,7 +3,7 @@ import { useEditorContext } from '@yomtor/core'
 import React, { useEffect, useState } from 'react'
 import { ActionIcon, Control } from '@yomtor/ui'
 import { AligmentStartIcon, AligmentCenterIcon } from '@yomtor/icons'
-import { ChangeFlag, Point } from '@yomtor/paper'
+import { Artboard, ChangeFlag, Point } from '@yomtor/paper'
 import { countBy, isEmpty } from 'lodash'
 import { AlignmentsControlsProps } from './AlignmentsControls.props'
 
@@ -18,9 +18,9 @@ export const AlignmentsControls = (props: AlignmentsControlsProps) => {
     props
   )
   const { canvas } = useEditorContext()
-  const [artboard, setArtboard] = useState<boolean>()
+  const [active, setActive] = useState<boolean>()
 
-  const align = (
+  const clickHandler = (
     position:
       | 'top'
       | 'right'
@@ -30,68 +30,26 @@ export const AlignmentsControls = (props: AlignmentsControlsProps) => {
       | 'vertical-center'
   ) => {
     if (!canvas) return
-    let limitObject: paper.Item | undefined
+
+    let limits = canvas.project.activeItems[0].artboard.bounds
 
     if (canvas.project.activeItems.length > 1) {
-      limitObject = findLimitObject(position)
+      limits = canvas.project.selector.bounds
     }
 
     canvas.project.activeItems.forEach((item) => {
-      const { activeInfo } = item.artboard
-
       switch (position) {
         case 'horizontal-center':
-          item.bounds.center.x = limitObject
-            ? limitObject.activeInfo.center.x
-            : activeInfo.center.x
+          item.bounds.center.x = limits.center.x
           break
         case 'vertical-center':
-          item.bounds.center.y = limitObject
-            ? limitObject.activeInfo.center.y
-            : activeInfo.center.y
+          item.bounds.center.y = limits.center.y
           break
         default:
-          item.bounds[position] = limitObject
-            ? limitObject.activeInfo[position]
-            : activeInfo[position]
+          item.bounds[position] = limits[position]
           break
       }
     })
-  }
-
-  const findLimitObject = (position) => {
-    let item: paper.Item | undefined
-    const middleIndex = (items) => Math.floor(items.length / 2)
-
-    if (position === 'left') {
-      item = canvas.project.activeItems.reduce((stack, obj) =>
-        obj.activeInfo.left < stack.activeInfo.left ? obj : stack
-      )
-    } else if (position === 'right') {
-      item = canvas.project.activeItems.reduce((stack, obj) =>
-        obj.activeInfo.left > stack.activeInfo.left ? obj : stack
-      )
-    } else if (position === 'horizontal-center') {
-      const sortedItems = canvas.project.activeItems.sort(
-        (a, b) => a.activeInfo.left - b.activeInfo.left
-      )
-      item = sortedItems[middleIndex(sortedItems)]
-    } else if (position === 'vertical-center') {
-      const sortedItems = canvas.project.activeItems.sort(
-        (a, b) => a.activeInfo.top - b.activeInfo.top
-      )
-      item = sortedItems[middleIndex(sortedItems)]
-    } else if (position === 'top') {
-      item = canvas.project.activeItems.reduce((stack, obj) =>
-        obj.activeInfo.top < stack.activeInfo.top ? obj : stack
-      )
-    } else if (position === 'bottom') {
-      item = canvas.project.activeItems.reduce((stack, obj) =>
-        obj.activeInfo.top > stack.activeInfo.top ? obj : stack
-      )
-    }
-
-    return item
   }
 
   useEffect(() => {
@@ -99,11 +57,7 @@ export const AlignmentsControls = (props: AlignmentsControlsProps) => {
 
     canvas.project.on('changed', (type) => {
       if (type & ChangeFlag.ACTIVE) {
-        const hasArtboard = countBy(
-          canvas.project.activeItems.map((item) => item.artboard)
-        )
-
-        setArtboard(!isEmpty(hasArtboard) && !hasArtboard.null)
+        setActive(canvas.project.activeItems.length > 0)
       }
     })
   }, [canvas])
@@ -113,43 +67,43 @@ export const AlignmentsControls = (props: AlignmentsControlsProps) => {
       <Control.Group columns={11}>
         <Control.Panel start={1} end={2}>
           <ActionIcon
-            disabled={!artboard}
-            onClick={() => align('left')}
+            disabled={!active}
+            onClick={() => clickHandler('left')}
             icon={<AligmentStartIcon />}
           />
         </Control.Panel>
         <Control.Panel start={3} end={4}>
           <ActionIcon
-            disabled={!artboard}
-            onClick={() => align('horizontal-center')}
+            disabled={!active}
+            onClick={() => clickHandler('horizontal-center')}
             icon={<AligmentCenterIcon />}
           />
         </Control.Panel>
         <Control.Panel start={5} end={6}>
           <ActionIcon
-            disabled={!artboard}
-            onClick={() => align('right')}
+            disabled={!active}
+            onClick={() => clickHandler('right')}
             icon={<AligmentStartIcon flipX />}
           />
         </Control.Panel>
         <Control.Panel start={7} end={8}>
           <ActionIcon
-            disabled={!artboard}
-            onClick={() => align('top')}
+            disabled={!active}
+            onClick={() => clickHandler('top')}
             icon={<AligmentStartIcon rotate={90} />}
           />
         </Control.Panel>
         <Control.Panel start={9} end={10}>
           <ActionIcon
-            disabled={!artboard}
-            onClick={() => align('vertical-center')}
+            disabled={!active}
+            onClick={() => clickHandler('vertical-center')}
             icon={<AligmentCenterIcon rotate={90} />}
           />
         </Control.Panel>
         <Control.Panel start={11} end={12}>
           <ActionIcon
-            disabled={!artboard}
-            onClick={() => align('bottom')}
+            disabled={!active}
+            onClick={() => clickHandler('bottom')}
             icon={<AligmentStartIcon rotate={90} flipX />}
           />
         </Control.Panel>

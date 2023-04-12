@@ -1,17 +1,10 @@
-import React, {
-  forwardRef,
-  useCallback,
-  useEffect,
-  useRef,
-  useState
-} from 'react'
+import React, { forwardRef, useEffect, useRef, useState } from 'react'
 import { CanvasProps } from './Canvas.props'
 import { useComponentDefaultProps } from '@yomtor/styles'
 import useStyles from './Canvas.styles'
 import { useEditorContext } from '../Editor.context'
 import { PaperScope, Point, Size } from '@yomtor/paper'
-import { cursorWithScope, Default, setCursor } from '@yomtor/cursors'
-import { debounce } from 'lodash'
+import { Default, useDefaultCursor } from '@yomtor/cursors'
 
 const defaultProps: Partial<CanvasProps> = {
   resize: false
@@ -26,6 +19,8 @@ export const Canvas = forwardRef<PaperScope, CanvasProps>((props, ref) => {
   const { canvas, initCanvas } = useEditorContext()
   const [hasArtboards, setHasArtboards] = useState(false)
   const dinamicalProps = {}
+
+  useDefaultCursor(canvasRef, Default)
 
   const { children, resize, ...others } = useComponentDefaultProps(
     'Canvas',
@@ -59,15 +54,12 @@ export const Canvas = forwardRef<PaperScope, CanvasProps>((props, ref) => {
     scope.setup(canvasRef.current)
 
     initCanvas(scope)
-    cursorWithScope(canvasRef.current)
 
     paperRef && (paperRef.current = scope)
   }, [])
 
   useEffect(() => {
     if (!canvas) return
-
-    setCursor(Default)
 
     canvas.project.on(['object:created', 'object:deleted'], () => {
       setHasArtboards(!!canvas.project.artboards.length)

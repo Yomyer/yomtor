@@ -240,6 +240,22 @@ var Selector = Item.extend(
         },
 
         /**
+         * @bean
+         * @type Info
+         */
+        getInfo: function () {
+            return this._getActiveItemsInfo();
+        },
+
+        /**
+         * @bean
+         * @type Rectangle
+         */
+        getBounds: function () {
+            return new Rectangle(this.left, this.top, this.width, this.height);
+        },
+
+        /**
          * @function
          * @param {Number} angle 
          * @param {Point} [center] 
@@ -533,7 +549,7 @@ var Selector = Item.extend(
 
             var items = this._project._activeItems;
             if (items.length) {
-                var info = items[0].activeInfo;
+                var info = items[0].info;
 
                 if (items.length > 1) {
                     var cornerIntems = this._getCornerItems();
@@ -556,6 +572,10 @@ var Selector = Item.extend(
                         topRight: rect.topRight,
                         bottomRight: rect.bottomRight,
                         bottomLeft: rect.bottomLeft,
+                        left: rect.leftCenter.x,
+                        rigth: rect.rightCenter.x,
+                        top: rect.topCenter.y,
+                        bottom: rect.bottomCenter.y
                     };
                 }
 

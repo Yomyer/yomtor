@@ -11,7 +11,7 @@ import {
   ToolEvent
 } from '@yomtor/paper'
 import { useHotkeys } from '@yomtor/hooks'
-import { clearCursor, Clone, Default, setCursor } from '@yomtor/cursors'
+import { Clone, Default, useCursor } from '@yomtor/cursors'
 
 const defaultProps: Partial<ManagementToolProps> = {}
 
@@ -24,6 +24,7 @@ export const ManagementTool = (props: ManagementToolProps) => {
   const activedItems = useRef<Item[]>([])
   const mouseEvent = useRef<MouseEvent>(null)
   const clipboard = useRef<Item[]>([])
+  const { showCursor, hideCursor } = useCursor()
 
   const setBeforePositions = () => {
     activedItems.current = [...canvas.project.activeItems]
@@ -83,9 +84,7 @@ export const ManagementTool = (props: ManagementToolProps) => {
     console.log(clipboard.current)
     clipboard.current.forEach((item) => {
       item.clone()
-      // item.highlighted = item.actived = false
     })
-    // clipboard.current = clone(canvas.project.activeItems)
   }
 
   useEffect(() => {
@@ -95,11 +94,11 @@ export const ManagementTool = (props: ManagementToolProps) => {
       if (e.target.layer) {
         mouseEvent.current = e
         if (e.modifiers.alt) {
-          setCursor(Default, 0, Clone)
+          showCursor([Default, Clone])
         }
       } else {
         mouseEvent.current = null
-        clearCursor(Default, 0, Clone)
+        hideCursor([Default, Clone])
       }
     })
 
@@ -146,11 +145,11 @@ export const ManagementTool = (props: ManagementToolProps) => {
     {
       keys: '*+alt',
       down: () => {
-        setCursor(Default, 0, Clone)
+        showCursor([Default, Clone])
         cloneController(true)
       },
       up: () => {
-        clearCursor(Default, 0, Clone)
+        hideCursor([Default, Clone])
         cloneController(false)
       }
     },

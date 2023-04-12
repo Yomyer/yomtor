@@ -5,13 +5,13 @@ import useStyles from './ResizePanel.styles'
 
 import { Draggable } from '../../Draggable'
 import {
-  setGlobalCursor,
-  clearGlobalCursor,
-  ResizePanel as ResizePanelCursor
+  ResizePanel as ResizePanelCursor,
+  useGlobalCursor
 } from '@yomtor/cursors'
 
 import { useMergedRef } from '@mantine/hooks'
 import { flushSync } from 'react-dom'
+import { random } from 'lodash'
 
 const defaultProps: Partial<ResizePanelProps> = {
   resize: false,
@@ -38,6 +38,8 @@ export const ResizePanel = forwardRef<HTMLDivElement, ResizePanelProps>(
     const [dragging, setDragging] = useState(false)
     const [stop, setStop] = useState(false)
     const isH = ['e', 'w'].includes(direction)
+    const [showResizePanel, hideResizePanel] =
+      useGlobalCursor(ResizePanelCursor)
 
     const { classes, cx } = useStyles(
       { isH, direction, dragging, ...others },
@@ -45,20 +47,22 @@ export const ResizePanel = forwardRef<HTMLDivElement, ResizePanelProps>(
     )
 
     const enterHandler = () => {
-      setGlobalCursor(ResizePanelCursor, !isH && 90)
+      showResizePanel(!isH ? 90 : 0)
     }
 
     const leaveHandler = () => {
-      !dragging && clearGlobalCursor(ResizePanelCursor, !isH && 90)
+      !dragging && hideResizePanel(!isH ? 90 : 0)
     }
 
     const startDragging = () => {
+      showResizePanel(!isH ? 90 : 0, true)
       setDragging(true)
     }
 
     const stopHandler = () => {
       setSizeRange(getSize())
       setDragging(false)
+      hideResizePanel(!isH ? 90 : 0)
     }
 
     const getSize = () => {

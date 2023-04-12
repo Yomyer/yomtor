@@ -9,7 +9,7 @@ import React, {
   useState
 } from 'react'
 import { Artboard, Item, KeyEvent, Path, Tool, ToolEvent } from '@yomtor/paper'
-import { clearCursor, Cross, Rectangle, setCursor } from '@yomtor/cursors'
+import { Cross, Rectangle, useCursor } from '@yomtor/cursors'
 import { useHotkeys } from '@yomtor/hooks'
 import { useObjectPath } from './use-object-path'
 
@@ -30,6 +30,7 @@ export const ObjectPathTool = forwardRef<HTMLDivElement, ObjectPathToolProps>(
     const [dragging, setDragging] = useState(false)
     const [tool, setTool] = useState<Tool>()
     const phantom = useRef<Item>(null)
+    const { showCursor, hideCursor } = useCursor()
 
     const onClick = useCallback(() => {
       setInserMode(true)
@@ -59,11 +60,11 @@ export const ObjectPathTool = forwardRef<HTMLDivElement, ObjectPathToolProps>(
       if (!tool) return
 
       tool.onActivate = () => {
-        setCursor(Cross, 0, cursor)
+        showCursor([Cross, cursor])
       }
 
       tool.onDeactivate = () => {
-        clearCursor(Cross, 0, cursor)
+        hideCursor([Cross, cursor])
         setInserMode(null)
       }
 
@@ -115,7 +116,7 @@ export const ObjectPathTool = forwardRef<HTMLDivElement, ObjectPathToolProps>(
               target: canvas.project.selector.getControl('bottomRight')
             })
           )
-          setCursor(Cross, 0, cursor)
+          showCursor([Cross, cursor])
         }
       }
 
@@ -160,7 +161,7 @@ export const ObjectPathTool = forwardRef<HTMLDivElement, ObjectPathToolProps>(
       canvas.view.on('mouseup', () => {
         setDragging(false)
         phantom.current = null
-        clearCursor(Cross, 0, cursor)
+        hideCursor([Cross, cursor])
         canvas.getTool('TransformTool').idle = false
       })
       // canvas.view.on('mousedrag', () => setDragging(true))

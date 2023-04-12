@@ -29,6 +29,8 @@ export const configurator: YomtorDemo = {
     {
       name: 'variant',
       type: 'select',
+      initialValue: 'filled',
+      defaultValue: 'filled',
       data: [{ label: 'filled', value: 'filled' }]
     },
     {

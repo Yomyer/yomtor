@@ -8,6 +8,11 @@
     "declaration": true,
     "declarationMap": true,
     "declarationDir": "lib",
-    "composite": true
-  }
+    "composite": true,
+    "paths": {
+      "@yomtor/hooks": ["../hooks/src"],
+      "@yomtor/styles": ["../styles/src"]
+    }
+  },
+  "references": [{ "path": "../hooks" }, { "path": "../styles" }]
 }
