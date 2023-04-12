@@ -1,4 +1,4 @@
-import { CursorIcon } from './CursorIcon'
+import { CursorIcon } from './cursor-icon'
 
 export type CursorProps = {
   cursor?: CursorIcon

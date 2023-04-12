@@ -1,28 +1,36 @@
-import { CursorIcon, CursorProps } from '../types'
-import { clearAll } from './clear-all'
+import { useRef } from 'react'
+import { CursorConfig, CursorProps } from '../types'
+import { clearAllCursors } from './clear-all-cursors'
 import { createStyleTag } from './create-style-tag'
 
-export const CURSOR_DEFAULT: CursorIcon = null
-export const CURSOR_SCOPE: HTMLElement = null
-export const CURSOR_STYLES: { [key: string]: HTMLStyleElement } = {}
+export const CURSOR_CONFIG: CursorConfig = {
+  default: null,
+  scope: null,
+  styles: {}
+}
 
 export async function setClass(
   { cursor, action, rotation, clear, global, id = '' }: CursorProps,
-  all?: boolean
+  all?: boolean,
+  ref?: HTMLElement
 ) {
-  const name = cursor.id + ((action && action.id) || '') + (rotation || '') + id
+  const name =
+    cursor.id +
+    ((action && action.id) || '') +
+    (rotation || '') +
+    (id ? '-' + id : '')
 
   if (global) {
     clear && all
-      ? clearAll(document.body.classList, cursor.id)
+      ? clearAllCursors(document.body.classList, cursor.id)
       : document.body.classList[clear ? 'remove' : 'add'](name)
   } else {
     clear && all
-      ? clearAll(CURSOR_SCOPE.classList, cursor.id)
-      : CURSOR_SCOPE.classList[clear ? 'remove' : 'add'](name)
+      ? clearAllCursors((ref || CURSOR_CONFIG.scope).classList, cursor.id)
+      : (ref || CURSOR_CONFIG.scope).classList[clear ? 'remove' : 'add'](name)
   }
 
-  if (!CURSOR_STYLES[name] && !clear) {
+  if (!CURSOR_CONFIG.styles[name] && !clear) {
     const tag = await createStyleTag(name, {
       cursor,
       action,
@@ -30,7 +38,7 @@ export async function setClass(
       id
     })
     if (tag) {
-      CURSOR_STYLES[name] = tag
+      CURSOR_CONFIG.styles[name] = tag
     }
   }
 }

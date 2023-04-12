@@ -1,13 +1,9 @@
 import React, { useEffect, useRef } from 'react'
 import { ComponentStory, ComponentMeta } from '@storybook/react'
-import Cursor, {
-    clearCursor,
-    clearGlobalCursor,
-    cursorWithScope,
-    generateSVGCursor,
-    setCursor,
-    setGlobalCursor
-} from '../utils/cursorUtils'
+import { useCursor } from '../hooks/use-cursor/use-cursor'
+import { useMergedRef } from '@yomtor/hooks'
+import { CursorIcon } from '../types'
+import { createSVGCursor } from '../utils/create-svg-cursor'
 import Buti from './Buti'
 import Clone from './Clone'
 import Comment from './Comment'
@@ -25,129 +21,134 @@ import ResizePanel from './ResizePanel'
 import Resize from './Resize'
 import Rotate from './Rotate'
 
-const cursors = { Buti, Clone, Comment, Cross, Default, Feather, Grab, Grabbing, Maximize, Minimize, Picker, Rectangle, Remove, ResizePanel, Resize, Rotate }
+const cursors = {
+  Buti,
+  Clone,
+  Comment,
+  Cross,
+  Default,
+  Feather,
+  Grab,
+  Grabbing,
+  Maximize,
+  Minimize,
+  Picker,
+  Rectangle,
+  Remove,
+  ResizePanel,
+  Resize,
+  Rotate
+}
 
 type Props = {
-    cursor?: Cursor
-    action?: Cursor
-    rotate?: number
+  cursor?: CursorIcon
+  action?: CursorIcon
+  rotate?: number
 }
 
 const Canvas: React.FC<Props> = ({ cursor, rotate, action }) => {
-    const cursorRef = useRef<HTMLDivElement>()
-    const actionRef = useRef<HTMLDivElement>()
+  const cursorRef = useRef<HTMLDivElement>()
+  const actionRef = useRef<HTMLDivElement>()
 
-    const enterHandler = () => {
-        setGlobalCursor(cursor, rotate, action)
-    }
+  const { showCursor, hideCursor, ref } = useCursor<HTMLDivElement>()
+  const {
+    showCursor: showActionCursor,
+    hideCursor: hideActionCursor,
+    ref: actionCursorRef
+  } = useCursor<HTMLDivElement>()
 
-    const leaveHandler = () => {
-        clearGlobalCursor(cursor, rotate, action)
-    }
-
-    useEffect(() => {
-        cursorRef.current.appendChild(
-            generateSVGCursor({
-                cursor,
-                rotation: rotate
-            })
-        )
-        actionRef.current.appendChild(
-            generateSVGCursor({
-                cursor: Default,
-                action: cursor,
-                rotation: rotate
-            })
-        )
-        // cursorWithScope(ref.current)
-    }, [])
-
-    useEffect(() => {
-        /*
-        setCursor(cursor)
-        return () => {
-            clearCursor(cursor)
-        }
-        */
-    }, [cursor])
-
-    return (
-        <div
-            style={{
-                background: 'rgba(0,0,0,0.1)',
-                height: 100,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexWrap: 'wrap'
-            }}
-            onMouseEnter={enterHandler}
-            onMouseLeave={leaveHandler}
-        >
-            <div style={{ flex: '1 1 100%', textAlign: 'center' }}>
-                {cursor.id}
-            </div>
-            <div
-                ref={cursorRef}
-                style={{
-                    border: `1px solid rgba(255,255,255, 0.1)`,
-                    display: 'flex'
-                }}
-            ></div>
-            <div
-                ref={actionRef}
-                style={{
-                    border: `1px solid rgba(255,255,255, 0.1)`,
-                    display: 'flex'
-                }}
-            ></div>
-        </div>
+  useEffect(() => {
+    cursorRef.current.appendChild(
+      createSVGCursor({
+        cursor,
+        rotation: rotate
+      })
     )
+    actionRef.current.appendChild(
+      createSVGCursor({
+        cursor: Default,
+        action: cursor,
+        rotation: rotate
+      })
+    )
+  }, [])
+
+  return (
+    <div
+      ref={ref}
+      style={{
+        background: 'rgba(0,0,0,0.1)',
+        height: 100,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexWrap: 'wrap'
+      }}
+      onMouseEnter={() => showCursor(cursor, rotate)}
+      onMouseLeave={() => hideCursor(cursor, rotate)}
+    >
+      <div style={{ flex: '1 1 100%', textAlign: 'center' }}>{cursor.id}</div>
+      <div
+        ref={cursorRef}
+        style={{
+          border: `1px solid rgba(255,255,255, 0.1)`,
+          display: 'flex'
+        }}
+      />
+      <div
+        ref={useMergedRef(actionRef, actionCursorRef)}
+        onMouseEnter={() => showActionCursor([Default, cursor], rotate)}
+        onMouseLeave={() => hideActionCursor([Default, cursor], rotate)}
+        style={{
+          border: `1px solid rgba(255,255,255, 0.1)`,
+          display: 'flex'
+        }}
+      />
+    </div>
+  )
 }
 
 export default {
-    title: 'Utils/Cursors',
-    component: Canvas,
-    argTypes: {
-        action: {
-            control: {
-                type: 'select'
-            },
-            options: ['NoCursor', ...Object.keys(cursors)],
-            mapping: { NoCursor: null, ...cursors }
-        }
-        // myBooleanProp: { control: { type: 'boolean' } },
-        // mySelectProp: { options: ['Hello', 'World'], control: { type: 'select' } },
+  title: 'Utils/Cursors',
+  component: Canvas,
+  argTypes: {
+    action: {
+      control: {
+        type: 'select'
+      },
+      options: ['NoCursor', ...Object.keys(cursors)],
+      mapping: { NoCursor: null, ...cursors }
     }
+  }
 } as ComponentMeta<typeof Canvas>
 
 const Template: ComponentStory<typeof Canvas> = ({
-    rotate,
-    action,
-    ...props
+  rotate,
+  action,
+  ...props
 }) => {
-    return (
-        <div
-            style={{
-                display: 'grid',
-                gap: 10,
-                gridTemplateColumns: 'repeat(6, 1fr)'
-            }}
-        >
-            {Object.keys(cursors).map((key) => (
-                <Canvas
-                    key={key}
-                    cursor={cursors[key]}
-                    rotate={rotate}
-                    action={action}
-                />
-            ))}
-        </div>
-    )
+  return (
+    <div
+      style={{
+        display: 'grid',
+        gap: 10,
+        gridTemplateColumns: 'repeat(6, 1fr)'
+      }}
+    >
+      {Object.keys(cursors).map((key) => (
+        <Canvas
+          key={key}
+          cursor={cursors[key]}
+          rotate={rotate}
+          action={action}
+        />
+      ))}
+    </div>
+  )
 }
 
 export const Playground = Template.bind({})
 
 Playground.args = {
-    rotate: 0
+  rotate: 0
 }

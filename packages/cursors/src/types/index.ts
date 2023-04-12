@@ -1,2 +1,3 @@
-export * from './CursorIcon'
-export * from './CursorProps'
+export * from './cursor-config'
+export * from './cursor-icon'
+export * from './cursor-props'

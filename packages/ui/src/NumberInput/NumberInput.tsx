@@ -18,11 +18,7 @@ import useStyles from './NumberInput.styles'
 import { isEqual, omit, random, range } from 'lodash'
 import { abs } from '@yomtor/utils'
 import { useEventListener, useId, useMergedRef } from '@yomtor/hooks'
-import {
-  setGlobalCursor,
-  ResizePanel,
-  clearGlobalCursor
-} from '@yomtor/cursors'
+import { ResizePanel, useGlobalCursor } from '@yomtor/cursors'
 
 const defaultProps: Partial<NumberInputProps> = {
   size: 'md',
@@ -62,7 +58,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
     const disabled = useRef<boolean>()
     const inputRef = useRef<HTMLInputElement>()
     const handlersRef = useRef<NumberInputHandlers>()
-    const id = useId()
+    const [showCursor, hideCursor] = useGlobalCursor(ResizePanel)
 
     useEffect(() => {
       if (!drag) return
@@ -87,10 +83,10 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
     }
 
     const startHandler = () => {
-      setGlobalCursor(ResizePanel, id)
+      showCursor(true)
     }
     const stopHandler = () => {
-      clearGlobalCursor(ResizePanel, id)
+      hideCursor()
     }
 
     const changeHandler = (value: number) => {
@@ -101,10 +97,10 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
 
     const cursorHandlers = {
       onMouseEnter: () => {
-        setGlobalCursor(ResizePanel)
+        showCursor()
       },
       onMouseLeave: () => {
-        clearGlobalCursor(ResizePanel)
+        hideCursor()
       }
     }
 

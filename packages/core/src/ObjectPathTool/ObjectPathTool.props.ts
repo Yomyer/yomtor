@@ -1,4 +1,4 @@
-import { Cursor } from '@yomtor/cursors'
+import { CursorIcon } from '@yomtor/cursors'
 import { Item, PaperScope, Path, Tool, ToolEvent } from '@yomtor/paper'
 import { YomtorTheme } from '@yomtor/styles'
 import { MutableRefObject, ReactNode } from 'react'
@@ -25,7 +25,7 @@ export interface ObjectPathToolProps {
   onInserMode?: (status: boolean) => void
   hotKey?: string
   name?: string
-  cursor?: Cursor
+  cursor?: CursorIcon
   type?: ObjectPathTypes
   toolRef?: MutableRefObject<Tool>
   children?: ReactNode

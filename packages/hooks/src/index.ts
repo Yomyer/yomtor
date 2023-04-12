@@ -6,7 +6,7 @@ export {
   useMergedRef,
   usePrevious,
   useScrollIntoView,
-  useHash,
+  randomId,
   useId
 } from '@mantine/hooks'
 
@@ -26,6 +26,7 @@ export * from './use-detection-scroll-end/use-detection-scroll-end'
 export * from './use-child-mutation/use-child-mutation'
 export * from './use-event-listener/use-event-listener'
 export * from './use-resize-observer/use-resize-observer'
+export * from './use-hash/use-hash'
 
 export {
   type VirtualItem,

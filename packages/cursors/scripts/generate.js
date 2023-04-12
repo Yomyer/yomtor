@@ -88,8 +88,8 @@ const generateCursors = async (files) => {
 
     const paths =
       Array.from(svg.matchAll(/<path.*\sd="([^"]*)"([^>]*)\/>/g), (m) => m[0])
-        .map((p) => `\n        '${p}'`)
-        .join(',') + '\n    '
+        .map((p) => `\n    '${p}'`)
+        .join(',') + '\n  '
     let stroke =
       Array.from(svg.matchAll(/<path.*\sstroke="([^"]*)"/g), (m) => m[1])[0] ||
       '#000000'
@@ -115,7 +115,7 @@ const generateCursors = async (files) => {
       offset: Offsets[name] ? Offsets[name] : {},
       name: name,
       path: path.dirname(file),
-      cursors: names.join(', '),
+      cursors: names.join(',\n  '),
       imports: names
         .map((name) => {
           return `import ${name} from './${name}'`
