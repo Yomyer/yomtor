@@ -43,6 +43,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
       compact,
       variant,
       blur,
+      value,
       onStop,
       onStart,
       onChange,
@@ -58,10 +59,16 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
     const [drag, setDrag] = useState<number>(0)
     const [delta, setDelta] = useState<number>(0)
     const [step, setStep] = useState<number>(1)
+    const [val, setVal] = useState<number | 'mixed'>()
     const disabled = useRef<boolean>()
     const inputRef = useRef<HTMLInputElement>()
     const handlersRef = useRef<NumberInputHandlers>()
     const [showCursor, hideCursor] = useGlobalCursor(ResizePanel)
+
+    useEffect(() => {
+      console.log(value)
+      setVal(value)
+    }, [value])
 
     useEffect(() => {
       if (!drag) return
@@ -117,6 +124,11 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
         changeHandler(parseFloat(inputRef.current.value))
         inputRef.current.blur()
       } else {
+        if (val === 'mixed') {
+          setVal(parseFloat(event.key))
+          inputRef.current.value = event.key
+        }
+
         disabled.current = true
       }
     }
@@ -140,6 +152,9 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
         step={step}
         onChange={changeHandler}
         onKeyDown={keyDownHandler}
+        // onKeyUp={}
+        formatter={(def) => (val !== 'mixed' ? def : 'Mixed')}
+        value={val !== 'mixed' && val}
         icon={
           <Draggable
             move={false}

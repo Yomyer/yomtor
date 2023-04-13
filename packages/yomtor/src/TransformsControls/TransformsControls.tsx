@@ -36,11 +36,11 @@ export const TransformsControls = (props: TransformsControlsProps) => {
     props
   )
   const { canvas } = useEditorContext()
-  const [x, setX] = useState<number>()
-  const [y, setY] = useState<number>()
-  const [width, setWidth] = useState<number>()
-  const [height, setHeight] = useState<number>()
-  const [angle, setAngle] = useState<number>()
+  const [x, setX] = useState<number | 'mixed'>()
+  const [y, setY] = useState<number | 'mixed'>()
+  const [width, setWidth] = useState<number | 'mixed'>()
+  const [height, setHeight] = useState<number | 'mixed'>()
+  const [angle, setAngle] = useState<number | 'mixed'>()
   const draggingRef = useRef<boolean>(false)
 
   useEffect(() => {
@@ -78,11 +78,11 @@ export const TransformsControls = (props: TransformsControlsProps) => {
         const angle = countBy(
           canvas.project.activeItems.map((item) => round(item.info.angle, 2))
         )
-        setX(size(x) === 1 ? parseFloat(findKey(x)) : null)
-        setY(size(y) === 1 ? parseFloat(findKey(y)) : null)
-        setWidth(size(width) === 1 ? parseFloat(findKey(width)) : null)
-        setHeight(size(height) === 1 ? parseFloat(findKey(height)) : null)
-        setAngle(size(angle) === 1 ? parseFloat(findKey(angle)) : null)
+        setX(size(x) === 1 ? parseFloat(findKey(x)) : 'mixed')
+        setY(size(y) === 1 ? parseFloat(findKey(y)) : 'mixed')
+        setWidth(size(width) === 1 ? parseFloat(findKey(width)) : 'mixed')
+        setHeight(size(height) === 1 ? parseFloat(findKey(height)) : 'mixed')
+        setAngle(size(angle) === 1 ? parseFloat(findKey(angle)) : 'mixed')
       }
     })
   }, [canvas])
