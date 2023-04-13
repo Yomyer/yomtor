@@ -4105,6 +4105,7 @@ new function() {
 			this.set(props, {
 				internal: true, insert: true, project: true, parent: true, actived: true
 			});
+
 			if(props.actived !== undefined){
 				this.setActived(props.actived);
 			}
@@ -4151,6 +4152,7 @@ new function() {
 		if (flags & 2) {
 			Item._clearBoundsCache(this);
 		}
+
 		if (project && !_skipProject)
 			project._changed(flags, this);
 		if (symbol)
@@ -4409,6 +4411,7 @@ new function() {
 
 		return this
 	},
+
 	getConstraints: function(){
 		var constraints = this._constraints;
 		return new LinkedConstraints(constraints.horizontal, constraints.vertical, this, 'setConstraints');
@@ -4423,6 +4426,7 @@ new function() {
 	getConstraintsPivot: function(){
 		return this._constraintsPivot;
 	},
+
 	setConstraintsPivot: function(){
 		return this._constraintsPivot = Point.read(arguments);
 	},
@@ -4430,6 +4434,7 @@ new function() {
 	getConstraintProportions: function(){
 		return this._constraintProportions;
 	},
+
 	setConstraintProportions: function(status){
 		return this._constraintProportions = status;
 	},
@@ -4470,6 +4475,7 @@ new function() {
 					this._boundsOptions);
 		if (!opts.stroke || this.getStrokeScaling())
 			opts.cacheItem = this;
+
 		var rect = this._getCachedBounds(hasMatrix && matrix, opts).rect;
 		return !arguments.length
 				? new LinkedRectangle(rect.x, rect.y, rect.width, rect.height,
@@ -4843,6 +4849,7 @@ new function() {
 			deep = Base.pick(options ? options.deep : undefined, true),
 			keep = Base.pick(options ? options.keep : undefined, false),
 			orig = this._name;
+
 		if (children)
 			copy.copyAttributes(this);
 		if (!children || deep){
@@ -4862,6 +4869,7 @@ new function() {
 			if (name !== orig)
 				copy.setName(name);
 		}
+
 		if(keep){
 			copy._uid = this._uid;
 			copy._name = orig;
@@ -4896,6 +4904,7 @@ new function() {
 		var data = source._data,
 			name = source._name;
 		this._data = data ? Base.clone(data) : null;
+
 		if (name)
 			this.setName(name);
 	},
@@ -4994,9 +5003,11 @@ new function() {
 			this._actived = true;
 		} else if (!actived){
 			var index = this._project._activeItems.indexOf(this);
+
 			if(index !== -1){
 				this._project._activeItems.splice(index, 1);
 			}
+
 			delete this._project._activeItems[this.uid];
 			this._actived = false;
 		}
@@ -5019,6 +5030,7 @@ new function() {
 	setHighlighted: function(highlighted){
 		if(this._highlighted == highlighted)
 			return;
+
 		this._highlighted = highlighted;
 
 		if(this._project._highlightedItem)
@@ -5075,6 +5087,7 @@ new function() {
 		if (children) {
 			for (var i = children.length - 1; i >= 0; i--) {
 				var child = children[i];
+
 				var res = child !== _exclude && child._hitTest(point, options,
 						viewMatrix);
 				if (res && !options.all)
@@ -5126,6 +5139,7 @@ new function() {
 			that = this,
 			bounds,
 			res;
+
 		function filter(hit) {
 			if (hit && match && !match(hit))
 				hit = null;
@@ -5165,6 +5179,7 @@ new function() {
 			}
 			res = filter(res);
 		}
+
 		if (!res) {
 			res = this._hitTestChildren(point, options, viewMatrix)
 				|| checkSelf
@@ -5177,6 +5192,7 @@ new function() {
 		if (res && res.point) {
 			res.point = matrix.transform(res.point);
 		}
+
 		return res;
 	},
 
@@ -5326,9 +5342,11 @@ new function() {
 		var res = item ? this.insertChildren(index, [item]) : null;
 		return res && res[0];
 	},
+
 	sendToIndex: function (index) {
 		this.layer.insertChild(index, this);
 	},
+
 	addChildren: function(items) {
 		return this.insertChildren(this._children.length, items);
 	},
@@ -5634,10 +5652,12 @@ new function() {
 			center = Point.read(args, 0, { readNull: true });
 
 		if(rotate) this.angle += value;
+
 		this._constraintsPivot = center || this.getPosition(true);
 
 		this._transformType = key;
 		this._lastPosition = null
+
 		return this.transform(new Matrix()[key](value,
 				center || this.getPosition(true)));
 	};
@@ -5844,6 +5864,7 @@ new function() {
 			if (pixelRatio !== 1)
 				ctx.scale(pixelRatio, pixelRatio);
 		}
+
 		ctx.save();
 		var strokeMatrix = parentStrokeMatrix
 				? parentStrokeMatrix.appended(matrix)
@@ -5871,6 +5892,7 @@ new function() {
 				ctx.translate(-offset.x, -offset.y);
 		}
 		this._draw(ctx, param, viewMatrix, strokeMatrix);
+
 		if(this._grid){
 			this._grid.draw(ctx, matrix, pixelRatio);
 		}
@@ -5911,6 +5933,7 @@ new function() {
 			itemSelected = false;
 		if ((itemSelected || boundsSelected || positionSelected)
 				&& this._isUpdated(updateVersion)) {
+
 			var layer,
 				color = this.getSelectedColor(true) || (layer = this.getLayer())
 					&& layer.getSelectedColor(true),
@@ -5971,6 +5994,7 @@ new function() {
 			matrices: [new Matrix()],
 			updateMatrix: true,
 		});
+
 		item = this._getHigthlightItem();
 		item.set({
 			insert: false,
@@ -7783,6 +7807,14 @@ var Selector = Item.extend(
 			}
 		},
 
+		getInfo: function () {
+			return this._getActiveItemsInfo();
+		},
+
+		getBounds: function () {
+			return new Rectangle(this.left, this.top, this.width, this.height);
+		},
+
 		setAngle: function(angle, center, preserve){
 			this._checkHelpers();
 			var items = this._project._activeItems;
@@ -8000,6 +8032,10 @@ var Selector = Item.extend(
 						topRight: rect.topRight,
 						bottomRight: rect.bottomRight,
 						bottomLeft: rect.bottomLeft,
+						left: rect.leftCenter.x,
+						rigth: rect.rightCenter.x,
+						top: rect.topCenter.y,
+						bottom: rect.bottomCenter.y
 					};
 				}
 

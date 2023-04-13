@@ -1664,10 +1664,10 @@ declare namespace paper {
         readonly inheritedAngle: number
 
         
-        readonly width: number
+        width: number
 
         
-        readonly height: number
+        height: number
 
         /** 
          * The corners
@@ -6702,6 +6702,12 @@ declare namespace paper {
 
         
         size: Size
+
+        
+        info: Info
+
+        
+        readonly bounds: Rectangle
 
         
         readonly angle: number

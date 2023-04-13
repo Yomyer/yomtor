@@ -116,6 +116,7 @@ export function variant(theme: YomtorTheme) {
           },
           focus: theme.colors.primary[5]
         }
+
       case 'transparent':
         return {
           border: 'transparent',

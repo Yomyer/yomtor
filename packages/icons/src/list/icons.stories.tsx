@@ -1,5 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import { ComponentStory, ComponentMeta } from '@storybook/react'
+import AligmentCenterIcon from './AligmentCenter'
+import AligmentStartIcon from './AligmentStart'
 import ArrageIcon from './Arrage'
 import ArrowIcon from './Arrow'
 import ArtboardIcon from './Artboard'
@@ -24,7 +26,7 @@ import WidthIcon from './Width'
 import XAxisIcon from './XAxis'
 import YAxisIcon from './YAxis'
 
-const icons = { ArrageIcon, ArrowIcon, ArtboardIcon, Artboard2Icon, CenterIcon, CheckIcon, CodeIcon, ConstraintsBarIcon, DistributeIcon, DotsVerticalIcon, GroupIcon, HeightIcon, HideIcon, LinkIcon, LockIcon, MoreIcon, PlayIcon, RadiusIcon, RotationIcon, UnlinkIcon, WidthIcon, XAxisIcon, YAxisIcon }
+const icons = { AligmentCenterIcon, AligmentStartIcon, ArrageIcon, ArrowIcon, ArtboardIcon, Artboard2Icon, CenterIcon, CheckIcon, CodeIcon, ConstraintsBarIcon, DistributeIcon, DotsVerticalIcon, GroupIcon, HeightIcon, HideIcon, LinkIcon, LockIcon, MoreIcon, PlayIcon, RadiusIcon, RotationIcon, UnlinkIcon, WidthIcon, XAxisIcon, YAxisIcon }
 
 
 type Props = {

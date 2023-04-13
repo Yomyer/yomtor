@@ -1,3 +1,5 @@
+export { default as AligmentCenterIcon } from './AligmentCenter'
+export { default as AligmentStartIcon } from './AligmentStart'
 export { default as ArrageIcon } from './Arrage'
 export { default as ArrowIcon } from './Arrow'
 export { default as ArtboardIcon } from './Artboard'
