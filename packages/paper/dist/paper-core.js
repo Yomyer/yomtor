@@ -3161,8 +3161,7 @@ var Info = Base.extend({
 		if(!_dontLink && this._topLeft){
 			return this._topLeft;
 		}
-
-		return this._topLeft = new LinkedPoint(corners[0], corners[1], this, '_setInfoTopLeft');
+		return this._topLeft = new Point(corners[0], corners[1], this, '_setInfoTopLeft');
 	},
 
 	setTopLeft: function() {
@@ -3466,11 +3465,19 @@ var Project = PaperScopeItem.extend(
 		}
 	  }
 
-	  this.fire('changed', flags)
+	  this._flagsCache = this._flagsCache | flags
 
 	  if (this._selector) {
 		this._selector._changed(flags, item)
 	  }
+	},
+
+	_frameChanged(){
+	  if(this._updateVersion != this._chacheUpdateVersion){
+		  this.emit('changed', this._flagsCache);
+		  this._flagsCache = null;
+	  }
+	  this._chacheUpdateVersion = this._updateVersion;
 	},
 
 	clear: function () {
@@ -3815,13 +3822,12 @@ var Project = PaperScopeItem.extend(
 		}
 		return this;
 	},
-
-	fire: function(eventName, options){
+	emit: function(eventName, options){
 	  if (!this._eventListeners) return this;
 
 	  if (eventName instanceof Array) {
 		  for (var key in eventName) {
-			  this.fire(eventName[key], options);
+			  this.emit(eventName[key], options);
 		  }
 
 		  return;
@@ -3884,6 +3890,10 @@ var Project = PaperScopeItem.extend(
 
 	  return this;
 	},
+
+	attach: '#on',
+	detach: '#off',
+	fire: '#emit',
 
 	importJSON: function (json) {
 	  this.activate()
@@ -6389,7 +6399,6 @@ var Artboard = Group.extend(
 					diff = new Size(info)
 						.divide(matrix.a, matrix.d)
 						.subtract(new Size(info).multiply(flipped));
-
 				for (var i = 0, l = children.length; i < l; i++) {
 					var item = children[i],
 						mx = new Matrix(),
@@ -15542,6 +15551,7 @@ var View = Base.extend(Emitter, {
 		var now = Date.now() / 1000,
 			delta = this._last ? now - this._last : 0;
 		this._last = now;
+
 		this.emit('frame', new Base({
 			delta: delta,
 			time: this._time += delta,
@@ -15549,6 +15559,8 @@ var View = Base.extend(Emitter, {
 		}));
 		if (this._stats)
 			this._stats.update();
+
+		this._project._frameChanged()
 	},
 
 	_animateItem: function(item, animate) {

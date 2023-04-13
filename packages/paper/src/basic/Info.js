@@ -73,8 +73,9 @@ var Info = Base.extend(/** @lends Info# */{
         if(!_dontLink && this._topLeft){
             return this._topLeft;
         }
-
-        return this._topLeft = new LinkedPoint(corners[0], corners[1], this, '_setInfoTopLeft');
+       
+        return this._topLeft = new Point(corners[0], corners[1], this, '_setInfoTopLeft');
+        
     },
 
     setTopLeft: function(/* point */) {

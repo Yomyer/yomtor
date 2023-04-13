@@ -4087,25 +4087,27 @@ new function() { // Injection scope for hit-test functions shared with project
         }
         
         // Allow chaining here, since transform() is related to Matrix functions
-
         /*
-        var f1 = new Point(matrix.a, matrix.d).sign()
-        var f2 = new Point(this._lastMatrix ? this._lastMatrix.a : 1, this._lastMatrix ?  this._lastMatrix.d : 1).sign()
-        
-        if (f2.x != f1.x) {
-            console.log(this._lastContainsPoint.x,  this._project.selector.center.x)
-            /*if(f1.x * (this.flipped.x ? -1 : 1) < 0){
-                this._flip('x')
+        if(matrix){
+            var f1 = new Point(matrix.a, matrix.d).sign()
+            var f2 = new Point(this._lastMatrix ? this._lastMatrix.a : 1, this._lastMatrix ?  this._lastMatrix.d : 1).sign()
+            
+            if (f2.x != f1.x) {
+                console.log(this._lastContainsPoint.x,  this._project.selector.center.x)
+                if(f1.x * (this.flipped.x ? -1 : 1) < 0){
+                    this._flip('x')
+                }
             }
+                    
+            if (f2.y != f1.y && f1.y === -1) {
+                this._flip('y')
+            }
+            
+            console.log(this.flipped)
+            // console.log(this._constraintsPivot)
+            this._lastMatrix = matrix;
+            this._lastContainsPoint = this._constraintsPivot;
         }
-                
-        if (f2.y != f1.y && f1.y === -1) {
-            this._flip('y')
-        }
-       
-        // console.log(this._constraintsPivot)
-        this._lastMatrix = matrix;
-        this._lastContainsPoint = this._constraintsPivot;
         */
 
         return this;

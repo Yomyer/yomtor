@@ -123,11 +123,19 @@ var Project = PaperScopeItem.extend(
         }
       }
 
-      this.fire('changed', flags)
+      this._flagsCache = this._flagsCache | flags
 
       if (this._selector) {
         this._selector._changed(flags, item)
       }
+    },
+
+    _frameChanged(){
+      if(this._updateVersion != this._chacheUpdateVersion){
+          this.emit('changed', this._flagsCache);
+          this._flagsCache = null;
+      }
+      this._chacheUpdateVersion = this._updateVersion;
     },
 
     /**
@@ -1033,19 +1041,18 @@ var Project = PaperScopeItem.extend(
         return this;
     },
     
-
     /**
      * 
      * @param {String|Array<string>} eventName 
      * @param {Object} [options] 
      * @return {Project}
      */
-    fire: function(eventName, options){
+    emit: function(eventName, options){
       if (!this._eventListeners) return this;
 
       if (eventName instanceof Array) {
           for (var key in eventName) {
-              this.fire(eventName[key], options);
+              this.emit(eventName[key], options);
           }
 
           return;
@@ -1108,6 +1115,11 @@ var Project = PaperScopeItem.extend(
 
       return this;
     },
+
+    // Keep deprecated methods around from previous Callback interface.
+    attach: '#on',
+    detach: '#off',
+    fire: '#emit',
 
     /**
      * {@grouptitle Importing / Exporting JSON and SVG}

@@ -16,7 +16,7 @@ import {
   ArtboardTool,
   ConstraintsTool
 } from '@yomtor/core'
-import { Path, Artboard } from '@yomtor/paper'
+import { Path, Artboard, Group } from '@yomtor/paper'
 import {
   ConstraintsControls,
   ObjectControls,
@@ -29,15 +29,25 @@ export const App = () => {
       from: [200, 200],
       to: [600, 600]
     })
-    const path = new Path.Rectangle({
-      from: [350, 350],
-      to: [550, 550],
-      fillColor: '#D9D9D9',
-      name: 'Rectangle',
-      constraints: ['center', 'both']
-    })
 
-    artboard.addChild(path)
+    const group = new Group([
+      new Path.Rectangle({
+        from: [350, 350],
+        to: [550, 550],
+        fillColor: '#D9D9D9',
+        name: 'Rectangle'
+        // constraints: ['center', 'both']
+      }),
+      new Path.Rectangle({
+        from: [250, 250],
+        to: [400, 400],
+        fillColor: 'red',
+        name: 'Rectangle'
+        // constraints: ['center', 'both']
+      })
+    ])
+
+    artboard.addChild(group)
 
     // artboard.rotate(200)
   }, [])

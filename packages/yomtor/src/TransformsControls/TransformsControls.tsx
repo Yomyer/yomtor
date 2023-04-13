@@ -51,38 +51,40 @@ export const TransformsControls = (props: TransformsControlsProps) => {
         type & (ChangeFlag.ACTIVE | ChangeFlag.MATRIX) &&
         !draggingRef.current
       ) {
-        const x = countBy(
-          canvas.project.activeItems.map((item) =>
-            round(
-              item.info.topLeft.x -
-                (item.artboard && item.artboard.info.topLeft.x),
-              2
+        if (canvas.project.activeItems.length && !draggingRef.current) {
+          const x = countBy(
+            canvas.project.activeItems.map((item) =>
+              round(
+                item.info.topLeft.x -
+                  (item.artboard && item.artboard.info.topLeft.x),
+                2
+              )
             )
           )
-        )
-        const y = countBy(
-          canvas.project.activeItems.map((item) =>
-            round(
-              item.info.topLeft.y -
-                (item.artboard && item.artboard.info.topLeft.y),
-              2
+          const y = countBy(
+            canvas.project.activeItems.map((item) =>
+              round(
+                item.info.topLeft.y -
+                  (item.artboard && item.artboard.info.topLeft.y),
+                2
+              )
             )
           )
-        )
-        const width = countBy(
-          canvas.project.activeItems.map((item) => round(item.info.width, 2))
-        )
-        const height = countBy(
-          canvas.project.activeItems.map((item) => round(item.info.height, 2))
-        )
-        const angle = countBy(
-          canvas.project.activeItems.map((item) => round(item.info.angle, 2))
-        )
-        setX(size(x) === 1 ? parseFloat(findKey(x)) : null)
-        setY(size(y) === 1 ? parseFloat(findKey(y)) : null)
-        setWidth(size(width) === 1 ? parseFloat(findKey(width)) : null)
-        setHeight(size(height) === 1 ? parseFloat(findKey(height)) : null)
-        setAngle(size(angle) === 1 ? parseFloat(findKey(angle)) : null)
+          const width = countBy(
+            canvas.project.activeItems.map((item) => round(item.info.width, 2))
+          )
+          const height = countBy(
+            canvas.project.activeItems.map((item) => round(item.info.height, 2))
+          )
+          const angle = countBy(
+            canvas.project.activeItems.map((item) => round(item.info.angle, 2))
+          )
+          setX(size(x) === 1 ? parseFloat(findKey(x)) : null)
+          setY(size(y) === 1 ? parseFloat(findKey(y)) : null)
+          setWidth(size(width) === 1 ? parseFloat(findKey(width)) : null)
+          setHeight(size(height) === 1 ? parseFloat(findKey(height)) : null)
+          setAngle(size(angle) === 1 ? parseFloat(findKey(angle)) : null)
+        }
       }
     })
   }, [canvas])
