@@ -8,7 +8,7 @@ export type NumberInputVariants =
   | 'transparent'
 
 export interface NumberInputProps
-  extends Omit<BaseNumberInputProps, 'variant' | 'value'> {
+  extends Omit<BaseNumberInputProps, 'variant'> {
   compact?: boolean
   variant?: NumberInputVariants
   draggable?: boolean
@@ -16,5 +16,5 @@ export interface NumberInputProps
   onStart?: DraggableEventHandler
   onStop?: DraggableEventHandler
   draggingRef?: React.MutableRefObject<boolean>
-  value?: number | 'mixed'
+  mixed?: boolean
 }

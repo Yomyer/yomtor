@@ -160,8 +160,8 @@ export const ConstraintsTool = (props: ConstraintsToolProps) => {
           to: new Point([0, 0])
         }
 
-        const addConstraint = (
-          direction: 'top' | 'bottom' | 'left' | 'right' | 'center'
+        const addLineConstraint = (
+          direction: 'top' | 'bottom' | 'left' | 'right'
         ) => {
           control.item.addChild(
             new Path.Line({
@@ -171,31 +171,75 @@ export const ConstraintsTool = (props: ConstraintsToolProps) => {
             })
           )
         }
+        const addCenterConstraint = (direction: 'horizontal' | 'vertical') => {
+          const offset =
+            direction === 'horizontal'
+              ? new Point(selector.width / 4, 0)
+              : new Point(0, selector.height / 4)
+
+          control.item.addChild(
+            new Path.Line({
+              ...params,
+              from: selector.center.subtract(offset),
+              to: selector.center.add(offset)
+            })
+          )
+        }
+        const addCenter = () => {
+          control.item.addChild(
+            new Path.Line({
+              ...params,
+              from: selector.center.add(new Point(10, 10).divide(zoom)),
+              to: selector.center.add(new Point(-10, -10).divide(zoom))
+            })
+          )
+          control.item.addChild(
+            new Path.Line({
+              ...params,
+              from: selector.center.add(new Point(10, -10).divide(zoom)),
+              to: selector.center.add(new Point(-10, 10).divide(zoom))
+            })
+          )
+        }
 
         switch (vertical) {
           case 'end':
-            addConstraint('bottom')
+            addLineConstraint('bottom')
+            break
+          case 'center':
+            addCenterConstraint('vertical')
             break
           case 'start':
           case 'both':
-            addConstraint('top')
+            addLineConstraint('top')
             if (vertical === 'both') {
-              addConstraint('bottom')
+              addLineConstraint('bottom')
             }
             break
         }
 
         switch (horizontal) {
           case 'end':
-            addConstraint('right')
+            addLineConstraint('right')
+            break
+          case 'center':
+            addCenterConstraint('horizontal')
             break
           case 'start':
           case 'both':
-            addConstraint('left')
+            addLineConstraint('left')
             if (horizontal === 'both') {
-              addConstraint('right')
+              addLineConstraint('right')
             }
             break
+        }
+
+        if (
+          [horizontal, vertical].includes('center') &&
+          selector.width > 100 / zoom &&
+          selector.height > 100 / zoom
+        ) {
+          addCenter()
         }
       },
       false

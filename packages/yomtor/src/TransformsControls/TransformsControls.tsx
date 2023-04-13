@@ -13,7 +13,7 @@ import {
   YAxisIcon
 } from '@yomtor/icons'
 import { ChangeFlag, Point } from '@yomtor/paper'
-import { countBy, find, findKey, size } from 'lodash'
+import { countBy, find, findKey, isEmpty, size } from 'lodash'
 import { round } from '@yomtor/utils'
 
 const defaultProps: Partial<TransformsControlsProps> = {
@@ -36,11 +36,11 @@ export const TransformsControls = (props: TransformsControlsProps) => {
     props
   )
   const { canvas } = useEditorContext()
-  const [x, setX] = useState<number | 'mixed'>()
-  const [y, setY] = useState<number | 'mixed'>()
-  const [width, setWidth] = useState<number | 'mixed'>()
-  const [height, setHeight] = useState<number | 'mixed'>()
-  const [angle, setAngle] = useState<number | 'mixed'>()
+  const [x, setX] = useState<number | ''>('')
+  const [y, setY] = useState<number | ''>('')
+  const [width, setWidth] = useState<number | ''>('')
+  const [height, setHeight] = useState<number | ''>('')
+  const [angle, setAngle] = useState<number | ''>('')
   const draggingRef = useRef<boolean>(false)
 
   useEffect(() => {
@@ -51,38 +51,40 @@ export const TransformsControls = (props: TransformsControlsProps) => {
         type & (ChangeFlag.ACTIVE | ChangeFlag.MATRIX) &&
         !draggingRef.current
       ) {
-        const x = countBy(
-          canvas.project.activeItems.map((item) =>
-            round(
-              item.info.topLeft.x -
-                (item.artboard && item.artboard.info.topLeft.x),
-              2
+        if (canvas.project.activeItems.length && !draggingRef.current) {
+          const x = countBy(
+            canvas.project.activeItems.map((item) =>
+              round(
+                item.info.topLeft.x -
+                  (item.artboard && item.artboard.info.topLeft.x),
+                2
+              )
             )
           )
-        )
-        const y = countBy(
-          canvas.project.activeItems.map((item) =>
-            round(
-              item.info.topLeft.y -
-                (item.artboard && item.artboard.info.topLeft.y),
-              2
+          const y = countBy(
+            canvas.project.activeItems.map((item) =>
+              round(
+                item.info.topLeft.y -
+                  (item.artboard && item.artboard.info.topLeft.y),
+                2
+              )
             )
           )
-        )
-        const width = countBy(
-          canvas.project.activeItems.map((item) => round(item.info.width, 2))
-        )
-        const height = countBy(
-          canvas.project.activeItems.map((item) => round(item.info.height, 2))
-        )
-        const angle = countBy(
-          canvas.project.activeItems.map((item) => round(item.info.angle, 2))
-        )
-        setX(size(x) === 1 ? parseFloat(findKey(x)) : 'mixed')
-        setY(size(y) === 1 ? parseFloat(findKey(y)) : 'mixed')
-        setWidth(size(width) === 1 ? parseFloat(findKey(width)) : 'mixed')
-        setHeight(size(height) === 1 ? parseFloat(findKey(height)) : 'mixed')
-        setAngle(size(angle) === 1 ? parseFloat(findKey(angle)) : 'mixed')
+          const width = countBy(
+            canvas.project.activeItems.map((item) => round(item.info.width, 2))
+          )
+          const height = countBy(
+            canvas.project.activeItems.map((item) => round(item.info.height, 2))
+          )
+          const angle = countBy(
+            canvas.project.activeItems.map((item) => round(item.info.angle, 2))
+          )
+          setX(size(x) === 1 ? parseFloat(findKey(x)) : '')
+          setY(size(y) === 1 ? parseFloat(findKey(y)) : '')
+          setWidth(size(width) === 1 ? parseFloat(findKey(width)) : '')
+          setHeight(size(height) === 1 ? parseFloat(findKey(height)) : '')
+          setAngle(size(angle) === 1 ? parseFloat(findKey(angle)) : '')
+        }
       }
     })
   }, [canvas])
@@ -90,10 +92,10 @@ export const TransformsControls = (props: TransformsControlsProps) => {
   const changeHandler = (key: string, value: number) => {
     canvas.project.activeItems.forEach((item) => {
       if (['x', 'y'].includes(key)) {
-        if (item.artboard) {
-          value += item.artboard.info.topLeft[key]
-        }
-        item.info.topLeft[key] = value
+        console.log(value)
+        item.info.topLeft[key] = item.artboard
+          ? value + item.artboard.info.topLeft[key]
+          : value
       }
       if (['width', 'height'].includes(key)) {
         item.info[key] = value
@@ -113,6 +115,7 @@ export const TransformsControls = (props: TransformsControlsProps) => {
             value={x}
             onChange={(value: number) => changeHandler('x', value)}
             draggingRef={draggingRef}
+            mixed={isEmpty(x.toString())}
           />
         </Control.Panel>
         <Control.Panel start={16} end={30}>
