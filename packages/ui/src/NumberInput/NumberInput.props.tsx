@@ -16,4 +16,5 @@ export interface NumberInputProps
   onStart?: DraggableEventHandler
   onStop?: DraggableEventHandler
   draggingRef?: React.MutableRefObject<boolean>
+  mixed?: boolean
 }

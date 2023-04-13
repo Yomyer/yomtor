@@ -286,6 +286,7 @@ var View = Base.extend(Emitter, /** @lends View# */{
         var now = Date.now() / 1000,
             delta = this._last ? now - this._last : 0;
         this._last = now;
+
         // Use new Base() to convert into a Base object, for #toString()
         this.emit('frame', new Base({
             // Time elapsed since last frame in seconds:
@@ -296,6 +297,8 @@ var View = Base.extend(Emitter, /** @lends View# */{
         }));
         if (this._stats)
             this._stats.update();
+
+        this._project._frameChanged()
     },
 
     _animateItem: function(item, animate) {

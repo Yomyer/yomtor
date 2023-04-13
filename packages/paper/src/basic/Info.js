@@ -73,8 +73,9 @@ var Info = Base.extend(/** @lends Info# */{
         if(!_dontLink && this._topLeft){
             return this._topLeft;
         }
-
+       
         return this._topLeft = new LinkedPoint(corners[0], corners[1], this, '_setInfoTopLeft');
+        
     },
 
     setTopLeft: function(/* point */) {
@@ -342,7 +343,7 @@ var Info = Base.extend(/** @lends Info# */{
        var get = 'get' + key.replace('_setInfo', '');
        var point = Point.read(arguments)
        var diff = point.subtract(this[get](true))
-
+       
        this._owner.bounds.center = this._owner.bounds.center.add(diff)
     };
 }));

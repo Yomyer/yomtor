@@ -145,7 +145,7 @@ export const TransformTool = (props: TransformToolProps) => {
         .multiply(new Size(signx, signy))
         .round()
     }
-
+    console.log(origin, e.point)
     selector.setSize(newSize, origin, helper)
 
     canvas.project.selector.setInfo(
@@ -204,9 +204,9 @@ export const TransformTool = (props: TransformToolProps) => {
       181
 
     if (cursorAngle.current !== angle) {
-      global ? globalCursor(angle, true) : showCursor(cursorIcon, angle)
+      global ? globalCursor(angle) : showCursor(cursorIcon, angle)
     } else {
-      global ? globalCursor(angle, true) : showCursor(cursorIcon, angle)
+      global ? globalCursor(angle) : showCursor(cursorIcon, angle)
     }
 
     cursorAngle.current = angle

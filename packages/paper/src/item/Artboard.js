@@ -220,7 +220,7 @@ var Artboard = Group.extend(
                     diff = new Size(info)
                         .divide(matrix.a, matrix.d)
                         .subtract(new Size(info).multiply(flipped));
-
+                        
                 for (var i = 0, l = children.length; i < l; i++) {
                     var item = children[i],
                         mx = new Matrix(),

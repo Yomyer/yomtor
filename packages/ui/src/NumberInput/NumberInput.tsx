@@ -47,6 +47,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
       onStart,
       onChange,
       draggingRef,
+      mixed,
       ...others
     } = useComponentDefaultProps('NumberInput', defaultProps, props)
 
@@ -97,6 +98,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
     }
 
     const changeHandler = (value: number) => {
+      console.log(value)
       if (!disabled.current) {
         onChange && onChange(value)
       }
@@ -117,6 +119,11 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
         changeHandler(parseFloat(inputRef.current.value))
         inputRef.current.blur()
       } else {
+        if (mixed) {
+          // setVal(parseFloat(event.key))
+          inputRef.current.value = event.key
+        }
+
         disabled.current = true
       }
     }
@@ -140,6 +147,8 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
         step={step}
         onChange={changeHandler}
         onKeyDown={keyDownHandler}
+        // onKeyUp={}
+        formatter={(value) => (mixed ? 'Mixed' : value)}
         icon={
           <Draggable
             move={false}
