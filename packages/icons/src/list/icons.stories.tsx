@@ -12,6 +12,7 @@ import CodeIcon from './Code'
 import ConstraintsBarIcon from './ConstraintsBar'
 import DistributeIcon from './Distribute'
 import DotsVerticalIcon from './DotsVertical'
+import DropletIcon from './Droplet'
 import EyeIcon from './Eye'
 import GroupIcon from './Group'
 import HeightIcon from './Height'
@@ -40,6 +41,7 @@ const icons = {
   ConstraintsBarIcon,
   DistributeIcon,
   DotsVerticalIcon,
+  DropletIcon,
   EyeIcon,
   GroupIcon,
   HeightIcon,

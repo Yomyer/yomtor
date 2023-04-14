@@ -1,8 +1,12 @@
 import { TransformsControlsProps } from './TransformsControls.props'
 import { useComponentDefaultProps } from '@yomtor/styles'
 import { useEditorContext } from '@yomtor/core'
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { ActionIcon, Control, Input, NumberInput } from '@yomtor/ui'
+
+import { ChangeFlag, Point } from '@yomtor/paper'
+import { countBy, find, findKey, isEmpty, size } from 'lodash'
+import { round } from '@yomtor/utils'
 import {
   HeightIcon,
   RadiusIcon,
@@ -11,10 +15,7 @@ import {
   WidthIcon,
   XAxisIcon,
   YAxisIcon
-} from '@yomtor/icons'
-import { ChangeFlag, Point } from '@yomtor/paper'
-import { countBy, find, findKey, isEmpty, size } from 'lodash'
-import { round } from '@yomtor/utils'
+} from '../../../icons/src/list'
 
 const defaultProps: Partial<TransformsControlsProps> = {
   visible: false
