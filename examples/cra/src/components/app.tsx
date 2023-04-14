@@ -50,7 +50,7 @@ export const App = () => {
     artboard.addChild(path1)
     artboard.addChild(path2)
 
-    path1.actived = path2.actived = true
+    // path1.actived = path2.actived = true
 
     // artboard.rotate(200)
   }, [])
@@ -68,7 +68,7 @@ export const App = () => {
           aside={
             <Aside resize>
               <AlignmentsControls visible />
-              <TransformsControls visible />
+              <TransformsControls />
               <ConstraintsControls />
             </Aside>
           }

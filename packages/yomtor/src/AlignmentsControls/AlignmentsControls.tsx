@@ -31,7 +31,7 @@ export const AlignmentsControls = (props: AlignmentsControlsProps) => {
   ) => {
     if (!canvas) return
 
-    let limits = canvas.project.activeItems[0].artboard.bounds
+    let limits = canvas.project.activeItems[0]?.artboard?.bounds
 
     if (canvas.project.activeItems.length > 1) {
       limits = canvas.project.selector.bounds
@@ -57,7 +57,10 @@ export const AlignmentsControls = (props: AlignmentsControlsProps) => {
 
     canvas.project.on('changed', (type) => {
       if (type & ChangeFlag.ACTIVE) {
-        setActive(canvas.project.activeItems.length > 0)
+        const actives = canvas.project.activeItems
+        setActive(
+          actives.length > 1 || !!(actives.length === 1 && actives[0].artboard)
+        )
       }
     })
   }, [canvas])
