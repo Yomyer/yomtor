@@ -19,38 +19,6 @@ export const LayerControls = (props: LayerControlsProps) => {
   const { canvas } = useEditorContext()
   const [active, setActive] = useState<boolean>()
 
-  const clickHandler = (
-    position:
-      | 'top'
-      | 'right'
-      | 'left'
-      | 'bottom'
-      | 'horizontal-center'
-      | 'vertical-center'
-  ) => {
-    if (!canvas) return
-
-    let limits = canvas.project.activeItems[0].artboard.bounds
-
-    if (canvas.project.activeItems.length > 1) {
-      limits = canvas.project.selector.bounds
-    }
-
-    canvas.project.activeItems.forEach((item) => {
-      switch (position) {
-        case 'horizontal-center':
-          item.bounds.center.x = limits.center.x
-          break
-        case 'vertical-center':
-          item.bounds.center.y = limits.center.y
-          break
-        default:
-          item.bounds[position] = limits[position]
-          break
-      }
-    })
-  }
-
   useEffect(() => {
     if (!canvas) return
 

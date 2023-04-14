@@ -26,3 +26,4 @@ docs/.cache
 docs/public
 storybook-static
 .next
+install-state.gz
