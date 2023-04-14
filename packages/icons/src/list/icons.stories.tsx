@@ -12,6 +12,7 @@ import CodeIcon from './Code'
 import ConstraintsBarIcon from './ConstraintsBar'
 import DistributeIcon from './Distribute'
 import DotsVerticalIcon from './DotsVertical'
+import EyeIcon from './Eye'
 import GroupIcon from './Group'
 import HeightIcon from './Height'
 import HideIcon from './Hide'
@@ -26,7 +27,7 @@ import WidthIcon from './Width'
 import XAxisIcon from './XAxis'
 import YAxisIcon from './YAxis'
 
-const icons = { AligmentCenterIcon, AligmentStartIcon, ArrageIcon, ArrowIcon, ArtboardIcon, Artboard2Icon, CenterIcon, CheckIcon, CodeIcon, ConstraintsBarIcon, DistributeIcon, DotsVerticalIcon, GroupIcon, HeightIcon, HideIcon, LinkIcon, LockIcon, MoreIcon, PlayIcon, RadiusIcon, RotationIcon, UnlinkIcon, WidthIcon, XAxisIcon, YAxisIcon }
+const icons = { AligmentCenterIcon, AligmentStartIcon, ArrageIcon, ArrowIcon, ArtboardIcon, Artboard2Icon, CenterIcon, CheckIcon, CodeIcon, ConstraintsBarIcon, DistributeIcon, DotsVerticalIcon, EyeIcon, GroupIcon, HeightIcon, HideIcon, LinkIcon, LockIcon, MoreIcon, PlayIcon, RadiusIcon, RotationIcon, UnlinkIcon, WidthIcon, XAxisIcon, YAxisIcon }
 
 
 type Props = {
