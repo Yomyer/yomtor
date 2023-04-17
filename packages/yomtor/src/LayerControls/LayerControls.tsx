@@ -4,18 +4,16 @@ import React, { useEffect, useState } from 'react'
 import { ActionIcon, Control, NumberInput, Select } from '@yomtor/ui'
 import { ChangeFlag } from '@yomtor/paper'
 import { LayerControlsProps } from './LayerControls.props'
-import { countBy, isEmpty } from 'lodash'
+import { countBy, isEmpty, isNumber, isString } from 'lodash'
 import { LayerSelectData } from './data'
 import {
-  ConstraintsBarIcon,
   DropletFilledIcon,
   DropletIcon,
   EyeClosedIcon,
-  EyeIcon,
-  XAxisIcon
+  EyeIcon
 } from '../../../icons/src/list'
-import { Divider } from '@mantine/core'
-import { Item } from 'paper/dist/paper-core'
+
+const OPACITY_MULTIPLIER = 100
 
 const defaultProps: Partial<LayerControlsProps> = {
   visible: false
@@ -30,23 +28,24 @@ export const LayerControls = (props: LayerControlsProps) => {
   const { canvas } = useEditorContext()
   const [active, setActive] = useState<boolean>()
   const [artboard, setArtboard] = useState<boolean>()
-  const [numberValue, setNumberValue] = useState<number>(100)
+  const [numberValue, setNumberValue] = useState<number>(OPACITY_MULTIPLIER)
   const [isVisible, setIsVisible] = useState<boolean>(true)
   const [dropFilled, setDropFilled] = useState<boolean>(false)
 
   const changeHandler = (
     property: 'blendMode' | 'opacity' | 'visibility',
-    value
+    value: string | number
   ) => {
-    value !== 'start' && value !== 'normal'
+    isString(value) && value !== 'start' && value !== 'normal'
       ? setDropFilled(true)
       : setDropFilled(false)
+    isNumber(value) && setNumberValue(value * OPACITY_MULTIPLIER)
     canvas.project.activeItems.forEach((item) => (item[property] = value))
   }
 
   const clickHandler = (value) => {
     setIsVisible(!value)
-    canvas.project.activeItems.forEach((item) => (item.visible = value))
+    canvas.project.activeItems.forEach((item) => (item.visible = !value))
   }
 
   useEffect(() => {
@@ -67,10 +66,11 @@ export const LayerControls = (props: LayerControlsProps) => {
   return artboard || visible ? (
     <Control>
       <Control.Title>Layer</Control.Title>
-      <Control.Group columns={32}>
-        <Control.Panel start={1} end={18}>
+      <Control.Group columns={36}>
+        <Control.Panel start={1} end={20}>
           <Select
             data={LayerSelectData}
+            defaultValue='start'
             icon={
               dropFilled ? (
                 <DropletFilledIcon size='sm' />
@@ -81,15 +81,18 @@ export const LayerControls = (props: LayerControlsProps) => {
             onChange={(value) => changeHandler('blendMode', value)}
           />
         </Control.Panel>
-        <Control.Panel start={19} end={30}>
+        <Control.Panel start={21} end={34}>
           <NumberInput
             value={numberValue}
             max={100}
             min={0}
-            onChange={(value: number) => changeHandler('opacity', value)}
+            onChange={(value: number) =>
+              changeHandler('opacity', value / OPACITY_MULTIPLIER)
+            }
+            formatter={(value) => `${value}%`}
           />
         </Control.Panel>
-        <Control.Panel start={31} end={32}>
+        <Control.Panel start={35} end={36}>
           <ActionIcon
             icon={isVisible ? <EyeIcon /> : <EyeClosedIcon />}
             onClick={() => clickHandler(isVisible)}

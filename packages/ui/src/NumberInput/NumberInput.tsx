@@ -98,7 +98,6 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
     }
 
     const changeHandler = (value: number) => {
-      console.log(value)
       if (!disabled.current) {
         onChange && onChange(value)
       }
