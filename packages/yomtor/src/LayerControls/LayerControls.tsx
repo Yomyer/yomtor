@@ -8,7 +8,9 @@ import { countBy, isEmpty } from 'lodash'
 import { LayerSelectData } from './data'
 import {
   ConstraintsBarIcon,
+  DropletFilledIcon,
   DropletIcon,
+  EyeClosedIcon,
   EyeIcon,
   XAxisIcon
 } from '../../../icons/src/list'
@@ -30,11 +32,17 @@ export const LayerControls = (props: LayerControlsProps) => {
   const [artboard, setArtboard] = useState<boolean>()
   const [numberValue, setNumberValue] = useState<number>(100)
   const [isVisible, setIsVisible] = useState<boolean>(true)
+  const [dropFilled, setDropFilled] = useState<boolean>(false)
 
   const changeHandler = (
     property: 'blendMode' | 'opacity' | 'visibility',
     value
-  ) => canvas.project.activeItems.forEach((item) => (item[property] = value))
+  ) => {
+    value !== 'start' && value !== 'normal'
+      ? setDropFilled(true)
+      : setDropFilled(false)
+    canvas.project.activeItems.forEach((item) => (item[property] = value))
+  }
 
   const clickHandler = (value) => {
     setIsVisible(!value)
@@ -63,7 +71,13 @@ export const LayerControls = (props: LayerControlsProps) => {
         <Control.Panel start={1} end={18}>
           <Select
             data={LayerSelectData}
-            icon={<DropletIcon size='sm' />}
+            icon={
+              dropFilled ? (
+                <DropletFilledIcon size='sm' />
+              ) : (
+                <DropletIcon size='sm' />
+              )
+            }
             onChange={(value) => changeHandler('blendMode', value)}
           />
         </Control.Panel>
@@ -77,7 +91,7 @@ export const LayerControls = (props: LayerControlsProps) => {
         </Control.Panel>
         <Control.Panel start={31} end={32}>
           <ActionIcon
-            icon={isVisible ? <EyeIcon /> : <XAxisIcon />}
+            icon={isVisible ? <EyeIcon /> : <EyeClosedIcon />}
             onClick={() => clickHandler(isVisible)}
           />
         </Control.Panel>
