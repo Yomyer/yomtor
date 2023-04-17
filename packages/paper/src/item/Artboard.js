@@ -48,10 +48,28 @@ var Artboard = Group.extend(
             this._children = [];
             this._namedChildren = {};
 
+            
             this.setBackground(args[0]);
 
             if (!this._initialize(args[0])) {
-                this.addChildren(Array.isArray(args) ? args : arguments);
+                if(Array.isArray(args[0]) || Array.isArray(arguments) ){
+                   
+                    this.addChildren(Array.isArray(args[0]) ? args[0] : arguments);
+                    var rect = null;
+
+  
+
+                    var children = this._children;
+                    for (var i = 0, l = children.length; i < l; i++) {
+                       if(!rect){
+                           rect = children[i].bounds
+                       }else{
+                            rect = rect.unite(children[i].bounds)
+                       }
+                    }
+
+                    this.setBackground(rect);
+                }
             }
 
             this._project._artboards.push(this);

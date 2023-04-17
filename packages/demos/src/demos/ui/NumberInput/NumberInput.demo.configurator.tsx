@@ -16,7 +16,11 @@ function Demo() {
 function Wrapper(props: NumberInputProps) {
   return (
     <Group position='center'>
-      <NumberInput {...props} icon={<CodeIcon />} />
+      <NumberInput
+        {...props}
+        icon={<CodeIcon />}
+        formatter={(value) => `${value}%`}
+      />
     </Group>
   )
 }

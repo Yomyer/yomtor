@@ -30,7 +30,8 @@ const defaultProps: Partial<NumberInputProps> = {
   precision: 2,
   removeTrailingZeros: true,
   blur: true,
-  noClampOnBlur: true
+  noClampOnBlur: true,
+  mixedLabel: 'Mixed'
 }
 
 export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
@@ -46,8 +47,10 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
       onStop,
       onStart,
       onChange,
-      draggingRef,
-      mixed,
+      mixed: isMixed,
+      mixedLabel,
+      formatter,
+      value: defaultValue,
       ...others
     } = useComponentDefaultProps('NumberInput', defaultProps, props)
 
@@ -59,14 +62,28 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
     const [drag, setDrag] = useState<number>(0)
     const [delta, setDelta] = useState<number>(0)
     const [step, setStep] = useState<number>(1)
+    const [mixed, setMixed] = useState<boolean>(false)
+    const [value, setValue] = useState<number | ''>()
     const disabled = useRef<boolean>()
     const inputRef = useRef<HTMLInputElement>()
     const handlersRef = useRef<NumberInputHandlers>()
     const [showCursor, hideCursor] = useGlobalCursor(ResizePanel)
 
     useEffect(() => {
+      setMixed(isMixed)
+    }, [isMixed])
+
+    useEffect(() => {
+      setValue(defaultValue)
+    }, [defaultValue])
+
+    useEffect(() => {
       if (!drag) return
-      handlersRef.current[delta > 0 ? 'increment' : 'decrement']()
+      if (mixed) {
+        changeHandler(delta)
+      } else {
+        handlersRef.current[delta > 0 ? 'increment' : 'decrement']()
+      }
     }, [drag])
 
     const dragHandler = (event: DraggableEvent, data: DraggableData) => {
@@ -89,17 +106,15 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
     const startHandler = (event: DraggableEvent, data: DraggableData) => {
       showCursor(true)
       onStart && onStart(event, data)
-      draggingRef && (draggingRef.current = true)
     }
     const stopHandler = (event: DraggableEvent, data: DraggableData) => {
       hideCursor()
       onStop && onStop(event, data)
-      draggingRef && (draggingRef.current = false)
     }
 
     const changeHandler = (value: number) => {
       if (!disabled.current) {
-        onChange && onChange(value)
+        onChange && onChange(value, mixed)
       }
     }
 
@@ -119,12 +134,15 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
         inputRef.current.blur()
       } else {
         if (mixed) {
-          // setVal(parseFloat(event.key))
-          inputRef.current.value = event.key
+          setMixed(false)
         }
 
         disabled.current = true
       }
+    }
+
+    const keyUpHandler = (event: KeyboardEvent<HTMLInputElement>) => {
+      setValue(parseFloat(inputRef.current.value))
     }
 
     const blurHandler = (event: SyntheticEvent | MouseEvent) => {
@@ -146,8 +164,9 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
         step={step}
         onChange={changeHandler}
         onKeyDown={keyDownHandler}
-        // onKeyUp={}
-        formatter={(value) => (mixed ? 'Mixed' : value)}
+        value={value}
+        onKeyUp={keyUpHandler}
+        formatter={formatter || ((value) => (mixed ? mixedLabel : value))}
         icon={
           <Draggable
             move={false}

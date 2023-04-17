@@ -32,28 +32,25 @@ export const App = () => {
       to: [600, 600]
     })
 
-    const path1 = new Path.Rectangle({
-      from: [350, 350],
-      to: [550, 550],
-      fillColor: '#D9D9D9',
-      name: 'Rectangle'
-      // constraints: ['center', 'both']
-    })
+    const group = new Group([
+      new Path.Rectangle({
+        from: [350, 350],
+        to: [550, 550],
+        fillColor: '#D9D9D9',
+        name: 'Rectangle'
+        // constraints: ['center', 'both']
+      }),
+      new Path.Rectangle({
+        from: [250, 250],
+        to: [400, 400],
+        fillColor: 'red',
+        name: 'Rectangle'
+        // constraints: ['center', 'both']
+      })
+    ])
 
-    const path2 = new Path.Rectangle({
-      from: [250, 250],
-      to: [400, 400],
-      fillColor: 'red',
-      name: 'Rectangle'
-      // constraints: ['center', 'both']
-    })
-
-    artboard.addChild(path1)
-    artboard.addChild(path2)
-
-    path1.actived = path2.actived = true
-
-    // artboard.rotate(200)
+    artboard.addChild(group)
+    group.actived = true
   }, [])
 
   return (
@@ -69,7 +66,7 @@ export const App = () => {
           aside={
             <Aside resize>
               <AlignmentsControls visible />
-              <TransformsControls visible />
+              <TransformsControls />
               <ConstraintsControls />
               <LayerControls visible />
             </Aside>

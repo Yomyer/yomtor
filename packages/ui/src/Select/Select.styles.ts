@@ -25,7 +25,10 @@ const sizes = {
 }
 
 export default createStyles(
-  (theme, { variant, ticked, size, compact, searchable }: SelectProps) => {
+  (
+    theme,
+    { variant, ticked, size, compact, inherit, searchable }: SelectProps
+  ) => {
     return {
       input: {
         ...theme.fn.getVariant({
@@ -33,19 +36,21 @@ export default createStyles(
           withFocus: true,
           withPrimaryColor: false
         }),
+        fontWeight: inherit && 'inherit',
         '&:focus-visible': {
           outline: 'none'
         },
         ...(compact && {
           ...compactSizes[`compact-${size}`],
           minHeight: 'unset',
-          fontSize: getSize({ size, sizes }),
+          fontSize: inherit ? 'inherit' : getSize({ size, sizes }),
           '&[data-with-icon]': {
             paddingLeft: rem(getSize({ size, sizes: iconSizes }))
           }
         }),
         ...(ticked && {
           paddingRight: rem(getSize({ size, sizes: iconSizes })),
+          paddingLeft: 7,
           [`&:hover + .${getStylesRef('rightSection')}`]: {
             opacity: 1,
             transform: 'scale(1)'
