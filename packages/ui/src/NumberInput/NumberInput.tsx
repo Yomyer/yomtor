@@ -166,7 +166,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
         onKeyDown={keyDownHandler}
         value={value}
         onKeyUp={keyUpHandler}
-        formatter={formatter && ((value) => (mixed ? mixedLabel : value))}
+        formatter={formatter || ((value) => (mixed ? mixedLabel : value))}
         icon={
           <Draggable
             move={false}
