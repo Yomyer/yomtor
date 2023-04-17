@@ -137,25 +137,16 @@ export const TransformsControls = (props: TransformsControlsProps) => {
         group: Group
       }
 
-      let clone
-      canvas.project.activeItems.forEach((item) => {
-        clone = new types[value](item.children)
-        clone.actived = true
-        console.log(clone.actived)
-        item.replaceWith(clone)
-        if (clone) {
-          setTimeout(() => {
-            item.actived = true
-          }, 1000)
-        }
+      const actives = [...canvas.project.activeItems]
 
-        console.log(item.actived)
-        // item.remove()
+      actives.forEach((item) => {
+        const clone = new types[value](item.children)
+        item.replaceWith(clone)
+        clone.actived = true
       })
     }
 
-    // setCombo(value)
-    console.log(value)
+    setCombo(value)
   }
 
   return visible ? (
