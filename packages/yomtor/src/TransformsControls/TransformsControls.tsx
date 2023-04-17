@@ -12,7 +12,7 @@ import {
   XAxisIcon,
   YAxisIcon
 } from '@yomtor/icons'
-import { ChangeFlag, Point } from '@yomtor/paper'
+import { ChangeFlag, Artboard, Group } from '@yomtor/paper'
 import { countBy, find, findKey, isEmpty, size } from 'lodash'
 import { round } from '@yomtor/utils'
 import { ItemData } from './data'
@@ -86,6 +86,7 @@ export const TransformsControls = (props: TransformsControlsProps) => {
         const angle = countBy(
           canvas.project.activeItems.map((item) => round(item.info.angle, 2))
         )
+
         setX(size(x) === 1 ? parseFloat(findKey(x)) : '')
         setY(size(y) === 1 ? parseFloat(findKey(y)) : '')
         setWidth(size(width) === 1 ? parseFloat(findKey(width)) : '')
@@ -129,11 +130,46 @@ export const TransformsControls = (props: TransformsControlsProps) => {
     })
   }
 
+  const classHandler = (value: string) => {
+    if (['artboard', 'group'].includes(value)) {
+      const types = {
+        artboard: Artboard,
+        group: Group
+      }
+
+      let clone
+      canvas.project.activeItems.forEach((item) => {
+        clone = new types[value](item.children)
+        clone.actived = true
+        console.log(clone.actived)
+        item.replaceWith(clone)
+        if (clone) {
+          setTimeout(() => {
+            item.actived = true
+          }, 1000)
+        }
+
+        console.log(item.actived)
+        // item.remove()
+      })
+    }
+
+    // setCombo(value)
+    console.log(value)
+  }
+
   return visible ? (
     <Control>
       {combo && (
         <Control.Title
-          title={<Select data={ItemData} value={combo} inherit />}
+          title={
+            <Select
+              data={ItemData}
+              value={combo}
+              inherit
+              onChange={classHandler}
+            />
+          }
           start={1}
         >
           <></>
