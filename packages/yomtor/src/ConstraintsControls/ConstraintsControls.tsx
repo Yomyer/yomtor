@@ -72,7 +72,7 @@ export const ConstraintsControls = (props: ConstraintsControlsProps) => {
 
   return (constraints && artboard) || visible ? (
     <Control>
-      <Control.Title>Constraints</Control.Title>
+      <Control.Title title={<>Constraints</>} />
       <Control.Group>
         <Control.Panel start={2} end={3} rows={2}>
           <ConstraintsBase {...constraints} onChange={changeHandler} />

@@ -29,13 +29,21 @@ const defaultProps: Partial<SelectProps> = {
 
 export const Select = forwardRef<HTMLInputElement, SelectProps>(
   (props, ref) => {
-    const { unstyled, onChange, ticked, size, compact, className, ...others } =
-      useComponentDefaultProps('Select', defaultProps, props)
+    const {
+      unstyled,
+      onChange,
+      ticked,
+      inherit,
+      size,
+      compact,
+      className,
+      ...others
+    } = useComponentDefaultProps('Select', defaultProps, props)
 
     const select = useRef<HTMLElement>()
 
     const { classes, cx } = useStyles(
-      { compact, ticked, size, ...others },
+      { compact, ticked, inherit, size, ...others },
       { name: 'Select', unstyled }
     )
 

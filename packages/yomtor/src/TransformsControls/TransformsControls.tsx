@@ -132,8 +132,11 @@ export const TransformsControls = (props: TransformsControlsProps) => {
   return visible ? (
     <Control>
       {combo && (
-        <Control.Title>
-          <Select data={ItemData} value={combo} />
+        <Control.Title
+          title={<Select data={ItemData} value={combo} inherit />}
+          start={1}
+        >
+          <></>
         </Control.Title>
       )}
       <Control.Group rowGap={8}>

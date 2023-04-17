@@ -4,7 +4,9 @@ import { TitleProps } from './Title.props'
 export interface TitleStylesParams {}
 
 export default createStyles((theme, {}: TitleStylesParams) => ({
-  root: {},
+  root: {
+    paddingBottom: 5
+  },
   title: {
     height: 32,
     flexGrow: 2,

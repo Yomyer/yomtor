@@ -6,5 +6,8 @@ type TitleStylesNames = Selectors<typeof useStyles>
 
 export interface TitleProps
   extends DefaultProps<TitleStylesNames, TitleStylesParams> {
-  children: ReactNode
+  children?: ReactNode
+  title?: ReactNode
+  start?: number
+  end?: number
 }

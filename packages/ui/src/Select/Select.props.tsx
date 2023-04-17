@@ -6,4 +6,5 @@ export interface SelectProps extends Omit<BaseSelectProps, 'variant'> {
   compact?: boolean
   variant?: SelectVariants
   ticked?: boolean
+  inherit?: boolean
 }
