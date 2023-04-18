@@ -156,9 +156,10 @@ export const TransformsControls = (props: TransformsControlsProps) => {
           title={
             <Select
               data={ItemData}
-              value={combo}
+              value='1500x1000-surface-book'
               inherit
               onChange={classHandler}
+              initiallyOpened
             />
           }
           start={1}

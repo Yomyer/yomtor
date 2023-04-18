@@ -120,6 +120,11 @@ export default createStyles(
         ...(ticked && {
           padding: '10px 0'
         })
+      },
+      dropdown: {
+        //left: '0 !important',
+        //right: '0 !important',
+        //width: 'auto !important'
       }
     }
   }

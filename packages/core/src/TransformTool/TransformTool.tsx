@@ -145,7 +145,6 @@ export const TransformTool = (props: TransformToolProps) => {
         .multiply(new Size(signx, signy))
         .round()
     }
-    console.log(origin, e.point)
     selector.setSize(newSize, origin, helper)
 
     canvas.project.selector.setInfo(
