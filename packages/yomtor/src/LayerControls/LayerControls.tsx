@@ -39,7 +39,6 @@ export const LayerControls = (props: LayerControlsProps) => {
     isString(value) && value !== 'start' && value !== 'normal'
       ? setDropFilled(true)
       : setDropFilled(false)
-    isNumber(value) && setNumberValue(value * OPACITY_MULTIPLIER)
     canvas.project.activeItems.forEach((item) => (item[property] = value))
   }
 
@@ -83,13 +82,14 @@ export const LayerControls = (props: LayerControlsProps) => {
         </Control.Panel>
         <Control.Panel start={21} end={34}>
           <NumberInput
-            value={numberValue}
+            value={numberValue > 100 ? 100 : numberValue}
             max={100}
             min={0}
-            onChange={(value: number) =>
+            onChange={(value: number) => {
+              setNumberValue(value)
               changeHandler('opacity', value / OPACITY_MULTIPLIER)
-            }
-            formatter={(value) => `${value}%`}
+            }}
+            rightSection={<div style={{ fontSize: '11px' }}>%</div>}
           />
         </Control.Panel>
         <Control.Panel start={35} end={36}>
