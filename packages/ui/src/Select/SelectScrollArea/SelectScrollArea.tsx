@@ -66,6 +66,8 @@ export const SelectScrollArea = forwardRef<HTMLDivElement, ScrollAreaProps>(
 
               console.log('andevas')
             }
+
+            scrollIntoView({ alignment: 'center' })
           }
 
           dropdown.style.top = diff + 'px'
