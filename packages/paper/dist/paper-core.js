@@ -4889,7 +4889,7 @@ new function() {
 
 	copyAttributes: function(source, excludeMatrix) {
 		this.setStyle(source._style);
-		var keys = ['_locked', '_visible', '_blendMode', '_opacity', '_actived',
+		var keys = ['_locked', '_visible', '_blendMode', '_opacity',
 				'_clipMask', '_guide', '_angle', '_flipped', '_constraints'];
 		for (var i = 0, l = keys.length; i < l; i++) {
 			var key = keys[i];
@@ -6318,7 +6318,7 @@ var Artboard = Group.extend(
 
 		setBackground: function (args) {
 			var args = Base.set(Object.assign({
-				fillColor: 'white'
+				fillColor: 'rgba(255,255,255,0.000001)'
 			}, args), {
 				insert: false,
 				children: undefined,

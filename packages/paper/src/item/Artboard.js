@@ -89,7 +89,7 @@ var Artboard = Group.extend(
 
         setBackground: function (args) {
             var args = Base.set(Object.assign({
-                fillColor: 'white'
+                fillColor: 'rgba(255,255,255,0.000001)'
             }, args), {
                 insert: false,
                 children: undefined,

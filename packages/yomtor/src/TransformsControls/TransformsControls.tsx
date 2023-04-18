@@ -44,11 +44,17 @@ export const TransformsControls = (props: TransformsControlsProps) => {
   const [height, setHeight] = useState<number | ''>('')
   const [angle, setAngle] = useState<number | ''>('')
   const [combo, setCombo] = useState<string>()
+  const [disableGroup, setDisabelGroup] = useState<boolean>(false)
   const update = useRef<boolean>(true)
 
   useEffect(() => {
     setVisible(isVisible)
   }, [isVisible])
+
+  useEffect(() => {
+    const group = ItemData.find((item) => item.value === 'group')
+    group.disabled = disableGroup
+  }, [disableGroup])
 
   useEffect(() => {
     if (!canvas) return
@@ -87,11 +93,18 @@ export const TransformsControls = (props: TransformsControlsProps) => {
           canvas.project.activeItems.map((item) => round(item.info.angle, 2))
         )
 
+        const disableGroup = countBy(
+          canvas.project.activeItems.map(
+            (item) => item instanceof Artboard && !item.children.length
+          )
+        )
+
         setX(size(x) === 1 ? parseFloat(findKey(x)) : '')
         setY(size(y) === 1 ? parseFloat(findKey(y)) : '')
         setWidth(size(width) === 1 ? parseFloat(findKey(width)) : '')
         setHeight(size(height) === 1 ? parseFloat(findKey(height)) : '')
         setAngle(size(angle) === 1 ? parseFloat(findKey(angle)) : '')
+        setDisabelGroup(!!disableGroup.true)
       }
       update.current = true
 
