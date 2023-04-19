@@ -30,6 +30,11 @@ export default createStyles(
     { variant, ticked, size, compact, inherit, searchable }: SelectProps
   ) => {
     return {
+      root: {
+        ...(ticked && {
+          position: 'relative'
+        })
+      },
       input: {
         ...theme.fn.getVariant({
           variant,
@@ -119,6 +124,13 @@ export default createStyles(
       itemsWrapper: {
         ...(ticked && {
           padding: '10px 0'
+        })
+      },
+      dropdown: {
+        ...(ticked && {
+          width: 'auto !important',
+          left: '0 !important',
+          minWidth: '100%'
         })
       }
     }

@@ -6291,16 +6291,15 @@ var Artboard = Group.extend(
 				if(Array.isArray(args[0]) || Array.isArray(arguments) ){
 					this.addChildren(Array.isArray(args[0]) ? args[0] : arguments);
 					var rect = null;
-
 					var children = this._children;
 					for (var i = 0, l = children.length; i < l; i++) {
-					   if(!rect){
-						   rect = children[i].bounds
-					   }else{
-							rect = rect.unite(children[i].bounds)
-					   }
+						if(!rect){
+							rect = children[i].bounds.clone();
+						}else{
+							rect = rect.unite(children[i].bounds);
+						}
 					}
-
+					console.log(rect)
 					this.setBackground(rect);
 				}
 			}

@@ -172,6 +172,7 @@ export const TransformsControls = (props: TransformsControlsProps) => {
               value={combo}
               inherit
               onChange={classHandler}
+              initiallyOpened
             />
           }
           start={1}
