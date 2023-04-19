@@ -6299,7 +6299,6 @@ var Artboard = Group.extend(
 							rect = rect.unite(children[i].bounds);
 						}
 					}
-					console.log(rect)
 					this.setBackground(rect);
 				}
 			}

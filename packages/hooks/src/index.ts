@@ -6,6 +6,7 @@ export {
   useMergedRef,
   usePrevious,
   useScrollIntoView,
+  useForceUpdate,
   randomId,
   useId
 } from '@mantine/hooks'

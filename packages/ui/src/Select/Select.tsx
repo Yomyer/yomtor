@@ -1,10 +1,20 @@
-import React, { forwardRef, useEffect, useRef } from 'react'
+import React, {
+  forwardRef,
+  KeyboardEvent,
+  useEffect,
+  useRef,
+  useState
+} from 'react'
 import { useComponentDefaultProps, getSize } from '@yomtor/styles'
 
 import { Select as BaseSelect } from '@mantine/core'
 import { SelectProps } from './Select.props'
 import useStyles from './Select.styles'
-import { useMergedRef, useResizeObserver } from '@yomtor/hooks'
+import {
+  useEventListener,
+  useMergedRef,
+  useResizeObserver
+} from '@yomtor/hooks'
 import { SelectItem } from './SelectItem/SelectItem'
 import { SelectScrollArea } from './SelectScrollArea/SelectScrollArea'
 import { ArrowIcon } from '@yomtor/icons'
@@ -24,7 +34,8 @@ const defaultProps: Partial<SelectProps> = {
   ticked: true,
   variant: 'toggle',
   itemComponent: undefined,
-  dropdownComponent: SelectScrollArea
+  dropdownComponent: SelectScrollArea,
+  switchDirectionOnFlip: true
 }
 
 export const Select = forwardRef<HTMLInputElement, SelectProps>(
@@ -41,9 +52,10 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
     } = useComponentDefaultProps('Select', defaultProps, props)
 
     const select = useRef<HTMLElement>()
+    const [disableDropdown, setDisableDropdown] = useState(false)
 
     const { classes, cx } = useStyles(
-      { compact, ticked, inherit, size, ...others },
+      { compact, ticked, disableDropdown, inherit, size, ...others },
       { name: 'Select', unstyled }
     )
 
@@ -64,15 +76,36 @@ export const Select = forwardRef<HTMLInputElement, SelectProps>(
       }
     }
 
+    const keydownHandler = (event: KeyboardEvent<HTMLInputElement>) => {
+      if (['ArrowUp', 'ArrowDown'].includes(event.key)) {
+        setDisableDropdown(true)
+      }
+    }
+
+    useEventListener(
+      'mousemove',
+      () => {
+        if (disableDropdown) {
+          setDisableDropdown(false)
+        }
+      },
+      document
+    )
+
     return (
-      <BaseSelect
-        {...others}
-        ref={useMergedRef(ref, select)}
-        className={className}
-        classNames={classes}
-        rightSection={<ArrowIcon size={getSize({ sizes: arrowSizes, size })} />}
-        onChange={changeHandler}
-      />
+      <>
+        <BaseSelect
+          {...others}
+          ref={useMergedRef(ref, select)}
+          className={className}
+          classNames={classes}
+          rightSection={
+            <ArrowIcon size={getSize({ sizes: arrowSizes, size })} />
+          }
+          onChange={changeHandler}
+          onKeyDown={keydownHandler}
+        />
+      </>
     )
   }
 )

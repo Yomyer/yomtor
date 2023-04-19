@@ -12,7 +12,7 @@ import {
   VirtualItem
 } from '@tanstack/virtual-core'
 import { flushSync } from 'react-dom'
-import { map } from 'lodash'
+import { useForceUpdate } from '@mantine/hooks'
 export * from '@tanstack/virtual-core'
 
 export interface UseVirtualizer<
@@ -32,7 +32,7 @@ function useVirtualizerBase<
 >(
   options: VirtualizerOptions<TScrollElement, TItemElement>
 ): UseVirtualizer<TScrollElement, TItemElement> {
-  const rerender = React.useReducer(() => ({}), {})[1]
+  const rerender = useForceUpdate
 
   const resolvedOptions: VirtualizerOptions<TScrollElement, TItemElement> = {
     ...options,

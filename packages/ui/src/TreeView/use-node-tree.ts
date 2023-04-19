@@ -1,5 +1,4 @@
 import { isArray, isUndefined } from 'lodash'
-import { MouseEvent, useReducer } from 'react'
 import { NodeData } from './Node/Node.props'
 import { TreeViewPositions } from './TreeView.props'
 

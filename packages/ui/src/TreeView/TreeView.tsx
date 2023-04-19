@@ -1,12 +1,10 @@
 import React, {
   forwardRef,
-  useReducer,
   useRef,
   useState,
   MouseEvent,
   useEffect
 } from 'react'
-import { ForwardRefWithStaticComponents } from '@mantine/utils'
 import { useComponentDefaultProps } from '@yomtor/styles'
 
 import {
@@ -21,6 +19,7 @@ import { NodeData } from './Node'
 import { useNodeTree } from './use-node-tree'
 import { isUndefined, range } from 'lodash'
 import { TreeViewContext } from './TreeViewContext'
+import { useForceUpdate } from '@mantine/hooks'
 
 const defaultProps: Partial<TreeViewProps> = {
   indent: 16
@@ -41,7 +40,7 @@ export const TreeView: TreeViewComponent = forwardRef<
     ...others
   } = useComponentDefaultProps('TreeView', defaultProps, props)
 
-  const rerender = useReducer(() => ({}), {})[1]
+  const rerender = useForceUpdate()
   const [position, setPosition] = useState<TreeViewPositions>()
   const [sortabled, setSortabled] = useState<boolean>(isSortabled)
   const [dragging, setDragging] = useState(false)

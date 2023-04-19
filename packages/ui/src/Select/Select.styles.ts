@@ -27,7 +27,15 @@ const sizes = {
 export default createStyles(
   (
     theme,
-    { variant, ticked, size, compact, inherit, searchable }: SelectProps
+    {
+      variant,
+      ticked,
+      size,
+      compact,
+      inherit,
+      searchable,
+      disableDropdown
+    }: SelectProps & { disableDropdown?: boolean }
   ) => {
     return {
       root: {
@@ -72,10 +80,12 @@ export default createStyles(
         })
       },
       item: {
+        pointerEvents: disableDropdown ? 'none' : 'all',
         ...(compact && {
           fontSize: getSize({ size, sizes }),
           padding: 0,
           ...compactSizes[`compact-${size}`],
+          height: compactSizes[`compact-${size}`].height - 4,
           display: 'flex',
           alignItems: 'center'
         }),
@@ -127,6 +137,7 @@ export default createStyles(
         })
       },
       dropdown: {
+        overflow: 'hidden',
         ...(ticked && {
           width: 'auto !important',
           left: '0 !important',
