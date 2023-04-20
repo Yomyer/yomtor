@@ -145,6 +145,10 @@ var Artboard = Group.extend(
             setActived.base.call(this, actived);
         },
 
+        getStyle: function () {
+            return this._background._style;
+        },
+
         isEmpty: function isEmpty(recursively) {
             return false;
         },

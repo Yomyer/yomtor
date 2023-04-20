@@ -67,8 +67,9 @@ export const ItemData: SelectItem[] = [
     label: 'Apple Watch 40mm',
     group: 'watch'
   },
-  { value: '595x842-a5', label: 'A5', group: 'paper' },
-  { value: '420x597-a6', label: 'A6', group: 'paper' },
+  { value: '595x842-a4', label: 'A4', group: 'paper' },
+  { value: '420x597-a5', label: 'A5', group: 'paper' },
+  { value: '297x420-a6', label: 'A6', group: 'paper' },
   { value: '612x792-letter', label: 'Letter', group: 'paper' },
   { value: '792x1224-tabloid', label: 'Tabloid', group: 'paper' },
   {

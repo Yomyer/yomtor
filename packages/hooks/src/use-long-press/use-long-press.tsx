@@ -32,8 +32,7 @@ export const useLongPress = (
         rerender()
       }, delay.current)
       delay.current = !delay.current ? delays.long : delays.short
-    } else {
-      console.log('chaoo')
+    } else if (timer.current) {
       clearTimeout(timer.current)
       delay.current = 0
     }
