@@ -87,6 +87,15 @@ export const SelectScrollArea = forwardRef<HTMLDivElement, ScrollAreaProps>(
             left = -dropdownRect.top + margin
           }
 
+          if (dropdownRect.right + left > document.body.clientWidth - margin) {
+            left = -(
+              dropdownRect.right +
+              left -
+              document.body.clientWidth +
+              margin
+            )
+          }
+
           dropdown.style.marginLeft = `${left + 1}px`
 
           if (areaRect.height > dropdownRect.height) {

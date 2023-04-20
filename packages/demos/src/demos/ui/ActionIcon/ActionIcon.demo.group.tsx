@@ -1,30 +1,39 @@
 import React from 'react'
-import { ActionIconProps, ActionIcon, Group, Input } from '@yomtor/ui'
-import { ArtboardIcon } from '@yomtor/icons'
+import { ActionIcon, ActionIconProps } from '@yomtor/ui'
 import { YomtorDemo, PropsType } from '@yomtor/ds'
+import { ArtboardIcon, CodeIcon, HideIcon } from '@yomtor/icons'
 
-const codeTemplate = (props: PropsType<ActionIconProps>) => `
-import { ArtboardIcon } from '@yomtor/icons'
-import { ActionIcon } from '@yomtor/ui'
+const codeTemplate = (props: PropsType<ActionIconProps>, children: string) => `
+import { Button, Group } from '@yomtor/ui'
 
 function Demo() {
   return (
-    <ActionIcon${props}>
-      <ArtboardIcon/>
-    </ActionIcon>
+    <Button.Group>
+      <Button>First</Button>
+      <Button>Second</Button>
+      <Button>Third</Button>
+    </Button.Group>
   );
 }
 `
+
 function Wrapper(props: ActionIconProps) {
   return (
-    <Group position='center'>
-      <ActionIcon {...props}>
+    <ActionIcon.Group {...props}>
+      <ActionIcon actived>
         <ArtboardIcon />
       </ActionIcon>
-    </Group>
+      <ActionIcon>
+        <CodeIcon />
+      </ActionIcon>
+      <ActionIcon>
+        <HideIcon />
+      </ActionIcon>
+    </ActionIcon.Group>
   )
 }
-export const configurator: YomtorDemo = {
+
+export const group: YomtorDemo = {
   type: 'configurator',
   codeTemplate,
   component: Wrapper,
@@ -73,6 +82,12 @@ export const configurator: YomtorDemo = {
       type: 'boolean',
       defaultValue: true,
       initialValue: true
+    },
+    {
+      name: 'actived',
+      type: 'boolean',
+      defaultValue: false,
+      initialValue: false
     },
     {
       name: 'loading',

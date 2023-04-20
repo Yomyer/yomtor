@@ -75,10 +75,15 @@ export function getVariant(theme: YomtorTheme) {
         content: '""',
         position: 'absolute',
         width: '85%',
-        height: '85%',
-        borderRadius: '2px'
+        height: '85%'
+        // borderRadius: '2px'
       }
       if (!isString(colors.active)) {
+        if (colors.active.size) {
+          global.width = colors.active.size.toString()
+          global.height = colors.active.size.toString()
+        }
+
         active = {
           color: colors.active.color,
           border: `1px solid ${colors.active.border}`,

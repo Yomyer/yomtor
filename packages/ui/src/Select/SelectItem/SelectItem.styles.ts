@@ -13,6 +13,12 @@ export default createStyles((theme, { selected }: SelectItemProps) => {
       whiteSpace: 'nowrap',
       textOverflow: 'ellipsis',
       overflow: 'hidden'
+    },
+    right: {
+      display: 'flex',
+      gap: 10,
+      justifyContent: 'space-between',
+      width: '100%'
     }
   }
 })

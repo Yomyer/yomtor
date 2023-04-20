@@ -1,29 +1,35 @@
 import React from 'react'
-import { Button, ButtonProps, Group } from '@yomtor/ui'
-import { PropsType, YomtorDemo } from '@yomtor/ds'
+import { ActionIcon, Button, ButtonProps } from '@yomtor/ui'
+import { YomtorDemo, PropsType } from '@yomtor/ds'
 
 const codeTemplate = (props: PropsType<ButtonProps>, children: string) => `
-import { Button } from '@yomtor/ui';
+import { Button, Group } from '@yomtor/ui'
 
 function Demo() {
   return (
-    <Button${props}>
-      ${children}
-    </Button>
+    <Button.Group>
+      <Button >First</Button>
+      <Button>Second</Button>
+      <Button>Third</Button>
+    </Button.Group>
   );
 }
 `
-function Wrapper(props: ButtonProps) {
+
+function Demo() {
   return (
-    <Group position='center'>
-      <Button {...props} />
-    </Group>
+    <Button.Group>
+      <ActionIcon actived>First</ActionIcon>
+      <ActionIcon>Second</ActionIcon>
+      <ActionIcon>Third</ActionIcon>
+    </Button.Group>
   )
 }
-export const configurator: YomtorDemo = {
+
+export const group: YomtorDemo = {
   type: 'configurator',
   codeTemplate,
-  component: Wrapper,
+  component: Demo,
   configurator: [
     {
       name: 'variant',

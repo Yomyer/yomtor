@@ -16,18 +16,10 @@ import { ChangeFlag, Artboard, Group, Size, Item } from '@yomtor/paper'
 import { countBy, find, findKey, isEmpty, size } from 'lodash'
 import { round } from '@yomtor/utils'
 import { ItemData } from './data'
+import { SelectItem } from '@mantine/core'
 
 const defaultProps: Partial<TransformsControlsProps> = {
   visible: false
-}
-
-type Data = {
-  x: number | string
-  y: number | string
-  width: number | string
-  height: number | string
-  angle: number | string
-  radius: number | string
 }
 
 export const TransformsControls = (props: TransformsControlsProps) => {
@@ -120,6 +112,23 @@ export const TransformsControls = (props: TransformsControlsProps) => {
       if (type & ChangeFlag.ACTIVE) {
         setVisible(!!canvas.project.activeItems.length)
       }
+      if (type & ChangeFlag.MATRIX) {
+        const s = countBy(
+          canvas.project.activeItems.map(
+            (item) =>
+              `${round(item.info.width, 2)}x${round(item.info.height, 2)}`
+          )
+        )
+
+        ItemData.filter((item) => item.right).forEach(
+          (item) => (item.selected = false)
+        )
+
+        const sizeSelected = ItemData.find((data) => findKey(s) === data.right)
+        if (sizeSelected) {
+          sizeSelected.selected = true
+        }
+      }
     })
   }, [canvas])
 
@@ -179,7 +188,6 @@ export const TransformsControls = (props: TransformsControlsProps) => {
       setCombo(value)
     }
   }
-
   return visible ? (
     <Control>
       {combo && (
