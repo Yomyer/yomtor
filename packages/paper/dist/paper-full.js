@@ -6468,7 +6468,7 @@ var Artboard = Group.extend(
 								mx.translate(translation.x, 0).scale(scaling.x, 1);
 								break;
 							case "end":
-								mx.translate(diff.width, 0,  this._constraintsPivot).scale(flipped.x, 1,  this._constraintsPivot);
+								mx.translate(left ? diff.width : 0, 0).scale(flipped.x, 1,  this._constraintsPivot);
 								break;
 							default:
 								mx.scale(flipped.x, 1,  this._constraintsPivot);
@@ -6479,7 +6479,7 @@ var Artboard = Group.extend(
 							case "scale":
 								mx.translate(0, translation.y).scale(1, scaling.y);
 							case "end":
-								mx.translate(0, diff.height,  this._constraintsPivot).scale(1, flipped.y,  this._constraintsPivot);
+								mx.translate(0, top ? diff.height : 0).scale(1, flipped.y,  this._constraintsPivot);
 								break;
 							default:
 								mx.scale(1, flipped.y, this._constraintsPivot);
