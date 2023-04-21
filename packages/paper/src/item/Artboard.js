@@ -229,16 +229,18 @@ var Artboard = Group.extend(
 
         _applyConstraints: function(children, matrix, applyRecursively, setApplyMatrix) {
             if (children) {
-                var scaling = matrix.scaling,
+                var scaling = new Point(matrix.a, matrix.d),
                     translation = matrix.translation,
                     isScaling = this._transformType == "scale",
-                    // flipped = this.flipped,
+                    flippedArtboard = this.flipped,
                     flipped = new Point(matrix.a, matrix.d).sign(),
                     info = this._background.getActiveInfo(),
                     diff = new Size(info)
-                        .divide(matrix.a, matrix.d)
-                        .subtract(new Size(info).multiply(flipped));
-                        
+                        .multiply(new Size(matrix.a, matrix.d).abs())
+                        .subtract(new Size(info)).multiply(flippedArtboard);
+                console.log(diff)
+
+
                 for (var i = 0, l = children.length; i < l; i++) {
                     var item = children[i],
                         mx = new Matrix(),
@@ -253,7 +255,39 @@ var Artboard = Group.extend(
                                     .subtract(size)
                             )
                             .divide(size);
-                    
+
+                    if (isScaling) {
+                        var top = info.center.y > this._constraintsPivot.y == (flipped.y != -1);
+                        var left = info.center.x > this._constraintsPivot.x ==  (flipped.x != -1);
+
+                        switch (horizontal) {
+                            case "scale":
+                                mx.translate(translation.x, 0).scale(scaling.x, 1);
+                                break;
+                            case "end":
+                                mx.translate(diff.width, 0,  this._constraintsPivot).scale(flipped.x, 1,  this._constraintsPivot);
+                                break;
+                            default:
+                                mx.scale(flipped.x, 1,  this._constraintsPivot);
+                                break;
+                        }
+
+                        switch (vertical) {
+                            case "scale":
+                                mx.translate(0, translation.y).scale(1, scaling.y);
+                            case "end":
+                                mx.translate(0, diff.height,  this._constraintsPivot).scale(1, flipped.y,  this._constraintsPivot);
+                                break;
+                            default:
+                                mx.scale(1, flipped.y, this._constraintsPivot);
+                        }
+                    } else {
+                        mx = matrix;
+                    }
+
+                    item.transform(mx, applyRecursively, setApplyMatrix);
+                }
+                    /*
                     if (isScaling) {
                         var top =
                             info.center.y > this._constraintsPivot.y ==
@@ -351,6 +385,7 @@ var Artboard = Group.extend(
 
                     item.transform(mx, applyRecursively, setApplyMatrix);
                 }
+                */
                 return true;
             }
         },
