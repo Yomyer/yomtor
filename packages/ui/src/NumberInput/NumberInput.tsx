@@ -47,6 +47,8 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
       onStop,
       onStart,
       onChange,
+      classNames,
+      styles,
       mixed: isMixed,
       mixedLabel,
       formatter,
@@ -56,7 +58,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
 
     const { classes, cx } = useStyles(
       { compact, draggable, variant, ...others },
-      { name: 'NumberInput', unstyled }
+      { classNames, styles, name: 'NumberInput', unstyled }
     )
 
     const [drag, setDrag] = useState<number>(0)

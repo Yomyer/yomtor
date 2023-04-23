@@ -1,9 +1,14 @@
 import React from 'react'
-import { ActionIcon, ActionIconProps } from '@yomtor/ui'
+import {
+  ActionIcon,
+  GroupInputProps,
+  GroupInput,
+  NumberInput
+} from '@yomtor/ui'
 import { YomtorDemo, PropsType } from '@yomtor/ds'
 import { ArtboardIcon, CodeIcon, HideIcon } from '@yomtor/icons'
 
-const codeTemplate = (props: PropsType<ActionIconProps>, children: string) => `
+const codeTemplate = (props: PropsType<GroupInputProps>, children: string) => `
 import { Button, Group } from '@yomtor/ui'
 
 function Demo() {
@@ -17,10 +22,11 @@ function Demo() {
 }
 `
 
-function Wrapper(props: ActionIconProps) {
+function Wrapper(props: GroupInputProps) {
   return (
-    <ActionIcon.Group {...props}>
-      <ActionIcon actived>
+    <GroupInput {...props}>
+      <NumberInput value={0} />
+      <ActionIcon>
         <ArtboardIcon />
       </ActionIcon>
       <ActionIcon>
@@ -29,7 +35,7 @@ function Wrapper(props: ActionIconProps) {
       <ActionIcon>
         <HideIcon />
       </ActionIcon>
-    </ActionIcon.Group>
+    </GroupInput>
   )
 }
 
@@ -47,8 +53,8 @@ export const group: YomtorDemo = {
     {
       name: 'variant',
       type: 'select',
-      initialValue: 'transparent',
-      defaultValue: 'transparent',
+      initialValue: 'toggle',
+      defaultValue: 'toggle',
       data: [
         { label: 'transparent', value: 'transparent' },
         { label: 'toggle', value: 'toggle' },

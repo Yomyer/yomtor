@@ -1,8 +1,8 @@
 import { DefaultProps, Variants } from '@yomtor/styles'
-import { ActionIconGroupStylesParams } from './ActionIconGroup.styles'
+import { GroupInputStylesParams } from './GroupInput.styles'
 
-export interface ActionIconGroupProps
-  extends DefaultProps<never, ActionIconGroupStylesParams>,
+export interface GroupInputProps
+  extends DefaultProps<never, GroupInputStylesParams>,
     React.ComponentPropsWithoutRef<'div'> {
   children?: React.ReactNode
   orientation?: 'vertical' | 'horizontal'

@@ -6436,11 +6436,9 @@ var Artboard = Group.extend(
 					flippedArtboard = this.flipped,
 					flipped = new Point(matrix.a, matrix.d).sign(),
 					info = this._background.getActiveInfo(),
-					diff = new Size(info)
+					diff = new Point(info.width, info.height)
 						.multiply(new Size(matrix.a, matrix.d).abs())
-						.subtract(new Size(info)).multiply(flippedArtboard);
-				console.log(diff)
-
+						.subtract(new Size(info.width, info.height)).multiply(flippedArtboard);
 				for (var i = 0, l = children.length; i < l; i++) {
 					var item = children[i],
 						mx = new Matrix(),
@@ -6455,31 +6453,41 @@ var Artboard = Group.extend(
 									.subtract(size)
 							)
 							.divide(size);
-
 					if (isScaling) {
-						var top = info.center.y > this._constraintsPivot.y == (flipped.y != -1);
-						var left = info.center.x > this._constraintsPivot.x ==  (flipped.x != -1);
+						var top = info.center.y > this._constraintsPivot.y;
+						var left = info.center.x > this._constraintsPivot.x;
+
+						console.log(translation.x, scaling.x, translation.x/scaling.x)
+
+						if(!(flippedArtboard.x + flipped.x)) left = !left
+						if(!(flippedArtboard.y + flipped.y)) top = !top
 
 						switch (horizontal) {
 							case "scale":
 								mx.translate(translation.x, 0).scale(scaling.x, 1);
 								break;
+							case "center":
+								mx.translate(diff.x / 2 * (left ? 1 : -1), 0).scale(flipped.x, 1, this._constraintsPivot);
+								break;
 							case "end":
-								mx.translate(left ? diff.width : 0, 0).scale(flipped.x, 1,  this._constraintsPivot);
+								mx.translate(left ? diff.x : 0, 0).scale(flipped.x, 1,  this._constraintsPivot);
 								break;
 							default:
-								mx.scale(flipped.x, 1,  this._constraintsPivot);
+								mx.translate(!left ? -diff.x : 0, 0).scale(flipped.x, 1,  this._constraintsPivot);
 								break;
 						}
 
 						switch (vertical) {
 							case "scale":
 								mx.translate(0, translation.y).scale(1, scaling.y);
+							case "center":
+								mx.translate(0, diff.y / 2 * (top ? 1 : -1)).scale(1, flipped.y, this._constraintsPivot);
+								break;
 							case "end":
-								mx.translate(0, top ? diff.height : 0).scale(1, flipped.y,  this._constraintsPivot);
+								mx.translate(0, top ? diff.y : 0).scale(1, flipped.y,  this._constraintsPivot);
 								break;
 							default:
-								mx.scale(1, flipped.y, this._constraintsPivot);
+								mx.translate(0, !top ? -diff.y : 0).scale(1, flipped.y, this._constraintsPivot);
 						}
 					} else {
 						mx = matrix;
