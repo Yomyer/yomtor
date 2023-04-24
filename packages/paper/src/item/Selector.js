@@ -127,12 +127,12 @@ var Selector = Item.extend(
          * @function
          * @param {number} width 
          * @param {Point} [center] 
-         * @param {boolean} [preserve] 
+         * @param {Point} [disrupting] 
          * @bean
          * @type Number
          */
-        setWidth: function(width, center, preserve) {
-            this.setSize([width, null], center, preserve);
+        setWidth: function(width, center, disrupting) {
+            this.setSize([width, null], center, disrupting);
         },
 
 
@@ -149,12 +149,12 @@ var Selector = Item.extend(
          * @function
          * @param {number} heigth 
          * @param {Point} [center] 
-         * @param {boolean} [preserve] 
+         * @param {Point} [disrupting] 
          * @bean
          * @type Number
          */
-        setHeight: function(height, center, preserve) {
-            this.setSize([null, height], center, preserve)
+        setHeight: function(height, center, disrupting) {
+            this.setSize([null, height], center, disrupting)
         },
 
                 
@@ -171,13 +171,15 @@ var Selector = Item.extend(
          * @function
          * @param {Size} size 
          * @param {Point} [center] 
+         * @param {Point} [disrupting] 
          * @param {boolean} [preserve] 
          * @bean
          * @type Size
          */
-        setSize: function(/* size, center, preserve */){
+        setSize: function(/* size, center, disrupting, preserve */){
             var size = Size.read(arguments);
             var center = Point.read(arguments);
+            var disrupting = Base.read(arguments);
             var preserve = Base.read(arguments);
             
             this._checkHelpers();
@@ -210,10 +212,14 @@ var Selector = Item.extend(
                 var itemCenter = item.bounds.center;
                 var rotateMatrix = new Matrix().rotate(-angle, itemCenter)
                 var pivot = rotateMatrix.transformPoint(center)
+
+                item._transformDisrupting = disrupting;
                 
                 item.rotate(-angle, itemCenter);
                 item.scale(new Point(factor.x, factor.y), pivot);
                 item.rotate(angle, itemCenter);
+
+                item._transformDisrupting = null;
                 
                 if(helpers[item.uid]._lastDirection){
                     if(!helpers[item.uid]._cacheFlipped){

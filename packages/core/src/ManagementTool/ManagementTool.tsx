@@ -116,7 +116,7 @@ export const ManagementTool = (props: ManagementToolProps) => {
         clonedItems.current = {}
         cloneController(true)
 
-        canvas.project.fire(['selection:updated', 'object:created'], {
+        canvas.project.emit(['selection:updated', 'object:created'], {
           items: canvas.project.activeItems
         })
       }
@@ -127,9 +127,9 @@ export const ManagementTool = (props: ManagementToolProps) => {
         let items = [...canvas.project.activeItems]
 
         items.forEach((item) => item.remove())
-        canvas.project.fire('selection:cleared', { items })
+        canvas.project.emit('selection:cleared', { items })
 
-        canvas.project.fire('object:deleted', {
+        canvas.project.emit('object:deleted', {
           items: items.map((item) => {
             item.data.deleted = true
             return item

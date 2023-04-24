@@ -76,11 +76,11 @@ export const SelectorTool = (props: SelectorToolProps) => {
 
     if (item) {
       item.highlighted = true
-      canvas.project.fire('hightlight:created')
+      canvas.project.emit('hightlight:created')
     } else {
       canvas.project.highlightedItem &&
         (canvas.project.highlightedItem.highlighted = false)
-      canvas.project.fire('hightlight:cleared')
+      canvas.project.emit('hightlight:cleared')
     }
   }
 
@@ -184,7 +184,7 @@ export const SelectorTool = (props: SelectorToolProps) => {
             action = 'created'
           }
 
-          canvas.project.fire(`selection:${action}`, {
+          canvas.project.emit(`selection:${action}`, {
             ...{ items: actives }
           })
         }
@@ -241,7 +241,7 @@ export const SelectorTool = (props: SelectorToolProps) => {
       }
 
       if (mode.current === 'move') {
-        canvas.project.fire('object:moving', e)
+        canvas.project.emit('object:moving', e)
         moved.current = true
       }
     },
@@ -279,7 +279,7 @@ export const SelectorTool = (props: SelectorToolProps) => {
 
     tool.onActivate = () => {
       if (!isActiveItemsUpdated()) {
-        canvas.project.fire('selection:created', {
+        canvas.project.emit('selection:created', {
           ...{ items: canvas.project.activeItems }
         })
         updateAtiveItems()
@@ -302,7 +302,7 @@ export const SelectorTool = (props: SelectorToolProps) => {
         })
 
         if (e.item) {
-          canvas.project.fire('edit', e)
+          canvas.project.emit('edit', e)
           // canvas.project.clearHighlightedItem()
         }
       }
@@ -348,14 +348,14 @@ export const SelectorTool = (props: SelectorToolProps) => {
           mode.current = 'move'
 
           if (!isActiveItemsUpdated()) {
-            canvas.project.fire(`selection:${updated}`, e)
+            canvas.project.emit(`selection:${updated}`, e)
           }
 
           updateAtiveItems()
 
-          canvas.project.fire(`selection:pressed`, e)
+          canvas.project.emit(`selection:pressed`, e)
         } else if (activedItems.current.length && !e.modifiers.shift) {
-          canvas.project.fire(`selection:cleared`, e)
+          canvas.project.emit(`selection:cleared`, e)
           activedItems.current = []
         }
 
@@ -409,7 +409,7 @@ export const SelectorTool = (props: SelectorToolProps) => {
       positions.current = {}
 
       if (moved.current) {
-        canvas.project.fire('object:moved', e)
+        canvas.project.emit('object:moved', e)
         moved.current = false
       }
 

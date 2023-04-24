@@ -125,11 +125,13 @@ export const TransformTool = (props: TransformToolProps) => {
       selector.inheritedAngle
     ).multiply(direction.current)
 
+    let disrupting = new Point(0, 0)
     let factor = new Size(delta.current)
 
     if (e.modifiers.alt) {
       origin = center.current
       factor = roundToNearestEven(factor.add(new Size(delta.current)).round())
+      disrupting = new Point(1, 1)
     }
 
     let newSize = size.current.add(factor).round()
@@ -144,9 +146,11 @@ export const TransformTool = (props: TransformToolProps) => {
         .multiply(max)
         .multiply(new Size(signx, signy))
         .round()
+
+      disrupting = new Point(+(diff.height > 1), +(diff.width > 1))
     }
 
-    selector.setSize(newSize, origin, helper)
+    selector.setSize(newSize, origin, disrupting, helper)
 
     canvas.project.selector.setInfo(
       `${newSize.abs().width} x ${newSize.abs().height}`,
@@ -154,7 +158,7 @@ export const TransformTool = (props: TransformToolProps) => {
     )
 
     if (helper) {
-      canvas.project.fire('object:scaling', e)
+      canvas.project.emit('object:scaling', e)
     }
   }
 
@@ -174,7 +178,7 @@ export const TransformTool = (props: TransformToolProps) => {
 
     canvas.project.selector.setInfo(`${delta % 181}º`, corner.current)
     if (helper) {
-      canvas.project.fire('object:rotating', e)
+      canvas.project.emit('object:rotating', e)
     }
     setCursor(true, canvas.project.activeItems.length > 1 && delta)
   }
@@ -336,7 +340,7 @@ export const TransformTool = (props: TransformToolProps) => {
 
       selector.clearInfo()
 
-      canvas.project.fire(
+      canvas.project.emit(
         mode.current === 'resize' ? 'object:resized' : 'object:rotated',
         e
       )

@@ -27,7 +27,7 @@ export const GroupTool = (props: GroupToolProps) => {
       canvas.project.deactivateAll()
       group.actived = true
 
-      canvas.project.fire(['selection:updated', 'object:created'], {
+      canvas.project.emit(['selection:updated', 'object:created'], {
         items: canvas.project.activeItems
       })
     }
@@ -47,7 +47,7 @@ export const GroupTool = (props: GroupToolProps) => {
       }
     })
 
-    canvas.project.fire(['selection:updated', 'object:deleted'], {
+    canvas.project.emit(['selection:updated', 'object:deleted'], {
       items: canvas.project.activeItems
     })
   }, [tool])
@@ -84,7 +84,7 @@ export const GroupTool = (props: GroupToolProps) => {
           canvas.project.deactivateAll()
           first(items).actived = true
 
-          canvas.project.fire('selection:updated', { items: [first(items)] })
+          canvas.project.emit('selection:updated', { items: [first(items)] })
         }
       }
     })

@@ -237,8 +237,8 @@ var Artboard = Group.extend(
                     info = this._background.getActiveInfo(),
                     diff = new Size(info)
                         .multiply(new Size(matrix.a, matrix.d).abs())
-                        .subtract(new Size(info)).multiply(flippedArtboard);
-                console.log(diff)
+                        .subtract(new Size(info)).multiply(flippedArtboard)
+                    offset = new Size(this._transformDisrupting && this._transformDisrupting.x ? diff.width /2: 0, this._transformDisrupting && this._transformDisrupting.y ? diff.height /2: 0);
 
 
                 for (var i = 0, l = children.length; i < l; i++) {
@@ -255,6 +255,7 @@ var Artboard = Group.extend(
                                     .subtract(size)
                             )
                             .divide(size);
+                    
 
                     if (isScaling) {
                         var top = info.center.y > this._constraintsPivot.y == (flipped.y != -1);
@@ -265,7 +266,7 @@ var Artboard = Group.extend(
                                 mx.translate(translation.x, 0).scale(scaling.x, 1);
                                 break;
                             case "end":
-                                mx.translate(left ? diff.width : 0, 0).scale(flipped.x, 1,  this._constraintsPivot);
+                                mx.translate(left ? diff.width - offset.width : offset.width, 0).scale(flipped.x, 1,  this._constraintsPivot);
                                 break;
                             default:
                                 mx.scale(flipped.x, 1,  this._constraintsPivot);

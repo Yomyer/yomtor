@@ -6438,8 +6438,8 @@ var Artboard = Group.extend(
 					info = this._background.getActiveInfo(),
 					diff = new Size(info)
 						.multiply(new Size(matrix.a, matrix.d).abs())
-						.subtract(new Size(info)).multiply(flippedArtboard);
-				console.log(diff)
+						.subtract(new Size(info)).multiply(flippedArtboard)
+					offset = new Size(this._transformDisrupting && this._transformDisrupting.x ? diff.width /2: 0, this._transformDisrupting && this._transformDisrupting.y ? diff.height /2: 0);
 
 				for (var i = 0, l = children.length; i < l; i++) {
 					var item = children[i],
@@ -6465,7 +6465,7 @@ var Artboard = Group.extend(
 								mx.translate(translation.x, 0).scale(scaling.x, 1);
 								break;
 							case "end":
-								mx.translate(left ? diff.width : 0, 0).scale(flipped.x, 1,  this._constraintsPivot);
+								mx.translate(left ? diff.width - offset.width : offset.width, 0).scale(flipped.x, 1,  this._constraintsPivot);
 								break;
 							default:
 								mx.scale(flipped.x, 1,  this._constraintsPivot);
@@ -7688,16 +7688,16 @@ var Selector = Item.extend(
 			return this._descomposeActiveItemsInfo("width") || 0;
 		},
 
-		setWidth: function(width, center, preserve) {
-			this.setSize([width, null], center, preserve);
+		setWidth: function(width, center, disrupting) {
+			this.setSize([width, null], center, disrupting);
 		},
 
 		getHeight: function () {
 			return this._descomposeActiveItemsInfo("height") || 0;
 		},
 
-		setHeight: function(height, center, preserve) {
-			this.setSize([null, height], center, preserve)
+		setHeight: function(height, center, disrupting) {
+			this.setSize([null, height], center, disrupting)
 		},
 
 		getSize: function(){
@@ -7707,6 +7707,7 @@ var Selector = Item.extend(
 		setSize: function(){
 			var size = Size.read(arguments);
 			var center = Point.read(arguments);
+			var disrupting = Base.read(arguments);
 			var preserve = Base.read(arguments);
 			this._checkHelpers();
 
@@ -7737,9 +7738,13 @@ var Selector = Item.extend(
 				var itemCenter = item.bounds.center;
 				var rotateMatrix = new Matrix().rotate(-angle, itemCenter)
 				var pivot = rotateMatrix.transformPoint(center)
+
+				item._transformDisrupting = disrupting;
 				item.rotate(-angle, itemCenter);
 				item.scale(new Point(factor.x, factor.y), pivot);
 				item.rotate(angle, itemCenter);
+
+				item._transformDisrupting = null;
 				if(helpers[item.uid]._lastDirection){
 					if(!helpers[item.uid]._cacheFlipped){
 						helpers[item.uid]._cacheFlipped = Object.assign({}, helpers[item.uid].flipped);
