@@ -147,7 +147,14 @@ export const TransformTool = (props: TransformToolProps) => {
         .multiply(new Size(signx, signy))
         .round()
 
-      disrupting = new Point(+(diff.height > 1), +(diff.width > 1))
+      if (!e.modifiers.alt) {
+        disrupting = corners.includes(cornerName.current)
+          ? null
+          : new Point(
+              +!['leftCenter', 'rightCenter'].includes(cornerName.current),
+              +!['topCenter', 'bottomCenter'].includes(cornerName.current)
+            )
+      }
     }
 
     selector.setSize(newSize, origin, disrupting, helper)

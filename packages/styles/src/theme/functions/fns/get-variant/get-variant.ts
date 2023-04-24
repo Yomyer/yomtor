@@ -29,24 +29,28 @@ export function getVariant(theme: YomtorTheme) {
         backgroundImage: colors.background,
         color: colors.color,
 
-        '&:hover': theme.fn.hover({
+        '&:hover': {
           backgroundSize: '200%'
-        })
+        }
       }
     }
 
     let hover
     if (colors.hover) {
       if (!isString(colors.hover)) {
-        hover = theme.fn.hover({
-          border: `1px solid ${colors.hover.border}`,
-          backgroundColor: colors.hover.background,
-          color: colors.hover.color
-        })
+        hover = {
+          '&:hover': {
+            border: `1px solid ${colors.hover.border}`,
+            backgroundColor: colors.hover.background,
+            color: colors.hover.color
+          }
+        }
       } else {
-        hover = theme.fn.hover({
-          backgroundColor: colors.hover
-        })
+        hover = {
+          '&:hover': {
+            backgroundColor: colors.hover
+          }
+        }
       }
     }
 

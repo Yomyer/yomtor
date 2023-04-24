@@ -6,7 +6,6 @@ import { ActionIcon as BaseActionIcon } from '@mantine/core'
 import { ActionIconProps } from './ActionIcon.props'
 import Ink from 'react-ink'
 import useStyles from './ActionIcon.styles'
-import { ActionIconGroup } from './ActionIconGroup/ActionIconGroup'
 
 const defaultProps: Partial<ActionIconProps> = {
   size: 'md',
@@ -18,7 +17,7 @@ const defaultProps: Partial<ActionIconProps> = {
 
 export const _ActionIcon = forwardRef<HTMLButtonElement, ActionIconProps>(
   (props, ref) => {
-    const { unstyled, actived, icon, compact, children, ...others } =
+    const { unstyled, className, actived, icon, compact, children, ...others } =
       useComponentDefaultProps('ActionIcon', defaultProps, props)
 
     const { classes, cx } = useStyles(
@@ -27,7 +26,11 @@ export const _ActionIcon = forwardRef<HTMLButtonElement, ActionIconProps>(
     )
 
     return (
-      <BaseActionIcon {...others} ref={ref} className={classes.root}>
+      <BaseActionIcon
+        {...others}
+        ref={ref}
+        className={cx(classes.root, className)}
+      >
         <Ink hasTouch={false} opacity={0.05} />
         {(icon && <>{icon}</>) || <>{children}</>}
       </BaseActionIcon>
@@ -36,10 +39,7 @@ export const _ActionIcon = forwardRef<HTMLButtonElement, ActionIconProps>(
 ) as any
 
 _ActionIcon.displayName = '@yomtor/ui/ActionIcon'
-_ActionIcon.Group = ActionIconGroup
 
-export const ActionIcon = createPolymorphicComponent<
-  'button',
-  ActionIconProps,
-  { Group: typeof ActionIconGroup }
->(_ActionIcon)
+export const ActionIcon = createPolymorphicComponent<'button', ActionIconProps>(
+  _ActionIcon
+)
