@@ -4028,7 +4028,7 @@ new function() { // Injection scope for hit-test functions shared with project
         // the matrix is where the actual transformation state is stored.
 
         if (applyMatrix && (applyMatrix = this._transformContent(
-                _matrix, _applyRecursively, _setApplyMatrix))) {
+                _matrix, _applyRecursively, _setApplyMatrix, _skypChanges))) {
             // Pivot is provided in the parent's coordinate system, so transform
             // it along too.
             var pivot = this._pivot;
@@ -4046,7 +4046,8 @@ new function() { // Injection scope for hit-test functions shared with project
         // on matrix we can calculate and set them again, so preserve them.
         var bounds = this._bounds,
             position = this._position;
-        if (transformMatrix || applyMatrix) {
+
+        if ((transformMatrix || applyMatrix)) {
             this._changed(/*#=*/Change.MATRIX, _skypChanges);
         }
         // Detect matrices that contain only translations and scaling
@@ -4089,11 +4090,11 @@ new function() { // Injection scope for hit-test functions shared with project
         return this;
     },
 
-    _transformContent: function(matrix, applyRecursively, setApplyMatrix) {
+    _transformContent: function(matrix, applyRecursively, setApplyMatrix, _skypChanges) {
         var children = this._children;
         if (children) {
             for (var i = 0, l = children.length; i < l; i++) {
-                children[i].transform(matrix, applyRecursively, setApplyMatrix);
+                children[i].transform(matrix, applyRecursively, setApplyMatrix, _skypChanges);
             }
             return true;
         }

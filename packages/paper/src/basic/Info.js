@@ -2,9 +2,11 @@
  * @name Info
  * @namespace
  */
-
+var i = 0;
 var Info = Base.extend(/** @lends Info# */{
     _class: 'Info',
+    _cache: null,
+    _cacheData: {},
 
     beans: true,
    
@@ -305,20 +307,31 @@ var Info = Base.extend(/** @lends Info# */{
     */
     getCorners: function(unrotated) {
         var owner = this._owner
-        var angle = owner.getInheritedAngle();
-        var bounds = owner.bounds;
-        var center =  owner.bounds.center;
+        var data = {
+            angle: owner.getInheritedAngle(),
+            bounds: owner.bounds,
+            center: owner.bounds.center,
+        }
+
+        if(Base.equals(data, this._cacheData)){
+            return this._cache;
+        }
         
-        if (angle !== 0 && !unrotated) {
-            owner.transform(new Matrix().rotate(-angle, center), false, false, true);
-            bounds = owner.bounds.clone();
-            owner.transform(new Matrix().rotate(angle, center), false, false, true);
+        if (data.angle !== 0 && !unrotated) {    
+            owner.transform(new Matrix().rotate(-data.angle, data.center), false, false, true);
+            data.bounds = owner.bounds;
+            owner.transform(new Matrix().rotate(data.angle, data.center), false, false, true);
         }
         
 
-        var matrix = new Matrix().rotate(!unrotated && angle, center);
-        var corners = matrix._transformCorners(bounds);
+        var matrix = new Matrix().rotate(!unrotated && data.angle, data.center);
+        var corners = matrix._transformCorners(data.bounds);
 
+        this._cacheData = data;
+        this._cache = corners
+
+        console.log(i);
+        i++;
         return corners;
     },
 
