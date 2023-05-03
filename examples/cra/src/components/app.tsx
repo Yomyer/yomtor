@@ -21,7 +21,8 @@ import {
   ConstraintsControls,
   ObjectControls,
   AlignmentsControls,
-  TransformsControls
+  TransformsControls,
+  LayerControls
 } from '@yomtor/yomtor'
 
 export const App = () => {
@@ -69,6 +70,7 @@ export const App = () => {
               <AlignmentsControls visible />
               <TransformsControls />
               <ConstraintsControls />
+              <LayerControls visible />
             </Aside>
           }
           header={

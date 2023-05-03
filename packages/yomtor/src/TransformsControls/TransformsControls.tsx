@@ -1,7 +1,7 @@
 import { TransformsControlsProps } from './TransformsControls.props'
 import { useComponentDefaultProps } from '@yomtor/styles'
 import { useEditorContext } from '@yomtor/core'
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { ActionIcon, Control, Input, NumberInput, Select } from '@yomtor/ui'
 import {
   HeightIcon,
