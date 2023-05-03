@@ -9,14 +9,11 @@ const defaultProps: Partial<GroupProps> = {
 }
 
 export const Group = forwardRef<HTMLDivElement, GroupProps>((props, ref) => {
-  const { unstyled, className, rowGap, ...others } = useComponentDefaultProps(
-    'Group',
-    defaultProps,
-    props
-  )
+  const { unstyled, className, gap, rowGap, columnGap, columns, ...others } =
+    useComponentDefaultProps('Group', defaultProps, props)
 
   const { classes, cx } = useStyles(
-    { rowGap, ...others },
+    { gap, rowGap, columnGap, columns, ...others },
     { name: 'Group', unstyled }
   )
 

@@ -1,4 +1,4 @@
-import { createStyles, rem, getSize } from '@yomtor/styles'
+import { createStyles, rem, getSize, getStylesRef } from '@yomtor/styles'
 import { NumberInputProps } from './NumberInput.props'
 
 const compactSizes = {
@@ -25,32 +25,46 @@ const sizes = {
 }
 
 export default createStyles(
-  (theme, { size, draggable, variant, compact }: NumberInputProps) => ({
-    input: {
-      ...theme.fn.getVariant({
-        variant,
-        withFocus: true,
-        withPrimaryColor: false
-      }),
-      ...(compact && {
-        ...compactSizes[`compact-${size}`],
-        minHeight: 'unset',
-        fontSize: getSize({ size, sizes }),
-        '&[data-with-icon]': {
-          paddingLeft: rem(getSize({ size, sizes: iconSizes }))
-        }
-      })
-    },
-    icon: {
-      ...(compact && {
-        width: rem(getSize({ size, sizes: iconSizes }))
-      }),
-      ...(draggable && {
-        pointerEvents: 'inherit',
-        '& > *': {
-          display: 'flex'
-        }
-      })
+  (
+    theme,
+    { size, draggable, variant: inputVariant, compact, icon }: NumberInputProps
+  ) => {
+    const variant = theme.fn.getVariant({
+      variant: inputVariant,
+      withFocus: true,
+      withPrimaryColor: false
+    })
+
+    return {
+      input: {
+        ...variant,
+        ...(compact && {
+          ...compactSizes[`compact-${size}`],
+          minHeight: 'unset',
+          fontSize: getSize({ size, sizes }),
+          '&[data-with-icon]': {
+            paddingLeft: icon ? rem(getSize({ size, sizes: iconSizes })) : 10
+          }
+        })
+      },
+      icon: {
+        ...(compact && {
+          width: icon ? rem(getSize({ size, sizes: iconSizes })) : 5,
+          ...(!icon && {
+            '> div': {
+              width: '100%',
+              height: '100%'
+            }
+          })
+        }),
+        ...(draggable && {
+          pointerEvents: 'inherit',
+          '& > *': {
+            display: 'flex'
+          }
+        }),
+        '&:hover + input': variant['&:hover']
+      }
     }
-  })
+  }
 )

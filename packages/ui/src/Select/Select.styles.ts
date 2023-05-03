@@ -62,7 +62,8 @@ export default createStyles(
           }
         }),
         ...(ticked && {
-          paddingRight: rem(getSize({ size, sizes: iconSizes })),
+          //paddingRight: rem(getSize({ size, sizes: iconSizes })),
+          paddingRight: 20,
           paddingLeft: 7,
           [`&:hover + .${getStylesRef('rightSection')}`]: {
             opacity: 1,
@@ -113,7 +114,8 @@ export default createStyles(
         ref: getStylesRef('rightSection'),
         pointerEvents: 'none',
         opacity: 0.3,
-        transform: 'scale(0.7)'
+        transform: 'scale(0.7)',
+        width: 26
       },
       separator: {
         ...(ticked && {

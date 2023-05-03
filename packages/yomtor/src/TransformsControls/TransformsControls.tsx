@@ -193,6 +193,7 @@ export const TransformsControls = (props: TransformsControlsProps) => {
     <Control>
       {combo && (
         <Control.Title
+          end={14}
           title={
             <Select
               data={ItemData}

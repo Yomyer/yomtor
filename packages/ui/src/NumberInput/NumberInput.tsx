@@ -57,7 +57,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
     } = useComponentDefaultProps('NumberInput', defaultProps, props)
 
     const { classes, cx } = useStyles(
-      { compact, draggable, variant, ...others },
+      { compact, draggable, variant, icon, ...others },
       { classNames, styles, name: 'NumberInput', unstyled }
     )
 
@@ -154,6 +154,10 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
       }
     }
 
+    const downHandler = () => {
+      setTimeout(() => inputRef.current.focus())
+    }
+
     useEventListener('mousedown', blurHandler, document)
 
     return (
@@ -168,7 +172,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
         onKeyDown={keyDownHandler}
         value={value}
         onKeyUp={keyUpHandler}
-        formatter={formatter || ((value) => (mixed ? mixedLabel : value))}
+        formatter={formatter}
         icon={
           <Draggable
             move={false}
@@ -176,6 +180,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
             onDrag={dragHandler}
             onStart={startHandler}
             onStop={stopHandler}
+            onMouseDown={downHandler}
             distance={0}
           >
             <div {...cursorHandlers}>{icon}</div>

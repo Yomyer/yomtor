@@ -49,7 +49,7 @@ export const Sortable = forwardRef<HTMLDivElement, SortableProps>(
       { name: 'Sortable', unstyled }
     )
 
-    const mouseDownHandler = (event: MouseEvent | React.MouseEvent) => {
+    const mouseDownHandler = (event: DraggableEvent | React.MouseEvent) => {
       setActive(nodes[item.index], event as React.MouseEvent)
     }
 

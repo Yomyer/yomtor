@@ -12,7 +12,7 @@ import {
   Path
 } from '@yomtor/paper'
 import { HotKeysEvent, useEventListener, useHotkeys } from '@yomtor/hooks'
-import { Grab, Grabbing, useCursor, useGlobalCursor } from '@yomtor/cursors'
+import { Grab, Grabbing, useCursor } from '@yomtor/cursors'
 import { round } from '@yomtor/utils'
 
 const defaultProps: Partial<ViewToolProps> = {
@@ -29,7 +29,6 @@ export const ViewTool = (props: ViewToolProps) => {
   const dragEvent = useRef<ToolEvent>()
   const downPoint = useRef<Point>()
   const outside = useRef<boolean>()
-  const [showGrabbing, hideGrabbing] = useGlobalCursor(Grabbing)
   const { showCursor, hideCursor } = useCursor()
 
   const emitDragEvent = (e: WheelEvent) => {
@@ -140,7 +139,7 @@ export const ViewTool = (props: ViewToolProps) => {
     })
 
     tool.onMouseDown = () => {
-      showGrabbing()
+      showCursor(Grabbing)
     }
 
     tool.onMouseDrag = (e: ToolEvent) => {
@@ -149,7 +148,7 @@ export const ViewTool = (props: ViewToolProps) => {
     }
 
     tool.onMouseUp = () => {
-      hideGrabbing()
+      hideCursor(Grabbing)
     }
   }, [tool])
 
@@ -165,7 +164,7 @@ export const ViewTool = (props: ViewToolProps) => {
       },
       up: () => {
         if (tool && tool.actived) {
-          hideGrabbing(true)
+          hideCursor(Grabbing)
           hideCursor(Grab)
           tool.activeMain()
         }

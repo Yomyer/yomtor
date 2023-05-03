@@ -20,4 +20,5 @@ export type DraggableProps = Partial<ReactDraggableProps> & {
   children: ReactElement
   stop?: boolean
   onMouseUp?: (event: DraggableEvent) => void
+  onMouseDown?: (event: DraggableEvent) => void
 }

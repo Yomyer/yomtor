@@ -64,9 +64,9 @@ export const LayerControls = (props: LayerControlsProps) => {
 
   return artboard || visible ? (
     <Control>
-      <Control.Title>Layer</Control.Title>
-      <Control.Group columns={36}>
-        <Control.Panel start={1} end={20}>
+      <Control.Title title={<>Layer</>} />
+      <Control.Group>
+        <Control.Panel start={1} end={21}>
           <Select
             data={LayerSelectData}
             defaultValue='start'
@@ -80,7 +80,7 @@ export const LayerControls = (props: LayerControlsProps) => {
             onChange={(value) => changeHandler('blendMode', value)}
           />
         </Control.Panel>
-        <Control.Panel start={21} end={34}>
+        <Control.Panel start={22} end={31}>
           <NumberInput
             value={numberValue > 100 ? 100 : numberValue}
             max={100}
@@ -89,10 +89,15 @@ export const LayerControls = (props: LayerControlsProps) => {
               setNumberValue(value)
               changeHandler('opacity', value / OPACITY_MULTIPLIER)
             }}
-            rightSection={<div style={{ fontSize: '11px' }}>%</div>}
+            formatter={(value) =>
+              !Number.isNaN(parseFloat(value))
+                ? `$ ${value}`.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
+                : '$ '
+            }
+            // rightSection={<div style={{ fontSize: '11px' }}>%</div>}
           />
         </Control.Panel>
-        <Control.Panel start={35} end={36}>
+        <Control.Panel start={32} end={32}>
           <ActionIcon
             icon={isVisible ? <EyeIcon /> : <EyeClosedIcon />}
             onClick={() => clickHandler(isVisible)}

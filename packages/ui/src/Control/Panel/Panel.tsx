@@ -10,13 +10,13 @@ const defaultProps: Partial<PanelProps> = {
 }
 
 export const Panel = forwardRef<HTMLDivElement, PanelProps>((props, ref) => {
-  const { unstyled, className, ...others } = useComponentDefaultProps(
-    'Panel',
-    defaultProps,
-    props
-  )
+  const { unstyled, className, columns, rows, gap, start, end, ...others } =
+    useComponentDefaultProps('Panel', defaultProps, props)
 
-  const { classes, cx } = useStyles({ ...others }, { name: 'Panel', unstyled })
+  const { classes, cx } = useStyles(
+    { columns, rows, gap, start, end, ...others },
+    { name: 'Panel', unstyled }
+  )
 
   return <div {...others} ref={ref} className={cx(className, classes.root)} />
 })

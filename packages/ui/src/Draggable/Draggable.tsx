@@ -37,6 +37,7 @@ export const Draggable = forwardRef<HTMLDivElement, DraggableProps>(
       onStart,
       onStop,
       onMouseUp,
+      onMouseDown,
       ...others
     } = useComponentDefaultProps('Group', defaultProps, props)
 
@@ -54,7 +55,8 @@ export const Draggable = forwardRef<HTMLDivElement, DraggableProps>(
       { name: 'Draggable' }
     )
 
-    const startHandler = (_: DraggableEvent, data: DraggableData) => {
+    const startHandler = (event: DraggableEvent, data: DraggableData) => {
+      onMouseDown && onMouseDown(event)
       offset.current = { x: data.x, y: data.y }
     }
 

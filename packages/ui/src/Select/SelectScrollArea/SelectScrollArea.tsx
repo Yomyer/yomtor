@@ -143,15 +143,11 @@ export const SelectScrollArea = forwardRef<HTMLDivElement, ScrollAreaProps>(
     }
 
     const scrollHandler = () => {
-      if (
-        scrollableRef.current.clientHeight < scrollableRef.current.scrollHeight
-      ) {
-        arrows.top = !!scrollableRef.current.scrollTop
-        arrows.bottom =
-          scrollableRef.current.scrollTop + scrollableRef.current.clientHeight <
-          scrollableRef.current.scrollHeight
-        setArrows({ ...arrows })
-      }
+      arrows.top = !!scrollableRef.current.scrollTop
+      arrows.bottom =
+        scrollableRef.current.scrollTop + scrollableRef.current.clientHeight <
+        scrollableRef.current.scrollHeight
+      setArrows({ ...arrows })
     }
 
     return (
