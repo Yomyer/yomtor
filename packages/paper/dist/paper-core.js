@@ -3124,11 +3124,10 @@ var LinkedConstraints = Constraints.extend({
 	},
 });
 
-var i = 0;
+var i = 0
 var Info = Base.extend({
 	_class: 'Info',
-	_cache: null,
-	_cacheData: {},
+	_cache: {},
 
 	beans: true,
 	initialize: function Info(owner) {
@@ -3322,30 +3321,27 @@ var Info = Base.extend({
 
 	getCorners: function(unrotated) {
 		var owner = this._owner
-		var data = {
+		var data = Base.set({
 			angle: owner.getInheritedAngle(),
 			bounds: owner.bounds,
 			center: owner.bounds.center,
-		}
-
-		if(Base.equals(data, this._cacheData)){
-			return this._cache;
+			unrotated: unrotated
+		})
+		var key = JSON.stringify(Base.serialize(data))
+		if(this._cache[key]){
+		  return JSON.parse(JSON.stringify(this._cache[key]));
 		}
 		if (data.angle !== 0 && !unrotated) {
 			owner.transform(new Matrix().rotate(-data.angle, data.center), false, false, true);
 			data.bounds = owner.bounds;
 			owner.transform(new Matrix().rotate(data.angle, data.center), false, false, true);
+			console.log(i)
+			i++
 		}
-
 		var matrix = new Matrix().rotate(!unrotated && data.angle, data.center);
 		var corners = matrix._transformCorners(data.bounds);
 
-		this._cacheData = data;
-		this._cache = corners
-
-		console.log(i);
-		i++;
-		return corners;
+		return this._cache[key] = JSON.parse(JSON.stringify(corners));
 	},
 
 	_setSize: function(direction, value){
@@ -4161,13 +4157,16 @@ new function() {
 		}
 		if (cacheParent
 				&& (flags & 1048648)) {
+			Item._clearBoundsCache(cacheParent);
 		}
 		if (flags & 2) {
+			Item._clearBoundsCache(this);
 		}
 
 		if (project && !_skipProject)
 			project._changed(flags, this);
-
+		if (symbol)
+			symbol._changed(flags);
 	},
 
 	getId: function() {
