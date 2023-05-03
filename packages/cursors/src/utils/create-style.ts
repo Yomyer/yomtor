@@ -20,13 +20,13 @@ export const createStyle = async (className: string, props: CursorProps) => {
   const events =
     props.id &&
     `
-      body.${className} *{
-        pointer-events: none;
+      body.${className} > *{
+        pointer-events: none !important;
       }
     `
 
   return `
-      body.${className} *, .${className}{
+      body.${className}, .${className}{
           cursor: url(${png64})${data.x} ${data.y},auto !important;
           cursor: url(${svg64})${data.x} ${data.y},auto !important;
           cursor: -webkit-image-set(url(${png64})2x,url(${png64})1x)${data.x} ${data.y},auto !important;

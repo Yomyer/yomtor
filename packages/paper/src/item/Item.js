@@ -4028,7 +4028,7 @@ new function() { // Injection scope for hit-test functions shared with project
         // the matrix is where the actual transformation state is stored.
 
         if (applyMatrix && (applyMatrix = this._transformContent(
-                _matrix, _applyRecursively, _setApplyMatrix))) {
+                _matrix, _applyRecursively, _setApplyMatrix, _skypChanges))) {
             // Pivot is provided in the parent's coordinate system, so transform
             // it along too.
             var pivot = this._pivot;
@@ -4046,7 +4046,8 @@ new function() { // Injection scope for hit-test functions shared with project
         // on matrix we can calculate and set them again, so preserve them.
         var bounds = this._bounds,
             position = this._position;
-        if (transformMatrix || applyMatrix) {
+
+        if ((transformMatrix || applyMatrix)) {
             this._changed(/*#=*/Change.MATRIX, _skypChanges);
         }
         // Detect matrices that contain only translations and scaling
@@ -4086,38 +4087,14 @@ new function() { // Injection scope for hit-test functions shared with project
             this._position = matrix._transformPoint(position, position);
         }
 
-        // Allow chaining here, since transform() is related to Matrix functions
-        /*
-        if(matrix){
-            var f1 = new Point(matrix.a, matrix.d).sign()
-            var f2 = new Point(this._lastMatrix ? this._lastMatrix.a : 1, this._lastMatrix ?  this._lastMatrix.d : 1).sign()
-            
-            if (f2.x != f1.x) {
-                console.log(this._lastContainsPoint.x,  this._project.selector.center.x)
-                if(f1.x * (this.flipped.x ? -1 : 1) < 0){
-                    this._flip('x')
-                }
-            }
-                    
-            if (f2.y != f1.y && f1.y === -1) {
-                this._flip('y')
-            }
-            
-            console.log(this.flipped)
-            // console.log(this._constraintsPivot)
-            this._lastMatrix = matrix;
-            this._lastContainsPoint = this._constraintsPivot;
-        }
-        */
-
         return this;
     },
 
-    _transformContent: function(matrix, applyRecursively, setApplyMatrix) {
+    _transformContent: function(matrix, applyRecursively, setApplyMatrix, _skypChanges) {
         var children = this._children;
         if (children) {
             for (var i = 0, l = children.length; i < l; i++) {
-                children[i].transform(matrix, applyRecursively, setApplyMatrix);
+                children[i].transform(matrix, applyRecursively, setApplyMatrix, _skypChanges);
             }
             return true;
         }
@@ -5442,7 +5419,7 @@ new function(){
 
     _drawActivation: function(ctx, matrix, unrotated) {
         var corners = this.info.getCorners(unrotated)
-        corners = matrix._transformCoordinates(corners, corners, 4);
+        //corners = matrix._transformCoordinates(corners, corners, 4);
        
         ctx.beginPath();
         ctx.moveTo(corners[0], corners[1]);

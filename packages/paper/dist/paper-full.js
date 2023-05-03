@@ -3129,6 +3129,7 @@ var LinkedConstraints = Constraints.extend({
 
 var Info = Base.extend({
 	_class: 'Info',
+	_cache: {},
 
 	beans: true,
 	initialize: function Info(owner) {
@@ -3322,19 +3323,25 @@ var Info = Base.extend({
 
 	getCorners: function(unrotated) {
 		var owner = this._owner
-		var angle = owner.getInheritedAngle();
-		var bounds = owner.bounds;
-		var center =  owner.bounds.center;
-		if (angle !== 0 && !unrotated) {
-			owner.transform(new Matrix().rotate(-angle, center), false, false, true);
-			bounds = owner.bounds.clone();
-			owner.transform(new Matrix().rotate(angle, center), false, false, true);
+		var data = Base.set({
+			angle: owner.getInheritedAngle(),
+			bounds: owner.bounds,
+			center: owner.bounds.center,
+			unrotated: unrotated
+		})
+		var key = JSON.stringify(Base.serialize(data))
+		if(this._cache[key]){
+		  return JSON.parse(JSON.stringify(this._cache[key]));
 		}
+		if (data.angle !== 0 && !unrotated) {
+			owner.transform(new Matrix().rotate(-data.angle, data.center), false, false, true);
+			data.bounds = owner.bounds;
+			owner.transform(new Matrix().rotate(data.angle, data.center), false, false, true);
+		}
+		var matrix = new Matrix().rotate(!unrotated && data.angle, data.center);
+		var corners = matrix._transformCorners(data.bounds);
 
-		var matrix = new Matrix().rotate(!unrotated && angle, center);
-		var corners = matrix._transformCorners(bounds);
-
-		return corners;
+		return this._cache[key] = JSON.parse(JSON.stringify(corners));
 	},
 
 	_setSize: function(direction, value){
@@ -4892,7 +4899,7 @@ new function() {
 
 	copyAttributes: function(source, excludeMatrix) {
 		this.setStyle(source._style);
-		var keys = ['_locked', '_visible', '_blendMode', '_opacity', '_actived',
+		var keys = ['_locked', '_visible', '_blendMode', '_opacity',
 				'_clipMask', '_guide', '_angle', '_flipped', '_constraints'];
 		for (var i = 0, l = keys.length; i < l; i++) {
 			var key = keys[i];
@@ -5698,7 +5705,7 @@ new function() {
 		}
 
 		if (applyMatrix && (applyMatrix = this._transformContent(
-				_matrix, _applyRecursively, _setApplyMatrix))) {
+				_matrix, _applyRecursively, _setApplyMatrix, _skypChanges))) {
 			var pivot = this._pivot;
 			if (pivot)
 				_matrix._transformPoint(pivot, pivot, true);
@@ -5708,7 +5715,8 @@ new function() {
 		}
 		var bounds = this._bounds,
 			position = this._position;
-		if (transformMatrix || applyMatrix) {
+
+		if ((transformMatrix || applyMatrix)) {
 			this._changed(25, _skypChanges);
 		}
 		var decomp = transformMatrix && bounds && matrix.decompose();
@@ -5735,11 +5743,11 @@ new function() {
 		return this;
 	},
 
-	_transformContent: function(matrix, applyRecursively, setApplyMatrix) {
+	_transformContent: function(matrix, applyRecursively, setApplyMatrix, _skypChanges) {
 		var children = this._children;
 		if (children) {
 			for (var i = 0, l = children.length; i < l; i++) {
-				children[i].transform(matrix, applyRecursively, setApplyMatrix);
+				children[i].transform(matrix, applyRecursively, setApplyMatrix, _skypChanges);
 			}
 			return true;
 		}
@@ -6094,7 +6102,6 @@ new function(){
 
 	_drawActivation: function(ctx, matrix, unrotated) {
 		var corners = this.info.getCorners(unrotated)
-		corners = matrix._transformCoordinates(corners, corners, 4);
 		ctx.beginPath();
 		ctx.moveTo(corners[0], corners[1]);
 		ctx.lineTo(corners[2], corners[3]);
@@ -6294,16 +6301,14 @@ var Artboard = Group.extend(
 				if(Array.isArray(args[0]) || Array.isArray(arguments) ){
 					this.addChildren(Array.isArray(args[0]) ? args[0] : arguments);
 					var rect = null;
-
 					var children = this._children;
 					for (var i = 0, l = children.length; i < l; i++) {
-					   if(!rect){
-						   rect = children[i].bounds
-					   }else{
-							rect = rect.unite(children[i].bounds)
-					   }
+						if(!rect){
+							rect = children[i].bounds.clone();
+						}else{
+							rect = rect.unite(children[i].bounds);
+						}
 					}
-
 					this.setBackground(rect);
 				}
 			}
@@ -6321,7 +6326,7 @@ var Artboard = Group.extend(
 
 		setBackground: function (args) {
 			var args = Base.set(Object.assign({
-				fillColor: 'white'
+				fillColor: 'rgba(255,255,255,0.000001)'
 			}, args), {
 				insert: false,
 				children: undefined,
@@ -6363,6 +6368,10 @@ var Artboard = Group.extend(
 			setActived.base.call(this, actived);
 		},
 
+		getStyle: function () {
+			return this._background._style;
+		},
+
 		isEmpty: function isEmpty(recursively) {
 			return false;
 		},
@@ -6399,7 +6408,8 @@ var Artboard = Group.extend(
 		transform: function tranform(
 			matrix,
 			_applyRecursively,
-			_setApplyMatrix
+			_setApplyMatrix,
+			_skypChanges
 		) {
 			if (!matrix) {
 				return;
@@ -6408,140 +6418,92 @@ var Artboard = Group.extend(
 				this,
 				matrix,
 				_applyRecursively,
-				_setApplyMatrix
+				_setApplyMatrix,
+				_skypChanges
 			);
 
 			this._background.transform(
 				matrix,
 				_applyRecursively,
-				_setApplyMatrix
+				_setApplyMatrix,
+				_skypChanges
 			);
 
 			this._changed(25);
 		},
 
-		_transformContent: function (matrix, applyRecursively, setApplyMatrix) {
+		_transformContent: function (matrix, applyRecursively, setApplyMatrix, skypChanges) {
 			return this._applyConstraints(
 				this._children,
 				matrix,
 				applyRecursively,
-				setApplyMatrix
+				setApplyMatrix,
+				skypChanges
 			);
 		},
 
 		_applyConstraints: function(children, matrix, applyRecursively, setApplyMatrix) {
 			if (children) {
-				var scaling = matrix.scaling,
+				var scaling = new Point(matrix.a, matrix.d),
 					translation = matrix.translation,
 					isScaling = this._transformType == "scale",
+					flippedArtboard = this.flipped,
 					flipped = new Point(matrix.a, matrix.d).sign(),
 					info = this._background.getActiveInfo(),
-					diff = new Size(info)
-						.divide(matrix.a, matrix.d)
-						.subtract(new Size(info).multiply(flipped));
+					diff = new Point(info.width, info.height)
+						.multiply(new Size(matrix.a, matrix.d).abs())
+						.subtract(new Size(info.width, info.height)).multiply(flippedArtboard),
+					offset = new Point(this._transformDisrupting && this._transformDisrupting.x ? diff.x /2: 0, this._transformDisrupting && this._transformDisrupting.y ? diff.y /2: 0);
+
 				for (var i = 0, l = children.length; i < l; i++) {
 					var item = children[i],
 						mx = new Matrix(),
 						horizontal = item._constraints.horizontal,
 						vertical = item._constraints.vertical,
-						size = new Size(item.bounds),
-						itemScale = new Point(info)
-							.subtract(
-								new Point(info)
-									.divide(matrix.a, matrix.d)
-									.multiply(flipped)
-									.subtract(size)
-							)
-							.divide(size);
+						size = new Size(item.bounds.width, item.bounds.height);
 					if (isScaling) {
-						var top =
-							info.center.y > this._constraintsPivot.y ==
-							(flipped.y != -1);
-						left =
-							info.center.x > this._constraintsPivot.x ==
-							(flipped.x != -1);
+						var rLeft, rTop;
+
+						var top = rTop = info.center.y > this._constraintsPivot.y;
+						var left = rLeft = info.center.x > this._constraintsPivot.x;
+
+						if(!(flippedArtboard.x + flipped.x)) left = !left;
+						if(!(flippedArtboard.y + flipped.y)) top = !top;
+
+						var itemScale = diff.multiply(new Point(
+							!(flippedArtboard.x + flipped.x) ? flipped.x * -1 : flipped.x,
+							!(flippedArtboard.y + flipped.y) ? flipped.y * -1 : flipped.y
+						)).add(size).divide(size)
 						switch (horizontal) {
 							case "scale":
-								mx.translate(translation.x, 0).scale(
-									scaling.x,
-									1
-								);
-								break;
-							case "end":
-								mx.translate(left ? -diff.width : 0, 0).scale(
-									flipped.x,
-									1,
-									this._constraintsPivot
-								);
+								mx.translate(translation.x, 0).scale(scaling.x, 1);
 								break;
 							case "center":
-								mx.translate(
-									left ? -diff.width / 2 : diff.width / 2,
-									0
-								).scale(flipped.x, 1, this._constraintsPivot);
+								mx.translate((diff.x / 2 - offset.x) * (left ? 1 : -1) , 0).scale(flipped.x, 1, this._constraintsPivot);
+								break;
+							case "end":
+								mx.translate(left ? diff.x - offset.x : offset.x, 0).scale(flipped.x, 1,  this._constraintsPivot);
 								break;
 							case "both":
-								mx.scale(
-									flipped.x,
-									1,
-									this._constraintsPivot
-								).scale(
-									itemScale.x,
-									1,
-									left
-										? item.bounds.leftCenter
-										: item.bounds.rightCenter
-								);
+								mx.scale(flipped.x, 1,  this._constraintsPivot).scale(itemScale.x,  1, rLeft ? item.bounds.leftCenter : item.bounds.rightCenter)
 								break;
 							default:
-								mx.translate(left ? 0 : diff.width, 0).scale(
-									flipped.x,
-									1,
-									this._constraintsPivot
-								);
+								mx.translate(!left ? -diff.x + offset.x : -offset.x, 0).scale(flipped.x, 1,  this._constraintsPivot);
 								break;
 						}
-
 						switch (vertical) {
 							case "scale":
-								mx.translate(0, translation.y).scale(
-									1,
-									scaling.y
-								);
+								mx.translate(0, translation.y).scale(1, scaling.y);
+							case "center":
+							   mx.translate(0, (diff.y / 2 - offset.y) * (top ? 1 : -1)  ).scale(1, flipped.y, this._constraintsPivot);
 								break;
 							case "end":
-								mx.translate(0, top ? -diff.height : 0).scale(
-									1,
-									flipped.y,
-									this._constraintsPivot
-								);
-								break;
-							case "center":
-								mx.translate(
-									0,
-									top ? -diff.height / 2 : diff.height / 2
-								).scale(1, flipped.y, this._constraintsPivot);
-								break;
+								mx.translate(0, top ? diff.y - offset.y : offset.y).scale(1, flipped.y,  this._constraintsPivot);
 							case "both":
-								mx.scale(
-									1,
-									flipped.y,
-									this._constraintsPivot
-								).scale(
-									1,
-									itemScale.y,
-									top
-										? item.bounds.topCenter
-										: item.bounds.bottomCenter
-								);
+								mx.scale(1, flipped.y,  this._constraintsPivot).scale(1,  itemScale.y, rTop ? item.bounds.topCenter : item.bounds.bottomCenter)
 								break;
 							default:
-								mx.translate(0, top ? 0 : diff.height).scale(
-									1,
-									flipped.y,
-									this._constraintsPivot
-								);
-								break;
+								mx.translate(0, !top ? - diff.y + offset.y : -offset.y).scale(1, flipped.y,  this._constraintsPivot);
 						}
 					} else {
 						mx = matrix;
@@ -7750,16 +7712,16 @@ var Selector = Item.extend(
 			return this._descomposeActiveItemsInfo("width") || 0;
 		},
 
-		setWidth: function(width, center, preserve) {
-			this.setSize([width, null], center, preserve);
+		setWidth: function(width, center, disrupting) {
+			this.setSize([width, null], center, disrupting);
 		},
 
 		getHeight: function () {
 			return this._descomposeActiveItemsInfo("height") || 0;
 		},
 
-		setHeight: function(height, center, preserve) {
-			this.setSize([null, height], center, preserve)
+		setHeight: function(height, center, disrupting) {
+			this.setSize([null, height], center, disrupting)
 		},
 
 		getSize: function(){
@@ -7769,6 +7731,7 @@ var Selector = Item.extend(
 		setSize: function(){
 			var size = Size.read(arguments);
 			var center = Point.read(arguments);
+			var disrupting = Base.read(arguments);
 			var preserve = Base.read(arguments);
 			this._checkHelpers();
 
@@ -7799,9 +7762,13 @@ var Selector = Item.extend(
 				var itemCenter = item.bounds.center;
 				var rotateMatrix = new Matrix().rotate(-angle, itemCenter)
 				var pivot = rotateMatrix.transformPoint(center)
+
+				item._transformDisrupting = disrupting;
 				item.rotate(-angle, itemCenter);
 				item.scale(new Point(factor.x, factor.y), pivot);
 				item.rotate(angle, itemCenter);
+
+				item._transformDisrupting = null;
 				if(helpers[item.uid]._lastDirection){
 					if(!helpers[item.uid]._cacheFlipped){
 						helpers[item.uid]._cacheFlipped = Object.assign({}, helpers[item.uid].flipped);
@@ -8103,15 +8070,13 @@ var Selector = Item.extend(
 
 			matrix = matrix.appended(this.getGlobalMatrix(true));
 
-			ctx.lineWidth = 0.5;
+			matrix.applyToContext(ctx);
 			ctx.strokeStyle = this.strokeColor.toCanvasStyle(ctx, matrix);
+			ctx.lineWidth = 0.5 / this._project.view.zoom;
 
 			for (var x in items) {
 				items[x]._drawActivation(ctx, matrix, items.length > 1);
 			}
-
-			matrix.applyToContext(ctx);
-			ctx.lineWidth = 0.5 / this._project.view.zoom;
 
 			if (items.length > 1) {
 				ctx.beginPath();

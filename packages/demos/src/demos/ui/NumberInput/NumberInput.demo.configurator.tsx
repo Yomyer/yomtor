@@ -19,7 +19,9 @@ function Wrapper(props: NumberInputProps) {
       <NumberInput
         {...props}
         icon={<CodeIcon />}
-        formatter={(value) => `${value}%`}
+        formatter={(value) =>
+          !Number.isNaN(parseFloat(value)) ? `${value} %` : ' %'
+        }
       />
     </Group>
   )

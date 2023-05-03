@@ -5788,7 +5788,7 @@ declare namespace paper {
         off(eventName: string | Array<string>, handler: Function): Project
 
         
-        fire(eventName: string | Array<string>, options?: object): Project
+        emit(eventName: string | Array<string>, options?: object): Project
 
         /** 
          * Exports (serializes) the project with all its layers and child items to a
@@ -6762,13 +6762,13 @@ declare namespace paper {
 
 
         
-        setWidth(width: number, center?: Point, preserve?: boolean): void
+        setWidth(width: number, center?: Point, disrupting?: Point): void
 
         
-        setHeight(heigth: number, center?: Point, preserve?: boolean): void
+        setHeight(heigth: number, center?: Point, disrupting?: Point): void
 
         
-        setSize(size: Size, center?: Point, preserve?: boolean): void
+        setSize(size: Size, center?: Point, disrupting?: Point, preserve?: boolean): void
 
         
         setAngle(angle: number, center?: Point, preserve?: boolean): void

@@ -11,7 +11,7 @@ const defaultProps: Partial<ScrollAreaProps> = {}
 
 const _ScrollArea = forwardRef<HTMLDivElement, ScrollAreaProps>(
   (props, ref) => {
-    const { unstyled, className, onScroll, ...others } =
+    const { unstyled, viewportRef, className, onScroll, ...others } =
       useComponentDefaultProps('ScrollArea', defaultProps, props)
 
     const scrollRef = useRef<HTMLElement>()
@@ -36,8 +36,9 @@ const _ScrollArea = forwardRef<HTMLDivElement, ScrollAreaProps>(
     return (
       <BaseScrollArea
         {...others}
-        viewportRef={useMergedRef(ref, scrollRef)}
+        viewportRef={useMergedRef(viewportRef, scrollRef)}
         className={cx(className, classes.root)}
+        ref={ref}
       />
     )
   }

@@ -16,6 +16,7 @@ export type {
   DefaultProps,
   Sx,
   ClassNames,
+  Variants,
   Styles,
   CSSObject,
   Tuple,

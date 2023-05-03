@@ -148,7 +148,7 @@ export const ObjectPathTool = forwardRef<HTMLDivElement, ObjectPathToolProps>(
       tool.onKeyDown = (event: KeyEvent) => {
         if (event.key === 'escape') {
           setInserMode(false)
-          canvas.project.fire('tool:keydown', event)
+          canvas.project.emit('tool:keydown', event)
         }
       }
 

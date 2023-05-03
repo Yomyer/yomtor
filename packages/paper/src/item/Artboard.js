@@ -56,18 +56,14 @@ var Artboard = Group.extend(
                    
                     this.addChildren(Array.isArray(args[0]) ? args[0] : arguments);
                     var rect = null;
-
-  
-
                     var children = this._children;
                     for (var i = 0, l = children.length; i < l; i++) {
-                       if(!rect){
-                           rect = children[i].bounds
-                       }else{
-                            rect = rect.unite(children[i].bounds)
-                       }
+                        if(!rect){
+                            rect = children[i].bounds.clone();
+                        }else{
+                            rect = rect.unite(children[i].bounds);
+                        }
                     }
-
                     this.setBackground(rect);
                 }
             }
@@ -89,7 +85,7 @@ var Artboard = Group.extend(
 
         setBackground: function (args) {
             var args = Base.set(Object.assign({
-                fillColor: 'white'
+                fillColor: 'rgba(255,255,255,0.000001)'
             }, args), {
                 insert: false,
                 children: undefined,
@@ -149,6 +145,10 @@ var Artboard = Group.extend(
             setActived.base.call(this, actived);
         },
 
+        getStyle: function () {
+            return this._background._style;
+        },
+
         isEmpty: function isEmpty(recursively) {
             return false;
         },
@@ -195,7 +195,8 @@ var Artboard = Group.extend(
         transform: function tranform(
             matrix,
             _applyRecursively,
-            _setApplyMatrix
+            _setApplyMatrix,
+            _skypChanges
         ) {
             if (!matrix) {
                 return;
@@ -206,144 +207,95 @@ var Artboard = Group.extend(
                 this,
                 matrix,
                 _applyRecursively,
-                _setApplyMatrix
+                _setApplyMatrix,
+                _skypChanges
             );
 
             this._background.transform(
                 matrix,
                 _applyRecursively,
-                _setApplyMatrix
+                _setApplyMatrix,
+                _skypChanges
             );
 
             this._changed(/*#=*/ Change.MATRIX);
         },
 
-        _transformContent: function (matrix, applyRecursively, setApplyMatrix) {
+        _transformContent: function (matrix, applyRecursively, setApplyMatrix, skypChanges) {
             return this._applyConstraints(
                 this._children,
                 matrix,
                 applyRecursively,
-                setApplyMatrix
+                setApplyMatrix,
+                skypChanges
             );
         },
 
         _applyConstraints: function(children, matrix, applyRecursively, setApplyMatrix) {
             if (children) {
-                var scaling = matrix.scaling,
+                var scaling = new Point(matrix.a, matrix.d),
                     translation = matrix.translation,
                     isScaling = this._transformType == "scale",
-                    // flipped = this.flipped,
+                    flippedArtboard = this.flipped,
                     flipped = new Point(matrix.a, matrix.d).sign(),
                     info = this._background.getActiveInfo(),
-                    diff = new Size(info)
-                        .divide(matrix.a, matrix.d)
-                        .subtract(new Size(info).multiply(flipped));
-                        
+                    diff = new Point(info.width, info.height)
+                        .multiply(new Size(matrix.a, matrix.d).abs())
+                        .subtract(new Size(info.width, info.height)).multiply(flippedArtboard),
+                    offset = new Point(this._transformDisrupting && this._transformDisrupting.x ? diff.x /2: 0, this._transformDisrupting && this._transformDisrupting.y ? diff.y /2: 0);
+
                 for (var i = 0, l = children.length; i < l; i++) {
                     var item = children[i],
                         mx = new Matrix(),
                         horizontal = item._constraints.horizontal,
                         vertical = item._constraints.vertical,
-                        size = new Size(item.bounds),
-                        itemScale = new Point(info)
-                            .subtract(
-                                new Point(info)
-                                    .divide(matrix.a, matrix.d)
-                                    .multiply(flipped)
-                                    .subtract(size)
-                            )
-                            .divide(size);
+                        size = new Size(item.bounds.width, item.bounds.height);
                     
                     if (isScaling) {
-                        var top =
-                            info.center.y > this._constraintsPivot.y ==
-                            (flipped.y != -1);
-                        left =
-                            info.center.x > this._constraintsPivot.x ==
-                            (flipped.x != -1);
+                        var rLeft, rTop;
+
+                        var top = rTop = info.center.y > this._constraintsPivot.y;
+                        var left = rLeft = info.center.x > this._constraintsPivot.x;
+
+                        if(!(flippedArtboard.x + flipped.x)) left = !left;
+                        if(!(flippedArtboard.y + flipped.y)) top = !top;
+
+                        var itemScale = diff.multiply(new Point(
+                            !(flippedArtboard.x + flipped.x) ? flipped.x * -1 : flipped.x, 
+                            !(flippedArtboard.y + flipped.y) ? flipped.y * -1 : flipped.y
+                        )).add(size).divide(size)
                         
                         switch (horizontal) {
                             case "scale":
-                                mx.translate(translation.x, 0).scale(
-                                    scaling.x,
-                                    1
-                                );
-                                break;
-                            case "end":
-                                mx.translate(left ? -diff.width : 0, 0).scale(
-                                    flipped.x,
-                                    1,
-                                    this._constraintsPivot
-                                );
+                                mx.translate(translation.x, 0).scale(scaling.x, 1);
                                 break;
                             case "center":
-                                mx.translate(
-                                    left ? -diff.width / 2 : diff.width / 2,
-                                    0
-                                ).scale(flipped.x, 1, this._constraintsPivot);
+                                mx.translate((diff.x / 2 - offset.x) * (left ? 1 : -1) , 0).scale(flipped.x, 1, this._constraintsPivot);
+                                break;
+                            case "end":
+                                mx.translate(left ? diff.x - offset.x : offset.x, 0).scale(flipped.x, 1,  this._constraintsPivot);
                                 break;
                             case "both":
-                                mx.scale(
-                                    flipped.x,
-                                    1,
-                                    this._constraintsPivot
-                                ).scale(
-                                    itemScale.x,
-                                    1,
-                                    left
-                                        ? item.bounds.leftCenter
-                                        : item.bounds.rightCenter
-                                );
+                                mx.scale(flipped.x, 1,  this._constraintsPivot).scale(itemScale.x,  1, rLeft ? item.bounds.leftCenter : item.bounds.rightCenter)
                                 break;
                             default:
-                                mx.translate(left ? 0 : diff.width, 0).scale(
-                                    flipped.x,
-                                    1,
-                                    this._constraintsPivot
-                                );
+                                mx.translate(!left ? -diff.x + offset.x : -offset.x, 0).scale(flipped.x, 1,  this._constraintsPivot);
                                 break;
                         }
-
+                        
                         switch (vertical) {
                             case "scale":
-                                mx.translate(0, translation.y).scale(
-                                    1,
-                                    scaling.y
-                                );
+                                mx.translate(0, translation.y).scale(1, scaling.y);
+                            case "center":
+                               mx.translate(0, (diff.y / 2 - offset.y) * (top ? 1 : -1)  ).scale(1, flipped.y, this._constraintsPivot);
                                 break;
                             case "end":
-                                mx.translate(0, top ? -diff.height : 0).scale(
-                                    1,
-                                    flipped.y,
-                                    this._constraintsPivot
-                                );
-                                break;
-                            case "center":
-                                mx.translate(
-                                    0,
-                                    top ? -diff.height / 2 : diff.height / 2
-                                ).scale(1, flipped.y, this._constraintsPivot);
-                                break;
+                                mx.translate(0, top ? diff.y - offset.y : offset.y).scale(1, flipped.y,  this._constraintsPivot);
                             case "both":
-                                mx.scale(
-                                    1,
-                                    flipped.y,
-                                    this._constraintsPivot
-                                ).scale(
-                                    1,
-                                    itemScale.y,
-                                    top
-                                        ? item.bounds.topCenter
-                                        : item.bounds.bottomCenter
-                                );
+                                mx.scale(1, flipped.y,  this._constraintsPivot).scale(1,  itemScale.y, rTop ? item.bounds.topCenter : item.bounds.bottomCenter)
                                 break;
                             default:
-                                mx.translate(0, top ? 0 : diff.height).scale(
-                                    1,
-                                    flipped.y,
-                                    this._constraintsPivot
-                                );
-                                break;
+                                mx.translate(0, !top ? - diff.y + offset.y : -offset.y).scale(1, flipped.y,  this._constraintsPivot);
                         }
                     } else {
                         mx = matrix;
@@ -351,6 +303,7 @@ var Artboard = Group.extend(
 
                     item.transform(mx, applyRecursively, setApplyMatrix);
                 }
+                    
                 return true;
             }
         },

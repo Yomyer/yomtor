@@ -12,22 +12,14 @@ import {
   XAxisIcon,
   YAxisIcon
 } from '@yomtor/icons'
-import { ChangeFlag, Artboard, Group } from '@yomtor/paper'
+import { ChangeFlag, Artboard, Group, Size, Item } from '@yomtor/paper'
 import { countBy, find, findKey, isEmpty, size } from 'lodash'
 import { round } from '@yomtor/utils'
 import { ItemData } from './data'
+import { SelectItem } from '@mantine/core'
 
 const defaultProps: Partial<TransformsControlsProps> = {
   visible: false
-}
-
-type Data = {
-  x: number | string
-  y: number | string
-  width: number | string
-  height: number | string
-  angle: number | string
-  radius: number | string
 }
 
 export const TransformsControls = (props: TransformsControlsProps) => {
@@ -44,11 +36,17 @@ export const TransformsControls = (props: TransformsControlsProps) => {
   const [height, setHeight] = useState<number | ''>('')
   const [angle, setAngle] = useState<number | ''>('')
   const [combo, setCombo] = useState<string>()
+  const [disableGroup, setDisabelGroup] = useState<boolean>(false)
   const update = useRef<boolean>(true)
 
   useEffect(() => {
     setVisible(isVisible)
   }, [isVisible])
+
+  useEffect(() => {
+    const group = ItemData.find((item) => item.value === 'group')
+    group.disabled = disableGroup
+  }, [disableGroup])
 
   useEffect(() => {
     if (!canvas) return
@@ -87,24 +85,48 @@ export const TransformsControls = (props: TransformsControlsProps) => {
           canvas.project.activeItems.map((item) => round(item.info.angle, 2))
         )
 
+        const disableGroup = countBy(
+          canvas.project.activeItems.map(
+            (item) => item instanceof Artboard && !item.children.length
+          )
+        )
+
+        const combo = countBy(
+          canvas.project.activeItems.map((item) => item.className)
+        )
+
         setX(size(x) === 1 ? parseFloat(findKey(x)) : '')
         setY(size(y) === 1 ? parseFloat(findKey(y)) : '')
         setWidth(size(width) === 1 ? parseFloat(findKey(width)) : '')
         setHeight(size(height) === 1 ? parseFloat(findKey(height)) : '')
         setAngle(size(angle) === 1 ? parseFloat(findKey(angle)) : '')
+        setDisabelGroup(!!disableGroup.true)
+        setCombo(
+          size(combo) === 1
+            ? ItemData.find((data) => data.label === findKey(combo))?.value
+            : null
+        )
       }
       update.current = true
 
       if (type & ChangeFlag.ACTIVE) {
-        const length = canvas.project.activeItems.length
-        setVisible(!!length)
+        setVisible(!!canvas.project.activeItems.length)
+      }
+      if (type & ChangeFlag.MATRIX) {
+        const s = countBy(
+          canvas.project.activeItems.map(
+            (item) =>
+              `${round(item.info.width, 2)}x${round(item.info.height, 2)}`
+          )
+        )
 
-        if (length) {
-          const item = canvas.project.activeItems[0]
+        ItemData.filter((item) => item.right).forEach(
+          (item) => (item.selected = false)
+        )
 
-          const find = ItemData.find((data) => data.label === item.className)
-
-          setCombo(length === 1 && find ? find.value : '')
+        const sizeSelected = ItemData.find((data) => findKey(s) === data.right)
+        if (sizeSelected) {
+          sizeSelected.selected = true
         }
       }
     })
@@ -131,22 +153,40 @@ export const TransformsControls = (props: TransformsControlsProps) => {
   }
 
   const classHandler = (value: string) => {
+    const actives = [...canvas.project.activeItems]
+
+    let size: Size
+    const regex = /^(\d+)x(\d+)/
+    if (regex.exec(value)) {
+      const match = regex.exec(value)
+      size = new Size(parseInt(match[1]), parseInt(match[2]))
+      value = 'artboard'
+    }
+
     if (['artboard', 'group'].includes(value)) {
       const types = {
         artboard: Artboard,
         group: Group
       }
 
-      const actives = [...canvas.project.activeItems]
-
       actives.forEach((item) => {
-        const clone = new types[value](item.children)
-        item.replaceWith(clone)
-        clone.actived = true
-      })
-    }
+        let clone: Item
+        if (item.className !== types[value].prototype.className) {
+          clone = new types[value](item.children)
+          item.replaceWith(clone)
+          clone.actived = true
+        } else {
+          clone = item
+        }
 
-    setCombo(value)
+        if (size) {
+          clone.info.width = size.width
+          clone.info.height = size.height
+        }
+      })
+
+      setCombo(value)
+    }
   }
 
   return visible ? (

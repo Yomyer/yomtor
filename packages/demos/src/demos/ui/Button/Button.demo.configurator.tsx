@@ -1,8 +1,8 @@
 import React from 'react'
 import { Button, ButtonProps, Group } from '@yomtor/ui'
-import { YomtorDemo } from '@yomtor/ds'
+import { PropsType, YomtorDemo } from '@yomtor/ds'
 
-const codeTemplate = (props: string, children: string) => `
+const codeTemplate = (props: PropsType<ButtonProps>, children: string) => `
 import { Button } from '@yomtor/ui';
 
 function Demo() {

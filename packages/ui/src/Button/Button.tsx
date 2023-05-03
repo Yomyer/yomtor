@@ -7,7 +7,7 @@ import { ButtonProps } from './Button.props'
 
 const defaultProps: Partial<ButtonProps> = {
   size: 'sm',
-  variant: 'default',
+  variant: 'transparent',
   radius: 'sm',
   compact: true
 }

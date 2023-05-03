@@ -29,7 +29,8 @@ export const App = () => {
   useEffect(() => {
     const artboard = new Artboard({
       from: [200, 200],
-      to: [600, 600]
+      to: [600, 600],
+      fillColor: 'white'
     })
 
     const group = new Group([
@@ -51,6 +52,7 @@ export const App = () => {
 
     artboard.addChild(group)
     group.actived = true
+    group.set({ constraints: ['both', 'both'] })
   }, [])
 
   return (

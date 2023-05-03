@@ -2,9 +2,9 @@
  * @name Info
  * @namespace
  */
-
 var Info = Base.extend(/** @lends Info# */{
     _class: 'Info',
+    _cache: {},
 
     beans: true,
    
@@ -305,21 +305,28 @@ var Info = Base.extend(/** @lends Info# */{
     */
     getCorners: function(unrotated) {
         var owner = this._owner
-        var angle = owner.getInheritedAngle();
-        var bounds = owner.bounds;
-        var center =  owner.bounds.center;
+        var data = Base.set({
+            angle: owner.getInheritedAngle(),
+            bounds: owner.bounds,
+            center: owner.bounds.center,
+            unrotated: unrotated
+        })
+        var key = JSON.stringify(Base.serialize(data))
         
-        if (angle !== 0 && !unrotated) {
-            owner.transform(new Matrix().rotate(-angle, center), false, false, true);
-            bounds = owner.bounds.clone();
-            owner.transform(new Matrix().rotate(angle, center), false, false, true);
+        if(this._cache[key]){
+          return JSON.parse(JSON.stringify(this._cache[key]));
         }
         
+        if (data.angle !== 0 && !unrotated) {    
+            owner.transform(new Matrix().rotate(-data.angle, data.center), false, false, true);
+            data.bounds = owner.bounds;
+            owner.transform(new Matrix().rotate(data.angle, data.center), false, false, true);
+        }
+        
+        var matrix = new Matrix().rotate(!unrotated && data.angle, data.center);
+        var corners = matrix._transformCorners(data.bounds);
 
-        var matrix = new Matrix().rotate(!unrotated && angle, center);
-        var corners = matrix._transformCorners(bounds);
-
-        return corners;
+        return this._cache[key] = JSON.parse(JSON.stringify(corners));
     },
 
     _setSize: function(direction, value){

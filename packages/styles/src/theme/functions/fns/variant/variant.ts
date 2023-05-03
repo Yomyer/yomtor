@@ -17,7 +17,9 @@ export interface VariantOutput {
   background?: CSSProperties['backgroundColor']
   color?: CSSProperties['color']
   hover?: VariantOutput | CSSProperties['backgroundColor']
-  active?: VariantOutput | CSSProperties['backgroundColor']
+  active?:
+    | (VariantOutput & { size?: string | number })
+    | CSSProperties['backgroundColor']
   focus?: VariantOutput | CSSProperties['backgroundColor']
 }
 
@@ -131,7 +133,14 @@ export function variant(theme: YomtorTheme) {
                 ? theme.colors.dark[6]
                 : theme.colors.gray[1]
           },
-          focus: theme.colors.primary[5]
+          focus: theme.colors.primary[5],
+          active: {
+            background:
+              theme.colorScheme === 'dark'
+                ? theme.colors.dark[5]
+                : theme.colors.gray[2],
+            size: 'calc(100% + 2px)'
+          }
         }
     }
 

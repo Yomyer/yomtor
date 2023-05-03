@@ -75,12 +75,6 @@ export const configurator: YomtorDemo = {
       initialValue: true
     },
     {
-      name: 'actived',
-      type: 'boolean',
-      defaultValue: false,
-      initialValue: false
-    },
-    {
       name: 'loading',
       type: 'boolean',
       defaultValue: false,
