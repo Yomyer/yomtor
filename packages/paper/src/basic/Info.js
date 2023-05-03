@@ -2,7 +2,6 @@
  * @name Info
  * @namespace
  */
-var i = 0
 var Info = Base.extend(/** @lends Info# */{
     _class: 'Info',
     _cache: {},
@@ -322,8 +321,6 @@ var Info = Base.extend(/** @lends Info# */{
             owner.transform(new Matrix().rotate(-data.angle, data.center), false, false, true);
             data.bounds = owner.bounds;
             owner.transform(new Matrix().rotate(data.angle, data.center), false, false, true);
-            console.log(i)
-            i++
         }
         
         var matrix = new Matrix().rotate(!unrotated && data.angle, data.center);

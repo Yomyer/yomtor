@@ -3124,7 +3124,6 @@ var LinkedConstraints = Constraints.extend({
 	},
 });
 
-var i = 0
 var Info = Base.extend({
 	_class: 'Info',
 	_cache: {},
@@ -3335,8 +3334,6 @@ var Info = Base.extend({
 			owner.transform(new Matrix().rotate(-data.angle, data.center), false, false, true);
 			data.bounds = owner.bounds;
 			owner.transform(new Matrix().rotate(data.angle, data.center), false, false, true);
-			console.log(i)
-			i++
 		}
 		var matrix = new Matrix().rotate(!unrotated && data.angle, data.center);
 		var corners = matrix._transformCorners(data.bounds);
@@ -6102,7 +6099,6 @@ new function(){
 
 	_drawActivation: function(ctx, matrix, unrotated) {
 		var corners = this.info.getCorners(unrotated)
-		corners = matrix._transformCoordinates(corners, corners, 4);
 		ctx.beginPath();
 		ctx.moveTo(corners[0], corners[1]);
 		ctx.lineTo(corners[2], corners[3]);
@@ -6461,7 +6457,7 @@ var Artboard = Group.extend(
 						mx = new Matrix(),
 						horizontal = item._constraints.horizontal,
 						vertical = item._constraints.vertical,
-						size = new Size(item.info.width, item.info.height);
+						size = new Size(item.bounds.width, item.bounds.height);
 					if (isScaling) {
 						var rLeft, rTop;
 
@@ -8071,15 +8067,13 @@ var Selector = Item.extend(
 
 			matrix = matrix.appended(this.getGlobalMatrix(true));
 
-			ctx.lineWidth = 0.5;
+			matrix.applyToContext(ctx);
 			ctx.strokeStyle = this.strokeColor.toCanvasStyle(ctx, matrix);
+			ctx.lineWidth = 0.5 / this._project.view.zoom;
 
 			for (var x in items) {
 				items[x]._drawActivation(ctx, matrix, items.length > 1);
 			}
-
-			matrix.applyToContext(ctx);
-			ctx.lineWidth = 0.5 / this._project.view.zoom;
 
 			if (items.length > 1) {
 				ctx.beginPath();

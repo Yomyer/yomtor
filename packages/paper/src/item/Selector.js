@@ -639,15 +639,16 @@ var Selector = Item.extend(
 
             matrix = matrix.appended(this.getGlobalMatrix(true));
 
-            ctx.lineWidth = 0.5;
+            matrix.applyToContext(ctx);
+            
             ctx.strokeStyle = this.strokeColor.toCanvasStyle(ctx, matrix);
+            ctx.lineWidth = 0.5 / this._project.view.zoom;
 
             for (var x in items) {
                 items[x]._drawActivation(ctx, matrix, items.length > 1);
             }
 
-            matrix.applyToContext(ctx);
-            ctx.lineWidth = 0.5 / this._project.view.zoom;
+           
 
             if (items.length > 1) {
                 ctx.beginPath();

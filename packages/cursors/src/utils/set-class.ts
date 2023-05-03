@@ -30,13 +30,14 @@ export async function setClass(
       : (ref || CURSOR_CONFIG.scope).classList[clear ? 'remove' : 'add'](name)
   }
 
-  if (!CURSOR_CONFIG.styles[name] && !clear) {
+  if (!CURSOR_CONFIG.styles[name]) {
     const tag = await createStyleTag(name, {
       cursor,
       action,
       rotation,
       id
     })
+
     if (tag) {
       CURSOR_CONFIG.styles[name] = tag
     }

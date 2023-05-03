@@ -249,7 +249,7 @@ var Artboard = Group.extend(
                         mx = new Matrix(),
                         horizontal = item._constraints.horizontal,
                         vertical = item._constraints.vertical,
-                        size = new Size(item.info.width, item.info.height);
+                        size = new Size(item.bounds.width, item.bounds.height);
                     
                     if (isScaling) {
                         var rLeft, rTop;

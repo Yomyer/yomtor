@@ -5419,7 +5419,7 @@ new function(){
 
     _drawActivation: function(ctx, matrix, unrotated) {
         var corners = this.info.getCorners(unrotated)
-        corners = matrix._transformCoordinates(corners, corners, 4);
+        //corners = matrix._transformCoordinates(corners, corners, 4);
        
         ctx.beginPath();
         ctx.moveTo(corners[0], corners[1]);

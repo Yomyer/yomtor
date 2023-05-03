@@ -187,14 +187,14 @@ export const TransformTool = (props: TransformToolProps) => {
     if (helper) {
       canvas.project.emit('object:rotating', e)
     }
-    setCursor(true, canvas.project.activeItems.length > 1 && delta)
+    setCursor(canvas.project.activeItems.length > 1 && delta)
   }
 
-  const setCursor = (global = false, angle = 0) => {
+  const setCursor = (angle = 0) => {
     if (tool.idle) return
 
     const cursorIcon = mode.current === 'rotate' ? Rotate : Resize
-    const globalCursor = mode.current === 'rotate' ? showRotate : showResize
+
     hideCursors([Rotate, Resize])
     hideRotate(cursorAngle.current)
 
@@ -214,11 +214,7 @@ export const TransformTool = (props: TransformToolProps) => {
         360) %
       181
 
-    if (cursorAngle.current !== angle) {
-      global ? globalCursor(angle) : showCursor(cursorIcon, angle)
-    } else {
-      global ? globalCursor(angle) : showCursor(cursorIcon, angle)
-    }
+    showCursor(cursorIcon, angle)
 
     cursorAngle.current = angle
   }
@@ -404,7 +400,6 @@ export const TransformTool = (props: TransformToolProps) => {
         cursor.current = null
         mode.current = 'resize'
       }
-      hideCursors([Rotate, Resize])
     })
 
     selector.on('mousedown', (e: MouseEvent & { target: Control }) => {
@@ -475,7 +470,7 @@ export const TransformTool = (props: TransformToolProps) => {
 
       cursorAngle.current = null
 
-      setCursor(true)
+      setCursor()
 
       lastPoint.current = e.point
     })

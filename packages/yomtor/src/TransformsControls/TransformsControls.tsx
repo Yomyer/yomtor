@@ -57,7 +57,6 @@ export const TransformsControls = (props: TransformsControlsProps) => {
         update.current &&
         canvas.project.activeItems.length
       ) {
-        console.log('a')
         const x = countBy(
           canvas.project.activeItems.map((item) =>
             round(
@@ -189,6 +188,7 @@ export const TransformsControls = (props: TransformsControlsProps) => {
       setCombo(value)
     }
   }
+
   return visible ? (
     <Control>
       {combo && (

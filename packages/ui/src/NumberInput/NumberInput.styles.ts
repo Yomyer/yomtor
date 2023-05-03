@@ -46,7 +46,7 @@ export default createStyles(
         width: rem(getSize({ size, sizes: iconSizes }))
       }),
       ...(draggable && {
-        pointerEvents: 'all',
+        pointerEvents: 'inherit',
         '& > *': {
           display: 'flex'
         }
