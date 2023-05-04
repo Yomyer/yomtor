@@ -37,6 +37,7 @@ export const TreeView: TreeViewComponent = forwardRef<
     onSort,
     sortabled: isSortabled,
     multiple,
+    reverse,
     ...others
   } = useComponentDefaultProps('TreeView', defaultProps, props)
 
@@ -66,7 +67,8 @@ export const TreeView: TreeViewComponent = forwardRef<
     data,
     collapsed,
     position,
-    items: activeds.current
+    items: activeds.current,
+    reverse
   })
 
   activeds.current = cache.activeds
@@ -146,7 +148,8 @@ export const TreeView: TreeViewComponent = forwardRef<
     setParentHighlighted,
     info,
     setInfo,
-    distance
+    distance,
+    reverse
   }
 
   return (

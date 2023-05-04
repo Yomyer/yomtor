@@ -7,6 +7,7 @@ type UseNodeTreeProps = {
   collapsed?: boolean
   position?: TreeViewPositions
   items?: Record<number, NodeData>
+  reverse?: boolean
 }
 
 export interface UseNodeTreeData {
@@ -25,7 +26,8 @@ export const useNodeTree = ({
   data,
   collapsed,
   position,
-  items = {}
+  items = {},
+  reverse
 }: UseNodeTreeProps) => {
   let index = -1
   const nodes: NodeData[] = []
@@ -45,7 +47,7 @@ export const useNodeTree = ({
     actived?: boolean,
     disableDrop?: boolean
   ) => {
-    data.forEach((node, i) => {
+    (reverse ? [...data].reverse() : data).forEach((node, i) => {
       index++
       nodes[index] = node
       depths[index] = depth
@@ -92,7 +94,7 @@ export const useNodeTree = ({
   recursive(data)
 
   return {
-    nodes,
+    nodes: nodes,
     depths,
     parents,
     activeds,

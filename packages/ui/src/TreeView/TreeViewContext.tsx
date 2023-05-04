@@ -17,6 +17,7 @@ export interface TreeViewProviderContextType extends UseNodeTreeData {
   parentHighlighted?: number
   distance?: React.MutableRefObject<number>
   info?: TreeViewDropInfo
+  reverse?: boolean
 
   setActive: (node: NodeData, event?: MouseEvent) => void
   setDeactive: (node: NodeData, event?: MouseEvent) => void

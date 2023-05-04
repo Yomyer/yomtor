@@ -27,6 +27,7 @@ export interface TreeViewProps<T = NodeData> extends DefaultProps {
   multiple?: boolean
   nodes?: NodeData[]
   indent?: number
+  reverse?: boolean
   onSort?: (info: TreeViewDropInfo) => void
 }
 

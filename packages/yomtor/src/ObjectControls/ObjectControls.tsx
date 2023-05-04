@@ -27,7 +27,7 @@ export const ObjectControls = (props: ObjectControlsProps) => {
   }, [canvas])
 
   return (
-    <TreeView<Item> data={data} multiple>
+    <TreeView<Item> data={data} multiple reverse>
       {(node, item) => <div>{node.name}</div>}
     </TreeView>
   )
