@@ -2,6 +2,7 @@ import React from 'react'
 import { NumberInput, NumberInputProps, Group } from '@yomtor/ui'
 import { PropsType, YomtorDemo } from '@yomtor/ds'
 import { CodeIcon } from '@yomtor/icons'
+import { NumberInput as TextNumberInput } from '@mantine/core'
 
 const codeTemplate = (props: PropsType<NumberInputProps>, children: string) => `
 import { NumberInput } from '@yomtor/ui';
@@ -17,11 +18,23 @@ function Wrapper(props: NumberInputProps) {
   return (
     <Group position='center'>
       <NumberInput
-        {...props}
-        icon={<CodeIcon />}
+        label='Your age'
+        description='From 0 to 120, step is 1'
+        placeholder='Your age'
+        max={120}
+
+        /*
         formatter={(value) =>
           !Number.isNaN(parseFloat(value)) ? `${value} %` : ' %'
         }
+        */
+      />
+      <TextNumberInput
+        label='Your age'
+        description='From 0 to 120, step is 1'
+        placeholder='Your age'
+        max={120}
+        onChange={(value) => console.log(value)}
       />
     </Group>
   )

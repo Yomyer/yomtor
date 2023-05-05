@@ -8,7 +8,8 @@ export {
   useScrollIntoView,
   useForceUpdate,
   randomId,
-  useId
+  useId,
+  clamp
 } from '@mantine/hooks'
 
 export * from './use-clear-props/use-clear-props'

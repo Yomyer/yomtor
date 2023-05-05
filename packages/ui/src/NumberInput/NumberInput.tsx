@@ -17,7 +17,7 @@ import { Draggable, DraggableData, DraggableEvent } from '../Draggable'
 import useStyles from './NumberInput.styles'
 import { isEqual, omit, random, range } from 'lodash'
 import { abs } from '@yomtor/utils'
-import { useEventListener, useId, useMergedRef } from '@yomtor/hooks'
+import { useEventListener, useId, useMergedRef, clamp } from '@yomtor/hooks'
 import { ResizePanel, useGlobalCursor } from '@yomtor/cursors'
 
 const defaultProps: Partial<NumberInputProps> = {
@@ -30,7 +30,6 @@ const defaultProps: Partial<NumberInputProps> = {
   precision: 2,
   removeTrailingZeros: true,
   blur: true,
-  noClampOnBlur: true,
   mixedLabel: 'Mixed'
 }
 
@@ -52,7 +51,11 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
       mixed: isMixed,
       mixedLabel,
       formatter,
+      precision,
       value: defaultValue,
+      removeTrailingZeros,
+      min,
+      max,
       ...others
     } = useComponentDefaultProps('NumberInput', defaultProps, props)
 
@@ -71,6 +74,9 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
     const handlersRef = useRef<NumberInputHandlers>()
     const [showCursor, hideCursor] = useGlobalCursor(ResizePanel)
 
+    const _min = typeof min === 'number' ? min : -Infinity
+    const _max = typeof max === 'number' ? max : Infinity
+
     useEffect(() => {
       setMixed(isMixed)
     }, [isMixed])
@@ -87,6 +93,21 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
         handlersRef.current[delta > 0 ? 'increment' : 'decrement']()
       }
     }, [drag])
+
+    const parsePrecision = (val: number | '') => {
+      if (val === '') return ''
+
+      let result = val.toFixed(precision)
+
+      if (removeTrailingZeros && precision > 0) {
+        result = result.replace(new RegExp(`[0]{0,${precision}}$`), '')
+        if (result.endsWith('.')) {
+          result = result.slice(0, -1)
+        }
+      }
+
+      return result
+    }
 
     const dragHandler = (event: DraggableEvent, data: DraggableData) => {
       if (!data.deltaX) return
@@ -115,6 +136,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
     }
 
     const changeHandler = (value: number) => {
+      setValue(value)
       if (!disabled.current) {
         onChange && onChange(value, mixed)
       }
@@ -132,7 +154,13 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
     const keyDownHandler = (event: KeyboardEvent<HTMLInputElement>) => {
       if (['Enter', 'Tab'].includes(event.key)) {
         disabled.current = false
-        changeHandler(parseFloat(inputRef.current.value))
+        changeHandler(
+          parseFloat(
+            parsePrecision(
+              clamp(parseFloat(inputRef.current.value), _min, _max)
+            )
+          )
+        )
         inputRef.current.blur()
       } else {
         if (mixed) {
@@ -143,14 +171,16 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
       }
     }
 
-    const keyUpHandler = (event: KeyboardEvent<HTMLInputElement>) => {
-      setValue(parseFloat(inputRef.current.value))
-    }
-
     const blurHandler = (event: SyntheticEvent | MouseEvent) => {
       if (disabled.current && !isEqual(event.target, inputRef.current)) {
         disabled.current = false
-        changeHandler(parseFloat(inputRef.current.value))
+        changeHandler(
+          parseFloat(
+            parsePrecision(
+              clamp(parseFloat(inputRef.current.value), _min, _max)
+            )
+          )
+        )
       }
     }
 
@@ -171,8 +201,13 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
         onChange={changeHandler}
         onKeyDown={keyDownHandler}
         value={value}
-        onKeyUp={keyUpHandler}
-        formatter={formatter}
+        max={max}
+        min={min}
+        precision={precision}
+        removeTrailingZeros={removeTrailingZeros}
+        formatter={
+          !formatter ? (value) => (mixed ? mixedLabel : value) : formatter
+        }
         icon={
           <Draggable
             move={false}

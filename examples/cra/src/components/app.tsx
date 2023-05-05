@@ -70,7 +70,7 @@ export const App = () => {
               <AlignmentsControls visible />
               <TransformsControls />
               <ConstraintsControls />
-              <LayerControls visible />
+              <LayerControls />
             </Aside>
           }
           header={

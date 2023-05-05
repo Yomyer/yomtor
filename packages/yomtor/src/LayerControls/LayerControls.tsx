@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { ActionIcon, Control, NumberInput, Select } from '@yomtor/ui'
 import { ChangeFlag } from '@yomtor/paper'
 import { LayerControlsProps } from './LayerControls.props'
-import { countBy, isEmpty, isNumber, isString } from 'lodash'
+import { countBy, findKey, isEmpty, isNumber, isString, size } from 'lodash'
 import { LayerSelectData } from './data'
 import {
   DropletFilledIcon,
@@ -20,17 +20,51 @@ const defaultProps: Partial<LayerControlsProps> = {
 }
 
 export const LayerControls = (props: LayerControlsProps) => {
-  const { visible } = useComponentDefaultProps(
+  const { visible: isVisible } = useComponentDefaultProps(
     'ObjectControls',
     defaultProps,
     props
   )
   const { canvas } = useEditorContext()
-  const [active, setActive] = useState<boolean>()
+  const [visible, setVisible] = useState<boolean>(isVisible)
   const [artboard, setArtboard] = useState<boolean>()
-  const [numberValue, setNumberValue] = useState<number>(OPACITY_MULTIPLIER)
-  const [isVisible, setIsVisible] = useState<boolean>(true)
+  const [opacity, setOpacity] = useState<number | ''>('')
+  const [visibility, setVisibility] = useState<boolean | ''>('')
   const [dropFilled, setDropFilled] = useState<boolean>(false)
+
+  useEffect(() => {
+    setVisible(isVisible)
+  }, [isVisible])
+
+  useEffect(() => {
+    if (!canvas) return
+
+    canvas.project.on('changed', (type) => {
+      if (type & ChangeFlag.ACTIVE) {
+        setVisible(canvas.project.activeItems.length > 0)
+
+        const opacity = countBy(
+          canvas.project.activeItems.map(
+            (item) => item.opacity * OPACITY_MULTIPLIER
+          )
+        )
+
+        const visibility = countBy(
+          canvas.project.activeItems.map((item) => item.visible)
+        )
+
+        const hasArtboard = countBy(
+          canvas.project.activeItems.map((item) => item.artboard)
+        )
+
+        setOpacity(size(opacity) === 1 ? parseFloat(findKey(opacity)) : '')
+        setVisibility(
+          size(visibility) === 1 ? findKey(visibility) === 'true' : ''
+        )
+        setArtboard(!isEmpty(hasArtboard) && !hasArtboard.null)
+      }
+    })
+  }, [canvas])
 
   const changeHandler = (
     property: 'blendMode' | 'opacity' | 'visibility',
@@ -43,25 +77,10 @@ export const LayerControls = (props: LayerControlsProps) => {
   }
 
   const clickHandler = (value) => {
-    setIsVisible(!value)
+    setVisibility(!value)
     canvas.project.activeItems.forEach((item) => (item.visible = !value))
   }
-
-  useEffect(() => {
-    if (!canvas) return
-
-    canvas.project.on('changed', (type) => {
-      if (type & ChangeFlag.ACTIVE) {
-        setActive(canvas.project.activeItems.length > 0)
-        const hasArtboard = countBy(
-          canvas.project.activeItems.map((item) => item.artboard)
-        )
-
-        setArtboard(!isEmpty(hasArtboard) && !hasArtboard.null)
-      }
-    })
-  }, [canvas])
-
+  console.log(opacity)
   return artboard || visible ? (
     <Control>
       <Control.Title title={<>Layer</>} />
@@ -82,25 +101,28 @@ export const LayerControls = (props: LayerControlsProps) => {
         </Control.Panel>
         <Control.Panel start={22} end={31}>
           <NumberInput
-            value={numberValue > 100 ? 100 : numberValue}
+            value={opacity}
             max={100}
             min={0}
             onChange={(value: number) => {
-              setNumberValue(value)
+              // setNumberValue(value)
               changeHandler('opacity', value / OPACITY_MULTIPLIER)
             }}
+            mixed={isEmpty(opacity.toString())}
+            /*
             formatter={(value) =>
               !Number.isNaN(parseFloat(value))
                 ? `$ ${value}`.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
                 : '$ '
             }
+            */
             // rightSection={<div style={{ fontSize: '11px' }}>%</div>}
           />
         </Control.Panel>
         <Control.Panel start={32} end={32}>
           <ActionIcon
-            icon={isVisible ? <EyeIcon /> : <EyeClosedIcon />}
-            onClick={() => clickHandler(isVisible)}
+            icon={visibility ? <EyeIcon /> : <EyeClosedIcon />}
+            onClick={() => clickHandler(visibility)}
           />
         </Control.Panel>
       </Control.Group>

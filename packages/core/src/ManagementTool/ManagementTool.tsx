@@ -81,10 +81,12 @@ export const ManagementTool = (props: ManagementToolProps) => {
   }
 
   const paste = () => {
-    console.log(clipboard.current)
+    canvas.project.deactivateAll()
     clipboard.current.forEach((item) => {
-      item.clone()
+      const cloned = item.clone()
+      cloned.actived = true
     })
+    canvas.project.clearHighlightedItem()
   }
 
   useEffect(() => {
