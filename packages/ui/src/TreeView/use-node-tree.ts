@@ -47,7 +47,7 @@ export const useNodeTree = ({
     actived?: boolean,
     disableDrop?: boolean
   ) => {
-    (reverse ? [...data].reverse() : data).forEach((node, i) => {
+    ;(reverse ? [...data].reverse() : data).forEach((node, i) => {
       index++
       nodes[index] = node
       depths[index] = depth

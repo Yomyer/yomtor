@@ -109,13 +109,12 @@ export const LayerControls = (props: LayerControlsProps) => {
               changeHandler('opacity', value / OPACITY_MULTIPLIER)
             }}
             mixed={isEmpty(opacity.toString())}
-            /*
-            formatter={(value) =>
-              !Number.isNaN(parseFloat(value))
+            formatter={(value) => {
+              console.log(value)
+              return !Number.isNaN(parseFloat(value))
                 ? `$ ${value}`.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
                 : '$ '
-            }
-            */
+            }}
             // rightSection={<div style={{ fontSize: '11px' }}>%</div>}
           />
         </Control.Panel>
