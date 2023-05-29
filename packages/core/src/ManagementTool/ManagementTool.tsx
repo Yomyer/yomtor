@@ -12,6 +12,7 @@ import {
 } from '@yomtor/paper'
 import { useHotkeys } from '@yomtor/hooks'
 import { Clone, Default, useCursor } from '@yomtor/cursors'
+import { get } from 'lodash'
 
 const defaultProps: Partial<ManagementToolProps> = {}
 
@@ -92,10 +93,10 @@ export const ManagementTool = (props: ManagementToolProps) => {
   useEffect(() => {
     if (!canvas) return
 
-    canvas.view.on('mousemove', (e: MouseEvent) => {
-      if (e.target.layer) {
-        mouseEvent.current = e
-        if (e.modifiers.alt) {
+    canvas.view.on('mousemove', (event: MouseEvent) => {
+      if (event.target.layer) {
+        mouseEvent.current = event
+        if (event.modifiers.alt) {
           showCursor([Default, Clone])
         }
       } else {
@@ -104,16 +105,16 @@ export const ManagementTool = (props: ManagementToolProps) => {
       }
     })
 
-    canvas.project.on('selection:pressed', (e: MouseEvent) => {
+    canvas.project.on('selection:pressed', (event: MouseEvent) => {
       setBeforePositions()
-      if (e.modifiers.alt) {
+      if (event.modifiers.alt) {
         cloneController(true)
       }
     })
 
-    canvas.view.on('mouseup', (e: MouseEvent) => {
+    canvas.view.on('mouseup', (event: MouseEvent) => {
       beforePositions.current = {}
-      if (e.modifiers.alt) {
+      if (event.modifiers.alt) {
         removeDuplicates()
         clonedItems.current = {}
         cloneController(true)
@@ -124,8 +125,11 @@ export const ManagementTool = (props: ManagementToolProps) => {
       }
     })
 
-    canvas.view.on('keydown', (e: KeyEvent) => {
-      if (['delete', 'backspace'].includes(e.key)) {
+    canvas.view.on('keydown', (event: KeyEvent) => {
+      if (
+        ['delete', 'backspace'].includes(event.key) &&
+        get(event, 'event.target.tagName') !== 'INPUT'
+      ) {
         let items = [...canvas.project.activeItems]
 
         items.forEach((item) => item.remove())

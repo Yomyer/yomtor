@@ -44,6 +44,16 @@ declare namespace paper {
     }
 
     
+    class BlendMode  {
+        /** 
+         * Modes of blend mode
+         */
+        static MODES: 'normal'  |  'multiply'  |  'screen'  |  'overlay'  |  'soft-light'  |  'hard-light'  |  'color-dodge'  |  'color-burn'  |  'darken'  |  'lighten'  |  'difference'  |  'exclusion'  |  'hue'  |  'saturation'  |  'luminosity'  |  'color'  |  'add'  |  'subtract'  |  'average'  |  'pin-light'  |  'negation'  |  'source-over'  |  'source-in'  |  'source-out'  |  'source-atop'  |  'destination-over'  |  'destination-in'  |  'destination-out'  |  'destination-atop'  |  'lighter'  |  'darker'  |  'copy'  |  'xor'
+
+
+    }
+
+    
     class Change  {
         
         static CHILDREN: number
@@ -1778,7 +1788,7 @@ declare namespace paper {
          * are supported. If blend-modes cannot be rendered natively, they are
          * emulated. Be aware that emulation can have an impact on performance.
          */
-        blendMode: 'normal' | 'multiply' | 'screen' | 'overlay' | 'soft-light' | 'hard-    light' | 'color-dodge' | 'color-burn' | 'darken' | 'lighten' |    'difference' | 'exclusion' | 'hue' | 'saturation' | 'luminosity' |    'color' | 'add' | 'subtract' | 'average' | 'pin-light' | 'negation' |    'source-over' | 'source-in' | 'source-out' | 'source-atop' |    'destination-over' | 'destination-in' | 'destination-out' |    'destination-atop' | 'lighter' | 'darker' | 'copy' | 'xor'
+        blendMode: typeof BlendMode.MODES
 
         /** 
          * The opacity of the item as a value between `0` and `1`.
@@ -3190,6 +3200,11 @@ declare namespace paper {
         character: string
 
         /** 
+         * The original event
+         */
+        event: KeyboardEvent
+
+        /** 
          * The key that caused this key event, either as a lower-case character or
          * special key descriptor.
          */
@@ -3767,6 +3782,7 @@ declare namespace paper {
         mainTool: Tool
 
         Artboard: typeof Artboard
+        BlendMode: typeof BlendMode
         Change: typeof Change
         ChangeFlag: typeof ChangeFlag
         Color: typeof Color
@@ -8205,6 +8221,7 @@ declare module '@yomtor/paper'
     const paperFull: paper.PaperScope;
 
     export class Artboard extends paper.Artboard {}
+    export class BlendMode extends paper.BlendMode {}
     export class Change extends paper.Change {}
     export class ChangeFlag extends paper.ChangeFlag {}
     export class Color extends paper.Color {}

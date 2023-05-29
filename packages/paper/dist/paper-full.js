@@ -3419,6 +3419,10 @@ var Change = {
 	HIGHLIGHT: ChangeFlag.HIGHLIGHT | ChangeFlag.ATTRIBUTE | ChangeFlag.APPEARANCE
 };
 
+ var BlendMode = {
+	MODES: 'normal'
+}
+
 var Project = PaperScopeItem.extend(
    {
 	_class: 'Project',
@@ -6115,6 +6119,7 @@ new function(){
 var Group = Item.extend(
 	 {
 		_class: "Group",
+		_name: 'Group',
 		_selectBounds: false,
 		_selectChildren: true,
 		_serializeStyle: false,
@@ -6494,16 +6499,19 @@ var Artboard = Group.extend(
 						switch (vertical) {
 							case "scale":
 								mx.translate(0, translation.y).scale(1, scaling.y);
+								break;
 							case "center":
 							   mx.translate(0, (diff.y / 2 - offset.y) * (top ? 1 : -1)  ).scale(1, flipped.y, this._constraintsPivot);
 								break;
 							case "end":
 								mx.translate(0, top ? diff.y - offset.y : offset.y).scale(1, flipped.y,  this._constraintsPivot);
+								break;
 							case "both":
 								mx.scale(1, flipped.y,  this._constraintsPivot).scale(1,  itemScale.y, rTop ? item.bounds.topCenter : item.bounds.bottomCenter)
 								break;
 							default:
 								mx.translate(0, !top ? - diff.y + offset.y : -offset.y).scale(1, flipped.y,  this._constraintsPivot);
+								break;
 						}
 					} else {
 						mx = matrix;
@@ -20340,6 +20348,7 @@ var paper = new (PaperScope.inject(Base.exports, {
 	DomEvent: DomEvent,
 	DomElement: DomElement,
 	ChangeFlag: ChangeFlag,
+	BlendMode: BlendMode,
 	Change: Change,
 	document: document,
 	window: window,

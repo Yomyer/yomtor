@@ -52,7 +52,7 @@ export const App = () => {
 
     artboard.addChild(group)
     group.actived = true
-    group.set({ constraints: ['both', 'both'] })
+    group.set({ constraints: ['start', 'start'] })
   }, [])
 
   return (

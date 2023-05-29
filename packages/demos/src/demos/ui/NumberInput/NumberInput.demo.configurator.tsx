@@ -21,8 +21,11 @@ function Wrapper(props: NumberInputProps) {
         label='Your age'
         description='From 0 to 120, step is 1'
         placeholder='Your age'
-        max={120}
-
+        parser={(value) => value.replace(/%\s?|(,*)/g, '')}
+        formatter={(value) => {
+          console.log(value)
+          return !Number.isNaN(parseFloat(value)) ? `${value}%` : '%'
+        }}
         /*
         formatter={(value) =>
           !Number.isNaN(parseFloat(value)) ? `${value} %` : ' %'
@@ -33,8 +36,12 @@ function Wrapper(props: NumberInputProps) {
         label='Your age'
         description='From 0 to 120, step is 1'
         placeholder='Your age'
-        max={120}
         onChange={(value) => console.log(value)}
+        parser={(value) => value.replace(/%\s?|(,*)/g, '')}
+        formatter={(value) => {
+          console.log(value)
+          return !Number.isNaN(parseFloat(value)) ? `${value}%` : '%'
+        }}
       />
     </Group>
   )

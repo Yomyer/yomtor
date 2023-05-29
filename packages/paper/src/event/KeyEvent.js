@@ -47,6 +47,13 @@ var KeyEvent = Event.extend(/** @lends KeyEvent# */{
      * @type String
      */
 
+     /**
+     * The original event
+     *
+     * @name KeyEvent#event
+     * @type KeyboardEvent
+     */
+
     /**
      * The key that caused this key event, either as a lower-case character or
      * special key descriptor.

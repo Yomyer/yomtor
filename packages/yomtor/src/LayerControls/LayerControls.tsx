@@ -2,7 +2,7 @@ import { useComponentDefaultProps } from '@yomtor/styles'
 import { useEditorContext } from '@yomtor/core'
 import React, { useEffect, useState } from 'react'
 import { ActionIcon, Control, NumberInput, Select } from '@yomtor/ui'
-import { ChangeFlag } from '@yomtor/paper'
+import { BlendMode, ChangeFlag } from '@yomtor/paper'
 import { LayerControlsProps } from './LayerControls.props'
 import { countBy, findKey, isEmpty, isNumber, isString, size } from 'lodash'
 import { LayerSelectData } from './data'
@@ -66,21 +66,27 @@ export const LayerControls = (props: LayerControlsProps) => {
     })
   }, [canvas])
 
-  const changeHandler = (
-    property: 'blendMode' | 'opacity' | 'visibility',
-    value: string | number
-  ) => {
+  const blendModeHandler = (value: typeof BlendMode.MODES & 'start') => {
     isString(value) && value !== 'start' && value !== 'normal'
       ? setDropFilled(true)
       : setDropFilled(false)
-    canvas.project.activeItems.forEach((item) => (item[property] = value))
+
+    canvas.project.activeItems.forEach((item) => (item.blendMode = value))
   }
 
-  const clickHandler = (value) => {
+  const opacityHandler = (value: number) => {
+    canvas.project.activeItems.forEach(
+      (item) => (item.opacity = value / OPACITY_MULTIPLIER)
+    )
+
+    setOpacity(value)
+  }
+
+  const visibilityHandler = (value) => {
     setVisibility(!value)
     canvas.project.activeItems.forEach((item) => (item.visible = !value))
   }
-  console.log(opacity)
+
   return artboard || visible ? (
     <Control>
       <Control.Title title={<>Layer</>} />
@@ -96,7 +102,7 @@ export const LayerControls = (props: LayerControlsProps) => {
                 <DropletIcon size='sm' />
               )
             }
-            onChange={(value) => changeHandler('blendMode', value)}
+            onChange={blendModeHandler}
           />
         </Control.Panel>
         <Control.Panel start={22} end={31}>
@@ -104,24 +110,20 @@ export const LayerControls = (props: LayerControlsProps) => {
             value={opacity}
             max={100}
             min={0}
-            onChange={(value: number) => {
-              // setNumberValue(value)
-              changeHandler('opacity', value / OPACITY_MULTIPLIER)
-            }}
+            onChange={opacityHandler}
             mixed={isEmpty(opacity.toString())}
-            formatter={(value) => {
-              console.log(value)
-              return !Number.isNaN(parseFloat(value))
-                ? `$ ${value}`.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
-                : '$ '
+            parser={(value) => {
+              return value.replace(/[^(\d)]/g, '')
             }}
-            // rightSection={<div style={{ fontSize: '11px' }}>%</div>}
+            formatter={(value) =>
+              !Number.isNaN(parseFloat(value)) ? `${value}%` : '100%'
+            }
           />
         </Control.Panel>
         <Control.Panel start={32} end={32}>
           <ActionIcon
             icon={visibility ? <EyeIcon /> : <EyeClosedIcon />}
-            onClick={() => clickHandler(visibility)}
+            onClick={() => visibilityHandler(visibility)}
           />
         </Control.Panel>
       </Control.Group>

@@ -60,6 +60,7 @@ var paper = function(self, undefined) {
 /*#*/ include('basic/Info.js');
 
 /*#*/ include('item/ChangeFlag.js');
+/*#*/ include('item/BlendMode.js');
 /*#*/ include('item/Project.js');
 /*#*/ include('item/Item.js');
 /*#*/ include('item/Group.js');

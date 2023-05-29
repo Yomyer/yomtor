@@ -95,6 +95,8 @@ export const TransformsControls = (props: TransformsControlsProps) => {
           canvas.project.activeItems.map((item) => item.className)
         )
 
+        ItemData.forEach((item) => delete item.selected)
+
         setX(size(x) === 1 ? parseFloat(findKey(x)) : '')
         setY(size(y) === 1 ? parseFloat(findKey(y)) : '')
         setWidth(size(width) === 1 ? parseFloat(findKey(width)) : '')
@@ -121,7 +123,7 @@ export const TransformsControls = (props: TransformsControlsProps) => {
         )
 
         ItemData.filter((item) => item.right).forEach(
-          (item) => (item.selected = false)
+          (item) => delete item.selected
         )
 
         const sizeSelected = ItemData.find((data) => findKey(s) === data.right)
