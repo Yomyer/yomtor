@@ -3044,7 +3044,7 @@ var Constraints = Base.extend({
 			if (reading)
 				read = arg0 === null ? 1 : 0;
 		} else {
-			var obj = type === 'string' ? arg0.split(/[\s,]+/) || [] : arg0;
+			var obj = type === 'string' ? JSON.parse(arg0.replace(/(['"])?([a-zA-Z0-9_]+)(['"])?:/g, '"$2":')) || [] : arg0;
 			read = 1;
 			if (Array.isArray(obj)) {
 				this._set(obj[0], (obj.length > 1 ? obj[1] : obj[0]));
@@ -3123,6 +3123,132 @@ var LinkedConstraints = Constraints.extend({
 
 	setVertical: function(vertical) {
 		this._vertical = vertical;
+		this._owner[this._setter](this);
+	},
+});
+
+var Shorthand = Base.extend({
+	_class: 'Shorthand',
+	_top: null,
+	_right: null,
+	_bottom: null,
+	_left: null,
+
+	initialize: function Shorthand(arg0, arg1, arg2, arg3) {
+		var type = typeof arg0,
+			reading = this.__read,
+			read = 0;
+
+		if (type === 'number') {
+			var multiple = typeof arg1 === 'number';
+			this._set(arg0, multiple ? arg1 : arg0, multiple ? arg2 : arg0, multiple ? arg3 : arg0);
+			if (reading)
+				read = multiple ? 4 : 1;
+		} else if (type === 'undefined' || arg0 === null) {
+			this._set(0, 0, 0, 0);
+			if (reading)
+				read = arg0 === null ? 1 : 0;
+		} else {
+			var obj = type === 'string' ? JSON.parse(arg0.replace(/(['"])?([a-zA-Z0-9_]+)(['"])?:/g, '"$2":')) || [] : arg0;
+			read = 1;
+			if (Array.isArray(obj)) {
+				this._set(obj[0], (obj.length > 1 ? obj[1] : obj[0]), (obj.length > 1 ? obj[2] : obj[0]), (obj.length > 1 ? obj[3] : obj[0]));
+			} else if ('top' in obj) {
+				this._set(obj.top || 0, obj.right || 0, obj.bottom || 0, obj.left || 0);
+			}  else {
+				this._set(0, 0, 0, 0);
+				read = 0;
+			}
+		}
+		if (reading)
+			this.__read = read;
+		return this;
+	},
+
+	set: '#initialize',
+
+	_set: function(top, right, bottom, left) {
+		this.top = top;
+		this.right = right;
+		this.bottom = bottom;
+		this.left = left;
+
+		return this;
+	},
+
+	equals: function(shorthand) {
+		return this === shorthand || shorthand
+				&& (this.top === shorthand.shorthand && this.right === shorthand.right && this.bottom === shorthand.bottom && this.left === shorthand.left
+					|| Array.isArray(shorthand)
+						&& this.top === shorthand[0] && this.right === shorthand[1] && this.bottom === shorthand[2] && this.left === shorthand[3])
+				|| false;
+	},
+
+	clone: function() {
+		return new Shorthand(this.top, this.right, this.bottom, this.left);
+	},
+
+	toString: function() {
+		return '{ top: ' + this.top + ', right: ' + this.right + ', bottom: ' + this.bottom + ', left: ' + this.left + ' }';
+	},
+
+	_serialize: function(options) {
+		return [this.top, this.right, this.bottom, this.left];
+	},
+});
+
+var LinkedShorthand = Shorthand.extend({
+	initialize: function Shorthand(top, right, bottom, left, owner, setter) {
+		this._top = top;
+		this._right = right;
+		this._bottom = bottom;
+		this._left = left;
+		this._owner = owner;
+		this._setter = setter;
+	},
+
+	_set: function(top, right, bottom, left, _dontNotify) {
+		this._top = top;
+		this._right = right;
+		this._bottom = bottom;
+		this._left = left;
+		if (!_dontNotify)
+			this._owner[this._setter](this);
+		return this;
+	},
+
+	getTop: function() {
+		return this._top;
+	},
+
+	setTop: function(top) {
+		this._top = top;
+		this._owner[this._setter](this);
+	},
+	getRight: function() {
+		return this._right;
+	},
+
+	setRight: function(right) {
+		this._right = right;
+		this._owner[this._setter](this);
+	},
+
+	getBottom: function() {
+		return this._bottom;
+	},
+
+	setBottom: function(bottom) {
+		this._bottom = bottom;
+		this._owner[this._setter](this);
+	},
+
+	getLeft: function() {
+		return this._left;
+	},
+
+	setLeft: function(left) {
+		this._left = left;
 		this._owner[this._setter](this);
 	},
 });
@@ -4032,6 +4158,7 @@ var Item = Base.extend(Emitter, {
 	_constraintsPivot: null,
 	_constraints: {},
 	_constraintProportions: false,
+	_borderRadius: 0,
 	_serializeFields: {
 		name: null,
 		applyMatrix: null,
@@ -4049,7 +4176,9 @@ var Item = Base.extend(Emitter, {
 		uid: null,
 		angle: 0,
 		actived: false,
-		constraints: {}
+		constraints: {},
+		borderRadius: 0,
+		constraintProportions: false
 	},
 	_prioritize: ['applyMatrix']
 },
@@ -4435,6 +4564,17 @@ new function() {
 		this._constraints = Constraints.read(arguments);
 		this._changed(257 | Change.APPEARANCE);
 		return this._constraints
+	},
+
+	getBorderRadius: function(){
+		var borderRadius = this._borderRadius;
+		return new LinkedShorthand(borderRadius.top || 0, borderRadius.right || 0, borderRadius.bottom || 0, borderRadius.left || 0, this, 'setBorderRadius');
+	},
+
+	setBorderRadius: function(){
+		this._borderRadius = Shorthand.read(arguments);
+		this._changed(257 | Change.APPEARANCE);
+		return this._borderRadius
 	},
 
 	getConstraintsPivot: function(){
@@ -4848,6 +4988,7 @@ new function() {
 				&& this._clipMask === item._clipMask
 				&& this._guide === item._guide
 				&& this._constraints === item._constraints
+				&& this._borderRaidus === item._borderRaidus
 				&& this._equals(item)
 				|| false;
 	},
@@ -4904,7 +5045,7 @@ new function() {
 	copyAttributes: function(source, excludeMatrix) {
 		this.setStyle(source._style);
 		var keys = ['_locked', '_visible', '_blendMode', '_opacity',
-				'_clipMask', '_guide', '_angle', '_flipped', '_constraints'];
+				'_clipMask', '_guide', '_angle', '_flipped', '_constraints', '_constraintProportions', '_borderRadius'];
 		for (var i = 0, l = keys.length; i < l; i++) {
 			var key = keys[i];
 			if (source.hasOwnProperty(key))

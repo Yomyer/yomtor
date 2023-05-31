@@ -8,12 +8,30 @@ import {
   RadiusIcon,
   RotationIcon,
   UnlinkIcon,
+  LinkIcon,
   WidthIcon,
   XAxisIcon,
   YAxisIcon
 } from '@yomtor/icons'
-import { ChangeFlag, Artboard, Group, Size, Item } from '@yomtor/paper'
-import { countBy, find, findKey, isEmpty, size } from 'lodash'
+import {
+  ChangeFlag,
+  Artboard,
+  Group,
+  Size,
+  Item,
+  PathItem,
+  Shorthand
+} from '@yomtor/paper'
+import {
+  countBy,
+  find,
+  findKey,
+  isBoolean,
+  isEmpty,
+  isNumber,
+  isString,
+  size
+} from 'lodash'
 import { round } from '@yomtor/utils'
 import { ItemData } from './data'
 import { SelectItem } from '@mantine/core'
@@ -35,7 +53,11 @@ export const TransformsControls = (props: TransformsControlsProps) => {
   const [width, setWidth] = useState<number | ''>('')
   const [height, setHeight] = useState<number | ''>('')
   const [angle, setAngle] = useState<number | ''>('')
+  const [radius, setRadius] = useState<Shorthand | ''>('')
   const [combo, setCombo] = useState<string>()
+  const [constraintProportions, setConstraintProportions] = useState<
+    boolean | ''
+  >('')
   const [disableGroup, setDisabelGroup] = useState<boolean>(false)
   const update = useRef<boolean>(true)
 
@@ -95,6 +117,16 @@ export const TransformsControls = (props: TransformsControlsProps) => {
           canvas.project.activeItems.map((item) => item.className)
         )
 
+        const constraintProportions = countBy(
+          canvas.project.activeItems.map((item) => item.constraintProportions)
+        )
+
+        const radius = countBy(
+          canvas.project.activeItems.map((item) => {
+            return item.borderRadius
+          })
+        )
+
         ItemData.forEach((item) => delete item.selected)
 
         setX(size(x) === 1 ? parseFloat(findKey(x)) : '')
@@ -102,6 +134,14 @@ export const TransformsControls = (props: TransformsControlsProps) => {
         setWidth(size(width) === 1 ? parseFloat(findKey(width)) : '')
         setHeight(size(height) === 1 ? parseFloat(findKey(height)) : '')
         setAngle(size(angle) === 1 ? parseFloat(findKey(angle)) : '')
+
+        setRadius(size(radius) === 1 ? new Shorthand(findKey(radius)) : '')
+
+        setConstraintProportions(
+          size(constraintProportions) === 1
+            ? findKey(constraintProportions) === 'true'
+            : ''
+        )
         setDisabelGroup(!!disableGroup.true)
         setCombo(
           size(combo) === 1
@@ -134,7 +174,12 @@ export const TransformsControls = (props: TransformsControlsProps) => {
     })
   }, [canvas])
 
-  const changeHandler = (key: string, value: number, mixed?: boolean) => {
+  const changeHandler = (
+    key: string,
+    value: number | boolean,
+    mixed?: boolean
+  ) => {
+    console.log('aaa')
     update.current = false
     canvas.project.activeItems.forEach((item) => {
       if (['x', 'y'].includes(key)) {
@@ -145,11 +190,27 @@ export const TransformsControls = (props: TransformsControlsProps) => {
             ? value
             : item.info.topLeft[key] + value
       }
-      if (['width', 'height'].includes(key)) {
+      if (['width', 'height'].includes(key) && isNumber(value)) {
+        const diff = value - item.info[key]
         item.info[key] = !mixed ? value : item.info[key] + value
+
+        if (item.constraintProportions) {
+          const reverse = { width: 'height', height: 'width' }[key]
+          const func = { width: setHeight, height: setWidth }[key]
+          item.info[reverse] = item.info[reverse] + (!mixed ? diff : value)
+          !mixed && func(item.info[reverse])
+        }
       }
       if (['angle'].includes(key)) {
-        item.info[key] = !mixed ? value : item.info[key] + value
+        // item.info.angle = !mixed ? value : item.info.angle + value
+      }
+      if (['radius'].includes(key) && isNumber(value)) {
+        item.borderRadius = new Shorthand(
+          !mixed ? value : item.borderRadius.top + value
+        )
+      }
+      if (['constraintProportions'].includes(key) && isBoolean(value)) {
+        setConstraintProportions((item.constraintProportions = value))
       }
     })
   }
@@ -253,7 +314,20 @@ export const TransformsControls = (props: TransformsControlsProps) => {
           />
         </Control.Panel>
         <Control.Panel start={32} end={33}>
-          <ActionIcon icon={<UnlinkIcon />} />
+          <ActionIcon
+            icon={
+              constraintProportions ||
+              isEmpty(constraintProportions.toString()) ? (
+                <LinkIcon />
+              ) : (
+                <UnlinkIcon />
+              )
+            }
+            onClick={() =>
+              changeHandler('constraintProportions', !constraintProportions)
+            }
+            actived={!!constraintProportions}
+          />
         </Control.Panel>
         <Control.Panel start={1} end={14}>
           <NumberInput
@@ -266,7 +340,14 @@ export const TransformsControls = (props: TransformsControlsProps) => {
           />
         </Control.Panel>
         <Control.Panel start={16} end={30}>
-          <Input icon={<RadiusIcon />} />
+          <NumberInput
+            icon={<RadiusIcon />}
+            value={!isString(radius) && radius.top}
+            onChange={(value: number, mixed: boolean) =>
+              changeHandler('radius', value, mixed)
+            }
+            mixed={isEmpty(radius.toString())}
+          />
         </Control.Panel>
         <Control.Panel start={32} end={33}>
           <ActionIcon icon={<RotationIcon />} />

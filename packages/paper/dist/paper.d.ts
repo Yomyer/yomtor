@@ -1852,12 +1852,17 @@ declare namespace paper {
         /** 
          * The if item is constraints.
          */
+        borderRadius: Shorthand
+
+        /** 
+         * The if item is constraints.
+         */
         constraintsPivot: Point
 
         /** 
          * The if item is constraints.
          */
-        constraintProportions: Point
+        constraintProportions: boolean
 
         /** 
          * The item's pivot point specified in the item coordinate system, defining
@@ -3818,6 +3823,7 @@ declare namespace paper {
         Selector: typeof Selector
         SelectorInfo: typeof SelectorInfo
         Shape: typeof Shape
+        Shorthand: typeof Shorthand
         Size: typeof Size
         Style: typeof Style
         SymbolDefinition: typeof SymbolDefinition
@@ -6942,6 +6948,81 @@ declare namespace paper {
         }
     }
 
+    
+    class Shorthand  {
+        /** 
+         * The horizontal direction of the constraint
+         */
+        top: number
+
+        /** 
+         * The horizontal direction of the constraint
+         */
+        right: number
+
+        /** 
+         * The horizontal direction of the constraint
+         */
+        bottom: number
+
+        /** 
+         * The horizontal direction of the constraint
+         */
+        left: number
+
+
+        /** 
+         * Creates a Shorthand object using the numbers of the given Shorthand object.
+         * 
+         * @param top - the x coordinate
+         * @param right - the y coordinate
+         * @param bottom - the x coordinate
+         * @param left - the y coordinate
+         */
+        constructor(top: number, right: number, bottom: number, left: number)
+
+        /** 
+         * Creates a Shorthand array using the numbers of the given Shorthand object.
+         */
+        constructor(array: any[])
+
+        /** 
+         * Creates a Shorthand serialize string using the numbers of the given Shorthand object.
+         */
+        constructor(string: string)
+
+        /** 
+         * Creates a Shorthand object using the directions of the given Shorthand object.
+         */
+        constructor(array: number)
+
+        /** 
+         * Creates a Shorthand object using number of the given Shorthand object.
+         */
+        constructor(shorthand: Shorthand)
+
+        
+        set(...values: any[]): Shorthand
+
+        /** 
+         * @return true if the points are equal
+         */
+        equals(shorthand: Shorthand): boolean
+
+        /** 
+         * Returns a copy of the shorthand.
+         * 
+         * @return the cloned shorthand
+         */
+        clone(): Shorthand
+
+        /** 
+         * @return a string representation of the shorthand
+         */
+        toString(): string
+
+    }
+
     /** 
      * The Size object is used to describe the size or dimensions of
      * something, through its {@link #width} and {@link #height} properties.
@@ -8257,6 +8338,7 @@ declare module '@yomtor/paper'
     export class Selector extends paper.Selector {}
     export class SelectorInfo extends paper.SelectorInfo {}
     export class Shape extends paper.Shape {}
+    export class Shorthand extends paper.Shorthand {}
     export class Size extends paper.Size {}
     export class Style extends paper.Style {}
     export class SymbolDefinition extends paper.SymbolDefinition {}

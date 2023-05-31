@@ -78,6 +78,7 @@ var Item = Base.extend(Emitter, /** @lends Item# */{
     _constraintsPivot: null,
     _constraints: {},
     _constraintProportions: false,
+    _borderRadius: 0,
     // Provide information about fields to be serialized, with their defaults
     // that can be omitted.
     _serializeFields: {
@@ -97,7 +98,9 @@ var Item = Base.extend(Emitter, /** @lends Item# */{
         uid: null,
         angle: 0,
         actived: false,
-        constraints: {}
+        constraints: {},
+        borderRadius: 0,
+        constraintProportions: false
     },
     // Prioritize `applyMatrix` over `matrix`:
     _prioritize: ['applyMatrix']
@@ -993,6 +996,24 @@ new function() { // Injection scope for various item event handlers
     /**
      * The if item is constraints.
      *
+     * @bean
+     * @type Shorthand
+     */
+    getBorderRadius: function(){
+        var borderRadius = this._borderRadius;
+        return new LinkedShorthand(borderRadius.top || 0, borderRadius.right || 0, borderRadius.bottom || 0, borderRadius.left || 0, this, 'setBorderRadius');
+    },
+
+    setBorderRadius: function(/* shorthand */){
+        this._borderRadius = Shorthand.read(arguments);
+        this._changed(/*#=*/Change.ATTRIBUTE | Change.APPEARANCE);
+        return this._borderRadius
+    },
+    
+
+    /**
+     * The if item is constraints.
+     *
      * @name Item#constraintsPivot
      * @type Point
      */
@@ -1008,7 +1029,7 @@ new function() { // Injection scope for various item event handlers
      * The if item is constraints.
      *
      * @name Item#constraintProportions
-     * @type Point
+     * @type Boolean
      */
     getConstraintProportions: function(){
         return this._constraintProportions;
@@ -1828,6 +1849,7 @@ new function() { // Injection scope for various item event handlers
                 && this._clipMask === item._clipMask
                 && this._guide === item._guide
                 && this._constraints === item._constraints
+                && this._borderRaidus === item._borderRaidus
                 && this._equals(item)
                 || false;
     },
@@ -1951,7 +1973,7 @@ new function() { // Injection scope for various item event handlers
         // meaning the default value has been overwritten (default is on
         // prototype).
         var keys = ['_locked', '_visible', '_blendMode', '_opacity',
-                '_clipMask', '_guide', '_angle', '_flipped', '_constraints'];
+                '_clipMask', '_guide', '_angle', '_flipped', '_constraints', '_constraintProportions', '_borderRadius'];
         for (var i = 0, l = keys.length; i < l; i++) {
             var key = keys[i];
             if (source.hasOwnProperty(key))

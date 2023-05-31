@@ -43,7 +43,7 @@ var Constraints = Base.extend(/** @lends Constraints# */{
             if (reading)
                 read = arg0 === null ? 1 : 0;
         } else {
-            var obj = type === 'string' ? arg0.split(/[\s,]+/) || [] : arg0;
+            var obj = type === 'string' ? JSON.parse(arg0.replace(/(['"])?([a-zA-Z0-9_]+)(['"])?:/g, '"$2":')) || [] : arg0;
             read = 1;
             if (Array.isArray(obj)) {
                 this._set(obj[0], (obj.length > 1 ? obj[1] : obj[0]));
