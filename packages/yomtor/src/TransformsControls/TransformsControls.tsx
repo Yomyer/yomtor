@@ -76,7 +76,7 @@ export const TransformsControls = (props: TransformsControlsProps) => {
     canvas.project.on('changed', (type) => {
       if (
         type & (ChangeFlag.ACTIVE | ChangeFlag.MATRIX) &&
-        update.current &&
+        // update.current &&
         canvas.project.activeItems.length
       ) {
         const x = countBy(
@@ -149,7 +149,7 @@ export const TransformsControls = (props: TransformsControlsProps) => {
             : null
         )
       }
-      update.current = true
+      // update.current = true
 
       if (type & ChangeFlag.ACTIVE) {
         setVisible(!!canvas.project.activeItems.length)
@@ -179,8 +179,7 @@ export const TransformsControls = (props: TransformsControlsProps) => {
     value: number | boolean,
     mixed?: boolean
   ) => {
-    console.log('aaa')
-    update.current = false
+    // update.current = false
     canvas.project.activeItems.forEach((item) => {
       if (['x', 'y'].includes(key)) {
         item.info.topLeft[key] =
