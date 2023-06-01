@@ -135,7 +135,11 @@ export const TransformsControls = (props: TransformsControlsProps) => {
         setHeight(size(height) === 1 ? parseFloat(findKey(height)) : '')
         setAngle(size(angle) === 1 ? parseFloat(findKey(angle)) : '')
 
-        setRadius(size(radius) === 1 ? new Shorthand(findKey(radius)) : '')
+        setRadius(
+          size(radius) === 1 && new Shorthand(findKey(radius)).top !== null
+            ? new Shorthand(findKey(radius))
+            : ''
+        )
 
         setConstraintProportions(
           size(constraintProportions) === 1
@@ -180,6 +184,7 @@ export const TransformsControls = (props: TransformsControlsProps) => {
     mixed?: boolean
   ) => {
     // update.current = false
+
     canvas.project.activeItems.forEach((item) => {
       if (['x', 'y'].includes(key)) {
         item.info.topLeft[key] =
@@ -342,6 +347,7 @@ export const TransformsControls = (props: TransformsControlsProps) => {
           <NumberInput
             icon={<RadiusIcon />}
             value={!isString(radius) && radius.top}
+            min={0}
             onChange={(value: number, mixed: boolean) =>
               changeHandler('radius', value, mixed)
             }

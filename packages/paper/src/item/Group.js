@@ -174,6 +174,39 @@ var Group = Item.extend(
             return true;
         },
 
+        /**
+         * The if item is constraints.
+         *
+         * @bean
+         * @type Shorthand
+         */
+        getBorderRadius: function(){
+            var borderRadius = null, 
+                children = this._children;
+
+            for (var i = 0, l = children.length; i < l; i++) {
+                var item = children[i];
+                if(!borderRadius){
+                    borderRadius = item.borderRadius;
+                }
+                if(!borderRadius.equals(item.borderRadius)){
+                    return new LinkedShorthand(null, null, null, null, this, 'setBorderRadius');
+                }
+            }
+
+            return borderRadius;
+        },
+
+        setBorderRadius: function(/* shorthand */){
+            var radius = Shorthand.read(arguments),
+                children = this._children;
+
+            for (var i = 0, l = children.length; i < l; i++) {
+                var item = children[i];
+                item.setBorderRadius(radius);
+            }
+        },
+
         _getBounds: function _getBounds(matrix, options) {
             var clipItem = this._getClipItem();
             return clipItem

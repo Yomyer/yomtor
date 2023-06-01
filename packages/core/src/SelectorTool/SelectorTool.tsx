@@ -308,8 +308,8 @@ export const SelectorTool = (props: SelectorToolProps) => {
       }
     }
 
-    tool.onMouseDown = (e: ToolEvent) => {
-      if (!tool.actived) return
+    tool.onMouseDown = (e: ToolEvent, force?: boolean) => {
+      if (!tool.actived && !force) return
       let action = null
       mode.current = 'select'
 
@@ -323,6 +323,7 @@ export const SelectorTool = (props: SelectorToolProps) => {
         })
         mode.current = 'action'
       }
+
       if (!action) {
         const item = canvas.project.getItemByPoint(e.downPoint, {
           legacy: e.modifiers.meta
@@ -332,7 +333,7 @@ export const SelectorTool = (props: SelectorToolProps) => {
           ? 'updated'
           : 'created'
 
-        if (!e.modifiers.shift && (!item || (item && !item.actived))) {
+        if (!e.modifiers.shift && (force || !item || (item && !item.actived))) {
           canvas.project.deactivateAll()
         }
 
@@ -411,6 +412,8 @@ export const SelectorTool = (props: SelectorToolProps) => {
       if (moved.current) {
         canvas.project.emit('object:moved', e)
         moved.current = false
+      } else if (!e.modifiers.shift) {
+        tool.onMouseDown(e, true)
       }
 
       mode.current = 'none'

@@ -367,6 +367,82 @@ var Path = PathItem.extend(/** @lends Path# */{
         return !this._segments.length;
     },
 
+    _applyBorderRadius: function(){
+        var cloned = this.clone({insert: false});
+        var radius = cloned.borderRadius.top;
+
+        var segments = cloned.segments.slice(0);
+
+        cloned.segments = [];
+        for(var i = 0, l = segments.length; i < l; i++) {
+            var curPoint = segments[i].point;
+                nextPoint = segments[i + 1 == l ? 0 : i + 1].point,
+                prevPoint = segments[i - 1 < 0 ? segments.length - 1 : i - 1].point,
+            
+                nextNorm = curPoint.subtract(nextPoint).normalize(),
+                prevNorm = curPoint.subtract(prevPoint).normalize(),
+                
+                angle = Math.acos(nextNorm.dot(prevNorm)),
+            
+                delta = radius/Math.tan(angle/2),
+                prevDelta = prevNorm.normalize(delta),
+                nextDelta = nextNorm.normalize(delta),
+                hasHandleOut = segments[i].handleOut,
+                hasHandleIn = segments[i].handleIn;
+
+                through = curPoint.subtract(prevNorm.add(nextNorm).normalize(Math.sqrt(delta*delta + radius*radius) - radius));           
+    
+            var handleOut = curPoint.subtract(prevDelta),
+                handleIn = curPoint.subtract(nextDelta);
+                
+            if (!hasHandleOut.length) {
+                cloned.add(handleOut);
+            }
+            if (!hasHandleIn.length) {
+                cloned.arcTo(through, handleIn);
+            }
+            if(hasHandleOut.length || hasHandleIn.length){
+                cloned.add(segments[i]);
+            }
+            
+        }
+        /*
+        for(var i = 0, l = segments.length; i < l; i++) {
+            var curPoint = segments[i].point,
+                nextPoint = segments[i + 1 == l ? 0 : i + 1].point,
+                prevPoint = segments[i - 1 < 0 ? segments.length - 1 : i - 1].point,
+                nextDelta = curPoint.subtract(nextPoint),
+                prevDelta = curPoint.subtract(prevPoint),
+                kappa = radius / (radius * Numerical.KAPPA),
+                hasHandleOut = segments[i].handleOut,
+                hasHandleIn = segments[i].handleIn;
+            
+            nextDelta.length = Math.min(nextDelta.length/2, radius); 
+            prevDelta.length = Math.min(prevDelta.length/2, radius); 
+    
+            if (!hasHandleOut.length) {
+                cloned.add({
+                    point: curPoint.subtract(prevDelta),
+                    handleOut: prevDelta.divide(kappa)
+                });
+            }
+            if (!hasHandleIn.length) {
+                cloned.add({
+                    point: curPoint.subtract(nextDelta),
+                    handleIn: nextDelta.divide(kappa)
+                });
+            }
+            if(hasHandleOut.length || hasHandleIn.length){
+                cloned.add(segments[i]);
+            }
+            
+        }
+        cloned.closed = true;
+        */
+
+        return cloned;
+    },
+
     _transformContent: function(matrix) {
         var segments = this._segments,
             coords = new Array(6);
@@ -2207,9 +2283,9 @@ new function() { // Scope for drawing
             segment._transformCoordinates(matrix, coords);
             pX = coords[0];
             pY = coords[1];
-            if (selection & /*#=*/SegmentSelection.HANDLE_IN)
+            //if (selection & /*#=*/SegmentSelection.HANDLE_IN)
                 drawHandle(2);
-            if (selection & /*#=*/SegmentSelection.HANDLE_OUT)
+            //if (selection & /*#=*/SegmentSelection.HANDLE_OUT)
                 drawHandle(4);
             // Draw a rectangle at segment.point:
             ctx.fillRect(pX - half, pY - half, size, size);
@@ -2286,6 +2362,12 @@ new function() { // Scope for drawing
             drawSegment(segments[0]);
     }
 
+    function drawSegmentsWithBorderRadius(ctx, path, matrix) {
+        var cloned = path._applyBorderRadius();
+        drawHandles(ctx, cloned._segments, matrix, 2);
+        drawSegments(ctx, cloned, matrix);
+    }
+
     return {
         _draw: function(ctx, param, viewMatrix, strokeMatrix) {
             var dontStart = param.dontStart,
@@ -2304,7 +2386,12 @@ new function() { // Scope for drawing
             if (hasFill || hasStroke && !dashLength || dontPaint) {
                 // Prepare the canvas path if we have any situation that
                 // requires it to be defined.
-                drawSegments(ctx, this, strokeMatrix);
+                if(this.borderRadius.getActived()){
+                    drawSegmentsWithBorderRadius(ctx, this, strokeMatrix)
+                }else{
+                    drawSegments(ctx, this, strokeMatrix);
+                }
+                
                 if (this._closed)
                     ctx.closePath();
             }
