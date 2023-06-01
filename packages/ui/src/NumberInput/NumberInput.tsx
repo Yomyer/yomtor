@@ -188,7 +188,10 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
       setTimeout(() => inputRef.current.focus())
     }
 
-    useEventListener('mousedown', blurHandler, document)
+    useEventListener('mousedown', blurHandler, {
+      element: document,
+      capture: true
+    })
 
     return (
       <BaseNumberInput

@@ -1556,6 +1556,11 @@ declare namespace paper {
          */
         clipped: boolean
 
+        /** 
+         * The if item is constraints.
+         */
+        borderRadius: Shorthand
+
 
         /** 
          * Creates a new Group item and places it at the top of the active layer.
@@ -6970,6 +6975,9 @@ declare namespace paper {
          */
         left: number
 
+        
+        actived: boolean
+
 
         /** 
          * Creates a Shorthand object using the numbers of the given Shorthand object.
@@ -7005,7 +7013,7 @@ declare namespace paper {
         set(...values: any[]): Shorthand
 
         /** 
-         * @return true if the points are equal
+         * @return true if the shorthand are equal
          */
         equals(shorthand: Shorthand): boolean
 

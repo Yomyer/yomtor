@@ -51,7 +51,7 @@ var Shorthand = Base.extend(/** @lends Shorthand# */{
             reading = this.__read,
             read = 0;
 
-        if (type === 'number') {
+        if (type === 'number' || arg0 === null) {
             var multiple = typeof arg1 === 'number';
             this._set(arg0, multiple ? arg1 : arg0, multiple ? arg2 : arg0, multiple ? arg3 : arg0);
             if (reading)
@@ -67,7 +67,7 @@ var Shorthand = Base.extend(/** @lends Shorthand# */{
             if (Array.isArray(obj)) {
                 this._set(obj[0], (obj.length > 1 ? obj[1] : obj[0]), (obj.length > 1 ? obj[2] : obj[0]), (obj.length > 1 ? obj[3] : obj[0]));
             } else if ('top' in obj) {
-                this._set(obj.top || 0, obj.right || 0, obj.bottom || 0, obj.left || 0);
+                this._set(obj.top, obj.right, obj.bottom, obj.left);
             }  else {
                 this._set(0, 0, 0, 0);
                 read = 0;
@@ -128,14 +128,23 @@ var Shorthand = Base.extend(/** @lends Shorthand# */{
     /**
      *
      * @param {Shorthand} shorthand
-     * @return {Boolean} {@true if the points are equal}
+     * @return {Boolean} {@true if the shorthand are equal}
      */
     equals: function(shorthand) {
         return this === shorthand || shorthand
-                && (this.top === shorthand.shorthand && this.right === shorthand.right && this.bottom === shorthand.bottom && this.left === shorthand.left
+                && (this.top === shorthand.top && this.right === shorthand.right && this.bottom === shorthand.bottom && this.left === shorthand.left
                     || Array.isArray(shorthand)
                         && this.top === shorthand[0] && this.right === shorthand[1] && this.bottom === shorthand[2] && this.left === shorthand[3])
                 || false;
+    },
+
+    /**
+     *
+     * @name Shorthand#actived
+     * @type Boolean
+     */
+    getActived: function(){
+        return this.top || this.right || this.bottom || this.left;
     },
 
     /**

@@ -3139,7 +3139,7 @@ var Shorthand = Base.extend({
 			reading = this.__read,
 			read = 0;
 
-		if (type === 'number') {
+		if (type === 'number' || arg0 === null) {
 			var multiple = typeof arg1 === 'number';
 			this._set(arg0, multiple ? arg1 : arg0, multiple ? arg2 : arg0, multiple ? arg3 : arg0);
 			if (reading)
@@ -3154,7 +3154,7 @@ var Shorthand = Base.extend({
 			if (Array.isArray(obj)) {
 				this._set(obj[0], (obj.length > 1 ? obj[1] : obj[0]), (obj.length > 1 ? obj[2] : obj[0]), (obj.length > 1 ? obj[3] : obj[0]));
 			} else if ('top' in obj) {
-				this._set(obj.top || 0, obj.right || 0, obj.bottom || 0, obj.left || 0);
+				this._set(obj.top, obj.right, obj.bottom, obj.left);
 			}  else {
 				this._set(0, 0, 0, 0);
 				read = 0;
@@ -3178,10 +3178,14 @@ var Shorthand = Base.extend({
 
 	equals: function(shorthand) {
 		return this === shorthand || shorthand
-				&& (this.top === shorthand.shorthand && this.right === shorthand.right && this.bottom === shorthand.bottom && this.left === shorthand.left
+				&& (this.top === shorthand.top && this.right === shorthand.right && this.bottom === shorthand.bottom && this.left === shorthand.left
 					|| Array.isArray(shorthand)
 						&& this.top === shorthand[0] && this.right === shorthand[1] && this.bottom === shorthand[2] && this.left === shorthand[3])
 				|| false;
+	},
+
+	getActived: function(){
+		return this.top || this.right || this.bottom || this.left;
 	},
 
 	clone: function() {
@@ -6309,6 +6313,33 @@ var Group = Item.extend(
 
 		hasFill: function () {
 			return true;
+		},
+
+		getBorderRadius: function(){
+			var borderRadius = null,
+				children = this._children;
+
+			for (var i = 0, l = children.length; i < l; i++) {
+				var item = children[i];
+				if(!borderRadius){
+					borderRadius = item.borderRadius;
+				}
+				if(!borderRadius.equals(item.borderRadius)){
+					return new LinkedShorthand(null, null, null, null, this, 'setBorderRadius');
+				}
+			}
+
+			return borderRadius;
+		},
+
+		setBorderRadius: function(){
+			var radius = Shorthand.read(arguments),
+				children = this._children;
+
+			for (var i = 0, l = children.length; i < l; i++) {
+				var item = children[i];
+				item.setBorderRadius(radius);
+			}
 		},
 
 		_getBounds: function _getBounds(matrix, options) {
@@ -11267,6 +11298,45 @@ var Path = PathItem.extend({
 		return !this._segments.length;
 	},
 
+	_applyBorderRadius: function(){
+		var cloned = this.clone({insert: false});
+		var radius = cloned.borderRadius.top;
+
+		var segments = cloned.segments.slice(0);
+
+		cloned.segments = [];
+		for(var i = 0, l = segments.length; i < l; i++) {
+			var curPoint = segments[i].point;
+			var nextPoint = segments[i + 1 == l ? 0 : i + 1].point;
+			var prevPoint = segments[i - 1 < 0 ? segments.length - 1 : i - 1].point;
+			var nextDelta = curPoint.subtract(nextPoint);
+			var prevDelta = curPoint.subtract(prevPoint);
+			nextDelta.length = Math.min(nextDelta.length/2, radius);
+			prevDelta.length = Math.min(prevDelta.length/2, radius);
+			var hasHandleOut = segments[i].handleOut;
+			var hasHandleIn = segments[i].handleIn;
+
+			if (!hasHandleOut.length) {
+				cloned.add({
+					point: curPoint.subtract(prevDelta),
+					handleOut: prevDelta.divide(2),
+				});
+			}
+			if (!hasHandleIn.length) {
+				cloned.add({
+					point: curPoint.subtract(nextDelta),
+					handleIn: nextDelta.divide(2),
+				});
+			}
+			if(hasHandleOut.length || hasHandleIn.length){
+				cloned.add(segments[i]);
+			}
+		}
+		cloned.closed = true;
+
+		return cloned;
+	},
+
 	_transformContent: function(matrix) {
 		var segments = this._segments,
 			coords = new Array(6);
@@ -12188,6 +12258,12 @@ new function() {
 			drawSegment(segments[0]);
 	}
 
+	function drawBorderRadiusSegment(ctx, path, matrix) {
+		var cloned = path._applyBorderRadius();
+
+		drawSegments(ctx, cloned, matrix);
+	}
+
 	return {
 		_draw: function(ctx, param, viewMatrix, strokeMatrix) {
 			var dontStart = param.dontStart,
@@ -12203,7 +12279,11 @@ new function() {
 				ctx.beginPath();
 
 			if (hasFill || hasStroke && !dashLength || dontPaint) {
-				drawSegments(ctx, this, strokeMatrix);
+				if(this.borderRadius.getActived()){
+					drawBorderRadiusSegment(ctx, this, strokeMatrix)
+				}else{
+					drawSegments(ctx, this, strokeMatrix);
+				}
 				if (this._closed)
 					ctx.closePath();
 			}
