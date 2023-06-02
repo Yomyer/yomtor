@@ -2,13 +2,21 @@ import { TransformsControlsProps } from './TransformsControls.props'
 import { useComponentDefaultProps } from '@yomtor/styles'
 import { useEditorContext } from '@yomtor/core'
 import React, { useEffect, useRef, useState } from 'react'
-import { ActionIcon, Control, Input, NumberInput, Select } from '@yomtor/ui'
+import {
+  ActionIcon,
+  Control,
+  Input,
+  NumberInput,
+  Select,
+  GroupInput
+} from '@yomtor/ui'
 import {
   HeightIcon,
-  RadiusIcon,
   RotationIcon,
   UnlinkIcon,
   LinkIcon,
+  RadiusShorthandIcon,
+  RadiusIcon,
   WidthIcon,
   XAxisIcon,
   YAxisIcon
@@ -355,7 +363,44 @@ export const TransformsControls = (props: TransformsControlsProps) => {
           />
         </Control.Panel>
         <Control.Panel start={32} end={33}>
-          <ActionIcon icon={<RotationIcon />} />
+          <ActionIcon icon={<RadiusShorthandIcon />} />
+        </Control.Panel>
+        <Control.Panel start={1} end={30}>
+          <GroupInput>
+            <NumberInput
+              icon={<RadiusIcon />}
+              value={!isString(radius) && radius.top}
+              min={0}
+              onChange={(value: number, mixed: boolean) =>
+                changeHandler('radius', value, mixed)
+              }
+              mixed={isEmpty(radius.toString())}
+            />
+            <NumberInput
+              value={!isString(radius) && radius.top}
+              min={0}
+              onChange={(value: number, mixed: boolean) =>
+                changeHandler('radius', value, mixed)
+              }
+              mixed={isEmpty(radius.toString())}
+            />
+            <NumberInput
+              value={!isString(radius) && radius.top}
+              min={0}
+              onChange={(value: number, mixed: boolean) =>
+                changeHandler('radius', value, mixed)
+              }
+              mixed={isEmpty(radius.toString())}
+            />
+            <NumberInput
+              value={!isString(radius) && radius.top}
+              min={0}
+              onChange={(value: number, mixed: boolean) =>
+                changeHandler('radius', value, mixed)
+              }
+              mixed={isEmpty(radius.toString())}
+            />
+          </GroupInput>
         </Control.Panel>
       </Control.Group>
     </Control>

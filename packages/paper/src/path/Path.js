@@ -377,69 +377,51 @@ var Path = PathItem.extend(/** @lends Path# */{
         for(var i = 0, l = segments.length; i < l; i++) {
             var curPoint = segments[i].point;
                 nextPoint = segments[i + 1 == l ? 0 : i + 1].point,
-                prevPoint = segments[i - 1 < 0 ? segments.length - 1 : i - 1].point,
+                prevPoint = segments[i - 1 < 0 ? segments.length - 1 : i - 1].point;
             
-                nextNorm = curPoint.subtract(nextPoint).normalize(),
-                prevNorm = curPoint.subtract(prevPoint).normalize(),
-                
-                angle = Math.acos(nextNorm.dot(prevNorm)),
+            var nextRealDelta = curPoint.subtract(nextPoint),
+                prevRealDelta = curPoint.subtract(prevPoint);
+
+            nextRealDelta.length = Math.min(nextRealDelta.length/2, radius); 
+            prevRealDelta.length = Math.min(prevRealDelta.length/2, radius); 
+
+            var nextNorm = nextRealDelta.normalize(),
+                prevNorm = prevRealDelta.normalize(),
+                angle = Math.acos(nextNorm.dot(prevNorm));
             
-                delta = radius/Math.tan(angle/2),
+            var rad = Math.min(nextRealDelta.length, prevRealDelta.length) * Math.tan(angle/2);
+
+
+            var delta = rad / Math.tan(angle/2),
                 prevDelta = prevNorm.normalize(delta),
                 nextDelta = nextNorm.normalize(delta),
                 hasHandleOut = segments[i].handleOut,
                 hasHandleIn = segments[i].handleIn;
 
-                through = curPoint.subtract(prevNorm.add(nextNorm).normalize(Math.sqrt(delta*delta + radius*radius) - radius));           
-    
+         
+            var through = curPoint.subtract(prevNorm.add(nextNorm).normalize(Math.sqrt(delta*delta + rad*rad) - rad));           
+
             var handleOut = curPoint.subtract(prevDelta),
                 handleIn = curPoint.subtract(nextDelta);
-                
-            if (!hasHandleOut.length) {
-                cloned.add(handleOut);
-            }
-            if (!hasHandleIn.length) {
-                cloned.arcTo(through, handleIn);
-            }
-            if(hasHandleOut.length || hasHandleIn.length){
-                cloned.add(segments[i]);
-            }
-            
-        }
-        /*
-        for(var i = 0, l = segments.length; i < l; i++) {
-            var curPoint = segments[i].point,
-                nextPoint = segments[i + 1 == l ? 0 : i + 1].point,
-                prevPoint = segments[i - 1 < 0 ? segments.length - 1 : i - 1].point,
-                nextDelta = curPoint.subtract(nextPoint),
-                prevDelta = curPoint.subtract(prevPoint),
-                kappa = radius / (radius * Numerical.KAPPA),
-                hasHandleOut = segments[i].handleOut,
-                hasHandleIn = segments[i].handleIn;
-            
-            nextDelta.length = Math.min(nextDelta.length/2, radius); 
-            prevDelta.length = Math.min(prevDelta.length/2, radius); 
-    
-            if (!hasHandleOut.length) {
-                cloned.add({
-                    point: curPoint.subtract(prevDelta),
-                    handleOut: prevDelta.divide(kappa)
-                });
-            }
-            if (!hasHandleIn.length) {
-                cloned.add({
-                    point: curPoint.subtract(nextDelta),
-                    handleIn: nextDelta.divide(kappa)
-                });
-            }
-            if(hasHandleOut.length || hasHandleIn.length){
-                cloned.add(segments[i]);
-            }
-            
-        }
-        cloned.closed = true;
-        */
+           
+            cloned.add(handleOut);
+            cloned.arcTo(through, handleIn);
 
+            var segmentIn = cloned.segments.pop()
+            var segmentOut = cloned.segments.pop()
+
+            if (!hasHandleOut.length) {
+                cloned.add(segmentOut)
+            }
+            if (!hasHandleIn.length) {
+                cloned.add(segmentIn)
+            }
+            if(hasHandleOut.length || hasHandleIn.length){
+                cloned.add(segments[i]);
+            }
+            
+        }
+     
         return cloned;
     },
 
@@ -2364,7 +2346,6 @@ new function() { // Scope for drawing
 
     function drawSegmentsWithBorderRadius(ctx, path, matrix) {
         var cloned = path._applyBorderRadius();
-        drawHandles(ctx, cloned._segments, matrix, 2);
         drawSegments(ctx, cloned, matrix);
     }
 

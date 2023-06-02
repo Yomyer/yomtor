@@ -6,7 +6,7 @@ import {
   NumberInput
 } from '@yomtor/ui'
 import { YomtorDemo, PropsType } from '@yomtor/ds'
-import { ArtboardIcon, CodeIcon, HideIcon } from '@yomtor/icons'
+import { ArtboardIcon, CodeIcon, HideIcon, RadiusIcon } from '@yomtor/icons'
 
 const codeTemplate = (props: PropsType<GroupInputProps>, children: string) => `
 import { Button, Group } from '@yomtor/ui'
@@ -25,6 +25,7 @@ function Demo() {
 function Wrapper(props: GroupInputProps) {
   return (
     <GroupInput {...props}>
+      <NumberInput icon={<RadiusIcon />} value={0} />
       <NumberInput value={0} />
       <ActionIcon>
         <ArtboardIcon />
@@ -88,18 +89,6 @@ export const group: YomtorDemo = {
       type: 'boolean',
       defaultValue: true,
       initialValue: true
-    },
-    {
-      name: 'actived',
-      type: 'boolean',
-      defaultValue: false,
-      initialValue: false
-    },
-    {
-      name: 'loading',
-      type: 'boolean',
-      defaultValue: false,
-      initialValue: false
     }
   ]
 }

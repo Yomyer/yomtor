@@ -4,7 +4,8 @@ import React, {
   useState,
   useEffect,
   KeyboardEvent,
-  SyntheticEvent
+  SyntheticEvent,
+  FocusEvent
 } from 'react'
 import { useComponentDefaultProps } from '@yomtor/styles'
 
@@ -46,6 +47,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
       onStop,
       onStart,
       onChange,
+      onBlur,
       classNames,
       styles,
       mixed: isMixed,
@@ -181,6 +183,9 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
             )
           )
         )
+      }
+      if (!isEqual(event.target, inputRef.current)) {
+        onBlur && onBlur(event as any)
       }
     }
 

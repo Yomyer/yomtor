@@ -2,7 +2,8 @@ import React, {
   Children,
   cloneElement,
   forwardRef,
-  isValidElement
+  isValidElement,
+  useState
 } from 'react'
 import { useComponentDefaultProps } from '@mantine/styles'
 import { Box } from '../Box'
@@ -13,7 +14,8 @@ import { isArray } from 'lodash'
 const defaultProps: Partial<GroupInputProps> = {
   orientation: 'horizontal',
   buttonBorderWidth: 1,
-  compact: true
+  compact: true,
+  variant: 'toggle'
 }
 
 export const GroupInput = forwardRef<HTMLDivElement, GroupInputProps>(
@@ -28,10 +30,20 @@ export const GroupInput = forwardRef<HTMLDivElement, GroupInputProps>(
       unstyled,
       ...others
     } = useComponentDefaultProps('ButtonGroup', defaultProps, props)
+    const [focus, setFoucs] = useState<boolean>(false)
     const { classes, cx } = useStyles(
-      { orientation, buttonBorderWidth, variant },
+      { orientation, buttonBorderWidth, variant, focus },
       { name: 'ButtonGroup', unstyled }
     )
+
+    const focusHandler = () => {
+      setFoucs(true)
+    }
+
+    const blurHandler = () => {
+      setFoucs(false)
+    }
+
     return (
       <Box className={cx(classes.root, className)} ref={ref} {...others}>
         {Children.map(children, (child, index: number) => {
@@ -48,7 +60,9 @@ export const GroupInput = forwardRef<HTMLDivElement, GroupInputProps>(
               className: className,
               classNames: {
                 input: className
-              }
+              },
+              onFocus: focusHandler,
+              onBlur: blurHandler
             })
           }
 
