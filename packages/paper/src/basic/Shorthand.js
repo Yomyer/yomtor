@@ -73,6 +73,7 @@ var Shorthand = Base.extend(/** @lends Shorthand# */{
                 read = 0;
             }
         }
+
         if (reading)
             this.__read = read;
         return this;
@@ -140,11 +141,20 @@ var Shorthand = Base.extend(/** @lends Shorthand# */{
 
     /**
      *
-     * @name Shorthand#actived
+     * @name Shorthand#iactived
      * @type Boolean
      */
     getActived: function(){
         return this.top || this.right || this.bottom || this.left;
+    },
+
+    /**
+     *
+     * @name Shorthand#regular
+     * @type Boolean
+     */
+    getRegular: function(){
+        return this.top === this.right && this.top === this.bottom && this.top === this.left;
     },
 
     /**

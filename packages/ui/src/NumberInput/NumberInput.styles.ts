@@ -68,11 +68,11 @@ export default createStyles(
           })
         }),
         ...(draggable && {
-          pointerEvents: 'inherit',
-          '& > *': {
-            display: 'flex'
-          }
+          pointerEvents: 'inherit'
         }),
+        '& > *': {
+          display: 'flex'
+        },
         '&:hover + input': variant['&:hover']
       }
     }

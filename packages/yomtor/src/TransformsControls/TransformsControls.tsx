@@ -28,7 +28,8 @@ import {
   Size,
   Item,
   PathItem,
-  Shorthand
+  Shorthand,
+  Path
 } from '@yomtor/paper'
 import {
   countBy,
@@ -63,7 +64,9 @@ export const TransformsControls = (props: TransformsControlsProps) => {
   const [angle, setAngle] = useState<number | ''>('')
   const [radius, setRadius] = useState<Shorthand | ''>('')
   const [combo, setCombo] = useState<string>()
-  const [showRadius, setShowRadius] = useState<boolean>()
+  const [canRadius, setCanRadius] = useState<boolean>()
+  const [canCorners, setCanCorners] = useState<boolean>()
+  const [corners, setCorners] = useState<boolean>()
   const [rotate, setRotate] = useState<number>(0)
   const [constraintProportions, setConstraintProportions] = useState<
     boolean | ''
@@ -137,6 +140,22 @@ export const TransformsControls = (props: TransformsControlsProps) => {
           })
         )
 
+        const canRadius = countBy(
+          canvas.project.activeItems
+            .filter((item) => item instanceof Path)
+            .map((item: Path) => {
+              return item.canApplyBorderRadius()
+            })
+        )
+
+        const canCorners = countBy(
+          canvas.project.activeItems
+            .filter((item) => item instanceof Path)
+            .map((item: Path) => {
+              return item.isRectangle() && item.canApplyBorderRadius()
+            })
+        )
+
         ItemData.forEach((item) => delete item.selected)
 
         setX(size(x) === 1 ? parseFloat(findKey(x)) : '')
@@ -161,6 +180,13 @@ export const TransformsControls = (props: TransformsControlsProps) => {
           size(combo) === 1
             ? ItemData.find((data) => data.label === findKey(combo))?.value
             : null
+        )
+
+        setCanCorners(
+          size(canCorners) === 1 ? findKey(canCorners) === 'true' : false
+        )
+        setCanRadius(
+          size(canRadius) === 1 ? findKey(canRadius) === 'true' : false
         )
       }
       // update.current = true
@@ -356,26 +382,34 @@ export const TransformsControls = (props: TransformsControlsProps) => {
             mixed={isEmpty(angle.toString())}
           />
         </Control.Panel>
-        <Control.Panel start={16} end={30}>
-          <NumberInput
-            icon={<RadiusIcon />}
-            disabled={showRadius}
-            value={!isString(radius) && radius.right}
-            min={0}
-            onChange={(value: number, mixed: boolean) =>
-              changeHandler('radius', value, mixed)
-            }
-            mixed={isEmpty(radius.toString())}
-          />
-        </Control.Panel>
-        <Control.Panel start={32} end={33}>
-          <ActionIcon
-            icon={<RadiusShorthandIcon />}
-            onClick={() => setShowRadius(!showRadius)}
-            actived={showRadius}
-          />
-        </Control.Panel>
-        {showRadius && (
+        {canRadius && (
+          <Control.Panel start={16} end={30}>
+            <NumberInput
+              icon={<RadiusIcon />}
+              disabled={corners}
+              value={!isString(radius) && (radius.regular ? radius.top : '')}
+              min={0}
+              onChange={(value: number, mixed: boolean) =>
+                changeHandler('radius', value, mixed)
+              }
+              draggable={!isString(radius) && radius.regular}
+              mixed={
+                isEmpty(radius.toString()) ||
+                (!isString(radius) && !radius.regular)
+              }
+            />
+          </Control.Panel>
+        )}
+        {canCorners && (
+          <Control.Panel start={32} end={33}>
+            <ActionIcon
+              icon={<RadiusShorthandIcon />}
+              onClick={() => setCorners(!corners)}
+              actived={corners}
+            />
+          </Control.Panel>
+        )}
+        {corners && (
           <Control.Panel start={1} end={30}>
             <GroupInput
               onBlur={() => {

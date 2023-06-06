@@ -25,7 +25,11 @@ function Demo() {
 function Wrapper(props: GroupInputProps) {
   return (
     <GroupInput {...props}>
-      <NumberInput icon={<RadiusIcon />} value={0} />
+      <NumberInput
+        icon={<RadiusIcon />}
+        value={0}
+        draggable={props.draggable}
+      />
       <NumberInput value={0} />
       <ActionIcon>
         <ArtboardIcon />
@@ -86,6 +90,12 @@ export const group: YomtorDemo = {
     },
     {
       name: 'compact',
+      type: 'boolean',
+      defaultValue: true,
+      initialValue: true
+    },
+    {
+      name: 'draggable',
       type: 'boolean',
       defaultValue: true,
       initialValue: true

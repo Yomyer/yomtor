@@ -3160,6 +3160,7 @@ var Shorthand = Base.extend({
 				read = 0;
 			}
 		}
+
 		if (reading)
 			this.__read = read;
 		return this;
@@ -3186,6 +3187,10 @@ var Shorthand = Base.extend({
 
 	getActived: function(){
 		return this.top || this.right || this.bottom || this.left;
+	},
+
+	getRegular: function(){
+		return this.top === this.right && this.top === this.bottom && this.top === this.left;
 	},
 
 	clone: function() {
@@ -11301,7 +11306,7 @@ var Path = PathItem.extend({
 	_applyBorderRadius: function(){
 		var cloned = this.clone({insert: false});
 		var radius = cloned.borderRadius.top;
-
+		var corners = ['left', 'top', 'right', 'bottom']
 		var segments = cloned.segments.slice(0);
 
 		cloned.segments = [];
@@ -11311,6 +11316,10 @@ var Path = PathItem.extend({
 				prevPoint = segments[i - 1 < 0 ? segments.length - 1 : i - 1].point;
 			var nextRealDelta = curPoint.subtract(nextPoint),
 				prevRealDelta = curPoint.subtract(prevPoint);
+
+			if(this.isRectangle()){
+				radius = cloned.borderRadius[corners[i]];
+			}
 
 			nextRealDelta.length = Math.min(nextRealDelta.length/2, radius);
 			prevRealDelta.length = Math.min(prevRealDelta.length/2, radius);
@@ -11336,10 +11345,10 @@ var Path = PathItem.extend({
 			var segmentIn = cloned.segments.pop()
 			var segmentOut = cloned.segments.pop()
 
-			if (!hasHandleOut.length) {
+			if (hasHandleOut.isZero()) {
 				cloned.add(segmentOut)
 			}
-			if (!hasHandleIn.length) {
+			if (hasHandleIn.isZero()) {
 				cloned.add(segmentIn)
 			}
 			if(hasHandleOut.length || hasHandleIn.length){
@@ -11422,6 +11431,46 @@ var Path = PathItem.extend({
 	_countCurves: function() {
 		var length = this._segments.length;
 		return !this._closed && length > 0 ? length - 1 : length;
+	},
+
+	canApplyBorderRadius: function(){
+		var handles = 0;
+		var segments = this.segments;
+
+		for(var i = 0, l = segments.length; i < l; i++) {
+			if(!segments[i].handleOut.isZero()){
+				handles++;
+			}
+			if(!segments[i].handleIn.isZero()){
+				handles++;
+			}
+		}
+		return handles !== segments.length*2;
+	},
+
+	isRectangle: function(){
+		if (this.segments.length !== 4 || !this.canApplyBorderRadius()) {
+			return false;
+		}
+
+		var epsilon = 1e-6;
+
+		for (var i = 0; i < 4; i++) {
+			var segment = this.segments[i];
+			var prevPoint = segment.previous.point;
+			var curPoint = segment.point;
+			var nextPoint = segment.next.point;
+			var prevVector = curPoint.subtract(prevPoint);
+			var nextVector = nextPoint.subtract(curPoint);
+			var dotProduct = prevVector.dot(nextVector);
+			var prevMagnitude = prevVector.length;
+			var nextMagnitude = nextVector.length;
+			var cosineAngle = dotProduct / (prevMagnitude * nextMagnitude);
+			if (Math.abs(cosineAngle) > epsilon) {
+			  return false;
+			}
+		  }
+		  return true;
 	},
 
 	add: function(segment1 ) {

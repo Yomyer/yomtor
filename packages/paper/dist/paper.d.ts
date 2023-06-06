@@ -4058,6 +4058,16 @@ declare namespace paper {
         constructor(object: object)
 
         /** 
+         * Determine if path is rectangle
+         */
+        canApplyBorderRadius(): boolean
+
+        /** 
+         * Determine if path is rectangle
+         */
+        isRectangle(): boolean
+
+        /** 
          * Adds one or more segments to the end of the {@link #segments} array of
          * this path.
          * 
@@ -6976,7 +6986,10 @@ declare namespace paper {
         left: number
 
         
-        actived: boolean
+        iactived: boolean
+
+        
+        regular: boolean
 
 
         /** 
