@@ -110,8 +110,8 @@ export function getVariant(theme: YomtorTheme) {
 
     const disabled = {
       '&[data-disabled]': {
-        background: 'unset',
-        border: 'unset',
+        background: colors.background,
+        border: colors.border,
         opacity: 0.5
       }
     }

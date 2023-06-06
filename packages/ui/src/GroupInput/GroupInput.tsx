@@ -1,6 +1,7 @@
 import React, {
   Children,
   cloneElement,
+  FocusEvent,
   forwardRef,
   isValidElement,
   useState
@@ -28,6 +29,8 @@ export const GroupInput = forwardRef<HTMLDivElement, GroupInputProps>(
       variant,
       buttonBorderWidth,
       unstyled,
+      onBlur,
+      onFocus,
       ...others
     } = useComponentDefaultProps('ButtonGroup', defaultProps, props)
     const [focus, setFoucs] = useState<boolean>(false)
@@ -36,14 +39,18 @@ export const GroupInput = forwardRef<HTMLDivElement, GroupInputProps>(
       { name: 'ButtonGroup', unstyled }
     )
 
-    const focusHandler = (event) => {
+    const focusHandler = (child, event: FocusEvent<HTMLInputElement>) => {
       if (['INPUT'].includes(event.target.nodeName)) {
         setFoucs(true)
+        child.props.onFocus && child.props.onFocus(event)
+        onFocus && onFocus(event)
       }
     }
 
-    const blurHandler = () => {
+    const blurHandler = (child, event: FocusEvent<HTMLInputElement>) => {
       setFoucs(false)
+      child.props.onBlur && child.props.onBlur(event)
+      onBlur && onBlur(event)
     }
 
     return (
@@ -63,8 +70,8 @@ export const GroupInput = forwardRef<HTMLDivElement, GroupInputProps>(
               classNames: {
                 input: className
               },
-              onFocus: focusHandler,
-              onBlur: blurHandler
+              onFocus: (event) => focusHandler(child, event),
+              onBlur: (event) => blurHandler(child, event)
             })
           }
 

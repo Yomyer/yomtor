@@ -27,7 +27,14 @@ const sizes = {
 export default createStyles(
   (
     theme,
-    { size, draggable, variant: inputVariant, compact, icon }: NumberInputProps
+    {
+      size,
+      draggable,
+      variant: inputVariant,
+      compact,
+      icon,
+      disabled
+    }: NumberInputProps
   ) => {
     const variant = theme.fn.getVariant({
       variant: inputVariant,
@@ -36,6 +43,9 @@ export default createStyles(
     })
 
     return {
+      root: {
+        pointerEvents: disabled ? 'none' : undefined
+      },
       input: {
         ...variant,
         ...(compact && {

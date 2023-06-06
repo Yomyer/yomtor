@@ -73,7 +73,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
     const [mixed, setMixed] = useState<boolean>(false)
     const [focus, setFocus] = useState<boolean>(false)
     const [value, setValue] = useState<number | ''>()
-    const disabled = useRef<boolean>()
+    const unabled = useRef<boolean>()
     const inputRef = useRef<HTMLInputElement>()
     const handlersRef = useRef<NumberInputHandlers>()
     const [showCursor, hideCursor] = useGlobalCursor(ResizePanel)
@@ -141,7 +141,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
 
     const changeHandler = (value: number) => {
       setValue(value)
-      if (!disabled.current) {
+      if (!unabled.current) {
         onChange && onChange(value, mixed)
       }
     }
@@ -157,7 +157,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
 
     const keyDownHandler = (event: KeyboardEvent<HTMLInputElement>) => {
       if (['Enter', 'Tab'].includes(event.key)) {
-        disabled.current = false
+        unabled.current = false
         changeHandler(
           parseFloat(
             parsePrecision(
@@ -172,17 +172,17 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
           setMixed(false)
         }
 
-        disabled.current = true
+        unabled.current = true
       }
     }
 
     const blurHandler = (event: SyntheticEvent | MouseEvent) => {
       if (
         focus &&
-        disabled.current &&
+        unabled.current &&
         !isEqual(event.target, inputRef.current)
       ) {
-        disabled.current = false
+        unabled.current = false
         changeHandler(
           parseFloat(
             parsePrecision(
@@ -198,11 +198,12 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
     }
 
     const focusHandler = (event: SyntheticEvent | MouseEvent) => {
-      setFocus(true)
       onFocus && onFocus(event as any)
+      setFocus(true)
     }
 
     const downHandler = () => {
+      inputRef.current.focus()
       setTimeout(() => inputRef.current.focus())
     }
 

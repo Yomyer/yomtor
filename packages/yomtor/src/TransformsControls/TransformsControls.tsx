@@ -64,6 +64,7 @@ export const TransformsControls = (props: TransformsControlsProps) => {
   const [radius, setRadius] = useState<Shorthand | ''>('')
   const [combo, setCombo] = useState<string>()
   const [showRadius, setShowRadius] = useState<boolean>()
+  const [rotate, setRotate] = useState<number>(0)
   const [constraintProportions, setConstraintProportions] = useState<
     boolean | ''
   >('')
@@ -222,6 +223,9 @@ export const TransformsControls = (props: TransformsControlsProps) => {
           !mixed ? value : item.borderRadius.top + value
         )
       }
+      if (['top', 'right', 'bottom', 'left'].includes(key) && isNumber(value)) {
+        item.borderRadius[key] = !mixed ? value : item.borderRadius[key] + value
+      }
       if (['constraintProportions'].includes(key) && isBoolean(value)) {
         setConstraintProportions((item.constraintProportions = value))
       }
@@ -356,7 +360,7 @@ export const TransformsControls = (props: TransformsControlsProps) => {
           <NumberInput
             icon={<RadiusIcon />}
             disabled={showRadius}
-            value={!isString(radius) && radius.top}
+            value={!isString(radius) && radius.right}
             min={0}
             onChange={(value: number, mixed: boolean) =>
               changeHandler('radius', value, mixed)
@@ -373,40 +377,53 @@ export const TransformsControls = (props: TransformsControlsProps) => {
         </Control.Panel>
         {showRadius && (
           <Control.Panel start={1} end={30}>
-            <GroupInput>
+            <GroupInput
+              onBlur={() => {
+                setRotate(0)
+              }}
+            >
               <NumberInput
-                icon={<RadiusIcon />}
+                icon={<RadiusIcon rotate={rotate} />}
                 value={!isString(radius) && radius.top}
                 min={0}
                 onChange={(value: number, mixed: boolean) =>
-                  changeHandler('radius', value, mixed)
+                  changeHandler('top', value, mixed)
                 }
                 mixed={isEmpty(radius.toString())}
                 style={{ flex: '1 0 32%' }}
               />
               <NumberInput
-                value={!isString(radius) && radius.top}
+                value={!isString(radius) && radius.right}
                 min={0}
                 onChange={(value: number, mixed: boolean) =>
-                  changeHandler('radius', value, mixed)
+                  changeHandler('right', value, mixed)
                 }
                 mixed={isEmpty(radius.toString())}
+                onFocus={() => {
+                  setRotate(90)
+                }}
               />
               <NumberInput
-                value={!isString(radius) && radius.top}
+                value={!isString(radius) && radius.bottom}
                 min={0}
                 onChange={(value: number, mixed: boolean) =>
-                  changeHandler('radius', value, mixed)
+                  changeHandler('bottom', value, mixed)
                 }
                 mixed={isEmpty(radius.toString())}
+                onFocus={() => {
+                  setRotate(180)
+                }}
               />
               <NumberInput
-                value={!isString(radius) && radius.top}
+                value={!isString(radius) && radius.left}
                 min={0}
                 onChange={(value: number, mixed: boolean) =>
-                  changeHandler('radius', value, mixed)
+                  changeHandler('left', value, mixed)
                 }
                 mixed={isEmpty(radius.toString())}
+                onFocus={() => {
+                  setRotate(270)
+                }}
               />
             </GroupInput>
           </Control.Panel>
