@@ -48,6 +48,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
       onStart,
       onChange,
       onBlur,
+      onFocus,
       classNames,
       styles,
       mixed: isMixed,
@@ -70,6 +71,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
     const [delta, setDelta] = useState<number>(0)
     const [step, setStep] = useState<number>(1)
     const [mixed, setMixed] = useState<boolean>(false)
+    const [focus, setFocus] = useState<boolean>(false)
     const [value, setValue] = useState<number | ''>()
     const disabled = useRef<boolean>()
     const inputRef = useRef<HTMLInputElement>()
@@ -164,6 +166,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
           )
         )
         inputRef.current.blur()
+        onBlur && onBlur(event as any)
       } else {
         if (mixed) {
           setMixed(false)
@@ -174,7 +177,11 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
     }
 
     const blurHandler = (event: SyntheticEvent | MouseEvent) => {
-      if (disabled.current && !isEqual(event.target, inputRef.current)) {
+      if (
+        focus &&
+        disabled.current &&
+        !isEqual(event.target, inputRef.current)
+      ) {
         disabled.current = false
         changeHandler(
           parseFloat(
@@ -184,9 +191,15 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
           )
         )
       }
-      if (!isEqual(event.target, inputRef.current)) {
+      if (focus && !isEqual(event.target, inputRef.current)) {
         onBlur && onBlur(event as any)
+        setFocus(false)
       }
+    }
+
+    const focusHandler = (event: SyntheticEvent | MouseEvent) => {
+      setFocus(true)
+      onFocus && onFocus(event as any)
     }
 
     const downHandler = () => {
@@ -216,6 +229,8 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
         formatter={
           !formatter ? (value) => (mixed ? mixedLabel : value) : formatter
         }
+        onBlur={onBlur}
+        onFocus={focusHandler}
         icon={
           <Draggable
             move={false}

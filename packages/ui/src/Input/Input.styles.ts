@@ -39,7 +39,11 @@ export default createStyles(
         '&[data-with-icon]': {
           paddingLeft: rem(getSize({ size, sizes: iconSizes }))
         }
-      })
+      }),
+      '&:focus-visible': {
+        // border: 'none !imporant',
+        // outline: 'none !imporant'
+      }
     },
     icon: {
       ...(compact && {

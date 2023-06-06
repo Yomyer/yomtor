@@ -18,8 +18,6 @@ export default createStyles(
       withPrimaryColor: false
     })
 
-    console.log(focus)
-
     return {
       root: {
         display: 'inline-flex',
@@ -34,8 +32,9 @@ export default createStyles(
           }),
         ...(variant === 'toggle' &&
           focus && {
+            outline: (variants['&:focus, &:focus-within'] as CSSObject)?.border,
             [`& .${getStylesRef('input')}:not(div)`]: {
-              border: '1px solid red'
+              border: (variants['&:hover'] as CSSObject)?.border
             }
           })
       },
@@ -43,7 +42,7 @@ export default createStyles(
         ref: getStylesRef('input'),
         transition: 'none',
         borderRightWidth: '0 !important',
-        '&:active': {
+        '&:active:not(div)': {
           transform: 'none',
           '& svg': {
             transform: 'translateY(0.0625rem)'
@@ -51,13 +50,16 @@ export default createStyles(
         }
       },
       center: {
+        ref: getStylesRef('center'),
         borderRadius: 0
       },
       first: {
+        ref: getStylesRef('first'),
         borderTopRightRadius: 0,
         borderBottomRightRadius: 0
       },
       last: {
+        ref: getStylesRef('last'),
         borderTopLeftRadius: 0,
         borderBottomLeftRadius: 0,
         borderRightWidth: '1px !important'

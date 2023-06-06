@@ -36,8 +36,10 @@ export const GroupInput = forwardRef<HTMLDivElement, GroupInputProps>(
       { name: 'ButtonGroup', unstyled }
     )
 
-    const focusHandler = () => {
-      setFoucs(true)
+    const focusHandler = (event) => {
+      if (['INPUT'].includes(event.target.nodeName)) {
+        setFoucs(true)
+      }
     }
 
     const blurHandler = () => {
@@ -54,7 +56,7 @@ export const GroupInput = forwardRef<HTMLDivElement, GroupInputProps>(
               [classes.center]: index && index !== children.length - 1
             })
 
-            return cloneElement(child, {
+            return cloneElement<any>(child, {
               compact,
               variant,
               className: className,

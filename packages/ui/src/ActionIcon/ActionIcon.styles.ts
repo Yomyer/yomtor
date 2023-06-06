@@ -51,13 +51,23 @@ export default createStyles(
     theme,
     { compact, size, color, variant, gradient, actived }: ActionIconProps
   ) => {
+    const { [`&:focus, &:focus-within`]: focus, ...others } =
+      theme.fn.getVariant({
+        color,
+        variant,
+        gradient,
+        actived,
+        withFocus: true
+      })
+
     return {
       root: {
-        ...theme.fn.getVariant({ color, variant, gradient, actived }),
+        ...others,
         ...getSizeStyles({
           compact,
           size
         }),
+        '&:focus-visible': focus,
         '& svg': {
           position: 'relative',
           width: getSize({ sizes: icons, size }),

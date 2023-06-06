@@ -63,6 +63,7 @@ export const TransformsControls = (props: TransformsControlsProps) => {
   const [angle, setAngle] = useState<number | ''>('')
   const [radius, setRadius] = useState<Shorthand | ''>('')
   const [combo, setCombo] = useState<string>()
+  const [showRadius, setShowRadius] = useState<boolean>()
   const [constraintProportions, setConstraintProportions] = useState<
     boolean | ''
   >('')
@@ -354,6 +355,7 @@ export const TransformsControls = (props: TransformsControlsProps) => {
         <Control.Panel start={16} end={30}>
           <NumberInput
             icon={<RadiusIcon />}
+            disabled={showRadius}
             value={!isString(radius) && radius.top}
             min={0}
             onChange={(value: number, mixed: boolean) =>
@@ -363,45 +365,52 @@ export const TransformsControls = (props: TransformsControlsProps) => {
           />
         </Control.Panel>
         <Control.Panel start={32} end={33}>
-          <ActionIcon icon={<RadiusShorthandIcon />} />
+          <ActionIcon
+            icon={<RadiusShorthandIcon />}
+            onClick={() => setShowRadius(!showRadius)}
+            actived={showRadius}
+          />
         </Control.Panel>
-        <Control.Panel start={1} end={30}>
-          <GroupInput>
-            <NumberInput
-              icon={<RadiusIcon />}
-              value={!isString(radius) && radius.top}
-              min={0}
-              onChange={(value: number, mixed: boolean) =>
-                changeHandler('radius', value, mixed)
-              }
-              mixed={isEmpty(radius.toString())}
-            />
-            <NumberInput
-              value={!isString(radius) && radius.top}
-              min={0}
-              onChange={(value: number, mixed: boolean) =>
-                changeHandler('radius', value, mixed)
-              }
-              mixed={isEmpty(radius.toString())}
-            />
-            <NumberInput
-              value={!isString(radius) && radius.top}
-              min={0}
-              onChange={(value: number, mixed: boolean) =>
-                changeHandler('radius', value, mixed)
-              }
-              mixed={isEmpty(radius.toString())}
-            />
-            <NumberInput
-              value={!isString(radius) && radius.top}
-              min={0}
-              onChange={(value: number, mixed: boolean) =>
-                changeHandler('radius', value, mixed)
-              }
-              mixed={isEmpty(radius.toString())}
-            />
-          </GroupInput>
-        </Control.Panel>
+        {showRadius && (
+          <Control.Panel start={1} end={30}>
+            <GroupInput>
+              <NumberInput
+                icon={<RadiusIcon />}
+                value={!isString(radius) && radius.top}
+                min={0}
+                onChange={(value: number, mixed: boolean) =>
+                  changeHandler('radius', value, mixed)
+                }
+                mixed={isEmpty(radius.toString())}
+                style={{ flex: '1 0 32%' }}
+              />
+              <NumberInput
+                value={!isString(radius) && radius.top}
+                min={0}
+                onChange={(value: number, mixed: boolean) =>
+                  changeHandler('radius', value, mixed)
+                }
+                mixed={isEmpty(radius.toString())}
+              />
+              <NumberInput
+                value={!isString(radius) && radius.top}
+                min={0}
+                onChange={(value: number, mixed: boolean) =>
+                  changeHandler('radius', value, mixed)
+                }
+                mixed={isEmpty(radius.toString())}
+              />
+              <NumberInput
+                value={!isString(radius) && radius.top}
+                min={0}
+                onChange={(value: number, mixed: boolean) =>
+                  changeHandler('radius', value, mixed)
+                }
+                mixed={isEmpty(radius.toString())}
+              />
+            </GroupInput>
+          </Control.Panel>
+        )}
       </Control.Group>
     </Control>
   ) : null

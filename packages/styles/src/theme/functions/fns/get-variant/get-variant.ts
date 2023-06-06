@@ -61,13 +61,15 @@ export function getVariant(theme: YomtorTheme) {
           '&:focus, &:focus-within': {
             border: `1px solid ${colors.focus.border}`,
             backgroundColor: colors.focus.background,
-            color: colors.focus.color
+            color: colors.focus.color,
+            outline: 'none'
           }
         }
       } else {
         focus = {
           '&:focus, &:focus-within': {
-            border: `1px solid ${colors.focus}`
+            border: `1px solid ${colors.focus}`,
+            outline: 'none'
           }
         }
       }
