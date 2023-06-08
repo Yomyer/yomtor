@@ -1549,6 +1549,9 @@ declare namespace paper {
      * positions.
      */
     class Group extends Item {
+        
+        readonly fitSize: Size
+
         /** 
          * Specifies whether the group item is to be clipped. When setting to
          * `true`, the first child in the group is automatically defined as the
@@ -1577,6 +1580,9 @@ declare namespace paper {
          *     the group
          */
         constructor(object: object)
+
+        
+        getContentBounds(): Rectangle
 
     }
 

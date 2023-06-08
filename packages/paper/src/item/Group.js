@@ -229,6 +229,25 @@ var Group = Item.extend(
                 : _getBounds.base.call(this, matrix, options);
         },
 
+         /**
+          * @return {Rectangle} 
+         */
+        getContentBounds: function () {
+            // NOTE: We cannot cache these results here, since we do not get
+            // _changed() notifications here for changing geometry in children.
+            // But cacheName is used in sub-classes such as SymbolItem and Raster.
+            var children = this._children;
+            // TODO: What to return if nothing is defined, e.g. empty Groups?
+            // Scriptographer behaves weirdly then too.
+            if (!children || !children.length)
+                return new Rectangle();
+            // Call _updateBoundsCache() even when the group only holds empty /
+            // invisible items), so future changes in these items will cause right
+            // handling of _boundsCache.
+            Item._updateBoundsCache(this);
+            return Item._getBounds(children).rect;
+        },
+
         /*
         _hitTestSelf: function(point, options) {
             if (this.getActived() ? this.getBounds().contains(point) : this._contains(point))

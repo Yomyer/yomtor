@@ -92,7 +92,7 @@ var Artboard = Group.extend(
                 actived: false,
             });
 
-            this._background = new Shape.Rectangle(args);
+            this._background = new Path.Rectangle(args);
         },
 
         /**
@@ -191,6 +191,10 @@ var Artboard = Group.extend(
                 : rect;
         },
 
+        
+        fitBounds: function(rectangle, fill) {
+            this._background.fitBounds(rectangle, fill);
+        },
 
         transform: function tranform(
             matrix,

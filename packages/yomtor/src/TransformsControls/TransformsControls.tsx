@@ -282,8 +282,8 @@ export const TransformsControls = (props: TransformsControlsProps) => {
         item.info.width = item.info.height
         item.info.height = width
       }
-      if (['fit'].includes(key) && isBoolean(value)) {
-        setConstraintProportions((item.independentCorners = value))
+      if (['fit'].includes(key) && item instanceof Group) {
+        item.fitBounds(item.getContentBounds())
       }
     })
   }

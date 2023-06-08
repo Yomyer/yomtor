@@ -6320,6 +6320,14 @@ var Group = Item.extend(
 			}
 			return clipItem;
 		},
+		getFitSize: function () {
+			var size = new Size(),
+				children = this._children;
+
+			for (var i = 0, l = children.length; i < l; i++) {
+
+			}
+		},
 
 		isClipped: function () {
 			return !!this._getClipItem();
@@ -6369,6 +6377,14 @@ var Group = Item.extend(
 					  Base.set({}, options, { stroke: false })
 				  )
 				: _getBounds.base.call(this, matrix, options);
+		},
+
+		getContentBounds: function () {
+			var children = this._children;
+			if (!children || !children.length)
+				return new Rectangle();
+			Item._updateBoundsCache(this);
+			return Item._getBounds(children).rect;
 		},
 
 		_hitTest: function _hitTest(point, options, parentViewMatrix) {
@@ -6529,7 +6545,7 @@ var Artboard = Group.extend(
 				actived: false,
 			});
 
-			this._background = new Shape.Rectangle(args);
+			this._background = new Path.Rectangle(args);
 		},
 
 		getName: function () {
@@ -6599,6 +6615,10 @@ var Artboard = Group.extend(
 					  )
 				  )
 				: rect;
+		},
+
+		fitBounds: function(rectangle, fill) {
+			this._background.fitBounds(rectangle, fill);
 		},
 
 		transform: function tranform(
