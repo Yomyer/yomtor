@@ -79,6 +79,7 @@ var Item = Base.extend(Emitter, /** @lends Item# */{
     _constraints: {},
     _constraintProportions: false,
     _borderRadius: 0,
+    _independentCorners: false,
     // Provide information about fields to be serialized, with their defaults
     // that can be omitted.
     _serializeFields: {
@@ -100,7 +101,8 @@ var Item = Base.extend(Emitter, /** @lends Item# */{
         actived: false,
         constraints: {},
         borderRadius: 0,
-        constraintProportions: false
+        constraintProportions: false,
+        independentCorners: false
     },
     // Prioritize `applyMatrix` over `matrix`:
     _prioritize: ['applyMatrix']
@@ -1022,7 +1024,8 @@ new function() { // Injection scope for various item event handlers
     },
 
     setConstraintsPivot: function(/* point */){
-        return this._constraintsPivot = Point.read(arguments);
+        this._constraintsPivot = Point.read(arguments);
+        this._changed(/*#=*/Change.ATTRIBUTE | Change.APPEARANCE);
     },
 
     /**
@@ -1036,7 +1039,24 @@ new function() { // Injection scope for various item event handlers
     },
 
     setConstraintProportions: function(status){
-        return this._constraintProportions = status;
+        this._constraintProportions = status;
+        this._changed(/*#=*/Change.ATTRIBUTE);
+    },
+
+
+     /**
+     * The if item set independent corners.
+     *
+     * @name Item#independentCorners
+     * @type Boolean
+     */
+    getIndependentCorners: function(){
+        return this._independentCorners;
+    },
+
+    setIndependentCorners: function(independentCorners){
+        this._independentCorners = independentCorners;
+        this._changed(/*#=*/Change.ATTRIBUTE);
     },
 
 
@@ -1973,7 +1993,7 @@ new function() { // Injection scope for various item event handlers
         // meaning the default value has been overwritten (default is on
         // prototype).
         var keys = ['_locked', '_visible', '_blendMode', '_opacity',
-                '_clipMask', '_guide', '_angle', '_flipped', '_constraints', '_constraintProportions', '_borderRadius'];
+                '_clipMask', '_guide', '_angle', '_flipped', '_constraints', '_constraintProportions', '_borderRadius', '_independentCorners'];
         for (var i = 0, l = keys.length; i < l; i++) {
             var key = keys[i];
             if (source.hasOwnProperty(key))

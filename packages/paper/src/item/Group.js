@@ -127,6 +127,18 @@ var Group = Item.extend(
             }
             return clipItem;
         },
+        /**
+         * @bean
+         * @type Size
+         */
+        getFitSize: function () {
+            var size = new Size(), 
+                children = this._children;
+
+            for (var i = 0, l = children.length; i < l; i++) {
+
+            }
+        },
 
         /**
          * Specifies whether the group item is to be clipped. When setting to

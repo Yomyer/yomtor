@@ -264,6 +264,10 @@ var Info = Base.extend(/** @lends Info# */{
         return this._owner.angle;
     },
 
+    setAngle: function(angle){
+        this._owner.rotate(angle-this.inheritedAngle, this.center);
+    },
+
     /**
      * @bean
      * @type Number

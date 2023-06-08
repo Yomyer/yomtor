@@ -1673,7 +1673,7 @@ declare namespace paper {
         readonly left: number
 
         
-        readonly angle: number
+        angle: number
 
         
         readonly inheritedAngle: number
@@ -1868,6 +1868,11 @@ declare namespace paper {
          * The if item is constraints.
          */
         constraintProportions: boolean
+
+        /** 
+         * The if item set independent corners.
+         */
+        independentCorners: boolean
 
         /** 
          * The item's pivot point specified in the item coordinate system, defining
@@ -4058,7 +4063,7 @@ declare namespace paper {
         constructor(object: object)
 
         /** 
-         * Determine if path is rectangle
+         * Determine if can apply border radius
          */
         canApplyBorderRadius(): boolean
 

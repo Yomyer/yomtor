@@ -45,7 +45,7 @@ export default createStyles(
         '&:active:not(div)': {
           transform: 'none',
           '& svg': {
-            transform: 'translateY(0.0625rem)'
+            marginTop: '0.1rem'
           }
         }
       },

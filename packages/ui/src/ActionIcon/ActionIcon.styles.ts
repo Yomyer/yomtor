@@ -69,9 +69,16 @@ export default createStyles(
         }),
         '&:focus-visible': focus,
         '& svg': {
+          pointerEvents: 'none',
           position: 'relative',
           width: getSize({ sizes: icons, size }),
           height: getSize({ sizes: icons, size })
+        },
+        '&:active': {
+          transform: 'none',
+          '& svg': {
+            marginTop: '0.1rem'
+          }
         }
       }
     }

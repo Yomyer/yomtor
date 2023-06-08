@@ -3436,6 +3436,10 @@ var Info = Base.extend({
 		return this._owner.angle;
 	},
 
+	setAngle: function(angle){
+		this._owner.rotate(angle-this.inheritedAngle, this.center);
+	},
+
 	getInheritedAngle: function () {
 		return this._owner.inheritedAngle;
 	},
@@ -4168,6 +4172,7 @@ var Item = Base.extend(Emitter, {
 	_constraints: {},
 	_constraintProportions: false,
 	_borderRadius: 0,
+	_independentCorners: false,
 	_serializeFields: {
 		name: null,
 		applyMatrix: null,
@@ -4187,7 +4192,8 @@ var Item = Base.extend(Emitter, {
 		actived: false,
 		constraints: {},
 		borderRadius: 0,
-		constraintProportions: false
+		constraintProportions: false,
+		independentCorners: false
 	},
 	_prioritize: ['applyMatrix']
 },
@@ -4591,7 +4597,8 @@ new function() {
 	},
 
 	setConstraintsPivot: function(){
-		return this._constraintsPivot = Point.read(arguments);
+		this._constraintsPivot = Point.read(arguments);
+		this._changed(257 | Change.APPEARANCE);
 	},
 
 	getConstraintProportions: function(){
@@ -4599,7 +4606,17 @@ new function() {
 	},
 
 	setConstraintProportions: function(status){
-		return this._constraintProportions = status;
+		this._constraintProportions = status;
+		this._changed(257);
+	},
+
+	getIndependentCorners: function(){
+		return this._independentCorners;
+	},
+
+	setIndependentCorners: function(independentCorners){
+		this._independentCorners = independentCorners;
+		this._changed(257);
 	},
 
 	_getPositionFromBounds: function(bounds) {
@@ -5054,7 +5071,7 @@ new function() {
 	copyAttributes: function(source, excludeMatrix) {
 		this.setStyle(source._style);
 		var keys = ['_locked', '_visible', '_blendMode', '_opacity',
-				'_clipMask', '_guide', '_angle', '_flipped', '_constraints', '_constraintProportions', '_borderRadius'];
+				'_clipMask', '_guide', '_angle', '_flipped', '_constraints', '_constraintProportions', '_borderRadius', '_independentCorners'];
 		for (var i = 0, l = keys.length; i < l; i++) {
 			var key = keys[i];
 			if (source.hasOwnProperty(key))
