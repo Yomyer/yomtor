@@ -35,11 +35,20 @@ declare namespace paper {
          */
         clipped: boolean
 
+        
+        bounds: Rectangle
+
         /** 
          * The name of the artboard.
          */
         actived: boolean
 
+
+        /** 
+         * Transform the item so that its {@link #bounds} fit within the specified
+         * rectangle, without changing its aspect ratio.
+         */
+        fitBounds(rectangle?: Rectangle): void
 
     }
 

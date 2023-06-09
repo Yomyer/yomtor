@@ -40,7 +40,7 @@ export function getVariant(theme: YomtorTheme) {
       if (!isString(colors.hover)) {
         hover = {
           '&:hover': {
-            border: `1px solid ${colors.hover.border}`,
+            border: `1px solid ${colors.hover.border || 'transparent'}`,
             backgroundColor: colors.hover.background,
             color: colors.hover.color
           }
@@ -59,7 +59,7 @@ export function getVariant(theme: YomtorTheme) {
       if (!isString(colors.focus)) {
         focus = {
           '&:focus, &:focus-within': {
-            border: `1px solid ${colors.focus.border}`,
+            border: `1px solid ${colors.focus.border || 'transparent'}`,
             backgroundColor: colors.focus.background,
             color: colors.focus.color,
             outline: 'none'
@@ -68,8 +68,9 @@ export function getVariant(theme: YomtorTheme) {
       } else {
         focus = {
           '&:focus, &:focus-within': {
-            border: `1px solid ${colors.focus}`,
-            outline: 'none'
+            // border: `1px solid ${colors.focus}`,
+            outline: `1px solid ${colors.focus}`,
+            outlineOffset: -1
           }
         }
       }
@@ -81,8 +82,8 @@ export function getVariant(theme: YomtorTheme) {
         content: '""',
         position: 'absolute',
         width: '85%',
-        height: '85%'
-        // borderRadius: '2px'
+        height: '85%',
+        borderRadius: 'inherit'
       }
       if (!isString(colors.active)) {
         if (colors.active.size) {
@@ -92,7 +93,7 @@ export function getVariant(theme: YomtorTheme) {
 
         active = {
           color: colors.active.color,
-          border: `1px solid ${colors.active.border}`,
+          border: `1px solid ${colors.active.border || 'transparent'}`,
           '&:before': {
             backgroundColor: colors.active.background,
             ...global

@@ -1,4 +1,4 @@
-import { DefaultProps, Variants } from '@yomtor/styles'
+import { DefaultProps, Variants, YomtorColor, YomtorSize } from '@yomtor/styles'
 import { GroupInputStylesParams } from './GroupInput.styles'
 
 export interface GroupInputProps
@@ -8,6 +8,10 @@ export interface GroupInputProps
   orientation?: 'vertical' | 'horizontal'
   buttonBorderWidth?: number | string
   compact?: boolean
+  disabled?: boolean
+  color?: YomtorColor
+  radius?: YomtorSize
+  size?: YomtorSize
   variant?: Variants<
     | 'subtle'
     | 'filled'

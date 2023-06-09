@@ -25,20 +25,11 @@ function Demo() {
 function Wrapper(props: GroupInputProps) {
   return (
     <GroupInput {...props}>
-      <NumberInput
-        icon={<RadiusIcon />}
-        value={0}
-        draggable={props.draggable}
-      />
-      <NumberInput value={0} />
-      <ActionIcon>
+      <ActionIcon actived>
         <ArtboardIcon />
       </ActionIcon>
       <ActionIcon>
         <CodeIcon />
-      </ActionIcon>
-      <ActionIcon>
-        <HideIcon />
       </ActionIcon>
     </GroupInput>
   )

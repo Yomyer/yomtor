@@ -5,12 +5,19 @@ export interface GroupInputStylesParams {
   buttonBorderWidth: number | string
   variant: string
   focus: boolean
+  disabled: boolean
 }
 
 export default createStyles(
   (
     theme,
-    { orientation, variant, focus, buttonBorderWidth }: GroupInputStylesParams
+    {
+      orientation,
+      variant,
+      focus,
+      buttonBorderWidth,
+      disabled
+    }: GroupInputStylesParams
   ) => {
     const variants = theme.fn.getVariant({
       variant,
@@ -22,6 +29,7 @@ export default createStyles(
       root: {
         display: 'inline-flex',
         flexDirection: orientation === 'vertical' ? 'column' : 'row',
+        pointerEvents: disabled ? 'none' : undefined,
         ...(variant === 'toggle' &&
           !focus && {
             '&:hover': {

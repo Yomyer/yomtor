@@ -47,6 +47,7 @@ export default createStyles(
         pointerEvents: disabled ? 'none' : undefined
       },
       input: {
+        lineHeight: 'normal',
         ...variant,
         ...(compact && {
           ...compactSizes[`compact-${size}`],

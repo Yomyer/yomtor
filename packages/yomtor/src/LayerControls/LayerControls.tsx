@@ -112,12 +112,10 @@ export const LayerControls = (props: LayerControlsProps) => {
             min={0}
             onChange={opacityHandler}
             mixed={isEmpty(opacity.toString())}
-            parser={(value) => {
-              return value.replace(/[^(\d)]/g, '')
-            }}
             formatter={(value) =>
               !Number.isNaN(parseFloat(value)) ? `${value}%` : '100%'
             }
+            empty={false}
           />
         </Control.Panel>
         <Control.Panel start={32} end={32}>

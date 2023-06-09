@@ -16,7 +16,8 @@ const defaultProps: Partial<GroupInputProps> = {
   orientation: 'horizontal',
   buttonBorderWidth: 1,
   compact: true,
-  variant: 'toggle'
+  variant: 'toggle',
+  radius: 'xs'
 }
 
 export const GroupInput = forwardRef<HTMLDivElement, GroupInputProps>(
@@ -29,13 +30,17 @@ export const GroupInput = forwardRef<HTMLDivElement, GroupInputProps>(
       variant,
       buttonBorderWidth,
       unstyled,
+      radius,
+      size,
+      color,
+      disabled,
       onBlur,
       onFocus,
       ...others
     } = useComponentDefaultProps('ButtonGroup', defaultProps, props)
     const [focus, setFoucs] = useState<boolean>(false)
     const { classes, cx } = useStyles(
-      { orientation, buttonBorderWidth, variant, focus },
+      { orientation, buttonBorderWidth, variant, focus, disabled },
       { name: 'ButtonGroup', unstyled }
     )
 
@@ -66,6 +71,10 @@ export const GroupInput = forwardRef<HTMLDivElement, GroupInputProps>(
             return cloneElement<any>(child, {
               compact,
               variant,
+              radius,
+              size,
+              disabled,
+              color,
               className: className,
               classNames: {
                 input: className

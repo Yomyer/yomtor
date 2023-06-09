@@ -31,7 +31,8 @@ const defaultProps: Partial<NumberInputProps> = {
   precision: 2,
   removeTrailingZeros: true,
   blur: true,
-  mixedLabel: 'Mixed'
+  mixedLabel: 'Mixed',
+  empty: true
 }
 
 export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
@@ -49,6 +50,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
       onChange,
       onBlur,
       onFocus,
+      parser,
       classNames,
       styles,
       mixed: isMixed,
@@ -59,6 +61,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
       removeTrailingZeros,
       min,
       max,
+      empty,
       ...others
     } = useComponentDefaultProps('NumberInput', defaultProps, props)
 
@@ -73,6 +76,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
     const [mixed, setMixed] = useState<boolean>(false)
     const [focus, setFocus] = useState<boolean>(false)
     const [value, setValue] = useState<number | ''>()
+    const [defValue, setDefValue] = useState<number>()
     const unabled = useRef<boolean>()
     const inputRef = useRef<HTMLInputElement>()
     const handlersRef = useRef<NumberInputHandlers>()
@@ -87,6 +91,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
 
     useEffect(() => {
       setValue(defaultValue)
+      setDefValue(parseFloat(defaultValue.toString()))
     }, [defaultValue])
 
     useEffect(() => {
@@ -97,6 +102,10 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
         handlersRef.current[delta > 0 ? 'increment' : 'decrement']()
       }
     }, [drag])
+
+    useEffect(() => {
+      if (focus) inputRef.current.select()
+    }, [focus])
 
     const parsePrecision = (val: number | '') => {
       if (val === '') return ''
@@ -139,10 +148,13 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
       onStop && onStop(event, data)
     }
 
-    const changeHandler = (value: number) => {
-      setValue(value)
+    const changeHandler = (val: number) => {
+      if (Number.isNaN(val) && empty) return
+      if (Number.isNaN(val)) val = defValue
+
+      setValue(val)
       if (!unabled.current) {
-        onChange && onChange(value, mixed)
+        onChange && onChange(val, mixed)
       }
     }
 
@@ -227,8 +239,19 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
         min={min}
         precision={precision}
         removeTrailingZeros={removeTrailingZeros}
+        parser={
+          !parser
+            ? (value) => {
+                return value.replace(/[^(\d)|,|.]/g, '').replace(',', '.')
+              }
+            : parser
+        }
         formatter={
-          !formatter ? (value) => (mixed ? mixedLabel : value) : formatter
+          !focus
+            ? !formatter
+              ? (value) => (mixed ? mixedLabel : value)
+              : formatter
+            : undefined
         }
         onBlur={onBlur}
         onFocus={focusHandler}

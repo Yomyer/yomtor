@@ -49,7 +49,15 @@ function getSizeStyles({ compact, size }: GetSizeStyles): CSSObject {
 export default createStyles(
   (
     theme,
-    { compact, size, color, variant, gradient, actived }: ActionIconProps
+    {
+      compact,
+      size,
+      color,
+      variant,
+      gradient,
+      actived,
+      radius
+    }: ActionIconProps
   ) => {
     const { [`&:focus, &:focus-within`]: focus, ...others } =
       theme.fn.getVariant({
@@ -67,7 +75,10 @@ export default createStyles(
           compact,
           size
         }),
-        '&:focus-visible': focus,
+        '&:focus-visible': {
+          ...(focus as object),
+          borderRadius: theme.fn.radius(radius)
+        },
         '& svg': {
           pointerEvents: 'none',
           position: 'relative',

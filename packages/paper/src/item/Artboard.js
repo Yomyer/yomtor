@@ -124,6 +124,22 @@ var Artboard = Group.extend(
             this._getItemsInChildrens = !clipped;
         },
 
+
+        /**
+         *
+         * @bean
+         * @type Rectangle
+         */
+        getBounds: function getBounds() {
+            return getBounds.base.call(this);
+        },
+
+        setBounds: function setBounds(/* rect */) {
+            var bounds = Rectangle.read(arguments);
+            this._background.bounds = bounds;
+        },
+
+
         /**
          * The name of the artboard.
          *
@@ -191,9 +207,15 @@ var Artboard = Group.extend(
                 : rect;
         },
 
-        
-        fitBounds: function(rectangle, fill) {
-            this._background.fitBounds(rectangle, fill);
+       /**
+         * Transform the item so that its {@link #bounds} fit within the specified
+         * rectangle, without changing its aspect ratio.
+         *
+         * @param {Rectangle} [rectangle=null]
+         */
+        fitBounds: function(rectangle) {
+            rectangle = Rectangle.read(arguments);
+            this.bounds = !rectangle.size.isZero() ? rectangle : this.getContentBounds()
         },
 
         transform: function tranform(

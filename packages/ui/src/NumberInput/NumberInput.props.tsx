@@ -19,4 +19,5 @@ export interface NumberInputProps
   onChange?(value: number | '', mixed?: boolean): void
   mixed?: boolean
   mixedLabel?: string
+  empty?: boolean
 }

@@ -8,6 +8,7 @@ import {
   Input,
   NumberInput,
   Select,
+  Checkbox,
   GroupInput
 } from '@yomtor/ui'
 import {
@@ -29,7 +30,6 @@ import {
   Group,
   Size,
   Item,
-  PathItem,
   Shorthand,
   Path
 } from '@yomtor/paper'
@@ -66,9 +66,10 @@ export const TransformsControls = (props: TransformsControlsProps) => {
   const [angle, setAngle] = useState<number | ''>('')
   const [radius, setRadius] = useState<Shorthand | ''>('')
   const [combo, setCombo] = useState<string>()
+  const [artboard, setArboard] = useState<boolean>()
   const [canRadius, setCanRadius] = useState<boolean>()
   const [canCorners, setCanCorners] = useState<boolean>()
-  const [independentCorners, setindependentCorners] = useState<boolean>()
+  const [independentCorners, setIndependentCorners] = useState<boolean>()
   const [rotate, setRotate] = useState<number>(0)
   const [constraintProportions, setConstraintProportions] = useState<
     boolean | ''
@@ -128,6 +129,10 @@ export const TransformsControls = (props: TransformsControlsProps) => {
           canvas.project.activeItems.map(
             (item) => item instanceof Artboard && !item.children.length
           )
+        )
+
+        const artboard = countBy(
+          canvas.project.activeItems.map((item) => item instanceof Artboard)
         )
 
         const combo = countBy(
@@ -198,13 +203,13 @@ export const TransformsControls = (props: TransformsControlsProps) => {
         setCanRadius(
           size(canRadius) === 1 ? findKey(canRadius) === 'true' : false
         )
-        setindependentCorners(
+        setIndependentCorners(
           size(independentCorners) === 1
             ? findKey(independentCorners) === 'true'
             : false
         )
+        setArboard(size(artboard) === 1 ? findKey(artboard) === 'true' : false)
       }
-      // update.current = true
 
       if (type & ChangeFlag.ACTIVE) {
         setVisible(!!canvas.project.activeItems.length)
@@ -234,8 +239,6 @@ export const TransformsControls = (props: TransformsControlsProps) => {
     value?: number | boolean,
     mixed?: boolean
   ) => {
-    // update.current = false
-
     canvas.project.activeItems.forEach((item) => {
       if (['x', 'y'].includes(key)) {
         item.info.topLeft[key] =
@@ -282,8 +285,8 @@ export const TransformsControls = (props: TransformsControlsProps) => {
         item.info.width = item.info.height
         item.info.height = width
       }
-      if (['fit'].includes(key) && item instanceof Group) {
-        item.fitBounds(item.getContentBounds())
+      if (['fit'].includes(key) && item instanceof Artboard) {
+        item.fitBounds()
       }
     })
   }
@@ -340,26 +343,30 @@ export const TransformsControls = (props: TransformsControlsProps) => {
           }
           start={1}
         >
-          <Control.Panel start={21} end={30}>
-            <GroupInput>
-              <ActionIcon
-                icon={<OrientationIcon />}
-                actived={height >= width}
-                onClick={() => changeHandler('portratit')}
-              />
-              <ActionIcon
-                icon={<OrientationIcon rotate={90} />}
-                actived={height < width}
-                onClick={() => changeHandler('landscape')}
-              />
-            </GroupInput>
-          </Control.Panel>
-          <Control.Panel start={32} end={33}>
-            <ActionIcon
-              icon={<MinimizeIcon />}
-              onClick={() => changeHandler('fit')}
-            />
-          </Control.Panel>
+          {artboard && (
+            <>
+              <Control.Panel start={21} end={30}>
+                <GroupInput>
+                  <ActionIcon
+                    icon={<OrientationIcon />}
+                    actived={height >= width}
+                    onClick={() => changeHandler('portratit')}
+                  />
+                  <ActionIcon
+                    icon={<OrientationIcon rotate={90} />}
+                    actived={height < width}
+                    onClick={() => changeHandler('landscape')}
+                  />
+                </GroupInput>
+              </Control.Panel>
+              <Control.Panel start={32} end={33}>
+                <ActionIcon
+                  icon={<MinimizeIcon />}
+                  onClick={() => changeHandler('fit')}
+                />
+              </Control.Panel>
+            </>
+          )}
         </Control.Title>
       )}
       <Control.Group rowGap={8}>
@@ -371,6 +378,7 @@ export const TransformsControls = (props: TransformsControlsProps) => {
               changeHandler('x', value, mixed)
             }
             mixed={isEmpty(x.toString())}
+            empty={false}
           />
         </Control.Panel>
         <Control.Panel start={16} end={30}>
@@ -381,6 +389,7 @@ export const TransformsControls = (props: TransformsControlsProps) => {
               changeHandler('y', value, mixed)
             }
             mixed={isEmpty(y.toString())}
+            empty={false}
           />
         </Control.Panel>
         <Control.Panel start={1} end={14}>
@@ -392,6 +401,7 @@ export const TransformsControls = (props: TransformsControlsProps) => {
               changeHandler('width', value, mixed)
             }
             mixed={isEmpty(width.toString())}
+            empty={false}
           />
         </Control.Panel>
         <Control.Panel start={16} end={30}>
@@ -403,6 +413,7 @@ export const TransformsControls = (props: TransformsControlsProps) => {
               changeHandler('height', value, mixed)
             }
             mixed={isEmpty(height.toString())}
+            empty={false}
           />
         </Control.Panel>
         <Control.Panel start={32} end={33}>
@@ -429,12 +440,10 @@ export const TransformsControls = (props: TransformsControlsProps) => {
               changeHandler('angle', value, mixed)
             }
             mixed={isEmpty(angle.toString())}
-            parser={(value) => {
-              return value.replace(/[^(\d)]/g, '')
-            }}
             formatter={(value) =>
-              !Number.isNaN(parseFloat(value)) ? `${value}º` : `0º`
+              !Number.isNaN(parseFloat(value)) ? `${value}º` : ``
             }
+            empty={false}
           />
         </Control.Panel>
         {canRadius && (
@@ -452,6 +461,7 @@ export const TransformsControls = (props: TransformsControlsProps) => {
                 isEmpty(radius.toString()) ||
                 (!isString(radius) && !radius.regular)
               }
+              empty={false}
             />
           </Control.Panel>
         )}
@@ -482,6 +492,7 @@ export const TransformsControls = (props: TransformsControlsProps) => {
                 }
                 mixed={isEmpty(radius.toString())}
                 style={{ flex: '1 0 33%' }}
+                empty={false}
               />
               <NumberInput
                 value={!isString(radius) && radius.right}
@@ -493,6 +504,7 @@ export const TransformsControls = (props: TransformsControlsProps) => {
                 onFocus={() => {
                   setRotate(90)
                 }}
+                empty={false}
               />
               <NumberInput
                 value={!isString(radius) && radius.bottom}
@@ -504,6 +516,7 @@ export const TransformsControls = (props: TransformsControlsProps) => {
                 onFocus={() => {
                   setRotate(180)
                 }}
+                empty={false}
               />
               <NumberInput
                 value={!isString(radius) && radius.left}
@@ -515,8 +528,14 @@ export const TransformsControls = (props: TransformsControlsProps) => {
                 onFocus={() => {
                   setRotate(270)
                 }}
+                empty={false}
               />
             </GroupInput>
+          </Control.Panel>
+        )}
+        {artboard && (
+          <Control.Panel start={2} end={30}>
+            <Checkbox label='Clip content' />
           </Control.Panel>
         )}
       </Control.Group>

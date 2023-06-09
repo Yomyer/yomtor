@@ -25,6 +25,7 @@ export default createStyles(
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
+      minHeight: 28,
       gap,
       '& > *': {
         flexGrow: 1

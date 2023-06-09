@@ -6565,6 +6565,15 @@ var Artboard = Group.extend(
 			this._getItemsInChildrens = !clipped;
 		},
 
+		getBounds: function getBounds() {
+			return getBounds.base.call(this);
+		},
+
+		setBounds: function setBounds() {
+			var bounds = Rectangle.read(arguments);
+			this._background.bounds = bounds;
+		},
+
 		getActived: function () {
 			return this._actived;
 		},
@@ -6617,8 +6626,9 @@ var Artboard = Group.extend(
 				: rect;
 		},
 
-		fitBounds: function(rectangle, fill) {
-			this._background.fitBounds(rectangle, fill);
+		fitBounds: function(rectangle) {
+			rectangle = Rectangle.read(arguments);
+			this.bounds = !rectangle.size.isZero() ? rectangle : this.getContentBounds()
 		},
 
 		transform: function tranform(
