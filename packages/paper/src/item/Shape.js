@@ -271,8 +271,9 @@ var Shape = Item.extend(/** @lends Shape# */{
         }
     },
 
-    _getHigthlightItem: function() {
+    _getHighlightItem: function() {
         return new Path.Rectangle({
+            insert: false,
             pathData: this.toPath(false).getPathData()
         });
     },

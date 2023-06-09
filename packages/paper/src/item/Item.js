@@ -491,6 +491,15 @@ new function() { // Injection scope for various item event handlers
     },
 
     /**
+     * @name Item#highlightItem
+     * @type Path
+     *
+     */
+    getHighlightItem: function(){
+        return this._getHighlightItem();
+    },
+
+    /**
      * The angle of item
      *
      * @name Item#artboard
@@ -5068,35 +5077,10 @@ new function() { // Injection scope for hit-test functions shared with project
         }
     },
 
-    _drawHighlight: function(ctx, matrix, pixelRatio) {
-        if(this.getActived()){
-            return;
-        }
-
-        matrix.applyToContext(ctx);
-
-        var param = new Base({
-            offset: new Point(0, 0),
-            pixelRatio: pixelRatio,
-            viewMatrix: matrix.isIdentity() ? null : matrix,
-            matrices: [new Matrix()],
-            updateMatrix: true,
-        });
-
-        item = this._getHigthlightItem();
-        item.set({
-            insert: false,
-            strokeColor: "rgba(0, 142, 252, 1)",
-            strokeWidth: 2 / this._project._view.getZoom(),
-        });
-
-        item.draw(ctx, param);
-        item.remove();
-    },
-
-    _getHigthlightItem: function() {
+    _getHighlightItem: function() {
         var info = this.getInfo();
         return new Path.Rectangle({
+            insert: false,
             position: info.center,
             size: info,
             rotation: info.inheritedAngle
@@ -5453,17 +5437,4 @@ new function(){
      */
     getActiveInfo: '#getInfo',
 
-    _drawActivation: function(ctx, matrix, unrotated) {
-        var corners = this.info.getCorners(unrotated)
-        //corners = matrix._transformCoordinates(corners, corners, 4);
-       
-        ctx.beginPath();
-        ctx.moveTo(corners[0], corners[1]);
-        ctx.lineTo(corners[2], corners[3]);
-        ctx.lineTo(corners[4], corners[5]);
-        ctx.lineTo(corners[6], corners[7]);
-        ctx.closePath();
-        
-        ctx.stroke();
-    }
 });

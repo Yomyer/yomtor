@@ -219,7 +219,6 @@ export const TransformsControls = (props: TransformsControlsProps) => {
         setClipped(size(clipped) === 1 ? findKey(clipped) === 'true' : false)
       }
 
-      console.log(canvas.getTool('SelectorTool').actived)
       if (type & (ChangeFlag.ACTIVE | ChangeFlag.TOOL)) {
         setVisible(
           !!canvas.project.activeItems.length &&

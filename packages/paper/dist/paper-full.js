@@ -3472,6 +3472,15 @@ var Info = Base.extend({
 		this._setSize('height', value)
 	},
 
+	getSize: function () {
+		return new LinkedSize(this.width, this.height, this, '_setInfoSize');
+	},
+
+	setSize: function(){
+		var size = Size.read(arguments);
+		this._setInfoSize(size.width, size.height);
+	},
+
 	getCorners: function(unrotated) {
 		var owner = this._owner
 		var data = Base.set({
@@ -3493,6 +3502,13 @@ var Info = Base.extend({
 		var corners = matrix._transformCorners(data.bounds);
 
 		return this._cache[key] = JSON.parse(JSON.stringify(corners));
+	},
+
+	_setInfoSize: function(){
+		var size = Size.read(arguments);
+
+		this._setSize('width', size.width);
+		this._setSize('height', size.height);
 	},
 
 	_setSize: function(direction, value){
@@ -4116,12 +4132,6 @@ var Project = PaperScopeItem.extend(
 		ctx.restore()
 	  }
 
-	  if (this._highlightedItem) {
-		ctx.save()
-		this._highlightedItem._drawHighlight(ctx, matrix, pixelRatio)
-		ctx.restore()
-	  }
-
 	  if (this._grid) {
 		ctx.save()
 		matrix.applyToContext(ctx)
@@ -4130,11 +4140,9 @@ var Project = PaperScopeItem.extend(
 	  }
 
 	  if (this._selector) {
-		if (this._activeItems.length) {
-		  ctx.save()
-		  this._selector.draw(ctx, matrix, pixelRatio)
-		  ctx.restore()
-		}
+		ctx.save()
+		this._selector.draw(ctx, matrix, pixelRatio)
+		ctx.restore()
 	  }
 
 	  ctx.save()
@@ -4392,6 +4400,10 @@ new function() {
 		}
 
 		return angle;
+	},
+
+	getHighlightItem: function(){
+		return this._getHighlightItem();
 	},
 
 	getArtboard: function(){
@@ -6176,35 +6188,10 @@ new function() {
 		}
 	},
 
-	_drawHighlight: function(ctx, matrix, pixelRatio) {
-		if(this.getActived()){
-			return;
-		}
-
-		matrix.applyToContext(ctx);
-
-		var param = new Base({
-			offset: new Point(0, 0),
-			pixelRatio: pixelRatio,
-			viewMatrix: matrix.isIdentity() ? null : matrix,
-			matrices: [new Matrix()],
-			updateMatrix: true,
-		});
-
-		item = this._getHigthlightItem();
-		item.set({
-			insert: false,
-			strokeColor: "rgba(0, 142, 252, 1)",
-			strokeWidth: 2 / this._project._view.getZoom(),
-		});
-
-		item.draw(ctx, param);
-		item.remove();
-	},
-
-	_getHigthlightItem: function() {
+	_getHighlightItem: function() {
 		var info = this.getInfo();
 		return new Path.Rectangle({
+			insert: false,
 			position: info.center,
 			size: info,
 			rotation: info.inheritedAngle
@@ -6285,16 +6272,6 @@ new function(){
 
 	getActiveInfo: '#getInfo',
 
-	_drawActivation: function(ctx, matrix, unrotated) {
-		var corners = this.info.getCorners(unrotated)
-		ctx.beginPath();
-		ctx.moveTo(corners[0], corners[1]);
-		ctx.lineTo(corners[2], corners[3]);
-		ctx.lineTo(corners[4], corners[5]);
-		ctx.lineTo(corners[6], corners[7]);
-		ctx.closePath();
-		ctx.stroke();
-	}
 });
 
 var Group = Item.extend(
@@ -7119,8 +7096,9 @@ var Shape = Item.extend({
 		}
 	},
 
-	_getHigthlightItem: function() {
+	_getHighlightItem: function() {
 		return new Path.Rectangle({
+			insert: false,
 			pathData: this.toPath(false).getPathData()
 		});
 	},
@@ -8312,11 +8290,9 @@ var Selector = Item.extend(
 		},
 
 		draw: function (ctx, matrix, pixelRatio) {
-			var items = this._project._activeItems;
 			var children = this._children;
 
 			matrix = matrix.appended(this.getGlobalMatrix(true));
-
 			matrix.applyToContext(ctx);
 
 			var param = new Base({
@@ -8520,7 +8496,7 @@ var Control = Item.extend(
 		_owner: null,
 		_offset: null,
 
-		initialize: function Control(name, item, draw, scale = true) {
+		initialize: function Control(name, item, draw, scale = false) {
 			this._project = paper.project;
 			this._owner = this._project.selector;
 
@@ -8528,7 +8504,8 @@ var Control = Item.extend(
 			this._item = item;
 			this._item._control = this;
 			this._style = this._item._style
-			this._scale = scale
+			this._scale = scale;
+			this._name = name;
 			this.onDraw = draw;
 
 			this._owner._addControl(name, this);
@@ -8702,10 +8679,6 @@ var Control = Item.extend(
 		},
 
 		draw: function (ctx, param) {
-			if (this.isSmallZoom()) {
-				return;
-			}
-
 			var owner = this._owner;
 			var zoom = this.getZoom();
 			var shadowOffset = null;
@@ -8727,12 +8700,18 @@ var Control = Item.extend(
 					true
 				);
 			}
-
 			if (this._item.shadowOffset) {
 				shadowOffset = this._item.shadowOffset.clone();
 				this._item.shadowOffset = new Matrix()
 					.rotate(-this.item.getRotation())
 					._transformPoint(shadowOffset);
+			}
+
+			if(!this._scale){
+				this._item.strokeWidth = this._item.strokeWidth / zoom
+				this._item.dashArray = this._item.dashArray.map(function(num){
+					return num / zoom
+				});
 			}
 
 			this._item.draw(ctx, param);
@@ -11298,8 +11277,14 @@ var Path = PathItem.extend({
 	beans: true,
 
 	getPathData: function(_matrix, _precision) {
-		var segments = this._segments,
-			length = segments.length,
+
+		var segments = this._segments;
+
+		if(this.borderRadius.getActived()){
+			segments = this._applyBorderRadius()._segments
+		}
+
+		var length = segments.length,
 			f = new Formatter(_precision),
 			coords = new Array(6),
 			first = true,
@@ -12442,8 +12427,9 @@ new function() {
 			drawHandles(ctx, this._segments, matrix, paper.settings.handleSize);
 		},
 
-		_getHigthlightItem: function() {
+		_getHighlightItem: function() {
 			return new Path.Rectangle({
+				insert: false,
 				pathData: this.getPathData()
 			});
 		}
@@ -17161,6 +17147,24 @@ var Tool = PaperScopeItem.extend(
 
 		addControl: function (control){
 			this._controls.push(control);
+		},
+
+		hideOtherTools: function(){
+			var current = this;
+			Base.each(this._scope.tools, function(tool) {
+				if(tool !== current){
+					tool.hide = true
+				}
+			})
+		},
+
+		showOtherTools: function(){
+			var current = this;
+			Base.each(this._scope.tools, function(tool) {
+				if(tool !== current){
+					tool.hide = false
+				}
+			})
 		},
 
 		getMaxDistance: function () {

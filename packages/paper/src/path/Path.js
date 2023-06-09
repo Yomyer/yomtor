@@ -301,8 +301,14 @@ var Path = PathItem.extend(/** @lends Path# */{
 
     getPathData: function(_matrix, _precision) {
         // NOTE: #setPathData() is defined in PathItem.
-        var segments = this._segments,
-            length = segments.length,
+
+        var segments = this._segments;
+
+        if(this.borderRadius.getActived()){
+            segments = this._applyBorderRadius()._segments
+        }
+
+        var length = segments.length,
             f = new Formatter(_precision),
             coords = new Array(6),
             first = true,
@@ -2491,8 +2497,9 @@ new function() { // Scope for drawing
             drawHandles(ctx, this._segments, matrix, paper.settings.handleSize);
         },
 
-        _getHigthlightItem: function() {
+        _getHighlightItem: function() {
             return new Path.Rectangle({
+                insert: false,
                 pathData: this.getPathData()
             });
         }

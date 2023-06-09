@@ -1329,12 +1329,6 @@ var Project = PaperScopeItem.extend(
         ctx.restore()
       }
 
-      if (this._highlightedItem) {
-        ctx.save()
-        this._highlightedItem._drawHighlight(ctx, matrix, pixelRatio)
-        ctx.restore()
-      }
-
       if (this._grid) {
         ctx.save()
         matrix.applyToContext(ctx)
@@ -1343,11 +1337,9 @@ var Project = PaperScopeItem.extend(
       }
 
       if (this._selector) {
-        if (this._activeItems.length) {
-          ctx.save()
-          this._selector.draw(ctx, matrix, pixelRatio)
-          ctx.restore()
-        }
+        ctx.save()
+        this._selector.draw(ctx, matrix, pixelRatio)
+        ctx.restore()
       }
 
       ctx.save()

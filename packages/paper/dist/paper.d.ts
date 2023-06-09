@@ -1707,6 +1707,9 @@ declare namespace paper {
         
         height: number
 
+        
+        size: Size
+
         /** 
          * The corners
          */
@@ -1784,6 +1787,11 @@ declare namespace paper {
          * The angle of item
          */
         inheritedAngle: number
+
+        /** 
+         * The angle of item
+         */
+        highlightItem: Path
 
         /** 
          * The angle of item
@@ -7716,6 +7724,12 @@ declare namespace paper {
          * @param Control - control
          */
         addControl(Control: any): void
+
+        
+        hideOtherTools(): void
+
+        
+        showOtherTools(): void
 
         /** 
          * Active main tool

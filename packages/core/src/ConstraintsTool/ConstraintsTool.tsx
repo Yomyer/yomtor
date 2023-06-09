@@ -154,8 +154,8 @@ export const ConstraintsTool = (props: ConstraintsToolProps) => {
 
           const params = {
             strokeColor: selector.strokeColor,
-            strokeWidth: 0.5 / zoom,
-            dashArray: [3 / zoom, 2 / zoom],
+            strokeWidth: 0.5,
+            dashArray: [3, 2],
             insert: true,
             from: new Point([0, 0]),
             to: new Point([0, 0])
@@ -244,8 +244,7 @@ export const ConstraintsTool = (props: ConstraintsToolProps) => {
           ) {
             addCenter()
           }
-        },
-        false
+        }
       )
     )
   }, [tool])

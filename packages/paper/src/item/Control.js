@@ -23,7 +23,7 @@ var Control = Item.extend(
          * @param {Boolean} [scale]
          */
         
-        initialize: function Control(name, item, draw, scale = true) {
+        initialize: function Control(name, item, draw, scale = false) {
             this._project = paper.project;
  
             this._owner = this._project.selector;
@@ -32,7 +32,8 @@ var Control = Item.extend(
             this._item = item;
             this._item._control = this;
             this._style = this._item._style
-            this._scale = scale
+            this._scale = scale;
+            this._name = name;
             this.onDraw = draw;
 
             this._owner._addControl(name, this);
@@ -243,7 +244,6 @@ var Control = Item.extend(
          * @type ?Function
          *
          */
-
         draw: function (ctx, param) {
             if (this.isSmallZoom()) {
                 return;
@@ -252,9 +252,7 @@ var Control = Item.extend(
             var owner = this._owner;
             var zoom = this.getZoom();
             var shadowOffset = null;
-
             
-
             if(owner.onControlDraw){
                 owner.onControlDraw(new DrawControlEvent(this, owner))
             }else if(this.onDraw){
@@ -264,7 +262,6 @@ var Control = Item.extend(
                 this.setPosition(owner.topLeft);
             }
 
-        
             if(this._scale){
                 this._item.transform(
                     new Matrix().scale(1 / zoom, this.getPosition()),
@@ -274,7 +271,6 @@ var Control = Item.extend(
                 );
             }
            
-
             if (this._item.shadowOffset) {
                 shadowOffset = this._item.shadowOffset.clone();
                 this._item.shadowOffset = new Matrix()
@@ -282,8 +278,16 @@ var Control = Item.extend(
                     ._transformPoint(shadowOffset);
             }
 
+            if(!this._scale){
+                this._item.strokeWidth = this._item.strokeWidth / zoom
+                this._item.dashArray = this._item.dashArray.map(function(num){
+                    return num / zoom
+                });
+            }
+
             this._item.draw(ctx, param);
-                        
+              
+           
             if(this._scale){
                 this._item.transform(
                     new Matrix().scale(zoom, this.getPosition()),
@@ -292,6 +296,7 @@ var Control = Item.extend(
                     true
                 );
             }
+            
 
             if (shadowOffset) {
                 this._item.shadowOffset = shadowOffset;

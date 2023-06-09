@@ -229,7 +229,8 @@ export const TransformTool = (props: TransformToolProps) => {
               selector[corner.replace('rotateB', 'b').replace('rotateT', 't')]
             control.offset = rotates[corner]
             control.rotation = selector.inheritedAngle
-          }
+          },
+          true
         )
       )
     })
@@ -241,10 +242,16 @@ export const TransformTool = (props: TransformToolProps) => {
           invisibleHandler.clone(),
           ({ control, selector }) => {
             control.position = selector[corner]
-            ;['topCenter', 'bottomCenter'].includes(corner) &&
-              (control.size.width = canvas.view.zoom * selector.width)
-            ;['leftCenter', 'rightCenter'].includes(corner) &&
-              (control.size.height = canvas.view.zoom * selector.height)
+            if (['topCenter', 'bottomCenter'].includes(corner)) {
+              control.size.width = selector.width
+              control.size.height = 8 / canvas.view.zoom
+            }
+
+            if (['leftCenter', 'rightCenter'].includes(corner)) {
+              control.size.height = selector.height
+              control.size.width = 8 / canvas.view.zoom
+            }
+
             control.rotation = selector.inheritedAngle
           }
         )
@@ -253,10 +260,15 @@ export const TransformTool = (props: TransformToolProps) => {
 
     corners.forEach((corner) => {
       controls.push(
-        new Control(corner, handler.clone(), ({ control, selector }) => {
-          control.position = selector[corner]
-          control.rotation = selector.inheritedAngle
-        })
+        new Control(
+          corner,
+          handler.clone(),
+          ({ control, selector }) => {
+            control.position = selector[corner]
+            control.rotation = selector.inheritedAngle
+          },
+          true
+        )
       )
     })
 

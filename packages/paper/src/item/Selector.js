@@ -634,31 +634,10 @@ var Selector = Item.extend(
          */
 
         draw: function (ctx, matrix, pixelRatio) {
-            var items = this._project._activeItems;
             var children = this._children;
 
             matrix = matrix.appended(this.getGlobalMatrix(true));
-
             matrix.applyToContext(ctx);
-            
-            /*
-            ctx.strokeStyle = this.strokeColor.toCanvasStyle(ctx, matrix);
-            ctx.lineWidth = 0.5 / this._project.view.zoom;
-
-            for (var x in items) {
-                items[x]._drawActivation(ctx, matrix, items.length > 1);
-            }
-
-            if (items.length > 1) {
-                ctx.beginPath();
-                ctx.moveTo(this.topLeft.x, this.topLeft.y);
-                ctx.lineTo(this.topRight.x, this.topRight.y);
-                ctx.lineTo(this.bottomRight.x, this.bottomRight.y);
-                ctx.lineTo(this.bottomLeft.x, this.bottomLeft.y);
-                ctx.closePath();
-                ctx.stroke();
-            }
-            */
 
             var param = new Base({
                 offset: new Point(0, 0),

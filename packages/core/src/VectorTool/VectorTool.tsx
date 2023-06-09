@@ -25,18 +25,18 @@ export const VectorTool = (props: VectorToolProps) => {
     canvas.project.on('enter', (e: ToolEvent) => {
       if (e.item instanceof Path) {
         tool.activate()
-        canvas.hideTools()
+        tool.hideOtherTools()
       }
     })
 
     canvas.project.on('exit', (e: ToolEvent) => {
       tool.activeMain()
-      canvas.showTools()
+      tool.showOtherTools()
     })
 
     tool.onDoubleClick = (e: ToolEvent) => {
       tool.activeMain()
-      canvas.showTools()
+      tool.showOtherTools()
     }
   }, [tool])
 

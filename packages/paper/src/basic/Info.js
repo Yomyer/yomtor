@@ -301,6 +301,19 @@ var Info = Base.extend(/** @lends Info# */{
     },
 
     /**
+     * @bean
+     * @type Size
+     */
+    getSize: function () {
+        return new LinkedSize(this.width, this.height, this, '_setInfoSize');
+    },
+
+    setSize: function(/* size */){
+        var size = Size.read(arguments);
+        this._setInfoSize(size.width, size.height);
+    },
+
+    /**
      * The corners
      *
      * @name Info#corners
@@ -331,6 +344,13 @@ var Info = Base.extend(/** @lends Info# */{
         var corners = matrix._transformCorners(data.bounds);
 
         return this._cache[key] = JSON.parse(JSON.stringify(corners));
+    },
+
+    _setInfoSize: function(/* size */){
+        var size = Size.read(arguments);
+
+        this._setSize('width', size.width);
+        this._setSize('height', size.height);
     },
 
     _setSize: function(direction, value){

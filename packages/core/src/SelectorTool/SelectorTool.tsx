@@ -299,6 +299,43 @@ export const SelectorTool = (props: SelectorToolProps) => {
 
     let beforeMode = 'mode'
 
+    tool.addControl(
+      new Control(
+        'selector',
+        new Group({ guide: true }),
+        ({ control, selector }) => {
+          const actives = canvas.project.activeItems
+          const higthlight = canvas.project.highlightedItem
+          const config = {
+            insert: false,
+            strokeWidth: 0.5,
+            strokeColor: 'rgba(0, 142, 252, 1)'
+          }
+          control.item.removeChildren()
+
+          if (actives.length) {
+            actives.forEach((item) => {
+              const highlight = item.highlightItem
+              highlight.set(config)
+
+              control.item.addChild(highlight)
+            })
+
+            const highlight = selector.highlightItem
+            highlight.set(config)
+            control.item.addChild(highlight)
+          }
+
+          if (higthlight) {
+            const highlight = higthlight.highlightItem
+            console.log(highlight)
+            highlight.set({ ...config, strokeWidth: 1 })
+            control.item.addChild(highlight)
+          }
+        }
+      )
+    )
+
     canvas.project.on('exit', (e: ToolEvent) => {
       if (tool.actived) {
         const parents = []

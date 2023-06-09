@@ -159,6 +159,33 @@ var Tool = PaperScopeItem.extend(
             this._controls.push(control);
         },
 
+        /**
+         * @name Tool#hideOtherTools
+         * @function
+         * @type void
+         */
+        hideOtherTools: function(){
+            var current = this;
+            Base.each(this._scope.tools, function(tool) {
+                if(tool !== current){
+                    tool.hide = true
+                }
+            })
+        },
+
+        /**
+         * @name Tool#showOtherTools
+         * @function
+         * @type void
+         */
+        showOtherTools: function(){
+            var current = this;
+            Base.each(this._scope.tools, function(tool) {
+                if(tool !== current){
+                    tool.hide = false
+                }
+            })
+        },
 
         /**
          * The maximum distance the mouse has to drag before firing the onMouseDrag
