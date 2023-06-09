@@ -14,7 +14,8 @@ import {
   RectangleTool,
   PolygonTool,
   ArtboardTool,
-  ConstraintsTool
+  ConstraintsTool,
+  VectorTool
 } from '@yomtor/core'
 import { Path, Artboard, Group } from '@yomtor/paper'
 import {
@@ -98,6 +99,7 @@ export const App = () => {
             <ManagementTool />
             <ConstraintsTool />
             <TransformTool />
+            <VectorTool />
           </Canvas>
         </AppShell>
       </EditorProvider>

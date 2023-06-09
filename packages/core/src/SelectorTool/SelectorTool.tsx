@@ -267,6 +267,28 @@ export const SelectorTool = (props: SelectorToolProps) => {
     [tool, isMove]
   )
 
+  const enter = useCallback(() => {
+    if (tool.actived) {
+      let children = []
+
+      canvas.project.activeItems
+        .filter((item) => item.children)
+        .forEach((item) => {
+          children = children.concat(item.children)
+        })
+
+      if (children.length) {
+        canvas.project.deactivateAll()
+
+        children.splice(0).forEach((item) => {
+          item.actived = true
+        })
+      } else if (canvas.project.activeItems.length === 1) {
+        canvas.project.emit('enter', { item: canvas.project.activeItems[0] })
+      }
+    }
+  }, [tool])
+
   useEffect(() => {
     if (!canvas) return
     setTool(canvas.createTool('SelectorTool', true))
@@ -276,6 +298,21 @@ export const SelectorTool = (props: SelectorToolProps) => {
     if (!tool) return
 
     let beforeMode = 'mode'
+
+    canvas.project.on('exit', (e: ToolEvent) => {
+      if (tool.actived) {
+        const parents = []
+        canvas.project.activeItems.forEach((item) => {
+          parents.push(item.parent)
+        })
+
+        canvas.project.deactivateAll()
+
+        parents.forEach((item) => {
+          item.actived = true
+        })
+      }
+    })
 
     tool.onActivate = () => {
       if (!isActiveItemsUpdated()) {
@@ -302,8 +339,7 @@ export const SelectorTool = (props: SelectorToolProps) => {
         })
 
         if (e.item) {
-          canvas.project.emit('edit', e)
-          // canvas.project.clearHighlightedItem()
+          canvas.project.emit('enter', e)
         }
       }
     }
@@ -452,6 +488,24 @@ export const SelectorTool = (props: SelectorToolProps) => {
       keys: '*+cmd',
       down: () => hightlightController(),
       up: () => hightlightController()
+    },
+    [tool]
+  )
+
+  useHotkeys(
+    {
+      keys: 'escape',
+      down: (e) => {
+        canvas.project.emit('exit')
+      }
+    },
+    [tool]
+  )
+
+  useHotkeys(
+    {
+      keys: 'enter',
+      down: enter
     },
     [tool]
   )

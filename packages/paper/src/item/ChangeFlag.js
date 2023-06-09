@@ -131,6 +131,14 @@ var ChangeFlag = {
     CONTROL: 0x10000,
 
     /**
+     * A change controls
+     *
+     * @bean
+     * @type number
+     */
+    TOOL: 0x20000,
+
+    /**
      * A change iactived item
      *
      * @bean
@@ -211,7 +219,7 @@ var Change = {
      * @bean
      * @type number
      */
-    CONTROL: ChangeFlag.CONTROL | ChangeFlag.APPEARANCE,
+    CONTROL: ChangeFlag.CONTROL | ChangeFlag.APPEARANCE | ChangeFlag.TOOL,
     /**
      * @bean
      * @type number

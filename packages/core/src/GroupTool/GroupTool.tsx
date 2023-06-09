@@ -6,12 +6,10 @@ import { Tool, Group, ToolEvent, Rectangle, Item } from '@yomtor/paper'
 import { first, orderBy } from 'lodash'
 import { useHotkeys } from '@yomtor/hooks'
 
-const defaultProps: Partial<GroupToolProps> = {
-  factor: 5
-}
+const defaultProps: Partial<GroupToolProps> = {}
 
 export const GroupTool = (props: GroupToolProps) => {
-  const {} = useComponentDefaultProps('ViewTool', defaultProps, props)
+  const {} = useComponentDefaultProps('GroupTool', defaultProps, props)
   const [tool, setTool] = useState<Tool>()
   const { canvas } = useEditorContext()
 
@@ -57,7 +55,7 @@ export const GroupTool = (props: GroupToolProps) => {
 
     setTool(canvas.createTool('GroupTool', false, ['SelectorTool']))
 
-    canvas.project.on('edit', (e: ToolEvent) => {
+    canvas.project.on('enter', (e: ToolEvent) => {
       if (e.item instanceof Group) {
         const rect = new Rectangle(e.point)
         const items = orderBy(

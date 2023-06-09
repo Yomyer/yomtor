@@ -955,6 +955,18 @@ var PaperScope = Base.extend({
 	getTool: function(name){
 		return this.tools[name] || {};
 	},
+
+	hideTools: function(){
+		Base.each(this.tools, function(tool) {
+			tool.hide = true
+		})
+	},
+
+	showTools: function(){
+		Base.each(this.tools, function(tool) {
+			tool.hide = false
+		})
+	},
 	setInfo: function( label, point){
 		this.fire('info:updated', Base.set({ label: label, point: point }));
 	},
@@ -3533,6 +3545,8 @@ var ChangeFlag = {
 
 	CONTROL: 0x10000,
 
+	TOOL: 0x20000,
+
 	HIGHLIGHT: 0x200000,
 
 	ACTIVE: 0x100000
@@ -3550,7 +3564,7 @@ var Change = {
 	CONTENT: ChangeFlag.CONTENT | ChangeFlag.GEOMETRY | ChangeFlag.APPEARANCE,
 	PIXELS: ChangeFlag.PIXELS | ChangeFlag.APPEARANCE,
 	VIEW: ChangeFlag.VIEW | ChangeFlag.APPEARANCE,
-	CONTROL: ChangeFlag.CONTROL | ChangeFlag.APPEARANCE,
+	CONTROL: ChangeFlag.CONTROL | ChangeFlag.APPEARANCE | ChangeFlag.TOOL,
 	ACTIVE: ChangeFlag.ACTIVE | ChangeFlag.ATTRIBUTE | ChangeFlag.APPEARANCE,
 	HIGHLIGHT: ChangeFlag.HIGHLIGHT | ChangeFlag.ATTRIBUTE | ChangeFlag.APPEARANCE
 };
@@ -6563,6 +6577,7 @@ var Artboard = Group.extend(
 		setClipped: function (clipped) {
 			this._clipped = clipped;
 			this._getItemsInChildrens = !clipped;
+			this._changed(257);
 		},
 
 		getBounds: function getBounds() {
@@ -8204,7 +8219,7 @@ var Selector = Item.extend(
 				item.name = name || item.name;
 			}
 
-			this._changed(65537, item);
+			this._changed(196609, item);
 		},
 		_descomposeActiveItemsInfo: function (name, sub) {
 			if (this._getActiveItemsInfo()) {
@@ -8300,22 +8315,6 @@ var Selector = Item.extend(
 			matrix = matrix.appended(this.getGlobalMatrix(true));
 
 			matrix.applyToContext(ctx);
-			ctx.strokeStyle = this.strokeColor.toCanvasStyle(ctx, matrix);
-			ctx.lineWidth = 0.5 / this._project.view.zoom;
-
-			for (var x in items) {
-				items[x]._drawActivation(ctx, matrix, items.length > 1);
-			}
-
-			if (items.length > 1) {
-				ctx.beginPath();
-				ctx.moveTo(this.topLeft.x, this.topLeft.y);
-				ctx.lineTo(this.topRight.x, this.topRight.y);
-				ctx.lineTo(this.bottomRight.x, this.bottomRight.y);
-				ctx.lineTo(this.bottomLeft.x, this.bottomLeft.y);
-				ctx.closePath();
-				ctx.stroke();
-			}
 
 			var param = new Base({
 				offset: new Point(0, 0),
@@ -8560,12 +8559,20 @@ var Control = Item.extend(
 			this._item.setPosition(this._item.getPosition().add(this._offset));
 		},
 
-		getSize: function(){
+		 getSize: function(){
 			return this._item.getSize();
 		},
 
 		setSize: function(){
 			this._item.setSize(Size.read(arguments));
+		},
+
+		getVisible: function(){
+			return this._item.getVisible();
+		},
+
+		setVisible: function(visible){
+			this._item.setVisible(visible);
 		},
 
 		getRotation: function () {
@@ -17093,10 +17100,15 @@ var Tool = PaperScopeItem.extend(
 			"onEditOptions",
 			"onKeyDown",
 			"onKeyUp",
+			"onHide",
+			"onShow",
+			"onPause",
+			"onStart"
 		],
 
 		initialize: function Tool(props) {
 			PaperScopeItem.call(this);
+			this._controls = []
 			this._moveCount = -1;
 			this._downCount = -1;
 			this.set(props);
@@ -17115,6 +17127,37 @@ var Tool = PaperScopeItem.extend(
 			) {
 				this._maxDistance = minDistance;
 			}
+		},
+
+		 getHide: function () {
+			return this._hide;
+		},
+
+		setHide: function (hide) {
+			this._hide = hide;
+			if(hide){
+				this.emit('hide', this);
+			}else{
+				this.emit('show', this);
+			}
+
+			Base.each(this._controls, function(control) {
+				control.visible = !hide
+			})
+
+			this._scope.project._changed(131072, this)
+		},
+
+		getControls: function () {
+			return this._controls;
+		},
+
+		setControls: function (controls) {
+			this._controls = controls;
+		},
+
+		addControl: function (control){
+			this._controls.push(control);
 		},
 
 		getMaxDistance: function () {
@@ -17142,12 +17185,17 @@ var Tool = PaperScopeItem.extend(
 			this._minDistance = this._maxDistance = distance;
 		},
 
-		 getPaused: function () {
+		getPaused: function () {
 			return this._paused;
 		},
 
 		setPaused: function (paused) {
 			this._paused = paused;
+			if(paused){
+				this.emit('pause', this);
+			}else{
+				this.emit('start', this);
+			}
 		},
 
 		getIdle: function () {

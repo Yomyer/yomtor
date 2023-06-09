@@ -84,31 +84,6 @@ export const TransformTool = (props: TransformToolProps) => {
   ]
   const corners = ['topLeft', 'topRight', 'bottomLeft', 'bottomRight']
 
-  const helperControl = () => {
-    canvas.project.deactivateAll()
-
-    if (activeHelpers.current.length) {
-      activeHelpers.current.forEach((item) => item.remove())
-    }
-
-    activeHelpers.current = activeItems.current.map((item) => {
-      const clone = item
-        .set({
-          visible: true,
-          highlighted: false
-        })
-        .clone({ keep: true })
-
-      clone.set({
-        visible: true,
-        actived: true,
-        name: item.name
-      })
-
-      return clone
-    })
-  }
-
   const transform = (e: ToolEvent, helper = true) => {
     if (!lastPoint.current) return
     mode.current === 'rotate' ? rotate(e, helper) : resize(e, helper)
@@ -284,6 +259,8 @@ export const TransformTool = (props: TransformToolProps) => {
         })
       )
     })
+
+    tool.controls = controls
   }, [tool])
 
   useEffect(() => {
@@ -430,37 +407,6 @@ export const TransformTool = (props: TransformToolProps) => {
             .subtract(matrix.transformPoint(pivot.current))
         )
       )
-
-      /*
-      const matrix = new Matrix().rotate(
-        -selector.inheritedAngle,
-        selector.center
-      )
-
-      const center = selector.center
-      const corner: Point = selector[cornerName]
-      const handler: Point = selector[cornerName]
-      const pivot: Point = selector.getOposite(cornerName)
-      const pivotOrigin = selector.getOposite(cornerName)
-      const size = new Size(selector)
-      const direction = sign(
-        normalize(
-          matrix.transformPoint(corner).subtract(matrix.transformPoint(pivot))
-        )
-      )
-
-      data.current = {
-        pivot,
-        pivotOrigin,
-        corner,
-        handler,
-        size,
-        center,
-        direction,
-        angle,
-        point: round(selector[cornerName] as Point)
-      }
-      */
 
       cursor.current = {
         angle: selector.angle,

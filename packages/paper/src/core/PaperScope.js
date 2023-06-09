@@ -379,6 +379,26 @@ var PaperScope = Base.extend(/** @lends PaperScope# */{
     getTool: function(name){
         return this.tools[name] || {};
     },
+
+    /**
+     * 
+     * @return {void}
+     */
+    hideTools: function(){
+        Base.each(this.tools, function(tool) {
+            tool.hide = true
+        })
+    },
+
+    /**
+     * 
+     * @return {void}
+     */
+    showTools: function(){
+        Base.each(this.tools, function(tool) {
+            tool.hide = false
+        })
+    },
         
     /**
      * 

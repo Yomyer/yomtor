@@ -67,6 +67,7 @@ export const TransformsControls = (props: TransformsControlsProps) => {
   const [radius, setRadius] = useState<Shorthand | ''>('')
   const [combo, setCombo] = useState<string>()
   const [artboard, setArboard] = useState<boolean>()
+  const [clipped, setClipped] = useState<boolean>()
   const [canRadius, setCanRadius] = useState<boolean>()
   const [canCorners, setCanCorners] = useState<boolean>()
   const [independentCorners, setIndependentCorners] = useState<boolean>()
@@ -149,6 +150,12 @@ export const TransformsControls = (props: TransformsControlsProps) => {
           })
         )
 
+        const clipped = countBy(
+          canvas.project.activeItems
+            .filter((item) => item instanceof Artboard)
+            .map((item: Artboard) => item.clipped)
+        )
+
         const independentCorners = countBy(
           canvas.project.activeItems.map((item) => {
             return item.independentCorners
@@ -209,11 +216,17 @@ export const TransformsControls = (props: TransformsControlsProps) => {
             : false
         )
         setArboard(size(artboard) === 1 ? findKey(artboard) === 'true' : false)
+        setClipped(size(clipped) === 1 ? findKey(clipped) === 'true' : false)
       }
 
-      if (type & ChangeFlag.ACTIVE) {
-        setVisible(!!canvas.project.activeItems.length)
+      console.log(canvas.getTool('SelectorTool').actived)
+      if (type & (ChangeFlag.ACTIVE | ChangeFlag.TOOL)) {
+        setVisible(
+          !!canvas.project.activeItems.length &&
+            !canvas.getTool('TransformTool').hide
+        )
       }
+
       if (type & ChangeFlag.MATRIX) {
         const s = countBy(
           canvas.project.activeItems.map(
@@ -274,7 +287,14 @@ export const TransformsControls = (props: TransformsControlsProps) => {
         setConstraintProportions((item.constraintProportions = value))
       }
       if (['independentCorners'].includes(key) && isBoolean(value)) {
-        setConstraintProportions((item.independentCorners = value))
+        setIndependentCorners((item.independentCorners = value))
+      }
+      if (
+        ['clipped'].includes(key) &&
+        isBoolean(value) &&
+        item instanceof Artboard
+      ) {
+        setClipped((item.clipped = value))
       }
       if (
         (['portratit'].includes(key) && height < width) ||
@@ -535,7 +555,13 @@ export const TransformsControls = (props: TransformsControlsProps) => {
         )}
         {artboard && (
           <Control.Panel start={2} end={30}>
-            <Checkbox label='Clip content' />
+            <Checkbox
+              label='Clip content'
+              checked={clipped}
+              onChange={(event) =>
+                changeHandler('clipped', event.currentTarget.checked)
+              }
+            />
           </Control.Panel>
         )}
       </Control.Group>

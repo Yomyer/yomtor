@@ -60,12 +60,17 @@ var Tool = PaperScopeItem.extend(
             "onEditOptions",
             "onKeyDown",
             "onKeyUp",
+            "onHide",
+            "onShow",
+            "onPause",
+            "onStart"
         ],
 
         // DOCS: rewrite Tool constructor explanation
         initialize: function Tool(props) {
             PaperScopeItem.call(this);
             // -1 so first event is 0:
+            this._controls = []
             this._moveCount = -1;
             this._downCount = -1;
             this.set(props);
@@ -109,6 +114,53 @@ var Tool = PaperScopeItem.extend(
         },
 
         /**
+         * @bean
+         * @type Boolean
+         */
+         getHide: function () {
+            return this._hide;
+        },
+
+        setHide: function (hide) {
+            this._hide = hide;
+            if(hide){
+                this.emit('hide', this);           
+            }else{
+                this.emit('show', this);
+            }
+
+            Base.each(this._controls, function(control) {
+                control.visible = !hide
+            })
+
+            this._scope.project._changed(/*#=*/ ChangeFlag.TOOL, this)
+        },
+
+
+        /**
+         * @bean
+         * @type Control[]
+         */
+        getControls: function () {
+            return this._controls;
+        },
+
+        setControls: function (controls) {
+            this._controls = controls;
+        },
+
+        /**
+         * @name Tool#addControl
+         * @param Control control
+         * @function
+         * @type void
+         */
+        addControl: function (control){
+            this._controls.push(control);
+        },
+
+
+        /**
          * The maximum distance the mouse has to drag before firing the onMouseDrag
          * event, since the last onMouseDrag event.
          *
@@ -149,12 +201,17 @@ var Tool = PaperScopeItem.extend(
          * @bean
          * @type Boolean
          */
-         getPaused: function () {
+        getPaused: function () {
             return this._paused;
         },
 
         setPaused: function (paused) {
             this._paused = paused;
+            if(paused){
+                this.emit('pause', this);
+            }else{
+                this.emit('start', this);
+            }
         },
 
 
@@ -229,6 +286,30 @@ var Tool = PaperScopeItem.extend(
          * about the tool event.
          *
          * @name Tool#onDeactivate
+         * @property
+         * @type ?Function
+         */
+
+        /**
+         * @name Tool#onHide
+         * @property
+         * @type ?Function
+         */
+
+        /**
+         * @name Tool#onShow
+         * @property
+         * @type ?Function
+         */
+
+        /**
+         * @name Tool#onPause
+         * @property
+         * @type ?Function
+         */
+
+        /**
+         * @name Tool#onStart
          * @property
          * @type ?Function
          */

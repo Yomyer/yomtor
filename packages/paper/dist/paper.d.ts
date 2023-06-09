@@ -185,6 +185,11 @@ declare namespace paper {
         static CONTROL: number
 
         /** 
+         * A change controls
+         */
+        static TOOL: number
+
+        /** 
          * A change iactived item
          */
         static HIGHLIGHT: number
@@ -668,6 +673,9 @@ declare namespace paper {
 
         
         size: Size
+
+        
+        visible: boolean
 
         
         onDraw: (event: DrawControlEvent) => void | null
@@ -3920,6 +3928,12 @@ declare namespace paper {
 
         
         getTool(name: string): Tool
+
+        
+        hideTools(): void
+
+        
+        showTools(): void
 
         
         setInfo(label: string, point: Point): void
@@ -7565,6 +7579,12 @@ declare namespace paper {
          */
         minDistance: number
 
+        
+        hide: boolean
+
+        
+        controls: Control[]
+
         /** 
          * The maximum distance the mouse has to drag before firing the onMouseDrag
          * event, since the last onMouseDrag event.
@@ -7603,6 +7623,18 @@ declare namespace paper {
          * about the tool event.
          */
         onDeactivate: Function | null
+
+        
+        onHide: Function | null
+
+        
+        onShow: Function | null
+
+        
+        onPause: Function | null
+
+        
+        onStart: Function | null
 
         /** 
          * The function to be called when the mouse button is pushed down. The
@@ -7679,6 +7711,11 @@ declare namespace paper {
          * Removes this tool from the {@link PaperScope#tools} list.
          */
         remove(): void
+
+        /** 
+         * @param Control - control
+         */
+        addControl(Control: any): void
 
         /** 
          * Active main tool

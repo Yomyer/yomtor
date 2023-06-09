@@ -641,14 +641,13 @@ var Selector = Item.extend(
 
             matrix.applyToContext(ctx);
             
+            /*
             ctx.strokeStyle = this.strokeColor.toCanvasStyle(ctx, matrix);
             ctx.lineWidth = 0.5 / this._project.view.zoom;
 
             for (var x in items) {
                 items[x]._drawActivation(ctx, matrix, items.length > 1);
             }
-
-           
 
             if (items.length > 1) {
                 ctx.beginPath();
@@ -659,6 +658,7 @@ var Selector = Item.extend(
                 ctx.closePath();
                 ctx.stroke();
             }
+            */
 
             var param = new Base({
                 offset: new Point(0, 0),

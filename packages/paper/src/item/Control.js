@@ -83,12 +83,24 @@ var Control = Item.extend(
          * @bean
          * @type Size
          */
-        getSize: function(){
+         getSize: function(){
             return this._item.getSize();
         },
 
         setSize: function(/* size */){
             this._item.setSize(Size.read(arguments));
+        },
+
+        /**
+         * @bean
+         * @type Boolean
+         */
+        getVisible: function(){
+            return this._item.getVisible();
+        },
+
+        setVisible: function(visible){
+            this._item.setVisible(visible);
         },
 
         getRotation: function () {
@@ -271,7 +283,7 @@ var Control = Item.extend(
             }
 
             this._item.draw(ctx, param);
-            
+                        
             if(this._scale){
                 this._item.transform(
                     new Matrix().scale(zoom, this.getPosition()),

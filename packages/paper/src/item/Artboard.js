@@ -122,6 +122,7 @@ var Artboard = Group.extend(
         setClipped: function (clipped) {
             this._clipped = clipped;
             this._getItemsInChildrens = !clipped;
+            this._changed(/*#=*/Change.ATTRIBUTE);
         },
 
 
