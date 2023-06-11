@@ -22,7 +22,8 @@ import {
   XAxisIcon,
   YAxisIcon,
   OrientationIcon,
-  MinimizeIcon
+  MinimizeIcon,
+  G360Icon
 } from '@yomtor/icons'
 import {
   ChangeFlag,

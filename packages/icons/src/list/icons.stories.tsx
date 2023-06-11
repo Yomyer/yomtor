@@ -16,6 +16,7 @@ import DropletFilledIcon from './DropletFilled'
 import DropletIcon from './Droplet'
 import EyeClosedIcon from './EyeClosed'
 import EyeIcon from './Eye'
+import G360Icon from './G360'
 import GroupIcon from './Group'
 import HeightIcon from './Height'
 import HideIcon from './Hide'
@@ -33,7 +34,7 @@ import WidthIcon from './Width'
 import XAxisIcon from './XAxis'
 import YAxisIcon from './YAxis'
 
-const icons = { AligmentCenterIcon, AligmentStartIcon, ArrageIcon, ArrowIcon, ArtboardIcon, Artboard2Icon, CenterIcon, CheckIcon, CodeIcon, ConstraintsBarIcon, DistributeIcon, DotsVerticalIcon, DropletFilledIcon, DropletIcon, EyeClosedIcon, EyeIcon, GroupIcon, HeightIcon, HideIcon, LinkIcon, LockIcon, MinimizeIcon, MoreIcon, OrientationIcon, PlayIcon, RadiusShorthandIcon, RadiusIcon, RotationIcon, UnlinkIcon, WidthIcon, XAxisIcon, YAxisIcon }
+const icons = { AligmentCenterIcon, AligmentStartIcon, ArrageIcon, ArrowIcon, ArtboardIcon, Artboard2Icon, CenterIcon, CheckIcon, CodeIcon, ConstraintsBarIcon, DistributeIcon, DotsVerticalIcon, DropletFilledIcon, DropletIcon, EyeClosedIcon, EyeIcon, G360Icon, GroupIcon, HeightIcon, HideIcon, LinkIcon, LockIcon, MinimizeIcon, MoreIcon, OrientationIcon, PlayIcon, RadiusShorthandIcon, RadiusIcon, RotationIcon, UnlinkIcon, WidthIcon, XAxisIcon, YAxisIcon }
 
 
 type Props = {

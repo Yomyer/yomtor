@@ -8675,11 +8675,30 @@ var Control = Item.extend(
 			);
 		},
 
+		_strokeZoomFix: function(item){
+			var zoom = this.getZoom();
+			if(item instanceof Group){
+				var children = item._children;
+
+				for (var i = 0, l = children.length; i < l; i++) {
+				   this._strokeZoomFix(children[i])
+				}
+			}else{
+				item.strokeWidth = item.strokeWidth / zoom
+				item.dashArray = item.dashArray.map(function(num){
+				   return num / zoom
+				});
+			}
+		},
+
 		draw: function (ctx, param) {
+			if (this.isSmallZoom()) {
+				return;
+			}
+
 			var owner = this._owner;
 			var zoom = this.getZoom();
 			var shadowOffset = null;
-
 			if(owner.onControlDraw){
 				owner.onControlDraw(new DrawControlEvent(this, owner))
 			}else if(this.onDraw){
@@ -8705,10 +8724,7 @@ var Control = Item.extend(
 			}
 
 			if(!this._scale){
-				this._item.strokeWidth = this._item.strokeWidth / zoom
-				this._item.dashArray = this._item.dashArray.map(function(num){
-					return num / zoom
-				});
+				this._strokeZoomFix(this._item);
 			}
 
 			this._item.draw(ctx, param);

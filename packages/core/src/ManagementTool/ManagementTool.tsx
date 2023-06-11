@@ -78,14 +78,17 @@ export const ManagementTool = (props: ManagementToolProps) => {
   }
 
   const copy = () => {
-    clipboard.current = [...canvas.project.activeItems]
+    clipboard.current = canvas.project.activeItems.map((item) =>
+      item.clone({ insert: false })
+    )
   }
 
   const paste = () => {
     canvas.project.deactivateAll()
     clipboard.current.forEach((item) => {
-      const cloned = item.clone()
-      cloned.actived = true
+      console.log(activedItems.current)
+      // item.insertChild()
+      // cloned.actived = true
     })
     canvas.project.clearHighlightedItem()
   }

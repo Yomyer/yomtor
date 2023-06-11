@@ -208,7 +208,7 @@ export const TransformTool = (props: TransformToolProps) => {
     const invisibleHandler = new Shape.Rectangle({
       size: 8,
       fillColor: 'red',
-      opacity: 0.000001,
+      opacity: 0.00001,
       insert: false
     })
 
@@ -244,12 +244,12 @@ export const TransformTool = (props: TransformToolProps) => {
             control.position = selector[corner]
             if (['topCenter', 'bottomCenter'].includes(corner)) {
               control.size.width = selector.width
-              control.size.height = 8 / canvas.view.zoom
+              control.size.height = 1 / canvas.view.zoom
             }
 
             if (['leftCenter', 'rightCenter'].includes(corner)) {
               control.size.height = selector.height
-              control.size.width = 8 / canvas.view.zoom
+              control.size.width = 1 / canvas.view.zoom
             }
 
             control.rotation = selector.inheritedAngle

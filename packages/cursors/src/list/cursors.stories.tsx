@@ -14,6 +14,7 @@ import Grab from './Grab'
 import Grabbing from './Grabbing'
 import Maximize from './Maximize'
 import Minimize from './Minimize'
+import Pene from './Pene'
 import Picker from './Picker'
 import Rectangle from './Rectangle'
 import Remove from './Remove'
@@ -32,6 +33,7 @@ const cursors = {
   Grabbing,
   Maximize,
   Minimize,
+  Pene,
   Picker,
   Rectangle,
   Remove,

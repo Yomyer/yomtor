@@ -315,22 +315,19 @@ export const SelectorTool = (props: SelectorToolProps) => {
 
           if (actives.length) {
             actives.forEach((item) => {
-              const highlight = item.highlightItem
-              highlight.set(config)
-
-              control.item.addChild(highlight)
+              control.item.addChild(item.highlightItem.set(config))
             })
 
-            const highlight = selector.highlightItem
-            highlight.set(config)
-            control.item.addChild(highlight)
+            control.item.addChild(selector.highlightItem.set(config))
           }
 
-          if (higthlight) {
-            const highlight = higthlight.highlightItem
-            console.log(highlight)
-            highlight.set({ ...config, strokeWidth: 1 })
-            control.item.addChild(highlight)
+          if (higthlight && !actives.includes(higthlight)) {
+            control.item.addChild(
+              higthlight.highlightItem.set({
+                ...config,
+                strokeWidth: 2
+              })
+            )
           }
         }
       )
