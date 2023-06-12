@@ -48,9 +48,12 @@ var Artboard = Group.extend(
             this._children = [];
             this._namedChildren = {};
 
-            
-            this.setBackground(args[0]);
+            var settings = paper.settings,
+                applyMatrix = settings.applyMatrix
 
+            settings.applyMatrix = true;
+            this.setBackground(args[0]);
+            
             if (!this._initialize(args[0])) {
                 if(Array.isArray(args[0]) || Array.isArray(arguments) ){
                    
@@ -67,7 +70,6 @@ var Artboard = Group.extend(
                     this.setBackground(rect);
                 }
             }
-
             this._project._artboards.push(this);
         },
 

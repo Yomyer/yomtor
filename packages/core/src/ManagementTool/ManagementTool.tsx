@@ -13,6 +13,7 @@ import {
 import { useHotkeys } from '@yomtor/hooks'
 import { Clone, Default, useCursor } from '@yomtor/cursors'
 import { get } from 'lodash'
+import { useEventListener } from '../../../hooks/src/use-event-listener/use-event-listener'
 
 const defaultProps: Partial<ManagementToolProps> = {}
 
@@ -83,7 +84,28 @@ export const ManagementTool = (props: ManagementToolProps) => {
     )
   }
 
-  const paste = () => {
+  const paste = (event: ClipboardEvent) => {
+    const items = Array.from(event.clipboardData.items)
+
+    items.forEach((item) => {
+      const type = item.type
+      let paste
+
+      if (type === 'text/plain') {
+        item.getAsString((text) => {
+          paste = canvas.project.importSVG(text)
+          console.log(text)
+          console.log(paste)
+
+          paste.actived = true
+
+          canvas.project.activeLayer.addChild(paste)
+
+          console.log(paste.info.width)
+        })
+      }
+    })
+    /*
     canvas.project.deactivateAll()
     clipboard.current.forEach((item) => {
       console.log(activedItems.current)
@@ -91,6 +113,7 @@ export const ManagementTool = (props: ManagementToolProps) => {
       // cloned.actived = true
     })
     canvas.project.clearHighlightedItem()
+    */
   }
 
   useEffect(() => {
@@ -165,6 +188,15 @@ export const ManagementTool = (props: ManagementToolProps) => {
     [canvas]
   )
 
+  useEventListener(
+    'paste',
+    (e: ClipboardEvent) => {
+      paste(e)
+    },
+    document
+  )
+
+  /*
   useHotkeys(
     {
       keys: 'cmd+c',
@@ -200,6 +232,7 @@ export const ManagementTool = (props: ManagementToolProps) => {
     },
     [canvas]
   )
+  */
 
   return <></>
 }

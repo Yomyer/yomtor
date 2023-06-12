@@ -70,6 +70,57 @@ new function() {
     }
 
     // Importer functions for various SVG node types
+    function importArtboard(node, type, options, isRoot){
+        var nodes = node.childNodes,
+            isClip = type === 'clippath',
+            isDefs = type === 'defs',
+            item = new Artboard({size: 100}),
+            project = item._project,
+            currentStyle = project._currentStyle,
+            children = [];
+        if (!isClip && !isDefs) {
+            item = applyAttributes(item, node, isRoot);
+            // Style on items needs to be handled differently than all other
+            // items: We first apply the style to the item, then use it as the
+            // project's currentStyle, so it is used as a default for the
+            // creation of all nested items. importSVG then needs to check for
+            // items and avoid calling applyAttributes() again.
+            project._currentStyle = item._style.clone();
+        }
+        if (isRoot) {
+            // Import all defs first, since in SVG they can be in any location.
+            // e.g. Affinity Designer exports defs as last.
+            var defs = node.querySelectorAll('defs');
+            for (var i = 0, l = defs.length; i < l; i++) {
+                importNode(defs[i], options, false);
+            }
+        }
+        // Collect the children in an array and apply them all at once.
+        for (var i = 0, l = nodes.length; i < l; i++) {
+            var childNode = nodes[i],
+                child;
+            if (childNode.nodeType === 1
+                    && !/^defs$/i.test(childNode.nodeName)
+                    && (child = importNode(childNode, options, false))
+                    && !(child instanceof SymbolDefinition))
+                children.push(child);
+        }
+        item.addChildren(children);
+        // Clip paths are reduced (unboxed) and their attributes applied at the
+        // end.
+        if (isClip)
+            item = applyAttributes(item.reduce(), node, isRoot);
+        // Restore currentStyle
+        project._currentStyle = currentStyle;
+        if (isClip || isDefs) {
+            // We don't want the defs in the DOM. But we might want to use
+            // Symbols for them to save memory?
+            item.remove();
+            item = null;
+        }
+        return item;
+
+    }
 
     function importGroup(node, type, options, isRoot) {
         var nodes = node.childNodes,
@@ -203,7 +254,7 @@ new function() {
         // https://www.w3.org/TR/SVG/struct.html#Groups
         g: importGroup,
         // https://www.w3.org/TR/SVG/struct.html#NewDocument
-        svg: importGroup,
+        svg: importArtboard,
         clippath: importGroup,
         // https://www.w3.org/TR/SVG/shapes.html#PolygonElement
         polygon: importPoly,
@@ -605,8 +656,10 @@ new function() {
         var settings = paper.settings,
             applyMatrix = settings.applyMatrix,
             insertItems = settings.insertItems;
+
         settings.applyMatrix = false;
         settings.insertItems = false;
+
         var importer = importers[type],
             item = importer && importer(node, type, options, isRoot) || null;
         settings.insertItems = insertItems;

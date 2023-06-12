@@ -90,6 +90,7 @@ export function useHotkeys<T extends Element>(
   const ref = useRef<T | null>(null)
   const modifier: string[] = []
   let isArrows = false
+  let isFirstAsterisk = false
 
   if (keys.startsWith(`*${splitKey}`)) {
     keys
@@ -97,7 +98,7 @@ export function useHotkeys<T extends Element>(
       .forEach((key) =>
         modifier.push(key.replace(`*${splitKey}`, '').replace(/\s/, ''))
       )
-
+    isFirstAsterisk = true
     keys = '*'
   }
 
@@ -147,7 +148,7 @@ export function useHotkeys<T extends Element>(
           ) {
             const response = down(keyboardEvent, hotkeysEvent)
 
-            if (filterPreventDefault) {
+            if (filterPreventDefault && !isFirstAsterisk) {
               keyboardEvent.preventDefault()
             }
 
@@ -165,7 +166,7 @@ export function useHotkeys<T extends Element>(
           ) {
             const response = up(keyboardEvent, hotkeysEvent)
 
-            if (filterPreventDefault) {
+            if (filterPreventDefault && !isFirstAsterisk) {
               keyboardEvent.preventDefault()
             }
 

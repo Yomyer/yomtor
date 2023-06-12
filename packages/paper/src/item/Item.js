@@ -170,9 +170,9 @@ new function() { // Injection scope for various item event handlers
         this._parent = this._index = null;
         // Inherit the applyMatrix setting from settings.applyMatrix
         this._applyMatrix = this._canApplyMatrix && settings.applyMatrix;
+
         this._flipped = {x: 1, y: 1};
         this.constraints = ['start'];
-
         // Handle matrix before everything else, to avoid issues with
         // #addChild() calling _changed() and accessing _matrix already.
         if (point)

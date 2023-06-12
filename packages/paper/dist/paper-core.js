@@ -4263,9 +4263,9 @@ new function() {
 		this._id = internal ? null : UID.get();
 		this._parent = this._index = null;
 		this._applyMatrix = this._canApplyMatrix && settings.applyMatrix;
+
 		this._flipped = {x: 1, y: 1};
 		this.constraints = ['start'];
-
 		if (point)
 			matrix.translate(point);
 		matrix._owner = this;
@@ -6498,8 +6498,11 @@ var Artboard = Group.extend(
 			this._children = [];
 			this._namedChildren = {};
 
-			this.setBackground(args[0]);
+			var settings = paper.settings,
+				applyMatrix = settings.applyMatrix
 
+			settings.applyMatrix = true;
+			this.setBackground(args[0]);
 			if (!this._initialize(args[0])) {
 				if(Array.isArray(args[0]) || Array.isArray(arguments) ){
 					this.addChildren(Array.isArray(args[0]) ? args[0] : arguments);
@@ -6515,7 +6518,6 @@ var Artboard = Group.extend(
 					this.setBackground(rect);
 				}
 			}
-
 			this._project._artboards.push(this);
 		},
 
@@ -11157,6 +11159,7 @@ var PathItem = Item.extend({
 
 var Path = PathItem.extend({
 	_class: 'Path',
+	_name: 'Path',
 	_serializeFields: {
 		segments: [],
 		closed: false
@@ -18458,6 +18461,45 @@ new function() {
 				: value;
 	}
 
+	function importArtboard(node, type, options, isRoot){
+		var nodes = node.childNodes,
+			isClip = type === 'clippath',
+			isDefs = type === 'defs',
+			item = new Artboard({size: 100}),
+			project = item._project,
+			currentStyle = project._currentStyle,
+			children = [];
+		if (!isClip && !isDefs) {
+			item = applyAttributes(item, node, isRoot);
+			project._currentStyle = item._style.clone();
+		}
+		if (isRoot) {
+			var defs = node.querySelectorAll('defs');
+			for (var i = 0, l = defs.length; i < l; i++) {
+				importNode(defs[i], options, false);
+			}
+		}
+		for (var i = 0, l = nodes.length; i < l; i++) {
+			var childNode = nodes[i],
+				child;
+			if (childNode.nodeType === 1
+					&& !/^defs$/i.test(childNode.nodeName)
+					&& (child = importNode(childNode, options, false))
+					&& !(child instanceof SymbolDefinition))
+				children.push(child);
+		}
+		item.addChildren(children);
+		if (isClip)
+			item = applyAttributes(item.reduce(), node, isRoot);
+		project._currentStyle = currentStyle;
+		if (isClip || isDefs) {
+			item.remove();
+			item = null;
+		}
+		return item;
+
+	}
+
 	function importGroup(node, type, options, isRoot) {
 		var nodes = node.childNodes,
 			isClip = type === 'clippath',
@@ -18565,7 +18607,7 @@ new function() {
 			}
 		},
 		g: importGroup,
-		svg: importGroup,
+		svg: importArtboard,
 		clippath: importGroup,
 		polygon: importPoly,
 		polyline: importPoly,
@@ -18844,8 +18886,6 @@ new function() {
 		var settings = paper.settings,
 			applyMatrix = settings.applyMatrix,
 			insertItems = settings.insertItems;
-		settings.applyMatrix = false;
-		settings.insertItems = false;
 		var importer = importers[type],
 			item = importer && importer(node, type, options, isRoot) || null;
 		settings.insertItems = insertItems;
