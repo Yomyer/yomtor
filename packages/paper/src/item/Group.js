@@ -23,6 +23,7 @@ var Group = Item.extend(
     /** @lends Group# */ {
         _class: "Group",
         _name: 'Group',
+        _collapsed: true,
         _selectBounds: false,
         _selectChildren: true,
         _serializeStyle: false,
@@ -201,7 +202,7 @@ var Group = Item.extend(
                 if(!borderRadius){
                     borderRadius = item.borderRadius;
                 }
-                if(!borderRadius.equals(item.borderRadius)){
+                if(!borderRadius || !borderRadius.equals(item.borderRadius)){
                     return new LinkedShorthand(null, null, null, null, this, 'setBorderRadius');
                 }
             }

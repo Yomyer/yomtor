@@ -33,6 +33,7 @@ var Artboard = Group.extend(
         _serializeStyle: true,
         _background: null,
         _clipped: true,
+        _collapsed: false,
         _name: 'Artboard',
         _transformCache: {},
         _serializeFields: {
@@ -393,7 +394,7 @@ var Artboard = Group.extend(
                     viewMatrix
                 );
             }
-
+            
             var hit = this._background._hitTest(
                 point,
                 Base.set(Object.assign({}, options), {

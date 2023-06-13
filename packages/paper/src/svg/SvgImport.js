@@ -120,15 +120,17 @@ new function() {
     function importGroup(node, type, options, isRoot) {
         var nodes = node.childNodes,
             isClip = type === 'clippath',
+            isMask = type === 'mask',
             isDefs = type === 'defs',
             item = new Group(),
             project = item._project,
             currentStyle = project._currentStyle,
-            clipped = false, 
-            clip,
+            clipped = !!node.getAttribute('clip-path'), 
+            masked = !!node.getAttribute('mask'), 
             children = [];
 
-        if (!isClip && !isDefs) {applyAttributes
+
+        if (!isClip && !isDefs && !isMask) {
             item = applyAttributes(item, node, isRoot);
             
             // Style on items needs to be handled differently than all other
@@ -138,6 +140,7 @@ new function() {
             // items and avoid calling applyAttributes() again.
             project._currentStyle = item._style.clone();
         }
+
         if (isRoot) {
             // Import all defs first, since in SVG they can be in any location.
             // e.g. Affinity Designer exports defs as last.
@@ -158,25 +161,30 @@ new function() {
                     && (child = importNode(childNode, options, false))
                     && !(child instanceof SymbolDefinition)){
                         children.push(child);
-                   
-                        console.log(node)
                     }
                 
         }
-       // item.addChildren(children);
+
+        if(clipped || masked){
+            item.addChild(new Group(children));
+            item.name =  masked ? 'Mask group': 'Clip path group';
+        }else{
+            item.addChildren(children);
+        }
 
         // Clip paths are reduced (unboxed) and their attributes applied at the
         // end.
-        if (isClip){
+        if (isClip || isMask){
             item = applyAttributes(item, node, isRoot);
-            
-            console.log(item.parent)
-            
+            if(isMask){
+                item.name = 'Group'
+            }
         }
+            
             
         // Restore currentStyle
         project._currentStyle = currentStyle;
-        if (isClip || isDefs) {
+        if (isClip || isDefs || isMask) {
             // We don't want the defs in the DOM. But we might want to use
             // Symbols for them to save memory?
             item.remove();
@@ -268,6 +276,7 @@ new function() {
         // https://www.w3.org/TR/SVG/struct.html#NewDocument
         svg: importArtboard,
         clippath: importGroup,
+        mask: importGroup,
         // https://www.w3.org/TR/SVG/shapes.html#PolygonElement
         polygon: importPoly,
         // https://www.w3.org/TR/SVG/shapes.html#PolylineElement
@@ -471,6 +480,21 @@ new function() {
         },
 
         'clip-path': function(item, value) {
+            // https://www.w3.org/TR/SVG/masking.html#ClipPathProperty
+            var clip = getDefinition(value);
+            if (clip) {
+                clip = clip.clone();
+                clip.setClipMask(true);
+                // If item is already a group, move the clip-path inside
+                if (item instanceof Group) {
+                    item.insertChild(0, clip);
+                } else {
+                    return new Group(clip, item);
+                }
+            }
+        },
+
+        mask: function(item, value) {
             // https://www.w3.org/TR/SVG/masking.html#ClipPathProperty
             var clip = getDefinition(value);
             if (clip) {
@@ -690,6 +714,7 @@ new function() {
             if (options.expandShapes && item instanceof Shape) {
                 item.remove();
                 item = item.toPath();
+                item.name = 'Path';
             }
             if (data)
                 item._data = JSON.parse(data);
@@ -713,6 +738,7 @@ new function() {
             if (item && Base.pick(options.applyMatrix, applyMatrix))
                 item.matrix.apply(true, true);
         }
+
         return item;
     }
 
@@ -739,6 +765,7 @@ new function() {
                 }
                 paper = scope;
                 item = importNode(node, options, true);
+
                 if (!options || options.insert !== false) {
                     // TODO: Implement support for multiple Layers on Project.
                     owner._insertItem(undefined, item);

@@ -4135,7 +4135,6 @@ var Project = PaperScopeItem.extend(
 		this._grid.draw(ctx, matrix, pixelRatio)
 		ctx.restore()
 	  }
-
 	  if (this._selector) {
 		ctx.save()
 		this._selector.draw(ctx, matrix, pixelRatio)
@@ -4191,6 +4190,7 @@ var Item = Base.extend(Emitter, {
 	_constraints: {},
 	_constraintProportions: false,
 	_borderRadius: 0,
+	_collapsed: false,
 	_independentCorners: false,
 	_serializeFields: {
 		name: null,
@@ -4498,6 +4498,20 @@ new function() {
 				children[i].setSelected(selected);
 		}
 		this._changeSelection(1, selected);
+	},
+
+   getCollapsed: function () {
+		return this._collapsed;
+	},
+
+	setCollapsed: function (collapsed) {
+		this._collapsed = collapsed;
+
+		if(this._parent){
+			this._parent.collapsed = false;
+		}
+
+		this._changed(256);
 	},
 
 	isFullySelected: function() {
@@ -5222,6 +5236,10 @@ new function() {
 				children[i].setActived(false);
 		}
 
+		if(this._parent && this._actived){
+			this._parent.collapsed = false
+		}
+
 		if(!Base.equals(before, Object.keys(this._project._activeItems))){
 			this._changed(1048833);
 		}
@@ -5245,20 +5263,22 @@ new function() {
 		this._changed(2097409);
 	},
 
-		 getActiveItems: function(){
-			var children = this._children,
-				activedItems = [];
-			if(children){
-				for (var i = 0, l = children.length; i < l; i++) {
-					var item = children[i];
-					if (item.actived){
-						activedItems.push(item);
-					}
-					activedItems = activedItems.concat(item.getActiveItems());
+	getActiveItems: function(){
+		var children = this._children,
+			activedItems = [];
+
+		if(children){
+			for (var i = 0, l = children.length; i < l; i++) {
+				var item = children[i];
+				if (item.actived){
+					activedItems.push(item);
 				}
+				activedItems = activedItems.concat(item.getActiveItems());
 			}
-			return activedItems;
-		},
+		}
+
+		return activedItems;
+	},
 },
 
 new function() {
@@ -6276,6 +6296,7 @@ var Group = Item.extend(
 	 {
 		_class: "Group",
 		_name: 'Group',
+		_collapsed: true,
 		_selectBounds: false,
 		_selectChildren: true,
 		_serializeStyle: false,
@@ -6343,7 +6364,7 @@ var Group = Item.extend(
 				if(!borderRadius){
 					borderRadius = item.borderRadius;
 				}
-				if(!borderRadius.equals(item.borderRadius)){
+				if(!borderRadius || !borderRadius.equals(item.borderRadius)){
 					return new LinkedShorthand(null, null, null, null, this, 'setBorderRadius');
 				}
 			}
@@ -6484,6 +6505,7 @@ var Artboard = Group.extend(
 		_serializeStyle: true,
 		_background: null,
 		_clipped: true,
+		_collapsed: false,
 		_name: 'Artboard',
 		_transformCache: {},
 		_serializeFields: {
@@ -6795,7 +6817,7 @@ var Artboard = Group.extend(
 					viewMatrix
 				);
 			}
-
+			console.log(options.all)
 			var hit = this._background._hitTest(
 				point,
 				Base.set(Object.assign({}, options), {
@@ -8639,6 +8661,9 @@ var Control = Item.extend(
 		},
 
 		isSmallZoom: function () {
+			if(!this._project._activeItems.length){
+				return false;
+			}
 			if (
 				(this._project._selector.width + this._project._selector.height) * this.getZoom() <
 				20
@@ -10888,6 +10913,7 @@ new function() {
 
 var PathItem = Item.extend({
 	_class: 'PathItem',
+	_name: 'Path',
 	_selectBounds: false,
 	_canScaleStroke: true,
 	beans: true,
@@ -11161,7 +11187,6 @@ var PathItem = Item.extend({
 
 var Path = PathItem.extend({
 	_class: 'Path',
-	_name: 'Path',
 	_serializeFields: {
 		segments: [],
 		closed: false
@@ -18504,18 +18529,20 @@ new function() {
 	function importGroup(node, type, options, isRoot) {
 		var nodes = node.childNodes,
 			isClip = type === 'clippath',
+			isMask = type === 'mask',
 			isDefs = type === 'defs',
 			item = new Group(),
 			project = item._project,
 			currentStyle = project._currentStyle,
-			clipped = false,
-			clip,
+			clipped = !!node.getAttribute('clip-path'),
+			masked = !!node.getAttribute('mask'),
 			children = [];
 
-		if (!isClip && !isDefs) {applyAttributes
+		if (!isClip && !isDefs && !isMask) {
 			item = applyAttributes(item, node, isRoot);
 			project._currentStyle = item._style.clone();
 		}
+
 		if (isRoot) {
 			var defs = node.querySelectorAll('defs');
 			for (var i = 0, l = defs.length; i < l; i++) {
@@ -18531,23 +18558,25 @@ new function() {
 					&& !/^defs$/i.test(childNode.nodeName)
 					&& (child = importNode(childNode, options, false))
 					&& !(child instanceof SymbolDefinition)){
-						if(/^clippath$/i.test(childNode.nodeName)){
-							console.log('clippath?')
-							clipped = true;
-							clip = child
-						}else{
-							children.push(child);
-						}
-						console.log(node)
+						children.push(child);
 					}
 		}
 
-		if (isClip){
+		if(clipped || masked){
+			item.addChild(new Group(children));
+			item.name =  masked ? 'Mask group': 'Clip path group';
+		}else{
+			item.addChildren(children);
+		}
+
+		if (isClip || isMask){
 			item = applyAttributes(item, node, isRoot);
-			console.log(item.parent)
+			if(isMask){
+				item.name = 'Group'
+			}
 		}
 		project._currentStyle = currentStyle;
-		if (isClip || isDefs) {
+		if (isClip || isDefs || isMask) {
 			item.remove();
 			item = null;
 		}
@@ -18625,6 +18654,7 @@ new function() {
 		g: importGroup,
 		svg: importArtboard,
 		clippath: importGroup,
+		mask: importGroup,
 		polygon: importPoly,
 		polyline: importPoly,
 		path: importPath,
@@ -18779,6 +18809,19 @@ new function() {
 			}
 		},
 
+		mask: function(item, value) {
+			var clip = getDefinition(value);
+			if (clip) {
+				clip = clip.clone();
+				clip.setClipMask(true);
+				if (item instanceof Group) {
+					item.insertChild(0, clip);
+				} else {
+					return new Group(clip, item);
+				}
+			}
+		},
+
 		gradientTransform: applyTransform,
 		transform: applyTransform,
 
@@ -18920,6 +18963,7 @@ new function() {
 			if (options.expandShapes && item instanceof Shape) {
 				item.remove();
 				item = item.toPath();
+				item.name = 'Path';
 			}
 			if (data)
 				item._data = JSON.parse(data);
@@ -18939,6 +18983,7 @@ new function() {
 			if (item && Base.pick(options.applyMatrix, applyMatrix))
 				item.matrix.apply(true, true);
 		}
+
 		return item;
 	}
 
@@ -18964,6 +19009,7 @@ new function() {
 				}
 				paper = scope;
 				item = importNode(node, options, true);
+
 				if (!options || options.insert !== false) {
 					owner._insertItem(undefined, item);
 				}

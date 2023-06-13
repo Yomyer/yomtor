@@ -1335,7 +1335,7 @@ var Project = PaperScopeItem.extend(
         this._grid.draw(ctx, matrix, pixelRatio)
         ctx.restore()
       }
-
+      
       if (this._selector) {
         ctx.save()
         this._selector.draw(ctx, matrix, pixelRatio)

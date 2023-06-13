@@ -1788,9 +1788,7 @@ declare namespace paper {
          */
         inheritedAngle: number
 
-        /** 
-         * The angle of item
-         */
+        
         highlightItem: Path
 
         /** 
@@ -1853,6 +1851,9 @@ declare namespace paper {
          * @see Point#selected
          */
         selected: boolean
+
+        
+        collapsed: boolean
 
         /** 
          * Specifies whether the item defines a clip mask. This can only be set on

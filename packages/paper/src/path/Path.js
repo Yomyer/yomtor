@@ -20,7 +20,6 @@
 // DOCS: Explain that path matrix is always applied with each transformation.
 var Path = PathItem.extend(/** @lends Path# */{
     _class: 'Path',
-    _name: 'Path',
     _serializeFields: {
         segments: [],
         closed: false

@@ -79,6 +79,7 @@ var Item = Base.extend(Emitter, /** @lends Item# */{
     _constraints: {},
     _constraintProportions: false,
     _borderRadius: 0,
+    _collapsed: false,
     _independentCorners: false,
     // Provide information about fields to be serialized, with their defaults
     // that can be omitted.
@@ -783,6 +784,25 @@ new function() { // Injection scope for various item event handlers
         }
         this._changeSelection(/*#=*/ItemSelection.ITEM, selected);
     },
+
+    /**
+     * @bean
+     * @type Boolean
+     */
+   getCollapsed: function () {
+        return this._collapsed;
+    },
+
+    setCollapsed: function (collapsed) {
+        this._collapsed = collapsed;
+
+        if(this._parent){
+            this._parent.collapsed = false;
+        }
+
+        this._changed(/*#=*/ChangeFlag.ATTRIBUTE);
+    },
+    
 
     isFullySelected: function() {
         var children = this._children,
@@ -2249,6 +2269,10 @@ new function() { // Injection scope for various item event handlers
                 children[i].setActived(false);
         }
 
+        if(this._parent && this._actived){
+            this._parent.collapsed = false
+        }
+
         if(!Base.equals(before, Object.keys(this._project._activeItems))){
             this._changed(/*#=*/Change.ACTIVE);
         }
@@ -2286,22 +2310,22 @@ new function() { // Injection scope for various item event handlers
      * @type Boolean
      *
     */
-         getActiveItems: function(){
-            var children = this._children,
-                activedItems = [];
-    
-            if(children){
-                for (var i = 0, l = children.length; i < l; i++) {
-                    var item = children[i];
-                    if (item.actived){
-                        activedItems.push(item);
-                    }
-                    activedItems = activedItems.concat(item.getActiveItems());
+    getActiveItems: function(){
+        var children = this._children,
+            activedItems = [];
+
+        if(children){
+            for (var i = 0, l = children.length; i < l; i++) {
+                var item = children[i];
+                if (item.actived){
+                    activedItems.push(item);
                 }
+                activedItems = activedItems.concat(item.getActiveItems());
             }
-    
-            return activedItems;
-        },
+        }
+
+        return activedItems;
+    },
 },
 
 new function() { // Injection scope for hit-test functions shared with project

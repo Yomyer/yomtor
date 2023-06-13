@@ -195,6 +195,9 @@ var Control = Item.extend(
         },
 
         isSmallZoom: function () {
+            if(!this._project._activeItems.length){
+                return false;
+            }
             if (
                 (this._project._selector.width + this._project._selector.height) * this.getZoom() <
                 20

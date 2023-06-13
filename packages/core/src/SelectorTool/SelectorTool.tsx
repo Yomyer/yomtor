@@ -74,6 +74,8 @@ export const SelectorTool = (props: SelectorToolProps) => {
       legacy: e.modifiers.meta
     })
 
+    console.log(item)
+
     if (item) {
       item.highlighted = true
       canvas.project.emit('hightlight:created')
@@ -275,6 +277,7 @@ export const SelectorTool = (props: SelectorToolProps) => {
         .filter((item) => item.children)
         .forEach((item) => {
           children = children.concat(item.children)
+          item.collapsed = false
         })
 
       if (children.length) {
@@ -320,7 +323,6 @@ export const SelectorTool = (props: SelectorToolProps) => {
 
             control.item.addChild(selector.highlightItem.set(config))
           }
-
           if (higthlight && !actives.includes(higthlight)) {
             control.item.addChild(
               higthlight.highlightItem.set({
@@ -332,6 +334,12 @@ export const SelectorTool = (props: SelectorToolProps) => {
         }
       )
     )
+
+    canvas.project.on('enter', (e: ToolEvent) => {
+      if (e.item instanceof Group) {
+        e.item.collapsed = false
+      }
+    })
 
     canvas.project.on('exit', (e: ToolEvent) => {
       if (tool.actived) {
@@ -475,14 +483,10 @@ export const SelectorTool = (props: SelectorToolProps) => {
     }
 
     tool.onMouseUp = (e: ToolEvent) => {
-      selectItems.current = null
-      selectRect.current = null
-      positions.current = {}
-
       if (moved.current) {
         canvas.project.emit('object:moved', e)
         moved.current = false
-      } else if (!e.modifiers.shift) {
+      } else if (!e.modifiers.shift && !selectRect.current) {
         tool.onMouseDown(e, true)
       }
 
@@ -490,6 +494,9 @@ export const SelectorTool = (props: SelectorToolProps) => {
 
       updateAtiveItems()
 
+      selectItems.current = null
+      selectRect.current = null
+      positions.current = {}
       tool.paused = false
     }
 

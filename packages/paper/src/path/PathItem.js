@@ -21,6 +21,7 @@
  */
 var PathItem = Item.extend(/** @lends PathItem# */{
     _class: 'PathItem',
+    _name: 'Path',
     _selectBounds: false,
     _canScaleStroke: true,
     // Enforce creation of beans, as bean getters have hidden parameters.

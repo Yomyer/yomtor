@@ -107,6 +107,7 @@ export const ManagementTool = (props: ManagementToolProps) => {
     })
 
     await Promise.all(promises)
+
     canvas.project.deactivateAll()
     itemsPated.forEach((item) => (item.actived = true))
 
