@@ -99,7 +99,6 @@ var Group = Item.extend(
             this._namedChildren = {};
             if (!this._initialize(arg))
                 this.addChildren(Array.isArray(arg) ? arg : arguments);
-            
         },
 
         _changed: function _changed(flags, _skipProject) {

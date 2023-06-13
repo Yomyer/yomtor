@@ -43,21 +43,20 @@ var Artboard = Group.extend(
         },
 
         initialize: function Artboard() {
-            var args = arguments;
+            var props = arguments,
+                hasProps = props && Base.isPlainObject(props),
+                internal = hasProps && props.internal === true,
+                settings = paper.settings;
 
             this._children = [];
             this._namedChildren = {};
 
-            var settings = paper.settings,
-                applyMatrix = settings.applyMatrix
+            this.setBackground(props[0]);
 
-            settings.applyMatrix = true;
-            this.setBackground(args[0]);
-            
-            if (!this._initialize(args[0])) {
-                if(Array.isArray(args[0]) || Array.isArray(arguments) ){
+            if (!this._initialize(props[0])) {
+                if(Array.isArray(props[0]) || Array.isArray(arguments) ){
                    
-                    this.addChildren(Array.isArray(args[0]) ? args[0] : arguments);
+                    this.addChildren(Array.isArray(props[0]) ? props[0] : arguments);
                     var rect = null;
                     var children = this._children;
                     for (var i = 0, l = children.length; i < l; i++) {
@@ -70,7 +69,10 @@ var Artboard = Group.extend(
                     this.setBackground(rect);
                 }
             }
-            this._project._artboards.push(this);
+
+            if (!hasProps || (hasProps && props.insert !== false) && this._parent){
+                this._project._artboards.push(this);
+            }
         },
 
         /**
@@ -221,18 +223,13 @@ var Artboard = Group.extend(
             this.bounds = !rectangle.size.isZero() ? rectangle : this.getContentBounds()
         },
 
-        transform: function tranform(
+        transform: function transform(
             matrix,
             _applyRecursively,
             _setApplyMatrix,
             _skypChanges
         ) {
-            if (!matrix) {
-                return;
-            }
-            
-   
-            tranform.base.call(
+            transform.base.call(
                 this,
                 matrix,
                 _applyRecursively,

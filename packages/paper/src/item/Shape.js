@@ -19,6 +19,7 @@
  */
 var Shape = Item.extend(/** @lends Shape# */{
     _class: 'Shape',
+    _name: 'Shape',
     _applyMatrix: false,
     _canApplyMatrix: false,
     _canScaleStroke: true,

@@ -74,19 +74,14 @@ new function() {
         var nodes = node.childNodes,
             isClip = type === 'clippath',
             isDefs = type === 'defs',
-            item = new Artboard({size: 100}),
+            width = getAttribute(node, 'width', currentStyle),
+            height = getAttribute(node, 'height', currentStyle),
+            item = new Artboard({size: [width, height]}),
             project = item._project,
             currentStyle = project._currentStyle,
             children = [];
-        if (!isClip && !isDefs) {
-            item = applyAttributes(item, node, isRoot);
-            // Style on items needs to be handled differently than all other
-            // items: We first apply the style to the item, then use it as the
-            // project's currentStyle, so it is used as a default for the
-            // creation of all nested items. importSVG then needs to check for
-            // items and avoid calling applyAttributes() again.
-            project._currentStyle = item._style.clone();
-        }
+
+        
         if (isRoot) {
             // Import all defs first, since in SVG they can be in any location.
             // e.g. Affinity Designer exports defs as last.
@@ -129,9 +124,13 @@ new function() {
             item = new Group(),
             project = item._project,
             currentStyle = project._currentStyle,
+            clipped = false, 
+            clip,
             children = [];
-        if (!isClip && !isDefs) {
+
+        if (!isClip && !isDefs) {applyAttributes
             item = applyAttributes(item, node, isRoot);
+            
             // Style on items needs to be handled differently than all other
             // items: We first apply the style to the item, then use it as the
             // project's currentStyle, so it is used as a default for the
@@ -147,21 +146,34 @@ new function() {
                 importNode(defs[i], options, false);
             }
         }
+
+      
         // Collect the children in an array and apply them all at once.
         for (var i = 0, l = nodes.length; i < l; i++) {
             var childNode = nodes[i],
                 child;
+
             if (childNode.nodeType === 1
                     && !/^defs$/i.test(childNode.nodeName)
                     && (child = importNode(childNode, options, false))
-                    && !(child instanceof SymbolDefinition))
-                children.push(child);
+                    && !(child instanceof SymbolDefinition)){
+                        children.push(child);
+                   
+                        console.log(node)
+                    }
+                
         }
-        item.addChildren(children);
+       // item.addChildren(children);
+
         // Clip paths are reduced (unboxed) and their attributes applied at the
         // end.
-        if (isClip)
-            item = applyAttributes(item.reduce(), node, isRoot);
+        if (isClip){
+            item = applyAttributes(item, node, isRoot);
+            
+            console.log(item.parent)
+            
+        }
+            
         // Restore currentStyle
         project._currentStyle = currentStyle;
         if (isClip || isDefs) {

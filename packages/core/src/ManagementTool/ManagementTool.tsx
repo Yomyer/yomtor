@@ -84,27 +84,32 @@ export const ManagementTool = (props: ManagementToolProps) => {
     )
   }
 
-  const paste = (event: ClipboardEvent) => {
+  const paste = async (event: ClipboardEvent) => {
     const items = Array.from(event.clipboardData.items)
+    const itemsPated = []
 
-    items.forEach((item) => {
-      const type = item.type
-      let paste
+    const promises = items.map((item) => {
+      return new Promise((resolve) => {
+        const type = item.type
 
-      if (type === 'text/plain') {
-        item.getAsString((text) => {
-          paste = canvas.project.importSVG(text)
-          console.log(text)
-          console.log(paste)
-
-          paste.actived = true
-
-          canvas.project.activeLayer.addChild(paste)
-
-          console.log(paste.info.width)
-        })
-      }
+        if (type === 'text/plain') {
+          item.getAsString((text) => {
+            console.log(text)
+            itemsPated.push(
+              canvas.project.importSVG(text, { expandShapes: true })
+            )
+            resolve(true)
+          })
+        } else {
+          resolve(true)
+        }
+      })
     })
+
+    await Promise.all(promises)
+    canvas.project.deactivateAll()
+    itemsPated.forEach((item) => (item.actived = true))
+
     /*
     canvas.project.deactivateAll()
     clipboard.current.forEach((item) => {

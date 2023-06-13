@@ -172,7 +172,7 @@ new function() { // Injection scope for various item event handlers
         this._applyMatrix = this._canApplyMatrix && settings.applyMatrix;
 
         this._flipped = {x: 1, y: 1};
-        this.constraints = ['start'];
+        this.constraints = ['scale'];
         // Handle matrix before everything else, to avoid issues with
         // #addChild() calling _changed() and accessing _matrix already.
         if (point)
@@ -4040,6 +4040,7 @@ new function() { // Injection scope for hit-test functions shared with project
                     _applyRecursively && this._children
                 )
             );
+
         // Bail out if there is nothing to do.
         if (!transformMatrix && !applyMatrix)
             return this;

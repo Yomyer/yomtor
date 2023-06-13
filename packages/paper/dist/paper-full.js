@@ -3052,7 +3052,7 @@ var Constraints = Base.extend({
 			if (reading)
 				read = hasY ? 2 : 1;
 		} else if (type === 'undefined' || arg0 === null) {
-			this._set('start', 'start');
+			this._set('scale', 'scale');
 			if (reading)
 				read = arg0 === null ? 1 : 0;
 		} else {
@@ -3063,7 +3063,7 @@ var Constraints = Base.extend({
 			} else if ('horizontal' in obj) {
 				this._set(obj.horizontal || 0, obj.vertical || 0);
 			}  else {
-				this._set('start', 'start');
+				this._set('scale', 'scale');
 				read = 0;
 			}
 		}
@@ -4268,7 +4268,7 @@ new function() {
 		this._applyMatrix = this._canApplyMatrix && settings.applyMatrix;
 
 		this._flipped = {x: 1, y: 1};
-		this.constraints = ['start'];
+		this.constraints = ['scale'];
 		if (point)
 			matrix.translate(point);
 		matrix._owner = this;
@@ -5886,6 +5886,7 @@ new function() {
 					_applyRecursively && this._children
 				)
 			);
+
 		if (!transformMatrix && !applyMatrix)
 			return this;
 		if (transformMatrix) {
@@ -6496,19 +6497,19 @@ var Artboard = Group.extend(
 		},
 
 		initialize: function Artboard() {
-			var args = arguments;
+			var props = arguments,
+				hasProps = props && Base.isPlainObject(props),
+				internal = hasProps && props.internal === true,
+				settings = paper.settings;
 
 			this._children = [];
 			this._namedChildren = {};
 
-			var settings = paper.settings,
-				applyMatrix = settings.applyMatrix
+			this.setBackground(props[0]);
 
-			settings.applyMatrix = true;
-			this.setBackground(args[0]);
-			if (!this._initialize(args[0])) {
-				if(Array.isArray(args[0]) || Array.isArray(arguments) ){
-					this.addChildren(Array.isArray(args[0]) ? args[0] : arguments);
+			if (!this._initialize(props[0])) {
+				if(Array.isArray(props[0]) || Array.isArray(arguments) ){
+					this.addChildren(Array.isArray(props[0]) ? props[0] : arguments);
 					var rect = null;
 					var children = this._children;
 					for (var i = 0, l = children.length; i < l; i++) {
@@ -6521,7 +6522,10 @@ var Artboard = Group.extend(
 					this.setBackground(rect);
 				}
 			}
-			this._project._artboards.push(this);
+
+			if (!hasProps || (hasProps && props.insert !== false) && this._parent){
+				this._project._artboards.push(this);
+			}
 		},
 
 		_getOwner: function () {
@@ -6628,16 +6632,13 @@ var Artboard = Group.extend(
 			this.bounds = !rectangle.size.isZero() ? rectangle : this.getContentBounds()
 		},
 
-		transform: function tranform(
+		transform: function transform(
 			matrix,
 			_applyRecursively,
 			_setApplyMatrix,
 			_skypChanges
 		) {
-			if (!matrix) {
-				return;
-			}
-			tranform.base.call(
+			transform.base.call(
 				this,
 				matrix,
 				_applyRecursively,
@@ -6903,6 +6904,7 @@ var Artboard = Group.extend(
 
 var Shape = Item.extend({
 	_class: 'Shape',
+	_name: 'Shape',
 	_applyMatrix: false,
 	_canApplyMatrix: false,
 	_canScaleStroke: true,
@@ -18468,14 +18470,13 @@ new function() {
 		var nodes = node.childNodes,
 			isClip = type === 'clippath',
 			isDefs = type === 'defs',
-			item = new Artboard({size: 100}),
+			width = getAttribute(node, 'width', currentStyle),
+			height = getAttribute(node, 'height', currentStyle),
+			item = new Artboard({size: [width, height]}),
 			project = item._project,
 			currentStyle = project._currentStyle,
 			children = [];
-		if (!isClip && !isDefs) {
-			item = applyAttributes(item, node, isRoot);
-			project._currentStyle = item._style.clone();
-		}
+
 		if (isRoot) {
 			var defs = node.querySelectorAll('defs');
 			for (var i = 0, l = defs.length; i < l; i++) {
@@ -18510,8 +18511,11 @@ new function() {
 			item = new Group(),
 			project = item._project,
 			currentStyle = project._currentStyle,
+			clipped = false,
+			clip,
 			children = [];
-		if (!isClip && !isDefs) {
+
+		if (!isClip && !isDefs) {applyAttributes
 			item = applyAttributes(item, node, isRoot);
 			project._currentStyle = item._style.clone();
 		}
@@ -18521,18 +18525,30 @@ new function() {
 				importNode(defs[i], options, false);
 			}
 		}
+
 		for (var i = 0, l = nodes.length; i < l; i++) {
 			var childNode = nodes[i],
 				child;
+
 			if (childNode.nodeType === 1
 					&& !/^defs$/i.test(childNode.nodeName)
 					&& (child = importNode(childNode, options, false))
-					&& !(child instanceof SymbolDefinition))
-				children.push(child);
+					&& !(child instanceof SymbolDefinition)){
+						if(/^clippath$/i.test(childNode.nodeName)){
+							console.log('clippath?')
+							clipped = true;
+							clip = child
+						}else{
+							children.push(child);
+						}
+						console.log(node)
+					}
 		}
-		item.addChildren(children);
-		if (isClip)
-			item = applyAttributes(item.reduce(), node, isRoot);
+
+		if (isClip){
+			item = applyAttributes(item, node, isRoot);
+			console.log(item.parent)
+		}
 		project._currentStyle = currentStyle;
 		if (isClip || isDefs) {
 			item.remove();
@@ -18889,6 +18905,10 @@ new function() {
 		var settings = paper.settings,
 			applyMatrix = settings.applyMatrix,
 			insertItems = settings.insertItems;
+
+		settings.applyMatrix = false;
+		settings.insertItems = false;
+
 		var importer = importers[type],
 			item = importer && importer(node, type, options, isRoot) || null;
 		settings.insertItems = insertItems;

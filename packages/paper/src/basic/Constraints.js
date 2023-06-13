@@ -39,7 +39,7 @@ var Constraints = Base.extend(/** @lends Constraints# */{
             if (reading)
                 read = hasY ? 2 : 1;
         } else if (type === 'undefined' || arg0 === null) {
-            this._set('start', 'start');
+            this._set('scale', 'scale');
             if (reading)
                 read = arg0 === null ? 1 : 0;
         } else {
@@ -50,7 +50,7 @@ var Constraints = Base.extend(/** @lends Constraints# */{
             } else if ('horizontal' in obj) {
                 this._set(obj.horizontal || 0, obj.vertical || 0);
             }  else {
-                this._set('start', 'start');
+                this._set('scale', 'scale');
                 read = 0;
             }
         }

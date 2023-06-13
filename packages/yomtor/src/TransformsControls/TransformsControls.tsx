@@ -32,7 +32,8 @@ import {
   Size,
   Item,
   Shorthand,
-  Path
+  Path,
+  Shape
 } from '@yomtor/paper'
 import {
   countBy,
