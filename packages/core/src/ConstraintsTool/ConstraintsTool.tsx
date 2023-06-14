@@ -129,123 +129,115 @@ export const ConstraintsTool = (props: ConstraintsToolProps) => {
     if (!tool) return
 
     tool.addControl(
-      new Control(
-        'verticalConstraints',
-        new Group({ guide: true }),
-        ({ control, selector }) => {
-          const items = canvas.project.activeItems
-          control.item.removeChildren()
+      new Control('constraints', ({ control, selector }) => {
+        const items = canvas.project.activeItems
+        control.removeChildren()
+        if (items.length !== 1 || (items.length && !items[0].artboard)) return
 
-          if (items.length !== 1 || (items.length && !items[0].artboard)) return
+        const item = items[0]
+        const constraints = item.constraints
+        const zoom = canvas.view.zoom
+        const horizontal = constraints.horizontal
+        const vertical = constraints.vertical
+        const angle = item.artboard.angle
+        const artboard = item.artboard.info as unknown as Rectangle
 
-          const item = items[0]
-          const constraints = item.constraints
-          const zoom = canvas.view.zoom
-          const horizontal = constraints.horizontal
-          const vertical = constraints.vertical
-          const angle = item.artboard.angle
-          const artboard = item.artboard.info as unknown as Rectangle
+        const { selectorRect, artboardRect } = getCenters({
+          selector,
+          artboard,
+          angle
+        })
 
-          const { selectorRect, artboardRect } = getCenters({
-            selector,
-            artboard,
-            angle
-          })
-
-          const params = {
-            strokeColor: selector.strokeColor,
-            strokeWidth: 0.5,
-            dashArray: [3, 2],
-            insert: true,
-            from: new Point([0, 0]),
-            to: new Point([0, 0])
-          }
-
-          const addLineConstraint = (
-            direction: 'top' | 'bottom' | 'left' | 'right'
-          ) => {
-            control.item.addChild(
-              new Path.Line({
-                ...params,
-                from: artboardRect[direction],
-                to: selectorRect[direction]
-              })
-            )
-          }
-          const addCenterConstraint = (
-            direction: 'horizontal' | 'vertical'
-          ) => {
-            const offset =
-              direction === 'horizontal'
-                ? new Point(selector.width / 4, 0)
-                : new Point(0, selector.height / 4)
-
-            control.item.addChild(
-              new Path.Line({
-                ...params,
-                from: selector.center.subtract(offset),
-                to: selector.center.add(offset)
-              })
-            )
-          }
-          const addCenter = () => {
-            control.item.addChild(
-              new Path.Line({
-                ...params,
-                from: selector.center.add(new Point(10, 10).divide(zoom)),
-                to: selector.center.add(new Point(-10, -10).divide(zoom))
-              })
-            )
-            control.item.addChild(
-              new Path.Line({
-                ...params,
-                from: selector.center.add(new Point(10, -10).divide(zoom)),
-                to: selector.center.add(new Point(-10, 10).divide(zoom))
-              })
-            )
-          }
-
-          switch (vertical) {
-            case 'end':
-              addLineConstraint('bottom')
-              break
-            case 'center':
-              addCenterConstraint('vertical')
-              break
-            case 'start':
-            case 'both':
-              addLineConstraint('top')
-              if (vertical === 'both') {
-                addLineConstraint('bottom')
-              }
-              break
-          }
-
-          switch (horizontal) {
-            case 'end':
-              addLineConstraint('right')
-              break
-            case 'center':
-              addCenterConstraint('horizontal')
-              break
-            case 'start':
-            case 'both':
-              addLineConstraint('left')
-              if (horizontal === 'both') {
-                addLineConstraint('right')
-              }
-              break
-          }
-
-          if (
-            [horizontal, vertical].includes('center') &&
-            selector.width > 100 / zoom &&
-            selector.height > 100 / zoom
-          ) {
-            addCenter()
-          }
+        const params = {
+          strokeColor: 'rgba(0, 142, 252, 1)',
+          strokeWidth: 0.5,
+          dashArray: [3, 2],
+          from: new Point([0, 0]),
+          to: new Point([0, 0])
         }
-      )
+
+        const addLineConstraint = (
+          direction: 'top' | 'bottom' | 'left' | 'right'
+        ) => {
+          control.addChild(
+            new Path.Line({
+              ...params,
+              from: artboardRect[direction],
+              to: selectorRect[direction]
+            })
+          )
+        }
+        const addCenterConstraint = (direction: 'horizontal' | 'vertical') => {
+          const offset =
+            direction === 'horizontal'
+              ? new Point(selector.width / 4, 0)
+              : new Point(0, selector.height / 4)
+
+          control.addChild(
+            new Path.Line({
+              ...params,
+              from: selector.center.subtract(offset),
+              to: selector.center.add(offset)
+            })
+          )
+        }
+        const addCenter = () => {
+          control.addChild(
+            new Path.Line({
+              ...params,
+              from: selector.center.add(new Point(10, 10).divide(zoom)),
+              to: selector.center.add(new Point(-10, -10).divide(zoom))
+            })
+          )
+          control.addChild(
+            new Path.Line({
+              ...params,
+              from: selector.center.add(new Point(10, -10).divide(zoom)),
+              to: selector.center.add(new Point(-10, 10).divide(zoom))
+            })
+          )
+        }
+
+        switch (vertical) {
+          case 'end':
+            addLineConstraint('bottom')
+            break
+          case 'center':
+            addCenterConstraint('vertical')
+            break
+          case 'start':
+          case 'both':
+            addLineConstraint('top')
+            if (vertical === 'both') {
+              addLineConstraint('bottom')
+            }
+            break
+        }
+
+        switch (horizontal) {
+          case 'end':
+            addLineConstraint('right')
+            break
+          case 'center':
+            addCenterConstraint('horizontal')
+            break
+          case 'start':
+          case 'both':
+            addLineConstraint('left')
+            if (horizontal === 'both') {
+              addLineConstraint('right')
+            }
+            break
+        }
+
+        if (
+          [horizontal, vertical].includes('center') &&
+          selector.width > 100 / zoom &&
+          selector.height > 100 / zoom
+        ) {
+          addCenter()
+        }
+      })
     )
   }, [tool])
 

@@ -3,10 +3,13 @@ import { TransformToolProps } from './TransformTool.props'
 import { useComponentDefaultProps } from '@yomtor/styles'
 import { useEditorContext } from '../Editor.context'
 import {
+  ChangeFlag,
   Control,
+  Group,
   Item,
   Matrix,
   MouseEvent,
+  Path,
   Point,
   Shape,
   Size,
@@ -195,8 +198,44 @@ export const TransformTool = (props: TransformToolProps) => {
   }
 
   const createControls = useCallback(() => {
-    const controls = toolControls.current
+    const config = {
+      size: 8,
+      strokeColor: 'rgba(0, 142, 252, 1)',
+      fillColor: 'white',
+      strokeWidth: 0.2,
+      shadowColor: 'rgba(0, 0, 0, 0.3)',
+      shadowBlur: 2,
+      shadowOffset: 1
+    }
 
+    // const control = new Control('transforms', () => {})
+    const control = new Control('transforms')
+    tool.addControl(control)
+
+    corners.forEach((corner) => {
+      control.addChild(
+        new Shape.Rectangle({
+          ...config,
+          name: corner,
+          size: config.size / zoom,
+          position: selector[corner]
+        }).rotate(selector.inheritedAngle)
+      )
+    })
+
+    canvas.project.on('changed', (type) => {
+      if (type & ChangeFlag.ACTIVE && canvas.project.activeItems.length) {
+        const control = tool.getControl('transforms')
+        control.removeChildren()
+
+        const selector = tool.selector
+        const zoom = canvas.view.zoom
+      }
+    })
+
+    console.log(canvas.project)
+
+    /*
     const handler = new Shape.Rectangle({
       size: 8,
       strokeColor: 'rgba(0, 142, 252, 1)',
@@ -258,6 +297,7 @@ export const TransformTool = (props: TransformToolProps) => {
       )
     })
 
+   
     corners.forEach((corner) => {
       controls.push(
         new Control(
@@ -271,8 +311,9 @@ export const TransformTool = (props: TransformToolProps) => {
         )
       )
     })
+    */
 
-    tool.controls = controls
+    // tool.controls = controls
   }, [tool])
 
   useEffect(() => {
@@ -359,7 +400,7 @@ export const TransformTool = (props: TransformToolProps) => {
       if (
         (tool.actived && !tool.mainActived) ||
         canvas.mainTool.paused ||
-        !toolControls.current.includes(e.target)
+        !tool.getControl('transforms').children.includes(e.target)
       )
         return
 
@@ -381,6 +422,7 @@ export const TransformTool = (props: TransformToolProps) => {
 
       canvas.project.clearHighlightedItem()
 
+      console.log('enter', e.target)
       setCursor()
     })
 

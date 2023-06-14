@@ -1362,7 +1362,7 @@ new function() { // Injection scope for event handling on the browser
             // Create a simple lookup object to quickly check for different
             // mouse event types.
             mouse[type.substr(5)] = true;
-            
+
             // Handle mouseenter / leave between items and views first.
             if (hitItems && hitItem !== overItem) {
                 if (overItem) {

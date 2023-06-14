@@ -150,6 +150,14 @@ var Tool = PaperScopeItem.extend(
         },
 
         /**
+         * @bean
+         * @type {Selector}
+         */
+        getSelector: function () {
+            return this._scope.project.selector;
+        },
+
+        /**
          * @name Tool#addControl
          * @param Control control
          * @function
@@ -157,6 +165,17 @@ var Tool = PaperScopeItem.extend(
          */
         addControl: function (control){
             this._controls.push(control);
+            this._controls[control.name] = control
+        },
+
+        /**
+         * @name Tool#getControl
+         * @param String name
+         * @function
+         * @return {Control}
+         */
+        getControl: function(name){
+            return this._controls[name]
         },
 
         /**

@@ -74,8 +74,6 @@ export const SelectorTool = (props: SelectorToolProps) => {
       legacy: e.modifiers.meta
     })
 
-    console.log(item)
-
     if (item) {
       item.highlighted = true
       canvas.project.emit('hightlight:created')
@@ -303,36 +301,31 @@ export const SelectorTool = (props: SelectorToolProps) => {
     let beforeMode = 'mode'
 
     tool.addControl(
-      new Control(
-        'selector',
-        new Group({ guide: true }),
-        ({ control, selector }) => {
-          const actives = canvas.project.activeItems
-          const higthlight = canvas.project.highlightedItem
-          const config = {
-            insert: false,
-            strokeWidth: 0.5,
-            strokeColor: 'rgba(0, 142, 252, 1)'
-          }
-          control.item.removeChildren()
-
-          if (actives.length) {
-            actives.forEach((item) => {
-              control.item.addChild(item.highlightItem.set(config))
-            })
-
-            control.item.addChild(selector.highlightItem.set(config))
-          }
-          if (higthlight && !actives.includes(higthlight)) {
-            control.item.addChild(
-              higthlight.highlightItem.set({
-                ...config,
-                strokeWidth: 2
-              })
-            )
-          }
+      new Control('selector', ({ control, selector }) => {
+        control.removeChildren()
+        const actives = canvas.project.activeItems
+        const higthlight = canvas.project.highlightedItem
+        const config = {
+          strokeWidth: 0.5,
+          strokeColor: 'rgba(0, 142, 252, 1)'
         }
-      )
+
+        if (actives.length) {
+          actives.forEach((item) => {
+            control.addChild(item.highlightItem.set(config))
+          })
+
+          control.addChild(selector.highlightItem.set(config))
+        }
+        if (higthlight && !actives.includes(higthlight)) {
+          control.addChild(
+            higthlight.highlightItem.set({
+              ...config,
+              strokeWidth: 2
+            })
+          )
+        }
+      })
     )
 
     canvas.project.on('enter', (e: ToolEvent) => {

@@ -56,14 +56,7 @@ var Selector = Item.extend(
         },
 
         initialize: function Selector(arg) {
-            var that = this;
-
             this._initialize(arg);
-            this._style.set(Object.assign({}, this._defaultStyles, {
-                strokeColor: "rgba(0, 142, 252, 1)",
-                fillColor: "white",
-                strokeWidth: 0.2,
-            }));
 
             this._children = []
             this._namedChildren = {}
@@ -528,8 +521,6 @@ var Selector = Item.extend(
             this._children.push(item);
             item._index = this._children.length - 1
 
-            item._style.set(this._defaultStyles)
-
             if (name) {
                 this._children[name || item.name] = item;
                 item.name = name || item.name;
@@ -648,7 +639,7 @@ var Selector = Item.extend(
             });
 
             for (var x = 0; x < children.length; x++) {
-                this._children[x].draw(ctx, param);
+                children[x].draw(ctx, param);
             }
         },
 

@@ -28,7 +28,6 @@ import {
 
 export const App = () => {
   useEffect(() => {
-    /*
     const artboard = new Artboard({
       from: [200, 200],
       to: [600, 600],
@@ -55,7 +54,6 @@ export const App = () => {
     artboard.addChild(group)
     group.actived = true
     group.set({ constraints: ['start', 'start'] })
-    */
   }, [])
 
   return (

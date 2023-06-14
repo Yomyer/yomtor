@@ -663,26 +663,11 @@ declare namespace paper {
     
     class Control extends Item {
         
-        item: Item
-
-        
-        position: Point
-
-        
-        offset: Point
-
-        
-        size: Size
-
-        
-        visible: boolean
-
-        
         onDraw: (event: DrawControlEvent) => void | null
 
 
         
-        constructor(name: string, item: Item, draw?: (event: DrawControlEvent) => void, scale?: boolean)
+        constructor(name: string, draw?: (event: DrawControlEvent) => void)
 
     }
 
@@ -7594,6 +7579,9 @@ declare namespace paper {
         
         controls: Control[]
 
+        
+        readonly selector: any
+
         /** 
          * The maximum distance the mouse has to drag before firing the onMouseDrag
          * event, since the last onMouseDrag event.
@@ -7725,6 +7713,11 @@ declare namespace paper {
          * @param Control - control
          */
         addControl(Control: any): void
+
+        /** 
+         * @param String - name
+         */
+        getControl(String: any): Control
 
         
         hideOtherTools(): void

@@ -249,12 +249,11 @@ var Group = Item.extend(
             return Item._getBounds(children).rect;
         },
 
-        /*
+        
         _hitTestSelf: function(point, options) {
             if (this.getActived() ? this.getBounds().contains(point) : this._contains(point))
                 return new HitResult('fill', this);
         },
-        */
 
         _hitTest: function _hitTest(point, options, parentViewMatrix) {
             var hit = _hitTest.base.call(
