@@ -36,17 +36,29 @@ var Control = Item.extend(
 
         setActived: function () {},
 
-        /**
-         * @name Control#onDraw
-         * @property
-         * @type ?(event: DrawControlEvent) => void
-         *
-         */
 
+        /**
+         * @bean
+         * @type Number
+         */
         getZoom: function(){
             return this._project._view.getZoom();
         },
 
+        addChild: function addChild(item) {
+            this._children[item.name] = item;
+            return addChild.base.call(this, item);
+        },
+
+        /**
+         *
+         * @name Control#getChild
+         * @param {String} name
+         * @type {Item}
+         */
+        getChild: function(name) {
+            return this._children[name]
+        },
 
         _getOwner: function(){
             return this._owner
@@ -162,6 +174,28 @@ var Control = Item.extend(
             }
         },
 
+        _reverseDrawFix: function(item){
+            var zoom = this.getZoom(),
+                children = item._children;
+            
+            if(children){
+                for (var i = 0, l = children.length; i < l; i++) {
+                   this._reverseDrawFix(children[i])
+                }
+            }else{
+                item.strokeWidth = item.strokeWidth * zoom
+                item.dashArray = item.dashArray.map(function(num){
+                   return num * zoom
+                });
+
+                item.shadowBlur = item.shadowBlur * zoom
+                item.shadowOffset = new Matrix()
+                    .rotate(-item.angle)
+                    ._transformPoint(item.shadowOffset).multiply(zoom);
+               
+            }
+        },
+
         /**
          *
          * @name Control#onDraw
@@ -171,6 +205,7 @@ var Control = Item.extend(
          * @type ?Function
          *
          */
+
         draw: function (ctx, param) {
             var owner = this._owner;
             
@@ -192,6 +227,8 @@ var Control = Item.extend(
                 for (var x = 0; x < children.length; x++) {
                     children[x].draw(ctx, param);
                 }
+
+                this._reverseDrawFix(this);
             }
             
         },

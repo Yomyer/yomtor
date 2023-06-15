@@ -623,7 +623,7 @@ var Selector = Item.extend(
          * @type ?(event: DrawControlEvent) => void
          *
          */
-
+        
         draw: function (ctx, matrix, pixelRatio) {
             var children = this._children;
 

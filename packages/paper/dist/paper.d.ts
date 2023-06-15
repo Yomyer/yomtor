@@ -663,7 +663,10 @@ declare namespace paper {
     
     class Control extends Item {
         
-        onDraw: (event: DrawControlEvent) => void | null
+        readonly zoom: number
+
+        
+        getChild: any
 
 
         

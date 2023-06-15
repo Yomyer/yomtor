@@ -5,12 +5,14 @@ import { useEditorContext } from '../Editor.context'
 import {
   ChangeFlag,
   Control,
+  DrawControlEvent,
   Group,
   Item,
   Matrix,
   MouseEvent,
   Path,
   Point,
+  Selector,
   Shape,
   Size,
   Tool,
@@ -192,6 +194,7 @@ export const TransformTool = (props: TransformToolProps) => {
         360) %
       181
 
+    console.log(cursorIcon, angle)
     showCursor(cursorIcon, angle)
 
     cursorAngle.current = angle
@@ -208,30 +211,28 @@ export const TransformTool = (props: TransformToolProps) => {
       shadowOffset: 1
     }
 
-    // const control = new Control('transforms', () => {})
-    const control = new Control('transforms')
+    const update = ({ control, selector }: DrawControlEvent) => {
+      const zoom = control.zoom
+
+      control.removeChildren()
+
+      corners.forEach((corner) => {
+        control.addChild(
+          new Shape.Rectangle({
+            ...config,
+            name: corner,
+            size: config.size / zoom,
+            position: selector[corner]
+          }).rotate(selector.inheritedAngle)
+        )
+      })
+    }
+
+    const control = new Control('transforms', update)
+
     tool.addControl(control)
-
-    corners.forEach((corner) => {
-      control.addChild(
-        new Shape.Rectangle({
-          ...config,
-          name: corner,
-          size: config.size / zoom,
-          position: selector[corner]
-        }).rotate(selector.inheritedAngle)
-      )
-    })
-
-    canvas.project.on('changed', (type) => {
-      if (type & ChangeFlag.ACTIVE && canvas.project.activeItems.length) {
-        const control = tool.getControl('transforms')
-        control.removeChildren()
-
-        const selector = tool.selector
-        const zoom = canvas.view.zoom
-      }
-    })
+    ///
+    // .rotate(selector.inheritedAngle))
 
     console.log(canvas.project)
 
@@ -384,7 +385,7 @@ export const TransformTool = (props: TransformToolProps) => {
         e.target &&
         e.target.data &&
         e.target.name &&
-        toolControls.current.includes(e.target)
+        tool.getControl('transforms').children.includes(e.target)
       ) {
         cornerItem.current = e.target || cornerItem.current
       } else {
@@ -422,7 +423,6 @@ export const TransformTool = (props: TransformToolProps) => {
 
       canvas.project.clearHighlightedItem()
 
-      console.log('enter', e.target)
       setCursor()
     })
 
@@ -434,7 +434,11 @@ export const TransformTool = (props: TransformToolProps) => {
     })
 
     selector.on('mousedown', (e: MouseEvent & { target: Control }) => {
-      if (!tool.mainActived || !toolControls.current.includes(e.target)) return
+      if (
+        !tool.mainActived ||
+        !tool.getControl('transforms').children.includes(e.target)
+      )
+        return
       tool.activate()
 
       activeItems.current = [...canvas.project.activeItems]
