@@ -9,6 +9,7 @@ var Control = Item.extend(
         _class: "Control",
         _scale: null,
         _control: true,
+        _canHide: true,
         _owner: null,
         _offset: null,
 
@@ -20,7 +21,7 @@ var Control = Item.extend(
          */
         
         initialize: function Control(name, draw) {
-            this._initialize({ insert: false, guide: true });
+            this._initialize({ insert: false, guide: true, applyChanges: false });
 
             this._project = paper.project;
  
@@ -41,13 +42,25 @@ var Control = Item.extend(
          * @bean
          * @type Number
          */
-        getZoom: function(){
+         getZoom: function(){
             return this._project._view.getZoom();
         },
 
         addChild: function addChild(item) {
             this._children[item.name] = item;
             return addChild.base.call(this, item);
+        },
+
+        /**
+         * @bean
+         * @type Number
+         */
+        getCanHide: function(){
+            return this._canHide;
+        },
+
+        setCanHide: function(hide) {
+            this._canHide = hide;
         },
 
         /**
@@ -209,7 +222,7 @@ var Control = Item.extend(
         draw: function (ctx, param) {
             var owner = this._owner;
             
-            if (this.isSmallZoom() || !this.visible) {
+            if (this.isSmallZoom() || (!this.visible && this._canHide)) {
                 return;
             }
 

@@ -50,6 +50,7 @@ var Item = Base.extend(Emitter, /** @lends Item# */{
     // Exceptions are Raster, SymbolItem, Clip and Shape.
     _applyMatrix: true,
     _applyChildrenStyle: true,
+    _applyChanges: true,
     _canApplyMatrix: true,
     _canScaleStroke: false,
     _pivot: null,
@@ -270,7 +271,7 @@ new function() { // Injection scope for various item event handlers
             Item._clearBoundsCache(this);
         }
 
-        if (project && !_skipProject)
+        if (project && !_skipProject && this._applyChanges)
             project._changed(flags, this);
         // If this item is a symbol's definition, notify it of the change too
         if (symbol)
@@ -1622,7 +1623,7 @@ new function() { // Injection scope for various item event handlers
      * @type Boolean
      * @default true
      */
-    getApplyMatrix: function() {
+     getApplyMatrix: function() {
         return this._applyMatrix;
     },
 
@@ -1631,6 +1632,19 @@ new function() { // Injection scope for various item event handlers
         // can be set to true.
         if (this._applyMatrix = this._canApplyMatrix && !!apply)
             this.transform(null, true);
+    },
+
+    /**
+     * @bean
+     * @type Boolean
+     * @default true
+     */
+    getApplyChanges: function() {
+        return this._applyChanges;
+    },
+
+    setApplyChanges: function(apply) {
+        this._applyChanges = apply
     },
 
     /**

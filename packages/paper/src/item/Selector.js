@@ -199,18 +199,21 @@ var Selector = Item.extend(
             }
 
             Base.each(items, function(item){
-                var helper = helpers[item.uid].clone({insert: false, keep: true});
-                item.set(Base.omit(helper, ['uid', 'actived', 'guide', 'parent']));
+                var helper = helpers[item.uid]
+                // item.set(Base.omit(helper, ['uid', 'actived', 'guide', 'parent']));
 
+                /*
                 var itemCenter = item.bounds.center;
                 var rotateMatrix = new Matrix().rotate(-angle, itemCenter)
                 var pivot = rotateMatrix.transformPoint(center)
+                */
 
                 item._transformDisrupting = disrupting;
-                
-                item.rotate(-angle, itemCenter);
-                item.scale(new Point(factor.x, factor.y), pivot);
-                item.rotate(angle, itemCenter);
+                // console.log(helper.info.size)
+                item.info.setPivotSize(helper.info.size.multiply(factor), center)
+                //item.rotate(-angle, itemCenter);
+                //item.scale(new Point(factor.x, factor.y), pivot);
+                //item.rotate(angle, itemCenter);
 
                 item._transformDisrupting = null;
                 
@@ -229,7 +232,7 @@ var Selector = Item.extend(
 
                 helpers[item.uid]._lastDirection = factor.sign();
                 
-                helper.remove();
+                // helper.remove();
             });
 
 
@@ -268,12 +271,7 @@ var Selector = Item.extend(
             var helpers = this._helpers;
 
             Base.each(items, function(item){
-                var helper = helpers[item.uid].clone({insert: false, keep: true});
-                item.set(Base.omit(helper, ['uid', 'actived', 'guide', 'parent']));
-
-                item.rotate(angle, center)
-
-                helper.remove();
+                item.info.angle = angle
             });
 
             if(!preserve){

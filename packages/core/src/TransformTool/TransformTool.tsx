@@ -76,6 +76,7 @@ export const TransformTool = (props: TransformToolProps) => {
   const center = useRef<Point>(null)
   const delta = useRef<Point>(null)
   const direction = useRef<Point>(null)
+  const centered = useRef<boolean>(null)
 
   const [showRotate, hideRotate] = useGlobalCursor(Rotate)
   const [showResize, hideResize] = useGlobalCursor(Resize)
@@ -109,9 +110,13 @@ export const TransformTool = (props: TransformToolProps) => {
     let factor = new Size(delta.current)
 
     if (e.modifiers.alt) {
-      origin = center.current
       factor = roundToNearestEven(factor.add(new Size(delta.current)).round())
       disrupting = new Point(1, 1)
+      centered.current = true
+    }
+
+    if (centered.current) {
+      origin = center.current
     }
 
     let newSize = size.current.add(factor).round()
@@ -194,7 +199,6 @@ export const TransformTool = (props: TransformToolProps) => {
         360) %
       181
 
-    console.log(cursorIcon, angle)
     showCursor(cursorIcon, angle)
 
     cursorAngle.current = angle
@@ -208,49 +212,9 @@ export const TransformTool = (props: TransformToolProps) => {
       strokeWidth: 0.2,
       shadowColor: 'rgba(0, 0, 0, 0.3)',
       shadowBlur: 2,
-      shadowOffset: 1
+      shadowOffset: 1,
+      applyChanges: false
     }
-
-    const update = ({ control, selector }: DrawControlEvent) => {
-      const zoom = control.zoom
-
-      control.removeChildren()
-
-      corners.forEach((corner) => {
-        control.addChild(
-          new Shape.Rectangle({
-            ...config,
-            name: corner,
-            size: config.size / zoom,
-            position: selector[corner]
-          }).rotate(selector.inheritedAngle)
-        )
-      })
-    }
-
-    const control = new Control('transforms', update)
-
-    tool.addControl(control)
-    ///
-    // .rotate(selector.inheritedAngle))
-
-    console.log(canvas.project)
-
-    /*
-    const handler = new Shape.Rectangle({
-      size: 8,
-      strokeColor: 'rgba(0, 142, 252, 1)',
-      fillColor: 'white',
-      strokeWidth: 0.2,
-      insert: false
-    })
-
-    const invisibleHandler = new Shape.Rectangle({
-      size: 8,
-      fillColor: 'red',
-      opacity: 0.00001,
-      insert: false
-    })
 
     const rotates = {
       rotateTopLeft: -5,
@@ -259,62 +223,54 @@ export const TransformTool = (props: TransformToolProps) => {
       rotateBottomRight: 5
     }
 
-    Object.keys(rotates).forEach((corner) => {
-      controls.push(
-        new Control(
-          corner,
-          invisibleHandler.clone(),
-          ({ control, selector }) => {
-            control.position =
-              selector[corner.replace('rotateB', 'b').replace('rotateT', 't')]
-            control.offset = rotates[corner]
-            control.rotation = selector.inheritedAngle
-          },
-          true
-        )
-      )
-    })
+    tool.addControl(
+      new Control('transforms', ({ control, selector }: DrawControlEvent) => {
+        const zoom = control.zoom
 
-    scaleCorners.forEach((corner) => {
-      controls.push(
-        new Control(
-          corner,
-          invisibleHandler.clone(),
-          ({ control, selector }) => {
-            control.position = selector[corner]
-            if (['topCenter', 'bottomCenter'].includes(corner)) {
-              control.size.width = selector.width
-              control.size.height = 1 / canvas.view.zoom
-            }
+        control.removeChildren()
 
-            if (['leftCenter', 'rightCenter'].includes(corner)) {
-              control.size.height = selector.height
-              control.size.width = 1 / canvas.view.zoom
-            }
+        if (canvas.project.activeItems.length) {
+          Object.keys(rotates).forEach((corner) => {
+            control.addChild(
+              new Shape.Rectangle({
+                ...config,
+                name: corner,
+                size: config.size / zoom,
+                opacity: 0.0000001,
+                position: selector[
+                  corner.replace('rotateB', 'b').replace('rotateT', 't')
+                ].add(new Point(rotates[corner]).divide(zoom))
+              }).rotate(selector.inheritedAngle)
+            )
+          })
 
-            control.rotation = selector.inheritedAngle
-          }
-        )
-      )
-    })
+          scaleCorners.forEach((corner) => {
+            control.addChild(
+              new Shape.Rectangle({
+                ...config,
+                name: corner,
+                opacity: 0.0000001,
+                size: ['topCenter', 'bottomCenter'].includes(corner)
+                  ? new Size(selector.width, 1 / zoom)
+                  : new Size(1 / zoom, selector.height),
+                position: selector[corner]
+              }).rotate(selector.inheritedAngle)
+            )
+          })
 
-   
-    corners.forEach((corner) => {
-      controls.push(
-        new Control(
-          corner,
-          handler.clone(),
-          ({ control, selector }) => {
-            control.position = selector[corner]
-            control.rotation = selector.inheritedAngle
-          },
-          true
-        )
-      )
-    })
-    */
-
-    // tool.controls = controls
+          corners.forEach((corner) => {
+            control.addChild(
+              new Shape.Rectangle({
+                ...config,
+                name: corner,
+                size: config.size / zoom,
+                position: selector[corner]
+              }).rotate(selector.inheritedAngle)
+            )
+          })
+        }
+      })
+    )
   }, [tool])
 
   useEffect(() => {
@@ -332,6 +288,9 @@ export const TransformTool = (props: TransformToolProps) => {
     tool.onMouseDrag = (e: ToolEvent) => {
       transform(e)
 
+      //tool.hideOtherTools()
+      //tool.hide = true
+
       lastPoint.current = e.point
     }
 
@@ -346,6 +305,8 @@ export const TransformTool = (props: TransformToolProps) => {
     }
 
     tool.onMouseUp = (e: ToolEvent) => {
+      tool.showOtherTools()
+      tool.hide = false
       canvas.project.deactivateAll()
       activeHelpers.current.forEach((item) => item.remove())
       activeItems.current.forEach((item) =>
@@ -445,7 +406,7 @@ export const TransformTool = (props: TransformToolProps) => {
       cornerName.current = e.target.name
         .replace('rotateB', 'b')
         .replace('rotateT', 't')
-
+      console.log('aaa')
       point.current = e.point
       angle.current = selector.inheritedAngle
       pivot.current = selector.getOposite(cornerName.current)

@@ -92,6 +92,7 @@ var Artboard = Group.extend(
             var args = Base.set(Object.assign({
                 fillColor: 'rgba(255,255,255,0.000001)'
             }, args), {
+                name: 'ArtboardBackground',
                 insert: false,
                 children: undefined,
                 actived: false,
@@ -128,21 +129,6 @@ var Artboard = Group.extend(
             this._clipped = clipped;
             this._getItemsInChildrens = !clipped;
             this._changed(/*#=*/Change.ATTRIBUTE);
-        },
-
-
-        /**
-         *
-         * @bean
-         * @type Rectangle
-         */
-        getBounds: function getBounds() {
-            return getBounds.base.call(this);
-        },
-
-        setBounds: function setBounds(/* rect */) {
-            var bounds = Rectangle.read(arguments);
-            this._background.bounds = bounds;
         },
 
 
@@ -193,14 +179,7 @@ var Artboard = Group.extend(
                     style.hasStroke() &&
                     style.getStrokeWidth();
 
-            /*
-            if (options.hit) {
-                var children = this._children;
-                for (var i = 0, l = children.length; i < l; i++) {
-                    rect = rect.unite(children[i].bounds);
-                }
-            }
-            */
+            rect._owner = this
 
             if (matrix) rect = matrix._transformBounds(rect);
             return strokeWidth
@@ -245,7 +224,7 @@ var Artboard = Group.extend(
                 _skypChanges
             );
 
-            this._changed(/*#=*/ Change.MATRIX);
+            //this._changed(/*#=*/ Change.MATRIX);
         },
 
         _transformContent: function (matrix, applyRecursively, setApplyMatrix, skypChanges) {

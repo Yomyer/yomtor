@@ -20,6 +20,7 @@ import { isEqual, omit, random, range } from 'lodash'
 import { abs } from '@yomtor/utils'
 import { useEventListener, useId, useMergedRef, clamp } from '@yomtor/hooks'
 import { ResizePanel, useGlobalCursor } from '@yomtor/cursors'
+import { useForceUpdate } from '@mantine/hooks'
 
 const defaultProps: Partial<NumberInputProps> = {
   size: 'md',
@@ -70,13 +71,12 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
       { classNames, styles, name: 'NumberInput', unstyled }
     )
 
+    const rerender = useForceUpdate()
     const [drag, setDrag] = useState<number>(0)
     const [delta, setDelta] = useState<number>(0)
     const [step, setStep] = useState<number>(1)
     const [mixed, setMixed] = useState<boolean>(false)
     const [focus, setFocus] = useState<boolean>(false)
-    const [value, setValue] = useState<number | ''>()
-    const [defValue, setDefValue] = useState<number>()
     const unabled = useRef<boolean>()
     const inputRef = useRef<HTMLInputElement>()
     const handlersRef = useRef<NumberInputHandlers>()
@@ -85,13 +85,16 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
     const _min = typeof min === 'number' ? min : -Infinity
     const _max = typeof max === 'number' ? max : Infinity
 
+    const value = useRef<number | ''>()
+    const defValue = useRef<number>()
+
     useEffect(() => {
       setMixed(isMixed)
     }, [isMixed])
 
     useEffect(() => {
-      setValue(defaultValue)
-      setDefValue(parseFloat(defaultValue.toString()))
+      value.current = defaultValue
+      defValue.current = parseFloat(defaultValue.toString())
     }, [defaultValue])
 
     useEffect(() => {
@@ -150,14 +153,15 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
 
     const changeHandler = (val: number) => {
       if (Number.isNaN(val) && empty) return
-      if (Number.isNaN(val)) val = defValue
+      if (Number.isNaN(val)) val = defValue.current
 
-      setValue(val)
+      value.current = val
+      rerender()
+
       if (!unabled.current) {
         onChange && onChange(val, mixed)
       }
     }
-
     const cursorHandlers = {
       onMouseEnter: () => {
         showCursor()
@@ -234,7 +238,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
         step={step}
         onChange={changeHandler}
         onKeyDown={keyDownHandler}
-        value={value}
+        value={value.current}
         max={max}
         min={min}
         precision={precision}

@@ -310,9 +310,32 @@ var Info = Base.extend(/** @lends Info# */{
 
     setSize: function(/* size */){
         var size = Size.read(arguments);
-        this._setInfoSize(size.width, size.height);
+        this._setInfoSize(size.width, size.height, this.topLeft);
     },
 
+    /**
+     *
+     * @name Control#setPivotSize
+     * @param {Size} size
+     * @param {Point} pivot
+     * @type void
+     */
+    /**
+     *
+     * @name Control#setPivotSize
+     * @param {Number} width
+     * @param {Number} height
+     * @param {Point} pivot
+     * @type void
+     */
+    setPivotSize: function(/* arguments */){
+        var size = Size.read(arguments);
+        var pivot = Point.read(arguments);
+
+        this._setInfoSize(size.width, size.height, pivot);
+
+    },
+    
     /**
      * The corners
      *
@@ -346,16 +369,16 @@ var Info = Base.extend(/** @lends Info# */{
         return this._cache[key] = JSON.parse(JSON.stringify(corners));
     },
 
-    _setInfoSize: function(/* size */){
+    _setInfoSize: function(/* arguments */){
         var size = Size.read(arguments);
+        var pivot = Point.read(arguments);
 
-        this._setSize('width', size.width);
-        this._setSize('height', size.height);
+        this._setSize('width', size.width, pivot);
+        this._setSize('height', size.height, pivot);
     },
 
-    _setSize: function(direction, value){
+    _setSize: function(direction, value, pivot = this.topLeft){
         var angle = this.inheritedAngle;
-        var pivot = this.topLeft;
         
         if(value <= 0){
             value = 1;

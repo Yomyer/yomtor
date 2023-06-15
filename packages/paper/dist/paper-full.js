@@ -3478,9 +3478,16 @@ var Info = Base.extend({
 
 	setSize: function(){
 		var size = Size.read(arguments);
-		this._setInfoSize(size.width, size.height);
+		this._setInfoSize(size.width, size.height, this.topLeft);
 	},
 
+	setPivotSize: function(){
+		var size = Size.read(arguments);
+		var pivot = Point.read(arguments);
+
+		this._setInfoSize(size.width, size.height, pivot);
+
+	},
 	getCorners: function(unrotated) {
 		var owner = this._owner
 		var data = Base.set({
@@ -3506,14 +3513,14 @@ var Info = Base.extend({
 
 	_setInfoSize: function(){
 		var size = Size.read(arguments);
+		var pivot = Point.read(arguments);
 
-		this._setSize('width', size.width);
-		this._setSize('height', size.height);
+		this._setSize('width', size.width, pivot);
+		this._setSize('height', size.height, pivot);
 	},
 
-	_setSize: function(direction, value){
+	_setSize: function(direction, value, pivot = this.topLeft){
 		var angle = this.inheritedAngle;
-		var pivot = this.topLeft;
 		if(value <= 0){
 			value = 1;
 		}
@@ -4167,6 +4174,7 @@ var Item = Base.extend(Emitter, {
 	_name: null,
 	_applyMatrix: true,
 	_applyChildrenStyle: true,
+	_applyChanges: true,
 	_canApplyMatrix: true,
 	_canScaleStroke: false,
 	_pivot: null,
@@ -4333,7 +4341,7 @@ new function() {
 			Item._clearBoundsCache(this);
 		}
 
-		if (project && !_skipProject)
+		if (project && !_skipProject && this._applyChanges)
 			project._changed(flags, this);
 		if (symbol)
 			symbol._changed(flags);
@@ -4951,13 +4959,21 @@ new function() {
 		return this.getGlobalMatrix().prepend(this.getView()._matrix);
 	},
 
-	getApplyMatrix: function() {
+	 getApplyMatrix: function() {
 		return this._applyMatrix;
 	},
 
 	setApplyMatrix: function(apply) {
 		if (this._applyMatrix = this._canApplyMatrix && !!apply)
 			this.transform(null, true);
+	},
+
+	getApplyChanges: function() {
+		return this._applyChanges;
+	},
+
+	setApplyChanges: function(apply) {
+		this._applyChanges = apply
 	},
 
 	getTransformContent: '#getApplyMatrix',
@@ -6567,6 +6583,7 @@ var Artboard = Group.extend(
 			var args = Base.set(Object.assign({
 				fillColor: 'rgba(255,255,255,0.000001)'
 			}, args), {
+				name: 'ArtboardBackground',
 				insert: false,
 				children: undefined,
 				actived: false,
@@ -6591,15 +6608,6 @@ var Artboard = Group.extend(
 			this._clipped = clipped;
 			this._getItemsInChildrens = !clipped;
 			this._changed(257);
-		},
-
-		getBounds: function getBounds() {
-			return getBounds.base.call(this);
-		},
-
-		setBounds: function setBounds() {
-			var bounds = Rectangle.read(arguments);
-			this._background.bounds = bounds;
 		},
 
 		getActived: function () {
@@ -6643,6 +6651,8 @@ var Artboard = Group.extend(
 					style.hasStroke() &&
 					style.getStrokeWidth();
 
+			rect._owner = this
+
 			if (matrix) rect = matrix._transformBounds(rect);
 			return strokeWidth
 				? rect.expand(
@@ -6680,7 +6690,6 @@ var Artboard = Group.extend(
 				_skypChanges
 			);
 
-			this._changed(25);
 		},
 
 		_transformContent: function (matrix, applyRecursively, setApplyMatrix, skypChanges) {
@@ -8004,17 +8013,10 @@ var Selector = Item.extend(
 			}
 
 			Base.each(items, function(item){
-				var helper = helpers[item.uid].clone({insert: false, keep: true});
-				item.set(Base.omit(helper, ['uid', 'actived', 'guide', 'parent']));
-
-				var itemCenter = item.bounds.center;
-				var rotateMatrix = new Matrix().rotate(-angle, itemCenter)
-				var pivot = rotateMatrix.transformPoint(center)
+				var helper = helpers[item.uid]
 
 				item._transformDisrupting = disrupting;
-				item.rotate(-angle, itemCenter);
-				item.scale(new Point(factor.x, factor.y), pivot);
-				item.rotate(angle, itemCenter);
+				item.info.setPivotSize(helper.info.size.multiply(factor), center)
 
 				item._transformDisrupting = null;
 				if(helpers[item.uid]._lastDirection){
@@ -8031,7 +8033,6 @@ var Selector = Item.extend(
 				}
 
 				helpers[item.uid]._lastDirection = factor.sign();
-				helper.remove();
 			});
 
 			if(!preserve){
@@ -8053,12 +8054,7 @@ var Selector = Item.extend(
 			var helpers = this._helpers;
 
 			Base.each(items, function(item){
-				var helper = helpers[item.uid].clone({insert: false, keep: true});
-				item.set(Base.omit(helper, ['uid', 'actived', 'guide', 'parent']));
-
-				item.rotate(angle, center)
-
-				helper.remove();
+				item.info.angle = angle
 			});
 
 			if(!preserve){
@@ -8513,11 +8509,12 @@ var Control = Item.extend(
 		_class: "Control",
 		_scale: null,
 		_control: true,
+		_canHide: true,
 		_owner: null,
 		_offset: null,
 
 		initialize: function Control(name, draw) {
-			this._initialize({ insert: false, guide: true });
+			this._initialize({ insert: false, guide: true, applyChanges: false });
 
 			this._project = paper.project;
 			this._owner = this._project.selector;
@@ -8532,13 +8529,21 @@ var Control = Item.extend(
 
 		setActived: function () {},
 
-		getZoom: function(){
+		 getZoom: function(){
 			return this._project._view.getZoom();
 		},
 
 		addChild: function addChild(item) {
 			this._children[item.name] = item;
 			return addChild.base.call(this, item);
+		},
+
+		getCanHide: function(){
+			return this._canHide;
+		},
+
+		setCanHide: function(hide) {
+			this._canHide = hide;
 		},
 
 		getChild: function(name) {
@@ -8673,7 +8678,7 @@ var Control = Item.extend(
 
 		draw: function (ctx, param) {
 			var owner = this._owner;
-			if (this.isSmallZoom() || !this.visible) {
+			if (this.isSmallZoom() || (!this.visible && this._canHide)) {
 				return;
 			}
 

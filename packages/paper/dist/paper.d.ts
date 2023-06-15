@@ -35,9 +35,6 @@ declare namespace paper {
          */
         clipped: boolean
 
-        
-        bounds: Rectangle
-
         /** 
          * The name of the artboard.
          */
@@ -663,7 +660,13 @@ declare namespace paper {
     
     class Control extends Item {
         
+        setPivotSize: void
+
+        
         readonly zoom: number
+
+        
+        canHide: number
 
         
         getChild: any
@@ -1974,6 +1977,9 @@ declare namespace paper {
          * items, etc.).
          */
         applyMatrix: boolean
+
+        
+        applyChanges: boolean
 
         /** 
          * The project that this item belongs to.
