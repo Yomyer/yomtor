@@ -246,16 +246,14 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
         parser={
           !parser
             ? (value) => {
-                return value.replace(/[^(\d)|,|.]/g, '').replace(',', '.')
+                return value
+                  .replace(
+                    /^(?!^[\d,.-][\d]*$)(?!^[\d|-][\d]*[,.]?[\d]*$).*$/g,
+                    ''
+                  )
+                  .replace(',', '.')
               }
             : parser
-        }
-        formatter={
-          !focus
-            ? !formatter
-              ? (value) => (mixed ? mixedLabel : value)
-              : formatter
-            : undefined
         }
         onBlur={onBlur}
         onFocus={focusHandler}

@@ -4218,10 +4218,10 @@ var Item = Base.extend(Emitter, {
 		data: {},
 		flipped: {x: 1, y: 1},
 		uid: null,
-		angle: 0,
+		angle: null,
 		actived: false,
 		constraints: {},
-		borderRadius: 0,
+		borderRadius: null,
 		constraintProportions: false,
 		independentCorners: false
 	},
@@ -5115,6 +5115,11 @@ new function() {
 		copy.angle = this.angle;
 
 		return copy;
+	},
+
+	cloneRaw: function(item, options){
+		var json = item.exportJSON();
+		this.importJSON(json);
 	},
 
 	copyContent: function(source, keep) {
@@ -6536,7 +6541,11 @@ var Artboard = Group.extend(
 			size: null,
 			point: null,
 			grid: null,
+			angle: null,
+			flipped: null,
 			children: [],
+			clipped: null,
+			background: null,
 		},
 
 		initialize: function Artboard() {
@@ -8013,14 +8022,14 @@ var Selector = Item.extend(
 			}
 
 			Base.each(items, function(item){
-				var helper = helpers[item.uid].toJSON()
+				item.cloneRaw(helpers[item.uid]);
 
 				var itemCenter = item.bounds.center;
 				var rotateMatrix = new Matrix().rotate(-angle, itemCenter)
 				var pivot = rotateMatrix.transformPoint(center)
-				console.log(factor)
-				item._transformDisrupting = disrupting;
-				item.info.setPivotSize(helper.info.size.multiply(factor), center)
+				item.rotate(-angle, itemCenter);
+				item.scale(new Point(factor.x, factor.y), pivot);
+				item.rotate(angle, itemCenter);
 
 				item._transformDisrupting = null;
 				if(helpers[item.uid]._lastDirection){
@@ -8058,7 +8067,8 @@ var Selector = Item.extend(
 			var helpers = this._helpers;
 
 			Base.each(items, function(item){
-				item.info.angle = angle
+				item.cloneRaw(helpers[item.uid])
+				item.rotate(angle, center)
 			});
 
 			if(!preserve){
@@ -8192,8 +8202,9 @@ var Selector = Item.extend(
 				this._helpers = this._project._activeItems.map(function(item){
 					return item.clone({keep: true, insert: false, guide: true, applyChanges: false});
 				});
+
 				var helpers = this._helpers;
-				this._helpers.forEach(function(item){
+				helpers.forEach(function(item){
 					helpers[item.uid] = item;
 				});
 			}

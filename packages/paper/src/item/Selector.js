@@ -199,23 +199,15 @@ var Selector = Item.extend(
             }
 
             Base.each(items, function(item){
-                var helper = helpers[item.uid].toJSON()
-                //var helper = helpers[item.uid].clone({keep: true, insert: false, guide: true, applyChanges: false})
-                //item.set(Base.omit(helper, ['uid', 'actived', 'guide', 'parent']));
-                //console.log(new Point(helper.position))
-                // item.info.set(helper)
+                item.cloneRaw(helpers[item.uid]);
 
                 var itemCenter = item.bounds.center;
                 var rotateMatrix = new Matrix().rotate(-angle, itemCenter)
                 var pivot = rotateMatrix.transformPoint(center)
                 
-                console.log(factor)
-                item._transformDisrupting = disrupting;
-                // console.log(helper.info.size)
-                item.info.setPivotSize(helper.info.size.multiply(factor), center)
-                //item.rotate(-angle, itemCenter);
-                //item.scale(new Point(factor.x, factor.y), pivot);
-                //item.rotate(angle, itemCenter);
+                item.rotate(-angle, itemCenter);
+                item.scale(new Point(factor.x, factor.y), pivot);
+                item.rotate(angle, itemCenter);
 
                 item._transformDisrupting = null;
                 
@@ -233,8 +225,6 @@ var Selector = Item.extend(
                 }
 
                 helpers[item.uid]._lastDirection = factor.sign();
-                
-                // helper.remove();
             });
 
 
@@ -273,8 +263,10 @@ var Selector = Item.extend(
             var helpers = this._helpers;
 
             Base.each(items, function(item){
-                item.info.angle = angle
+                item.cloneRaw(helpers[item.uid])
+                item.rotate(angle, center)
             });
+            
 
             if(!preserve){
                 this._clearHelpers();
@@ -496,8 +488,9 @@ var Selector = Item.extend(
                 this._helpers = this._project._activeItems.map(function(item){
                     return item.clone({keep: true, insert: false, guide: true, applyChanges: false});
                 });
+
                 var helpers = this._helpers;
-                this._helpers.forEach(function(item){
+                helpers.forEach(function(item){
                     helpers[item.uid] = item;
                 });
             }

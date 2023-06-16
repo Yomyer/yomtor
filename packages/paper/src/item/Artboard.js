@@ -40,7 +40,11 @@ var Artboard = Group.extend(
             size: null,
             point: null,
             grid: null,
+            angle: null,
+            flipped: null,
             children: [],
+            clipped: null,
+            background: null,
         },
 
         initialize: function Artboard() {

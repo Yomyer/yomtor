@@ -99,10 +99,10 @@ var Item = Base.extend(Emitter, /** @lends Item# */{
         data: {},
         flipped: {x: 1, y: 1},
         uid: null,
-        angle: 0,
+        angle: null,
         actived: false,
         constraints: {},
-        borderRadius: 0,
+        borderRadius: null,
         constraintProportions: false,
         independentCorners: false
     },
@@ -1937,7 +1937,7 @@ new function() { // Injection scope for various item event handlers
      *     cloned
      * @option [keep=false] copy name and id
      *
-     * @param {Object} [options={ insert: true, deep: true }]
+     * @param {Object} [options={ insert: true, deep: true, keep=false }]
      *
      * @return {Item} the newly cloned item
      * @chainable
@@ -2003,6 +2003,41 @@ new function() { // Injection scope for various item event handlers
         copy.angle = this.angle;
 
         return copy;
+    },
+
+    /**
+     * Clones raw the item within the same project and places the copy above the
+     * item.
+     *
+     * 
+     * @option [deep=true] specifies whether the item's children should also be
+     *     cloned
+     * @option [keep=false] copy name and id
+     * @param {Item} item 
+     * @param {Object} [options={ insert: true, deep: true }]
+     *
+     * @return {Item} the newly cloned item
+     * @chainable
+     *
+     * @example {@paperscript}
+     * // Cloning items:
+     * var circle = new Path.Circle({
+     *     center: [50, 50],
+     *     radius: 10,
+     *     fillColor: 'red'
+     * });
+     *
+     * // Make 20 copies of the circle:
+     * for (var i = 0; i < 20; i++) {
+     *     var copy = circle.clone();
+     *
+     *     // Distribute the copies horizontally, so we can see them:
+     *     copy.position.x += i * copy.bounds.width;
+     * }
+     */
+    cloneRaw: function(item, options){
+        var json = item.exportJSON();
+        this.importJSON(json);
     },
 
     /**

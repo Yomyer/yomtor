@@ -2295,6 +2295,18 @@ declare namespace paper {
         clone(options?: object): this
 
         /** 
+         * Clones raw the item within the same project and places the copy above the
+         * item.
+         * 
+         * @option [deep=true] specifies whether the item's children should also be
+         *     cloned
+         * @option [keep=false] copy name and id
+         * 
+         * @return the newly cloned item
+         */
+        cloneRaw(item: Item, options?: object): this
+
+        /** 
          * Copies the content of the specified item over to this item.
          * 
          * @param source - the item to copy the content from
