@@ -110,13 +110,9 @@ export const TransformTool = (props: TransformToolProps) => {
     let factor = new Size(delta.current)
 
     if (e.modifiers.alt) {
+      origin = center.current
       factor = roundToNearestEven(factor.add(new Size(delta.current)).round())
       disrupting = new Point(1, 1)
-      centered.current = true
-    }
-
-    if (centered.current) {
-      origin = center.current
     }
 
     let newSize = size.current.add(factor).round()
