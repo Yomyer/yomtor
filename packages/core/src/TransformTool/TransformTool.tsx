@@ -340,7 +340,6 @@ export const TransformTool = (props: TransformToolProps) => {
     canvas.view.on('mousemove', (e: MouseEvent & { target: Control }) => {
       if (
         e.target &&
-        e.target.data &&
         e.target.name &&
         tool.getControl('transforms').children.includes(e.target)
       ) {
@@ -390,51 +389,56 @@ export const TransformTool = (props: TransformToolProps) => {
       }
     })
 
-    selector.on('mousedown', (e: MouseEvent & { target: Control }) => {
-      if (
-        !tool.mainActived ||
-        !tool.getControl('transforms').children.includes(e.target)
-      )
-        return
-      tool.activate()
-
-      activeItems.current = [...canvas.project.activeItems]
-      cornerName.current = e.target.name
-        .replace('rotateB', 'b')
-        .replace('rotateT', 't')
-      console.log('aaa')
-      point.current = e.point
-      angle.current = selector.inheritedAngle
-      pivot.current = selector.getOposite(cornerName.current)
-      size.current = selector.size
-      corner.current = selector[cornerName.current]
-      center.current = selector.center
-      delta.current = new Point(0, 0)
-
-      const matrix = new Matrix().rotate(
-        -selector.inheritedAngle,
-        selector.center
-      )
-      direction.current = sign(
-        normalize(
-          matrix
-            .transformPoint(corner.current)
-            .subtract(matrix.transformPoint(pivot.current))
+    selector.on(
+      'mousedown',
+      (e: MouseEvent & { target: Control; force: boolean }) => {
+        if (
+          !tool.mainActived ||
+          (!tool.getControl('transforms').children.includes(e.target) &&
+            !e.force)
         )
-      )
+          return
 
-      cursor.current = {
-        angle: selector.angle,
-        point: e.point,
-        corner: e.target
+        tool.activate()
+
+        activeItems.current = [...canvas.project.activeItems]
+        cornerName.current = e.target.name
+          .replace('rotateB', 'b')
+          .replace('rotateT', 't')
+
+        point.current = e.point
+        angle.current = selector.inheritedAngle
+        pivot.current = selector.getOposite(cornerName.current)
+        size.current = selector.size
+        corner.current = selector[cornerName.current]
+        center.current = selector.center
+        delta.current = new Point(0, 0)
+
+        const matrix = new Matrix().rotate(
+          -selector.inheritedAngle,
+          selector.center
+        )
+        direction.current = sign(
+          normalize(
+            matrix
+              .transformPoint(corner.current)
+              .subtract(matrix.transformPoint(pivot.current))
+          )
+        )
+
+        cursor.current = {
+          angle: selector.angle,
+          point: e.point,
+          corner: e.target
+        }
+
+        cursorAngle.current = null
+
+        setCursor()
+
+        lastPoint.current = e.point
       }
-
-      cursorAngle.current = null
-
-      setCursor()
-
-      lastPoint.current = e.point
-    })
+    )
   }, [tool])
 
   useHotkeys(

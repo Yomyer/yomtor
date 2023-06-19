@@ -113,9 +113,12 @@ export const ObjectPathTool = forwardRef<HTMLDivElement, ObjectPathToolProps>(
           canvas.project.selector.emit(
             'mousedown',
             Object.assign(event, {
-              target: canvas.project.selector
-                .getControl('transforms')
-                .getChild('bottomRight')
+              force: true,
+              target: {
+                name: 'bottomRight',
+                point: canvas.project.selector.bottomRight,
+                position: canvas.project.selector.center
+              }
             })
           )
           showCursor([Cross, cursor])

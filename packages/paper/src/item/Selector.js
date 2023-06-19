@@ -199,7 +199,7 @@ var Selector = Item.extend(
             }
 
             Base.each(items, function(item){
-                item.cloneRaw(helpers[item.uid]);
+                item.importJSON(helpers[item.uid]);
 
                 var itemCenter = item.bounds.center;
                 var rotateMatrix = new Matrix().rotate(-angle, itemCenter)
@@ -210,21 +210,22 @@ var Selector = Item.extend(
                 item.rotate(angle, itemCenter);
 
                 item._transformDisrupting = null;
-                
-                if(helpers[item.uid]._lastDirection){
-                    if(!helpers[item.uid]._cacheFlipped){
-                        helpers[item.uid]._cacheFlipped = Object.assign({}, helpers[item.uid].flipped);
+
+                const data = helpers[item.uid][1];
+                if(data._lastDirection){
+                    if(!data._cacheFlipped){
+                        data._cacheFlipped = Object.assign({}, data.flipped);
                     }
 
-                    if(factor.sign().x && factor.sign().x !== helpers[item.uid]._lastDirection.x ){
-                        helpers[item.uid]._flip('x', (helpers[item.uid]._cacheFlipped.x === -1 ? factor.sign().x * -1 : factor.sign().x) === -1 ? -1 : 1);
+                    if(factor.sign().x && factor.sign().x !== data._lastDirection.x ){
+                        data.flipped.x = (data._cacheFlipped.x === -1 ? factor.sign().x * -1 : factor.sign().x) === -1 ? -1 : 1;
                     }
-                    if(factor.sign().y && factor.sign().y !== helpers[item.uid]._lastDirection.y ){
-                        helpers[item.uid]._flip('y', (helpers[item.uid]._cacheFlipped.y === -1 ? factor.sign().y * -1 : factor.sign().y) === -1 ? -1 : 1);
+                    if(factor.sign().y && factor.sign().y !== data._lastDirection.y ){
+                        data.flipped.y = (data._cacheFlipped.y === -1 ? factor.sign().y * -1 : factor.sign().y) === -1 ? -1 : 1;
                     }
                 }
 
-                helpers[item.uid]._lastDirection = factor.sign();
+                data._lastDirection = factor.sign();
             });
 
 
@@ -263,7 +264,7 @@ var Selector = Item.extend(
             var helpers = this._helpers;
 
             Base.each(items, function(item){
-                item.cloneRaw(helpers[item.uid])
+                item.importJSON(helpers[item.uid])
                 item.rotate(angle, center)
             });
             
@@ -479,29 +480,21 @@ var Selector = Item.extend(
         },
 
         _checkHelpers: function(){
+            var helpers = this._helpers;
+
             if(!Base.equals(
-                Base.simplify(this._project._activeItems, 'uid'),
-                Base.simplify(this._helpers, 'uid'))
+                Base.simplify(this._project._activeItems, 'uid'), 
+                Object.keys(this._helpers))
             ){
                 this._cache = this._getActiveItemsInfo();
 
-                this._helpers = this._project._activeItems.map(function(item){
-                    return item.clone({keep: true, insert: false, guide: true, applyChanges: false});
-                });
-
-                var helpers = this._helpers;
-                helpers.forEach(function(item){
-                    helpers[item.uid] = item;
+                this._project._activeItems.forEach(function(item){
+                    helpers[item.uid] = item.exportJSON({asString: false});
                 });
             }
         },
 
         _clearHelpers: function(){
-            var helpers = this._helpers;
-            this._project._activeItems.forEach(function(item){
-                helpers[item.uid]._cacheFlipped = null;
-                helpers[item.uid]._lastDirection = null;
-            })
             this._cache = null;
             this._helpers = [];
         },

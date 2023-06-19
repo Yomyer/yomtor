@@ -97,7 +97,7 @@ var Item = Base.extend(Emitter, /** @lends Item# */{
         clipMask: false,
         selected: false,
         data: {},
-        flipped: {x: 1, y: 1},
+        flipped: null,
         uid: null,
         angle: null,
         actived: false,

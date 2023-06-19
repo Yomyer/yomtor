@@ -8,6 +8,7 @@ import {
   Group,
   Item,
   KeyEvent,
+  Layer,
   Path,
   Point,
   Rectangle,
@@ -338,14 +339,17 @@ export const SelectorTool = (props: SelectorToolProps) => {
       if (tool.actived) {
         const parents = []
         canvas.project.activeItems.forEach((item) => {
-          parents.push(item.parent)
+          if (!(item.parent instanceof Layer)) {
+            parents.push(item.parent)
+          }
         })
 
         canvas.project.deactivateAll()
-
-        parents.forEach((item) => {
-          item.actived = true
-        })
+        if (parents.length) {
+          parents.forEach((item) => {
+            item.actived = true
+          })
+        }
       }
     })
 
@@ -448,6 +452,9 @@ export const SelectorTool = (props: SelectorToolProps) => {
       if (!e.downPoint || !e.point) {
         return
       }
+
+      // tool.hideOtherTools()
+      // tool.hide = true
 
       const distance = Math.hypot(
         e.downPoint.x - e.point.x,
