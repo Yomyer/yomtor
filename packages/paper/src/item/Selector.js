@@ -205,6 +205,8 @@ var Selector = Item.extend(
                 var rotateMatrix = new Matrix().rotate(-angle, itemCenter)
                 var pivot = rotateMatrix.transformPoint(center)
                 
+                item._transformDisrupting = disrupting;
+                
                 item.rotate(-angle, itemCenter);
                 item.scale(new Point(factor.x, factor.y), pivot);
                 item.rotate(angle, itemCenter);

@@ -205,12 +205,13 @@ export const SelectorTool = (props: SelectorToolProps) => {
           delta = e.point.subtract(lastPoint.current)
         }
 
-        if (!positions.current[item.uid])
+        if (!positions.current[item.uid] || item.resetPosition)
           positions.current[item.uid] = item.position
 
         positions.current[item.uid] = positions.current[item.uid].add(delta)
 
         item.boundPosition = round(positions.current[item.uid])
+        item.resetPosition = false
       })
 
       if (e instanceof ToolEvent) {

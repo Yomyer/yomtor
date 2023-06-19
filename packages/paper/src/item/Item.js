@@ -965,6 +965,19 @@ new function() { // Injection scope for various item event handlers
 
     /**
      * @bean
+     * @type Boolean
+     *
+     */
+    getResetPosition: function(_dontLink) {
+        return this._resetPosition;
+    },
+
+    setResetPosition: function(status) {
+        this._resetPosition = status
+    },
+
+    /**
+     * @bean
      * @type Point
      */
 

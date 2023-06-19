@@ -1867,6 +1867,9 @@ declare namespace paper {
         position: Point
 
         
+        resetPosition: boolean
+
+        
         boundPosition: Point
 
         

@@ -26,6 +26,7 @@ export const ManagementTool = (props: ManagementToolProps) => {
   const activedItems = useRef<Item[]>([])
   const mouseEvent = useRef<MouseEvent>(null)
   const clipboard = useRef<Item[]>([])
+  const clonable = useRef<boolean>(false)
   const { showCursor, hideCursor } = useCursor()
 
   const setBeforePositions = () => {
@@ -45,7 +46,7 @@ export const ManagementTool = (props: ManagementToolProps) => {
         if (beforePositions.current[item.uid]) {
           const cloned = item.clone()
           item.highlighted = item.actived = false
-          item.position = beforePositions.current[item.uid]
+          item.position = beforePositions.current[item.uid].clone()
           cloned.actived = true
           clonedItems.current[item.uid] = cloned
         }
@@ -55,10 +56,14 @@ export const ManagementTool = (props: ManagementToolProps) => {
         const clone = clonedItems.current[item.uid]
         if (clone) {
           item.actived = true
-          item.position = clone.position
+          item.position = clone.position.clone()
+          item.resetPosition = true
           clone.remove()
         }
       })
+
+      clonedItems.current = {}
+      beforePositions.current = {}
     }
   }
 
@@ -138,17 +143,18 @@ export const ManagementTool = (props: ManagementToolProps) => {
     })
 
     canvas.project.on('selection:pressed', (event: MouseEvent) => {
-      setBeforePositions()
       if (event.modifiers.alt) {
+        setBeforePositions()
         cloneController(true)
       }
     })
 
     canvas.view.on('mouseup', (event: MouseEvent) => {
       beforePositions.current = {}
+      clonedItems.current = {}
+
       if (event.modifiers.alt) {
         removeDuplicates()
-        clonedItems.current = {}
         cloneController(true)
 
         canvas.project.emit(['selection:updated', 'object:created'], {

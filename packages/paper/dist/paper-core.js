@@ -4581,6 +4581,14 @@ new function() {
 		this.translate(Point.read(arguments).subtract(this.getPosition(true)));
 	},
 
+	getResetPosition: function(_dontLink) {
+		return this._resetPosition;
+	},
+
+	setResetPosition: function(status) {
+		this._resetPosition = status
+	},
+
 	getBoundPosition: function(){
 		return this.getPosition();
 	},
@@ -8024,6 +8032,7 @@ var Selector = Item.extend(
 				var itemCenter = item.bounds.center;
 				var rotateMatrix = new Matrix().rotate(-angle, itemCenter)
 				var pivot = rotateMatrix.transformPoint(center)
+				item._transformDisrupting = disrupting;
 				item.rotate(-angle, itemCenter);
 				item.scale(new Point(factor.x, factor.y), pivot);
 				item.rotate(angle, itemCenter);
