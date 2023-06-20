@@ -71,7 +71,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
       { classNames, styles, name: 'NumberInput', unstyled }
     )
 
-    const rerender = useForceUpdate()
+    const render = useForceUpdate()
     const [drag, setDrag] = useState<number>(0)
     const [delta, setDelta] = useState<number>(0)
     const [step, setStep] = useState<number>(1)
@@ -85,8 +85,8 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
     const _min = typeof min === 'number' ? min : -Infinity
     const _max = typeof max === 'number' ? max : Infinity
 
-    const value = useRef<number | ''>()
-    const defValue = useRef<number>()
+    const value = useRef<number | ''>(defaultValue)
+    const defValue = useRef<number>(parseFloat(defaultValue.toString()))
 
     useEffect(() => {
       setMixed(isMixed)
@@ -96,7 +96,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
       value.current = defaultValue
       defValue.current = parseFloat(defaultValue.toString())
     }, [defaultValue])
-
+    console.log(value.current)
     useEffect(() => {
       if (!drag) return
       if (mixed) {
@@ -156,7 +156,7 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
       if (Number.isNaN(val)) val = defValue.current
 
       value.current = val
-      rerender()
+      render()
 
       if (!unabled.current) {
         onChange && onChange(val, mixed)
@@ -243,6 +243,9 @@ export const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
         min={min}
         precision={precision}
         removeTrailingZeros={removeTrailingZeros}
+        formatter={
+          !formatter ? (value) => (mixed ? mixedLabel : value) : formatter
+        }
         parser={
           !parser
             ? (value) => {

@@ -98,27 +98,35 @@ export const TransformsControls = (props: TransformsControlsProps) => {
         // update.current &&
         canvas.project.activeItems.length
       ) {
-        const x = countBy(
-          canvas.project.activeItems.map((item) =>
+        const data = {
+          x: {},
+          y: {},
+          width: {},
+          height: {}
+        }
+
+        canvas.project.activeItems.forEach((item) => {
+          data.x[
             round(
               item.info.topLeft.x -
                 (item.artboard && item.artboard.info.topLeft.x),
               2
             )
-          )
-        )
-        const y = countBy(
-          canvas.project.activeItems.map((item) =>
+          ] = true
+          data.y[
             round(
               item.info.topLeft.y -
                 (item.artboard && item.artboard.info.topLeft.y),
               2
             )
-          )
-        )
-        const width = countBy(
-          canvas.project.activeItems.map((item) => round(item.info.width, 2))
-        )
+          ] = true
+          data.width[round(item.info.width, 2)] = true
+        })
+
+        setX(size(data.x) === 1 ? parseFloat(findKey(data.x)) : '')
+        setY(size(data.y) === 1 ? parseFloat(findKey(data.y)) : '')
+        setWidth(size(data.width) === 1 ? parseFloat(findKey(data.width)) : '')
+
         const height = countBy(
           canvas.project.activeItems.map((item) => round(item.info.height, 2))
         )
@@ -182,9 +190,6 @@ export const TransformsControls = (props: TransformsControlsProps) => {
 
         ItemData.forEach((item) => delete item.selected)
 
-        setX(size(x) === 1 ? parseFloat(findKey(x)) : '')
-        setY(size(y) === 1 ? parseFloat(findKey(y)) : '')
-        setWidth(size(width) === 1 ? parseFloat(findKey(width)) : '')
         setHeight(size(height) === 1 ? parseFloat(findKey(height)) : '')
         setAngle(size(angle) === 1 ? parseFloat(findKey(angle)) : '')
 
