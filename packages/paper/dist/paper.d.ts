@@ -1402,11 +1402,20 @@ declare namespace paper {
         
         selector: Selector
 
+        
+        ctx: CanvasRenderingContext2D
+
+        
+        params: CanvasRenderingContext2D
+
+        
+        zoom: number
+
 
         /** 
          * Creates a new Segment object.
          */
-        constructor(control?: Control, selector?: Selector)
+        constructor(control?: Control, selector?: Selector, ctx?: CanvasRenderingContext2D, params?: object, zoom?: number)
 
     }
 

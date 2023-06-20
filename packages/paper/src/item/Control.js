@@ -227,9 +227,9 @@ var Control = Item.extend(
             }
 
             if(owner.onControlDraw){
-                owner.onControlDraw(new DrawControlEvent(this, owner))
+                owner.onControlDraw(new DrawControlEvent(this, owner, ctx, param, this.getZoom()))
             }else if(this.onDraw){
-                this.onDraw(new DrawControlEvent(this, owner))
+                this.onDraw(new DrawControlEvent(this, owner, ctx, param, this.getZoom()))
             }
 
             var children = this._children;

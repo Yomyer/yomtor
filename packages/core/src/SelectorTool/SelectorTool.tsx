@@ -6,6 +6,7 @@ import {
   Artboard,
   Control,
   Group,
+  Info,
   Item,
   KeyEvent,
   Layer,
@@ -162,7 +163,7 @@ export const SelectorTool = (props: SelectorToolProps) => {
           deactives.forEach((item) => (item.actived = false))
         }
 
-        canvas.project.activeItems.forEach((item) => {
+        ;[...canvas.project.activeItems].forEach((item) => {
           if (!actives.find((find) => item.uid === find.uid)) {
             item.actived = false
           }
@@ -221,7 +222,8 @@ export const SelectorTool = (props: SelectorToolProps) => {
           }
         })
 
-        canvas.project.activeItems.forEach((item) => {
+        const actives = [...canvas.project.activeItems]
+        actives.forEach((item) => {
           if (
             (artboard && !item.artboard) ||
             (artboard && artboard.item !== item.artboard)
@@ -297,16 +299,61 @@ export const SelectorTool = (props: SelectorToolProps) => {
     setTool(canvas.createTool('SelectorTool', true))
   }, [canvas])
 
+  const drawRect = (ctx: CanvasRenderingContext2D, info: Info | Rectangle) => {
+    ctx.beginPath()
+
+    ctx.moveTo(
+      Math.floor(Math.random() * 10000),
+      Math.floor(Math.random() * 10000)
+    )
+    ctx.lineTo(
+      Math.floor(Math.random() * 10000),
+      Math.floor(Math.random() * 10000)
+    )
+    ctx.lineTo(
+      Math.floor(Math.random() * 10000),
+      Math.floor(Math.random() * 10000)
+    )
+    ctx.lineTo(
+      Math.floor(Math.random() * 10000),
+      Math.floor(Math.random() * 10000)
+    )
+    ctx.closePath()
+
+    ctx.stroke()
+  }
+
   useEffect(() => {
     if (!tool) return
 
     let beforeMode = 'mode'
 
     tool.addControl(
-      new Control('selector', ({ control, selector }) => {
-        control.removeChildren()
+      new Control('selector', ({ control, selector, ctx, zoom }) => {
+        // control.removeChildren()
         const actives = canvas.project.activeItems
         const higthlight = canvas.project.highlightedItem
+        console.log('a')
+        ctx.strokeStyle = 'rgba(0, 142, 252, 1)'
+        ctx.lineWidth = 0.5 / zoom
+
+        if (actives.length) {
+          //if (actives.length < 200) {
+
+          actives.forEach((item) => {
+            drawRect(ctx, item.info)
+          })
+          // }
+
+          drawRect(ctx, selector.info)
+        }
+
+        if (higthlight && !actives.includes(higthlight)) {
+          ctx.lineWidth = 2 / zoom
+          drawRect(ctx, higthlight.info)
+        }
+
+        /*
         const config = {
           strokeWidth: 0.5,
           strokeColor: 'rgba(0, 142, 252, 1)'
@@ -327,6 +374,7 @@ export const SelectorTool = (props: SelectorToolProps) => {
             })
           )
         }
+        */
       })
     )
 

@@ -8698,9 +8698,9 @@ var Control = Item.extend(
 			}
 
 			if(owner.onControlDraw){
-				owner.onControlDraw(new DrawControlEvent(this, owner))
+				owner.onControlDraw(new DrawControlEvent(this, owner, ctx, param, this.getZoom()))
 			}else if(this.onDraw){
-				this.onDraw(new DrawControlEvent(this, owner))
+				this.onDraw(new DrawControlEvent(this, owner, ctx, param, this.getZoom()))
 			}
 
 			var children = this._children;
@@ -16940,10 +16940,16 @@ var DrawControlEvent = Event.extend({
 	_class: 'DrawControlEvent',
 	_control: null,
 	_selector: null,
+	_ctx: null,
+	_params: null,
+	_zoom: null,
 
-	initialize: function DrawControlEvent(control, selector) {
+	initialize: function DrawControlEvent(control, selector, ctx, params, zoom) {
 		this.control = control;
 		this.selector = selector;
+		this.ctx = ctx;
+		this.params = params;
+		this.zoom = zoom;
 	},
 
 	getControl: function() {
@@ -16954,12 +16960,36 @@ var DrawControlEvent = Event.extend({
 		this._control = control;
 	},
 
-	getSelector: function() {
+	 getSelector: function() {
 		return this._selector;
 	},
 
 	setSelector: function(selector) {
 		this._selector = selector;
+	},
+
+	 getCtx: function() {
+		return this._ctx;
+	},
+
+	setCtx: function(ctx) {
+		this._ctx = ctx;
+	},
+
+	getParams: function() {
+		return this._params;
+	},
+
+	setParams: function(params) {
+		this._params = params;
+	},
+
+	getZoom: function() {
+		return this._zoom;
+	},
+
+	setZoom: function(zoom) {
+		this._zoom = zoom;
 	},
 });
 
