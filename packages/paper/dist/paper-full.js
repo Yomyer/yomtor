@@ -3344,7 +3344,7 @@ var Info = Base.extend({
 			return this._bottomRight;
 		}
 
-		return this._bottomRight =new LinkedPoint(corners[4], corners[5], this, '_setInfoBottomRight');
+		return this._bottomRight = new LinkedPoint(corners[4], corners[5], this, '_setInfoBottomRight');
 	},
 
 	setBottomRight: function() {

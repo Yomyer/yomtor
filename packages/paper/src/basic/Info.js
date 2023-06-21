@@ -75,7 +75,6 @@ var Info = Base.extend(/** @lends Info# */{
         }
        
         return this._topLeft = new LinkedPoint(corners[0], corners[1], this, '_setInfoTopLeft');
-        
     },
 
     setTopLeft: function(/* point */) {
@@ -115,7 +114,7 @@ var Info = Base.extend(/** @lends Info# */{
             return this._bottomRight;
         }
 
-        return this._bottomRight =new LinkedPoint(corners[4], corners[5], this, '_setInfoBottomRight');
+        return this._bottomRight = new LinkedPoint(corners[4], corners[5], this, '_setInfoBottomRight');
     },
 
     setBottomRight: function(/* point */) {
