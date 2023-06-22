@@ -251,7 +251,7 @@ var Group = Item.extend(
 
         
         _hitTestSelf: function(point, options) {
-            if (this.getActived() ? this.getBounds().contains(point) : this._contains(point))
+            if (this.isActived() ? this.getBounds().contains(point) : this._contains(point))
                 return new HitResult('fill', this);
         },
 
@@ -271,7 +271,7 @@ var Group = Item.extend(
                 hit &&
                 all &&
                 all.length &&
-                !this.getActiveItems().length
+                !this.getActivatedItems().length
             ) {
                 var index = -1;
                 for (var i = 0; i < all.length; i++) {

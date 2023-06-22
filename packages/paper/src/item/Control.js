@@ -47,7 +47,7 @@ var Control = Item.extend(
         },
 
         addChild: function addChild(item) {
-            this._children[item.name] = item;
+            // this._children[item.name] = item;
             return addChild.base.call(this, item);
         },
 
@@ -114,7 +114,7 @@ var Control = Item.extend(
 
     
         isSmallZoom: function () {
-            if(!this._project._activeItems.length){
+            if(!this._project._activationCount){
                 return false;
             }
             if (
@@ -219,17 +219,14 @@ var Control = Item.extend(
          *
          */
 
-        draw: function (ctx, param) {
+        _draw: function (ctx, param, matrix, updateVersion) {
             var owner = this._owner;
-            
-            if (this.isSmallZoom() || (!this.visible && this._canHide)) {
-                return;
-            }
+            var updateVersion = this._updateVersion = this._project._updateVersion;
 
             if(owner.onControlDraw){
-                owner.onControlDraw(new DrawControlEvent(this, owner, ctx, param, this.getZoom()))
+                owner.onControlDraw(new DrawControlEvent(this, owner, ctx, param, this.getZoom(), new Matrix(), updateVersion))
             }else if(this.onDraw){
-                this.onDraw(new DrawControlEvent(this, owner, ctx, param, this.getZoom()))
+                this.onDraw(new DrawControlEvent(this, owner, ctx, param, this.getZoom(), new Matrix(), updateVersion))
             }
 
             var children = this._children;
@@ -238,7 +235,7 @@ var Control = Item.extend(
                 this._drawFix(this);
 
                 for (var x = 0; x < children.length; x++) {
-                    children[x].draw(ctx, param);
+                     children[x].draw(ctx, param);
                 }
 
                 this._reverseDrawFix(this);

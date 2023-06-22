@@ -35,7 +35,7 @@ export const ConstraintsControls = (props: ConstraintsControlsProps) => {
     position: ConstraintPositions
   ) => {
     canvas &&
-      canvas.project.activeItems.forEach((item) => {
+      canvas.project.activatedItems.forEach((item) => {
         item.constraints[direction] = position
       })
 
@@ -49,13 +49,15 @@ export const ConstraintsControls = (props: ConstraintsControlsProps) => {
     canvas.project.on('changed', (type) => {
       if (type & ChangeFlag.ACTIVE) {
         const vertical = countBy(
-          canvas.project.activeItems.map((item) => item.constraints.vertical)
+          canvas.project.activatedItems.map((item) => item.constraints.vertical)
         )
         const horizontal = countBy(
-          canvas.project.activeItems.map((item) => item.constraints.horizontal)
+          canvas.project.activatedItems.map(
+            (item) => item.constraints.horizontal
+          )
         )
         const hasArtboard = countBy(
-          canvas.project.activeItems.map((item) => item.artboard)
+          canvas.project.activatedItems.map((item) => item.artboard)
         )
 
         setArtboard(!isEmpty(hasArtboard) && !hasArtboard.null)

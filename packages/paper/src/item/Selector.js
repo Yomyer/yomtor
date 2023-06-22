@@ -176,8 +176,8 @@ var Selector = Item.extend(
             var preserve = Base.read(arguments);
             
             this._checkHelpers();
-
-            var items = this._project._activeItems;
+            
+            var items = this._project.getActivatedItems();
             var width = this._cache.width;
             var height = this._cache.height;
             var factor = new Point(1, 1)
@@ -262,7 +262,7 @@ var Selector = Item.extend(
          */
         setAngle: function(angle, center, preserve){
             this._checkHelpers();
-            var items = this._project._activeItems;
+            var items = this._project.getActivatedItems();
             var helpers = this._helpers;
 
             Base.each(items, function(item){
@@ -485,12 +485,12 @@ var Selector = Item.extend(
             var helpers = this._helpers;
 
             if(!Base.equals(
-                Base.simplify(this._project._activeItems, 'uid'), 
+                Base.simplify(this._project.getActivatedItems(), 'uid'), 
                 Object.keys(this._helpers))
             ){
                 this._cache = this._getActiveItemsInfo();
 
-                this._project._activeItems.forEach(function(item){
+                this._project.getActivatedItems().forEach(function(item){
                     helpers[item.uid] = item.exportJSON({asString: false});
                 });
             }
@@ -532,7 +532,8 @@ var Selector = Item.extend(
         _getActiveItemsInfo: function () {
             // if (this._activeItemsInfo) return this._activeItemsInfo;
 
-            var items = this._project._activeItems;
+            var items = this._project.getActivatedItems();
+            
             if (items.length) {
                 var info = items[0].info;
 
@@ -571,7 +572,7 @@ var Selector = Item.extend(
 
         _getCornerItems: function () {
             if (this._cornerItems.left) return this._cornerItems;
-            var items = this._project._activeItems;
+            var items = this._project.getActivatedItems();
             var left = this._cornerItems.left;
             var right = this._cornerItems.right;
             var top = this._cornerItems.top;
@@ -611,24 +612,8 @@ var Selector = Item.extend(
          * @type ?(event: DrawControlEvent) => void
          *
          */
-        
-        draw: function (ctx, matrix, pixelRatio) {
-            var children = this._children;
-
-            matrix = matrix.appended(this.getGlobalMatrix(true));
-            matrix.applyToContext(ctx);
-
-            var param = new Base({
-                offset: new Point(0, 0),
-                pixelRatio: pixelRatio,
-                viewMatrix: matrix.isIdentity() ? null : matrix,
-                matrices: [new Matrix()],
-                updateMatrix: true,
-            });
-
-            for (var x = 0; x < children.length; x++) {
-                children[x].draw(ctx, param);
-            }
+        draw: function (ctx, matrix, pixelRatio, updateVersion) {
+            
         },
 
         drawInfo: function (ctx, matrix, pixelRatio) {

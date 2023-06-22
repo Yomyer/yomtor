@@ -22,6 +22,8 @@ var DrawControlEvent = Event.extend(/** @lends DrawControlEvent# */{
     _ctx: null,
     _params: null,
     _zoom: null,
+    _matrix: null,
+    _updateVersion: null,
 
     /**
      * Creates a new Segment object.
@@ -32,13 +34,17 @@ var DrawControlEvent = Event.extend(/** @lends DrawControlEvent# */{
      * @param {CanvasRenderingContext2D} [ctx]
      * @param {Object} [params]
      * @param {Number} [zoom]
+     * @param {Matrix} [matrix]
+     * @param {Number} [updateVersion]
      */
-    initialize: function DrawControlEvent(control, selector, ctx, params, zoom) {
+    initialize: function DrawControlEvent(control, selector, ctx, params, zoom, matrix, updateVersion) {
         this.control = control;
         this.selector = selector;
         this.ctx = ctx;
         this.params = params;
         this.zoom = zoom;
+        this.matrix = matrix;
+        this.updateVersion = updateVersion;
     },
 
     /**
@@ -60,7 +66,7 @@ var DrawControlEvent = Event.extend(/** @lends DrawControlEvent# */{
      * @bean
      * @type Selector
      */
-     getSelector: function() {
+    getSelector: function() {
         return this._selector;
     },
 
@@ -73,7 +79,7 @@ var DrawControlEvent = Event.extend(/** @lends DrawControlEvent# */{
      * @bean
      * @type CanvasRenderingContext2D
      */
-     getCtx: function() {
+    getCtx: function() {
         return this._ctx;
     },
 
@@ -105,5 +111,31 @@ var DrawControlEvent = Event.extend(/** @lends DrawControlEvent# */{
 
     setZoom: function(zoom) {
         this._zoom = zoom;
+    },
+
+    /**
+     *
+     * @bean
+     * @type Matrix
+     */
+    getMatrix: function() {
+        return this._matrix;
+    },
+
+    setMatrix: function(matrix) {
+        this._matrix = matrix;
+    },
+
+    /**
+     *
+     * @bean
+     * @type Number
+     */
+    getUpdateVersion: function() {
+        return this._updateVersion;
+    },
+
+    setUpdateVersion: function(updateVersion) {
+        this._updateVersion = updateVersion;
     },
 });

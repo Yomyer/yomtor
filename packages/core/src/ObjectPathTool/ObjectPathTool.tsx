@@ -79,7 +79,7 @@ export const ObjectPathTool = forwardRef<HTMLDivElement, ObjectPathToolProps>(
 
         if (distance > 5) {
           setDragging(true)
-          canvas.project.deactivateAll()
+          canvas.project.deactiveAll()
 
           phantom.current = useObjectPath({
             canvas,
@@ -130,7 +130,7 @@ export const ObjectPathTool = forwardRef<HTMLDivElement, ObjectPathToolProps>(
 
         if (!dragging) {
           phantom.current && phantom.current.remove()
-          canvas.project.deactivateAll()
+          canvas.project.deactiveAll()
           const item = useObjectPath({ canvas, event, theme, type, dragging })
 
           if (!(item instanceof Artboard)) {

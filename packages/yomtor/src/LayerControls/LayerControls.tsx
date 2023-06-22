@@ -41,20 +41,20 @@ export const LayerControls = (props: LayerControlsProps) => {
 
     canvas.project.on('changed', (type) => {
       if (type & ChangeFlag.ACTIVE) {
-        setVisible(canvas.project.activeItems.length > 0)
+        setVisible(canvas.project.activatedCount > 0)
 
         const opacity = countBy(
-          canvas.project.activeItems.map(
+          canvas.project.activatedItems.map(
             (item) => item.opacity * OPACITY_MULTIPLIER
           )
         )
 
         const visibility = countBy(
-          canvas.project.activeItems.map((item) => item.visible)
+          canvas.project.activatedItems.map((item) => item.visible)
         )
 
         const hasArtboard = countBy(
-          canvas.project.activeItems.map((item) => item.artboard)
+          canvas.project.activatedItems.map((item) => item.artboard)
         )
 
         setOpacity(size(opacity) === 1 ? parseFloat(findKey(opacity)) : '')
@@ -71,11 +71,11 @@ export const LayerControls = (props: LayerControlsProps) => {
       ? setDropFilled(true)
       : setDropFilled(false)
 
-    canvas.project.activeItems.forEach((item) => (item.blendMode = value))
+    canvas.project.activatedItems.forEach((item) => (item.blendMode = value))
   }
 
   const opacityHandler = (value: number) => {
-    canvas.project.activeItems.forEach(
+    canvas.project.activatedItems.forEach(
       (item) => (item.opacity = value / OPACITY_MULTIPLIER)
     )
 
@@ -84,7 +84,7 @@ export const LayerControls = (props: LayerControlsProps) => {
 
   const visibilityHandler = (value) => {
     setVisibility(!value)
-    canvas.project.activeItems.forEach((item) => (item.visible = !value))
+    canvas.project.activatedItems.forEach((item) => (item.visible = !value))
   }
 
   return artboard || visible ? (

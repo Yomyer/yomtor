@@ -1411,11 +1411,17 @@ declare namespace paper {
         
         zoom: number
 
+        
+        matrix: Matrix
+
+        
+        updateVersion: number
+
 
         /** 
          * Creates a new Segment object.
          */
-        constructor(control?: Control, selector?: Selector, ctx?: CanvasRenderingContext2D, params?: object, zoom?: number)
+        constructor(control?: Control, selector?: Selector, ctx?: CanvasRenderingContext2D, params?: object, zoom?: number, matrix?: Matrix, updateVersion?: number)
 
     }
 
@@ -2065,7 +2071,7 @@ declare namespace paper {
         /** 
          * The if item children is actived.
          */
-        activeItems: boolean
+        activedItems: boolean
 
         
         grid: Grid
@@ -3147,6 +3153,11 @@ declare namespace paper {
          * Removes the item when the next {@link Tool#onMouseUp} event is fired.
          */
         removeOnUp(): void
+
+        /** 
+         * Removes the item when the next {@link Tool#onMouseUp} event is fired.
+         */
+        drawActived(ctx: CanvasRenderingContext2D, matrix: Matrix, updateVersion: number): void
 
         /** 
          * Tween item between two states.
@@ -5637,9 +5648,14 @@ declare namespace paper {
         insertMode: boolean
 
         /** 
-         * The activeItems
+         * The activated items contained within the project.
          */
-        activeItems: Item[]
+        readonly activatedItems: Item[]
+
+        /** 
+         * The activated items contained within the project.
+         */
+        readonly activatedCount: number
 
         /** 
          * The Highlighted
@@ -5867,14 +5883,14 @@ declare namespace paper {
         getItemByPoint(poin: Point, options?: object | Function): Item
 
         /** 
-         * Deactive all items
-         */
-        deactivateAll(): void
-
-        /** 
          * active all items of project
          */
         activeAll(): void
+
+        /** 
+         * Deactive all items
+         */
+        deactiveAll(): void
 
         
         offAll(): Project

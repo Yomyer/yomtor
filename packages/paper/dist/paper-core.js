@@ -3603,7 +3603,6 @@ var Project = PaperScopeItem.extend(
 	_reference: 'project',
 	_compactSerialize: true,
 	_insertMode: false,
-	_activeItems: [],
 	_highlightedItem: null,
 	_mainTool: null,
 	_artboards: [],
@@ -3620,7 +3619,9 @@ var Project = PaperScopeItem.extend(
 	  this._selector = Selector.create(Item.NO_INSERT)
 	  this._view = View.create(this, element || CanvasProvider.getCanvas(1, 1))
 	  this._selectionItems = {}
+	  this._activationItems = {}
 	  this._selectionCount = 0
+	  this._activationCount = 0
 	  this._updateVersion = 0
 	},
 
@@ -3750,15 +3751,36 @@ var Project = PaperScopeItem.extend(
 	  this._insertMode = mode
 	},
 
-	getActiveItems: function () {
-	  return this._activeItems
+	getActivatedItems: function () {
+	  var activationItems = this._activationItems,
+		items = []
+	  for (var id in activationItems) {
+		var item = activationItems[id],
+		  activation = item._activation
+		if (activation & 1 && item.isInserted()) {
+		  items.push(item)
+		} else if (!activation) {
+		  this._updateActivation(item)
+		}
+	  }
+	  return items
 	},
 
-	setActiveItems: function (items) {
-	  this.deactivateAll()
+	getActivatedCount: function(){
+		return this._activationCount;
+	},
 
-	  if (items && items.length) {
-		for (var i = 0, l = items.length; i < l; i++) items[i].setActived(true)
+	_updateActivation: function (item) {
+	  var id = item._id,
+		activationItems = this._activationItems
+	  if (item._activation) {
+		if (activationItems[id] !== item && !activationItems[item._parent && item._parent.uid]) {
+		  this._activationCount++
+		  activationItems[id] = item
+		}
+	  } else if (activationItems[id] === item) {
+		this._activationCount--
+		delete activationItems[id]
 	  }
 	},
 
@@ -3920,17 +3942,15 @@ var Project = PaperScopeItem.extend(
 	  return items[0].item
 	},
 
-	deactivateAll: function () {
-	  var activeItems = this._activeItems
-	  for (var i in activeItems) activeItems[i].actived = false
-
-	  this._activeItems = []
+	activeAll: function () {
+	  var children = this._children
+	  for (var i = 0, l = children.length; i < l; i++)
+		children[i].setFullyActived(true)
 	},
 
-	activeAll: function () {
-	  var children = this._activeLayer._children
-	  for (var i = 0, l = children.length; i < l; i++)
-		children[i].actived = true
+	deactiveAll: function () {
+	  var activationItems = this._activationItems
+	  for (var i in activationItems) activationItems[i].setFullyActived(false)
 	},
 
 	 _removeEventListener: function(eventName, handler){
@@ -4024,7 +4044,7 @@ var Project = PaperScopeItem.extend(
 	  }
 
 	  if (options && !options.items) {
-		  options.items = this.getActiveItems();
+		  options.items = this.getActivatedItems();
 	  }
 
 	  var listenersForEvent = this._eventListeners[eventName];
@@ -4142,9 +4162,21 @@ var Project = PaperScopeItem.extend(
 		this._grid.draw(ctx, matrix, pixelRatio)
 		ctx.restore()
 	  }
+	  if (this._activationCount > 0) {
+		ctx.save()
+		ctx.strokeWidth = 1
+		ctx.strokeStyle = 'red'
+		var items = this._activationItems,
+		  version = this._updateVersion
+		for (var id in items) {
+		  items[id]._drawActived(ctx, matrix, version)
+		}
+		ctx.restore()
+	  }
+
 	  if (this._selector) {
 		ctx.save()
-		this._selector.draw(ctx, matrix, pixelRatio)
+		this._selector.draw(ctx, matrix, pixelRatio, this._updateVersion)
 		ctx.restore()
 	  }
 
@@ -4183,15 +4215,16 @@ var Item = Base.extend(Emitter, {
 	_uid: null,
 	_angle: 0,
 	_blocked: false,
-	_actived: false,
 	_highlighted: false,
 	_clipMask: false,
 	_selection: 0,
+	_activation: 0,
 	_selectionCache: null,
 	_getItemsInChildrens: false,
 	_transformType: null,
 	_selectBounds: true,
 	_selectChildren: false,
+	_activeChildren: false,
 	_serializeStyle: true,
 	_flipped: {x: 1, y: 1},
 	_constraintsPivot: null,
@@ -4212,11 +4245,11 @@ var Item = Base.extend(Emitter, {
 		guide: false,
 		clipMask: false,
 		selected: false,
+		actived: false,
 		data: {},
 		flipped: null,
 		uid: null,
 		angle: null,
-		actived: false,
 		constraints: {},
 		borderRadius: null,
 		constraintProportions: false,
@@ -4491,14 +4524,6 @@ new function() {
 		return !!(this._selection & 1);
 	},
 
-	isActived: function(){
-		if(!this._actived && this._parent && this._parent instanceof Item){
-			return this._parent.isActived();
-		}
-
-		return this._actived;
-	},
-
 	setSelected: function(selected) {
 		if (this._selectChildren) {
 			var children = this._children;
@@ -4508,7 +4533,32 @@ new function() {
 		this._changeSelection(1, selected);
 	},
 
-   getCollapsed: function () {
+	isActived: function(){
+		if (this._activeChildren) {
+			var children = this._children;
+			for (var i = 0, l = children.length; i < l; i++)
+				if (children[i].isActived())
+					return true;
+		}
+		return !!(this._activation & 1);
+	},
+
+	setActived: function(actived) {
+		if(actived){
+			var children = this._children;
+			if(children && children.length){
+				for (var i = 0, l = children.length; i < l; i++)
+					children[i].setActived(false);
+			}
+			if(this._parent && this._actived){
+				this._parent.collapsed = false
+			}
+		}
+
+		this._changeActivation(1, actived);
+	},
+
+	getCollapsed: function () {
 		return this._collapsed;
 	},
 
@@ -4541,6 +4591,27 @@ new function() {
 				children[i].setFullySelected(selected);
 		}
 		this._changeSelection(1, selected);
+	},
+
+	isFullyActived: function() {
+		var children = this._children,
+			actived = !!(this._activation & 1);
+		if (children && actived) {
+			for (var i = 0, l = children.length; i < l; i++)
+				if (!children[i].isFullyActived())
+					return false;
+			return true;
+		}
+		return actived;
+	},
+
+	setFullyActived: function(actived) {
+		var children = this._children;
+		if (children) {
+			for (var i = 0, l = children.length; i < l; i++)
+				children[i].setFullyActived(actived);
+		}
+		this._changeActivation(1, actived);
 	},
 
 	isClipMask: function() {
@@ -5148,6 +5219,7 @@ new function() {
 		this.setApplyMatrix(source._applyMatrix);
 		this.setPivot(source._pivot);
 		this.setSelection(source._selection);
+		this.setActivation(source._activation);
 		var data = source._data,
 			name = source._name;
 		this._data = data ? Base.clone(data) : null;
@@ -5237,41 +5309,25 @@ new function() {
 				_matrix, true).length > 0;
 	}
 },  {
-	getActived: function(){
-		return this._actived;
+	getActivation: function(){
+		return this._activation;
 	},
 
-	setActived: function(actived){
-		const before = Object.keys(this._project._activeItems)
-
-		if(actived && !this._project._activeItems[this.uid] && !this._project._activeItems[this._parent && this._parent.uid]){
-			this._project._activeItems.push(this);
-			this._project._activeItems[this.uid] = this;
-			this._actived = true;
-		} else if (!actived){
-			var index = this._project._activeItems.indexOf(this);
-
-			if(index !== -1){
-				this._project._activeItems.splice(index, 1);
+	setActivation: function(activation){
+		if (activation !== this._activation) {
+			this._activation = activation;
+			var project = this._project;
+			if (project) {
+				project._updateActivation(this);
+				this._changed(1048833);
 			}
-
-			delete this._project._activeItems[this.uid];
-			this._actived = false;
 		}
 
-		var children = this._children;
-		if(children && children.length){
-			for (var i = 0, l = children.length; i < l; i++)
-				children[i].setActived(false);
-		}
+	},
 
-		if(this._parent && this._actived){
-			this._parent.collapsed = false
-		}
-
-		if(!Base.equals(before, Object.keys(this._project._activeItems))){
-			this._changed(1048833);
-		}
+	_changeActivation: function(flag, activated) {
+		var activation = this._activation;
+		this.setActivation(activated ? activation | flag : activation & ~flag);
 	},
 
 	getHighlighted: function(){
@@ -5292,7 +5348,7 @@ new function() {
 		this._changed(2097409);
 	},
 
-	getActiveItems: function(){
+	getActivatedItems: function(){
 		var children = this._children,
 			activedItems = [];
 
@@ -5302,7 +5358,7 @@ new function() {
 				if (item.actived){
 					activedItems.push(item);
 				}
-				activedItems = activedItems.concat(item.getActiveItems());
+				activedItems = activedItems.concat(item.getActivatedItems());
 			}
 		}
 
@@ -5332,7 +5388,7 @@ new function() {
 
 		if(this instanceof Project){
 			var controls = this._selector && this._selector._children;
-			if(controls && this._activeItems.length){
+			if(controls && this._activationCount){
 				children = children.concat(controls);
 			}
 		}
@@ -6147,7 +6203,6 @@ new function() {
 				ctx.translate(-offset.x, -offset.y);
 		}
 		this._draw(ctx, param, viewMatrix, strokeMatrix);
-
 		if(this._grid){
 			this._grid.draw(ctx, matrix, pixelRatio);
 		}
@@ -6186,9 +6241,9 @@ new function() {
 			positionSelected = selection & 4;
 		if (!this._drawSelected)
 			itemSelected = false;
+
 		if ((itemSelected || boundsSelected || positionSelected)
 				&& this._isUpdated(updateVersion)) {
-
 			var layer,
 				color = this.getSelectedColor(true) || (layer = this.getLayer())
 					&& layer.getSelectedColor(true),
@@ -6235,6 +6290,35 @@ new function() {
 		}
 	},
 
+	_drawActived: function(ctx, matrix, updateVersion){
+		var selection = this._activation,
+			itemSelected = selection & 1,
+			boundsSelected = selection & 2
+					|| itemSelected && this._selectBounds,
+			positionSelected = selection & 4;
+		if (!this._drawSelected)
+			itemSelected = false;
+		if ((itemSelected || boundsSelected || positionSelected)
+			&& this._isUpdated(updateVersion)) {
+			var layer,
+				mx = matrix.appended(this.getGlobalMatrix(true)),
+				half = 0;
+
+			if (itemSelected)
+				this._drawSelected(ctx, mx, this._project.activedItems);
+
+			if (boundsSelected) {
+				var coords = mx._transformCorners(this.getInternalBounds());
+				ctx.beginPath();
+				for (var i = 0; i < 8; i++) {
+					ctx[!i ? 'moveTo' : 'lineTo'](coords[i], coords[++i]);
+				}
+				ctx.closePath();
+				ctx.stroke();
+			}
+		}
+	},
+
 	_getHighlightItem: function() {
 		var info = this.getInfo();
 		return new Path.Rectangle({
@@ -6267,6 +6351,10 @@ new function() {
 			}
 		}
 		return this;
+	},
+
+	drawActived: function(ctx, matrix, updateVersion){
+		this._drawActived(ctx, matrix, updateVersion)
 	}
 }), {
 	tween: function(from, to, options) {
@@ -6430,7 +6518,7 @@ var Group = Item.extend(
 		},
 
 		_hitTestSelf: function(point, options) {
-			if (this.getActived() ? this.getBounds().contains(point) : this._contains(point))
+			if (this.isActived() ? this.getBounds().contains(point) : this._contains(point))
 				return new HitResult('fill', this);
 		},
 
@@ -6450,7 +6538,7 @@ var Group = Item.extend(
 				hit &&
 				all &&
 				all.length &&
-				!this.getActiveItems().length
+				!this.getActivatedItems().length
 			) {
 				var index = -1;
 				for (var i = 0; i < all.length; i++) {
@@ -6622,10 +6710,6 @@ var Artboard = Group.extend(
 			this._clipped = clipped;
 			this._getItemsInChildrens = !clipped;
 			this._changed(257);
-		},
-
-		getActived: function () {
-			return this._actived;
 		},
 
 		setActived: function setActived(actived) {
@@ -6820,11 +6904,11 @@ var Artboard = Group.extend(
 				);
 			}
 
-			var activeItems = this.getActiveItems();
-			if (activeItems) {
+			var activatedItems = this.getActivatedItems();
+			if (activatedItems) {
 				var hit = null;
-				for (var i = activeItems.length - 1; i >= 0; i--) {
-					var item = activeItems[i];
+				for (var i = activatedItems.length - 1; i >= 0; i--) {
+					var item = activatedItems[i];
 					if (!hit) {
 						var hit = item._hitTest(point, options);
 					}
@@ -8005,8 +8089,7 @@ var Selector = Item.extend(
 			var disrupting = Base.read(arguments);
 			var preserve = Base.read(arguments);
 			this._checkHelpers();
-
-			var items = this._project._activeItems;
+			var items = this._project.getActivatedItems();
 			var width = this._cache.width;
 			var height = this._cache.height;
 			var factor = new Point(1, 1)
@@ -8071,7 +8154,7 @@ var Selector = Item.extend(
 
 		setAngle: function(angle, center, preserve){
 			this._checkHelpers();
-			var items = this._project._activeItems;
+			var items = this._project.getActivatedItems();
 			var helpers = this._helpers;
 
 			Base.each(items, function(item){
@@ -8204,12 +8287,12 @@ var Selector = Item.extend(
 			var helpers = this._helpers;
 
 			if(!Base.equals(
-				Base.simplify(this._project._activeItems, 'uid'),
+				Base.simplify(this._project.getActivatedItems(), 'uid'),
 				Object.keys(this._helpers))
 			){
 				this._cache = this._getActiveItemsInfo();
 
-				this._project._activeItems.forEach(function(item){
+				this._project.getActivatedItems().forEach(function(item){
 					helpers[item.uid] = item.exportJSON({asString: false});
 				});
 			}
@@ -8248,7 +8331,7 @@ var Selector = Item.extend(
 
 		_getActiveItemsInfo: function () {
 
-			var items = this._project._activeItems;
+			var items = this._project.getActivatedItems();
 			if (items.length) {
 				var info = items[0].info;
 
@@ -8287,7 +8370,7 @@ var Selector = Item.extend(
 
 		_getCornerItems: function () {
 			if (this._cornerItems.left) return this._cornerItems;
-			var items = this._project._activeItems;
+			var items = this._project.getActivatedItems();
 			var left = this._cornerItems.left;
 			var right = this._cornerItems.right;
 			var top = this._cornerItems.top;
@@ -8321,23 +8404,7 @@ var Selector = Item.extend(
 			});
 		},
 
-		draw: function (ctx, matrix, pixelRatio) {
-			var children = this._children;
-
-			matrix = matrix.appended(this.getGlobalMatrix(true));
-			matrix.applyToContext(ctx);
-
-			var param = new Base({
-				offset: new Point(0, 0),
-				pixelRatio: pixelRatio,
-				viewMatrix: matrix.isIdentity() ? null : matrix,
-				matrices: [new Matrix()],
-				updateMatrix: true,
-			});
-
-			for (var x = 0; x < children.length; x++) {
-				children[x].draw(ctx, param);
-			}
+		draw: function (ctx, matrix, pixelRatio, updateVersion) {
 		},
 
 		drawInfo: function (ctx, matrix, pixelRatio) {
@@ -8549,7 +8616,6 @@ var Control = Item.extend(
 		},
 
 		addChild: function addChild(item) {
-			this._children[item.name] = item;
 			return addChild.base.call(this, item);
 		},
 
@@ -8601,7 +8667,7 @@ var Control = Item.extend(
 		},
 
 		isSmallZoom: function () {
-			if(!this._project._activeItems.length){
+			if(!this._project._activationCount){
 				return false;
 			}
 			if (
@@ -8691,16 +8757,14 @@ var Control = Item.extend(
 			}
 		},
 
-		draw: function (ctx, param) {
+		_draw: function (ctx, param, matrix, updateVersion) {
 			var owner = this._owner;
-			if (this.isSmallZoom() || (!this.visible && this._canHide)) {
-				return;
-			}
+			var updateVersion = this._updateVersion = this._project._updateVersion;
 
 			if(owner.onControlDraw){
-				owner.onControlDraw(new DrawControlEvent(this, owner, ctx, param, this.getZoom()))
+				owner.onControlDraw(new DrawControlEvent(this, owner, ctx, param, this.getZoom(), new Matrix(), updateVersion))
 			}else if(this.onDraw){
-				this.onDraw(new DrawControlEvent(this, owner, ctx, param, this.getZoom()))
+				this.onDraw(new DrawControlEvent(this, owner, ctx, param, this.getZoom(), new Matrix(), updateVersion))
 			}
 
 			var children = this._children;
@@ -8709,7 +8773,7 @@ var Control = Item.extend(
 				this._drawFix(this);
 
 				for (var x = 0; x < children.length; x++) {
-					children[x].draw(ctx, param);
+					 children[x].draw(ctx, param);
 				}
 
 				this._reverseDrawFix(this);
@@ -16943,13 +17007,17 @@ var DrawControlEvent = Event.extend({
 	_ctx: null,
 	_params: null,
 	_zoom: null,
+	_matrix: null,
+	_updateVersion: null,
 
-	initialize: function DrawControlEvent(control, selector, ctx, params, zoom) {
+	initialize: function DrawControlEvent(control, selector, ctx, params, zoom, matrix, updateVersion) {
 		this.control = control;
 		this.selector = selector;
 		this.ctx = ctx;
 		this.params = params;
 		this.zoom = zoom;
+		this.matrix = matrix;
+		this.updateVersion = updateVersion;
 	},
 
 	getControl: function() {
@@ -16960,7 +17028,7 @@ var DrawControlEvent = Event.extend({
 		this._control = control;
 	},
 
-	 getSelector: function() {
+	getSelector: function() {
 		return this._selector;
 	},
 
@@ -16968,7 +17036,7 @@ var DrawControlEvent = Event.extend({
 		this._selector = selector;
 	},
 
-	 getCtx: function() {
+	getCtx: function() {
 		return this._ctx;
 	},
 
@@ -16990,6 +17058,22 @@ var DrawControlEvent = Event.extend({
 
 	setZoom: function(zoom) {
 		this._zoom = zoom;
+	},
+
+	getMatrix: function() {
+		return this._matrix;
+	},
+
+	setMatrix: function(matrix) {
+		this._matrix = matrix;
+	},
+
+	getUpdateVersion: function() {
+		return this._updateVersion;
+	},
+
+	setUpdateVersion: function(updateVersion) {
+		this._updateVersion = updateVersion;
 	},
 });
 

@@ -67,7 +67,7 @@ export const ViewTool = (props: ViewToolProps) => {
 
   const arrowMove = useCallback(
     (e: HotKeysEvent) => {
-      if (tool && tool.mainActived && !canvas.project.activeItems.length) {
+      if (tool && tool.mainActived && !canvas.project.activatedCount) {
         const point = new Point(e.delta)
           .multiply((e.isPressed('shift') && 10) || 1)
           .multiply(-factor)

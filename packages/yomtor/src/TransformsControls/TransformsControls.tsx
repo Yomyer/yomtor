@@ -96,10 +96,10 @@ export const TransformsControls = (props: TransformsControlsProps) => {
       if (
         type & (ChangeFlag.ACTIVE | ChangeFlag.MATRIX) &&
         // update.current &&
-        canvas.project.activeItems.length
+        canvas.project.activatedItems.length
       ) {
         const x = countBy(
-          canvas.project.activeItems.map((item) =>
+          canvas.project.activatedItems.map((item) =>
             round(
               item.info.topLeft.x -
                 (item.artboard && item.artboard.info.topLeft.x),
@@ -108,7 +108,7 @@ export const TransformsControls = (props: TransformsControlsProps) => {
           )
         )
         const y = countBy(
-          canvas.project.activeItems.map((item) =>
+          canvas.project.activatedItems.map((item) =>
             round(
               item.info.topLeft.y -
                 (item.artboard && item.artboard.info.topLeft.y),
@@ -117,55 +117,59 @@ export const TransformsControls = (props: TransformsControlsProps) => {
           )
         )
         const width = countBy(
-          canvas.project.activeItems.map((item) => round(item.info.width, 2))
+          canvas.project.activatedItems.map((item) => round(item.info.width, 2))
         )
         const height = countBy(
-          canvas.project.activeItems.map((item) => round(item.info.height, 2))
+          canvas.project.activatedItems.map((item) =>
+            round(item.info.height, 2)
+          )
         )
         const angle = countBy(
-          canvas.project.activeItems.map((item) =>
+          canvas.project.activatedItems.map((item) =>
             round(item.info.inheritedAngle, 2)
           )
         )
 
         const disableGroup = countBy(
-          canvas.project.activeItems.map(
+          canvas.project.activatedItems.map(
             (item) => item instanceof Artboard && !item.children.length
           )
         )
 
         const artboard = countBy(
-          canvas.project.activeItems.map((item) => item instanceof Artboard)
+          canvas.project.activatedItems.map((item) => item instanceof Artboard)
         )
 
         const combo = countBy(
-          canvas.project.activeItems.map((item) => item.className)
+          canvas.project.activatedItems.map((item) => item.className)
         )
 
         const constraintProportions = countBy(
-          canvas.project.activeItems.map((item) => item.constraintProportions)
+          canvas.project.activatedItems.map(
+            (item) => item.constraintProportions
+          )
         )
 
         const radius = countBy(
-          canvas.project.activeItems.map((item) => {
+          canvas.project.activatedItems.map((item) => {
             return item.borderRadius
           })
         )
 
         const clipped = countBy(
-          canvas.project.activeItems
+          canvas.project.activatedItems
             .filter((item) => item instanceof Artboard)
             .map((item: Artboard) => item.clipped)
         )
 
         const independentCorners = countBy(
-          canvas.project.activeItems.map((item) => {
+          canvas.project.activatedItems.map((item) => {
             return item.independentCorners
           })
         )
 
         const canRadius = countBy(
-          canvas.project.activeItems
+          canvas.project.activatedItems
             .filter((item) => item instanceof Path)
             .map((item: Path) => {
               return item.canApplyBorderRadius()
@@ -173,7 +177,7 @@ export const TransformsControls = (props: TransformsControlsProps) => {
         )
 
         const canCorners = countBy(
-          canvas.project.activeItems
+          canvas.project.activatedItems
             .filter((item) => item instanceof Path)
             .map((item: Path) => {
               return item.isRectangle() && item.canApplyBorderRadius()
@@ -223,14 +227,14 @@ export const TransformsControls = (props: TransformsControlsProps) => {
 
       if (type & (ChangeFlag.ACTIVE | ChangeFlag.TOOL)) {
         setVisible(
-          !!canvas.project.activeItems.length &&
+          !!canvas.project.activatedCount &&
             !canvas.getTool('TransformTool').hide
         )
       }
 
       if (type & ChangeFlag.MATRIX) {
         const s = countBy(
-          canvas.project.activeItems.map(
+          canvas.project.activatedItems.map(
             (item) =>
               `${round(item.info.width, 2)}x${round(item.info.height, 2)}`
           )
@@ -253,7 +257,7 @@ export const TransformsControls = (props: TransformsControlsProps) => {
     value?: number | boolean,
     mixed?: boolean
   ) => {
-    canvas.project.activeItems.forEach((item) => {
+    canvas.project.activatedItems.forEach((item) => {
       if (['x', 'y'].includes(key)) {
         item.info.topLeft[key] =
           item.artboard && !mixed
@@ -313,7 +317,7 @@ export const TransformsControls = (props: TransformsControlsProps) => {
   }
 
   const classHandler = (value: string) => {
-    const actives = [...canvas.project.activeItems]
+    const actives = canvas.project.activatedItems
 
     let size: Size
     const regex = /^(\d+)x(\d+)/

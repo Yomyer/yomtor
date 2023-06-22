@@ -14,27 +14,27 @@ export const GroupTool = (props: GroupToolProps) => {
   const { canvas } = useEditorContext()
 
   const group = useCallback(() => {
-    const activeItems = orderBy(canvas.project.activeItems, 'index')
-    if (activeItems.length) {
+    const activatedItems = orderBy(canvas.project.activatedItems, 'index')
+    if (activatedItems.length) {
       const group = new Group({ name: 'Group' })
 
-      group.insertBelow(activeItems[0])
-      group.insertChildren(0, activeItems)
+      group.insertBelow(activatedItems[0])
+      group.insertChildren(0, activatedItems)
 
       tool.activeMain()
-      canvas.project.deactivateAll()
+      canvas.project.deactiveAll()
       group.actived = true
 
       canvas.project.emit(['selection:updated', 'object:created'], {
-        items: canvas.project.activeItems
+        items: canvas.project.activatedItems
       })
     }
   }, [tool])
 
   const ungroup = useCallback(() => {
-    const activeItems = canvas.project.activeItems.slice()
+    const activatedItems = canvas.project.activatedItems.slice()
 
-    activeItems.forEach((item) => {
+    activatedItems.forEach((item) => {
       if (item.className === 'Group') {
         item.children.slice().forEach((child) => {
           child.insertBelow(item)
@@ -46,7 +46,7 @@ export const GroupTool = (props: GroupToolProps) => {
     })
 
     canvas.project.emit(['selection:updated', 'object:deleted'], {
-      items: canvas.project.activeItems
+      items: canvas.project.activatedItems
     })
   }, [tool])
 
@@ -79,7 +79,7 @@ export const GroupTool = (props: GroupToolProps) => {
         )
 
         if (items.length) {
-          canvas.project.deactivateAll()
+          canvas.project.deactiveAll()
           first(items).actived = true
 
           canvas.project.emit('selection:updated', { items: [first(items)] })

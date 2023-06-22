@@ -135,17 +135,6 @@ var Artboard = Group.extend(
             this._changed(/*#=*/Change.ATTRIBUTE);
         },
 
-
-        /**
-         * The name of the artboard.
-         *
-         * @bean
-         * @type Boolean
-         */
-        getActived: function () {
-            return this._actived;
-        },
-
         setActived: function setActived(actived) {
             this._project._activeArtboard = actived ? this : null;
 
@@ -349,11 +338,11 @@ var Artboard = Group.extend(
                 );
             }
 
-            var activeItems = this.getActiveItems();
-            if (activeItems) {
+            var activatedItems = this.getActivatedItems();
+            if (activatedItems) {
                 var hit = null;
-                for (var i = activeItems.length - 1; i >= 0; i--) {
-                    var item = activeItems[i];
+                for (var i = activatedItems.length - 1; i >= 0; i--) {
+                    var item = activatedItems[i];
                     if (!hit) {
                         var hit = item._hitTest(point, options);
                     }

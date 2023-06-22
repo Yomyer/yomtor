@@ -44,7 +44,7 @@ export const SelectorTool = (props: SelectorToolProps) => {
   const [tool, setTool] = useState<Tool>()
   const selector = useRef<Group>(null)
   const mode = useRef<string>('none')
-  const activedItems = useRef<Item[]>([])
+  const activatedItems = useRef<Item[]>([])
   const selectRect = useRef<Path>(null)
   const moved = useRef<boolean>(false)
   const selectItems = useRef<Item[]>(null)
@@ -61,11 +61,14 @@ export const SelectorTool = (props: SelectorToolProps) => {
   }
 
   const isActiveItemsUpdated = (): boolean => {
-    return compareToItemList(activedItems.current, canvas.project.activeItems)
+    return compareToItemList(
+      activatedItems.current,
+      canvas.project.activatedItems
+    )
   }
 
   const updateAtiveItems = () => {
-    activedItems.current = [...canvas.project.activeItems]
+    activatedItems.current = canvas.project.activatedItems
   }
 
   const hightlightController = (e?: ToolEvent) => {
@@ -140,45 +143,45 @@ export const SelectorTool = (props: SelectorToolProps) => {
           .getItems(artboardMatch)
           .concat(canvas.project.activeLayer.getItems(itemMatch))
 
-        // canvas.project.deactivateAll()
+        // canvas.project.deactiveAll()
 
         const deactives = e.modifiers.shift
           ? intersectionWith(
               items,
-              activedItems.current,
+              activatedItems.current,
               (a: Item, b: Item) => a.uid === b.uid
             )
           : []
 
         const actives = e.modifiers.shift
           ? differenceWith(
-              activedItems.current.concat(items),
+              activatedItems.current.concat(items),
               deactives,
               (a: Item, b: Item) => a.uid === b.uid
             )
-          : activedItems.current.concat(items)
+          : activatedItems.current.concat(items)
 
-        if (!compareToItemList(actives, canvas.project.activeItems)) {
+        if (!compareToItemList(actives, canvas.project.activatedItems)) {
           actives.forEach((item) => (item.actived = true))
           deactives.forEach((item) => (item.actived = false))
         }
 
-        ;[...canvas.project.activeItems].forEach((item) => {
+        canvas.project.activatedItems.forEach((item) => {
           if (!actives.find((find) => item.uid === find.uid)) {
             item.actived = false
           }
         })
 
         if (e.modifiers.shift && selectItems.current === null) {
-          selectItems.current = [...canvas.project.activeItems]
+          selectItems.current = canvas.project.activatedItems
         }
 
         if (
-          !compareToItemList(selectItems.current, canvas.project.activeItems)
+          !compareToItemList(selectItems.current, canvas.project.activatedItems)
         ) {
           let action = 'updated'
 
-          if (!canvas.project.activeItems.length) {
+          if (!canvas.project.activatedCount) {
             action = 'cleared'
           }
 
@@ -190,7 +193,7 @@ export const SelectorTool = (props: SelectorToolProps) => {
             ...{ items: actives }
           })
         }
-        selectItems.current = [...canvas.project.activeItems]
+        selectItems.current = canvas.project.activatedItems
       }
     }
   }
@@ -199,7 +202,7 @@ export const SelectorTool = (props: SelectorToolProps) => {
     (e: ToolEvent | HotKeysEvent) => {
       if (!isMove) return
 
-      canvas.project.activeItems.forEach((item) => {
+      canvas.project.activatedItems.forEach((item) => {
         let delta = e.delta
 
         if (e instanceof ToolEvent) {
@@ -222,7 +225,7 @@ export const SelectorTool = (props: SelectorToolProps) => {
           }
         })
 
-        const actives = [...canvas.project.activeItems]
+        const actives = canvas.project.activatedItems
         actives.forEach((item) => {
           if (
             (artboard && !item.artboard) ||
@@ -257,7 +260,7 @@ export const SelectorTool = (props: SelectorToolProps) => {
       if (
         tool &&
         tool.mainActived &&
-        canvas.project.activeItems.length &&
+        canvas.project.activatedCount &&
         !e.isPressed('cmd')
       ) {
         mode.current = 'move'
@@ -275,7 +278,7 @@ export const SelectorTool = (props: SelectorToolProps) => {
     if (tool.actived) {
       let children = []
 
-      canvas.project.activeItems
+      canvas.project.activatedItems
         .filter((item) => item.children)
         .forEach((item) => {
           children = children.concat(item.children)
@@ -283,13 +286,13 @@ export const SelectorTool = (props: SelectorToolProps) => {
         })
 
       if (children.length) {
-        canvas.project.deactivateAll()
+        canvas.project.deactiveAll()
 
         children.splice(0).forEach((item) => {
           item.actived = true
         })
-      } else if (canvas.project.activeItems.length === 1) {
-        canvas.project.emit('enter', { item: canvas.project.activeItems[0] })
+      } else if (canvas.project.activatedCount === 1) {
+        canvas.project.emit('enter', { item: canvas.project.activatedItems[0] })
       }
     }
   }, [tool])
@@ -299,61 +302,39 @@ export const SelectorTool = (props: SelectorToolProps) => {
     setTool(canvas.createTool('SelectorTool', true))
   }, [canvas])
 
-  const drawRect = (ctx: CanvasRenderingContext2D, info: Info | Rectangle) => {
-    ctx.beginPath()
-
-    ctx.moveTo(
-      Math.floor(Math.random() * 10000),
-      Math.floor(Math.random() * 10000)
-    )
-    ctx.lineTo(
-      Math.floor(Math.random() * 10000),
-      Math.floor(Math.random() * 10000)
-    )
-    ctx.lineTo(
-      Math.floor(Math.random() * 10000),
-      Math.floor(Math.random() * 10000)
-    )
-    ctx.lineTo(
-      Math.floor(Math.random() * 10000),
-      Math.floor(Math.random() * 10000)
-    )
-    ctx.closePath()
-
-    ctx.stroke()
-  }
-
   useEffect(() => {
     if (!tool) return
 
     let beforeMode = 'mode'
 
     tool.addControl(
-      new Control('selector', ({ control, selector, ctx, zoom }) => {
-        // control.removeChildren()
-        const actives = canvas.project.activeItems
-        const higthlight = canvas.project.highlightedItem
-        console.log('a')
-        ctx.strokeStyle = 'rgba(0, 142, 252, 1)'
-        ctx.lineWidth = 0.5 / zoom
+      new Control(
+        'selector',
+        ({ control, params, selector, ctx, matrix, zoom, updateVersion }) => {
+          // control.removeChildren()
+          const actives = canvas.project.activatedItems
+          const higthlight = canvas.project.highlightedItem
 
-        if (actives.length) {
-          //if (actives.length < 200) {
+          ctx.strokeStyle = 'rgba(0, 142, 252, 1)'
+          ctx.lineWidth = 0.5 / zoom
 
-          actives.forEach((item) => {
-            drawRect(ctx, item.info)
-          })
-          // }
+          if (actives.length) {
+            //if (actives.length < 200) {
 
-          drawRect(ctx, selector.info)
-        }
+            actives.forEach((item) => {
+              // item.drawActived(ctx, matrix, updateVersion)
+            })
+            // }
 
-        if (higthlight && !actives.includes(higthlight)) {
-          ctx.lineWidth = 2 / zoom
-          drawRect(ctx, higthlight.info)
-        }
+            // selector.drawActived(ctx, matrix, updateVersion)
+          }
 
-        /*
+          if (higthlight && !actives.includes(higthlight)) {
+            ctx.lineWidth = 2 / zoom
+            // drawRect(ctx, higthlight)
+          }
+
+          /*
         const config = {
           strokeWidth: 0.5,
           strokeColor: 'rgba(0, 142, 252, 1)'
@@ -375,7 +356,8 @@ export const SelectorTool = (props: SelectorToolProps) => {
           )
         }
         */
-      })
+        }
+      )
     )
 
     canvas.project.on('enter', (e: ToolEvent) => {
@@ -387,13 +369,13 @@ export const SelectorTool = (props: SelectorToolProps) => {
     canvas.project.on('exit', (e: ToolEvent) => {
       if (tool.actived) {
         const parents = []
-        canvas.project.activeItems.forEach((item) => {
+        canvas.project.activatedItems.forEach((item) => {
           if (!(item.parent instanceof Layer)) {
             parents.push(item.parent)
           }
         })
 
-        canvas.project.deactivateAll()
+        canvas.project.deactiveAll()
         if (parents.length) {
           parents.forEach((item) => {
             item.actived = true
@@ -405,7 +387,7 @@ export const SelectorTool = (props: SelectorToolProps) => {
     tool.onActivate = () => {
       if (!isActiveItemsUpdated()) {
         canvas.project.emit('selection:created', {
-          ...{ items: canvas.project.activeItems }
+          ...{ items: canvas.project.activatedItems }
         })
         updateAtiveItems()
       }
@@ -453,12 +435,10 @@ export const SelectorTool = (props: SelectorToolProps) => {
           legacy: e.modifiers.meta
         })
 
-        const updated = canvas.project.activeItems.length
-          ? 'updated'
-          : 'created'
+        const updated = canvas.project.activatedCount ? 'updated' : 'created'
 
         if (!e.modifiers.shift && (force || !item || (item && !item.actived))) {
-          canvas.project.deactivateAll()
+          canvas.project.deactiveAll()
         }
 
         if (item) {
@@ -479,9 +459,9 @@ export const SelectorTool = (props: SelectorToolProps) => {
           updateAtiveItems()
 
           canvas.project.emit(`selection:pressed`, e)
-        } else if (activedItems.current.length && !e.modifiers.shift) {
+        } else if (activatedItems.current.length && !e.modifiers.shift) {
           canvas.project.emit(`selection:cleared`, e)
-          activedItems.current = []
+          activatedItems.current = []
         }
 
         if (!item) {

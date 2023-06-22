@@ -130,7 +130,7 @@ export const ConstraintsTool = (props: ConstraintsToolProps) => {
 
     tool.addControl(
       new Control('constraints', ({ control, selector }) => {
-        const items = canvas.project.activeItems
+        const items = canvas.project.activatedItems
         control.removeChildren()
         if (items.length !== 1 || (items.length && !items[0].artboard)) return
 

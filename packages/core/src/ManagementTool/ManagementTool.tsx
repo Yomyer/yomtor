@@ -23,26 +23,29 @@ export const ManagementTool = (props: ManagementToolProps) => {
   const { canvas } = useEditorContext()
   const clonedItems = useRef<Record<string, Item>>({})
   const beforePositions = useRef<Record<string, Point>>({})
-  const activedItems = useRef<Item[]>([])
+  const activatedItems = useRef<Item[]>([])
   const mouseEvent = useRef<MouseEvent>(null)
   const clipboard = useRef<Item[]>([])
   const clonable = useRef<boolean>(false)
   const { showCursor, hideCursor } = useCursor()
 
   const setBeforePositions = () => {
-    activedItems.current = [...canvas.project.activeItems]
-    beforePositions.current = activedItems.current.reduce((positions, item) => {
-      if (!positions[item.uid]) {
-        positions[item.uid] = item.position.clone()
-      }
+    activatedItems.current = canvas.project.activatedItems
+    beforePositions.current = activatedItems.current.reduce(
+      (positions, item) => {
+        if (!positions[item.uid]) {
+          positions[item.uid] = item.position.clone()
+        }
 
-      return positions
-    }, beforePositions.current)
+        return positions
+      },
+      beforePositions.current
+    )
   }
 
   const cloneController = (status: boolean) => {
     if (status) {
-      activedItems.current.forEach((item) => {
+      activatedItems.current.forEach((item) => {
         if (beforePositions.current[item.uid]) {
           const cloned = item.clone()
           item.highlighted = item.actived = false
@@ -52,7 +55,7 @@ export const ManagementTool = (props: ManagementToolProps) => {
         }
       })
     } else if (Object.keys(clonedItems.current).length) {
-      activedItems.current.forEach((item) => {
+      activatedItems.current.forEach((item) => {
         const clone = clonedItems.current[item.uid]
         if (clone) {
           item.actived = true
@@ -68,7 +71,7 @@ export const ManagementTool = (props: ManagementToolProps) => {
   }
 
   const removeDuplicates = () => {
-    activedItems.current.forEach((item) => {
+    activatedItems.current.forEach((item) => {
       const clone = clonedItems.current[item.uid]
       if (clone && clone.position.equals(item.position)) {
         clone.remove()
@@ -79,12 +82,12 @@ export const ManagementTool = (props: ManagementToolProps) => {
   }
 
   const cut = () => {
-    clipboard.current = [...canvas.project.activeItems]
-    canvas.project.activeItems.forEach((item) => item.remove())
+    clipboard.current = []
+    canvas.project.activatedItems.forEach((item) => item.remove())
   }
 
   const copy = () => {
-    clipboard.current = canvas.project.activeItems.map((item) =>
+    clipboard.current = canvas.project.activatedItems.map((item) =>
       item.clone({ insert: false })
     )
   }
@@ -113,11 +116,11 @@ export const ManagementTool = (props: ManagementToolProps) => {
 
     await Promise.all(promises)
 
-    canvas.project.deactivateAll()
+    canvas.project.deactiveAll()
     itemsPated.forEach((item) => (item.actived = true))
 
     /*
-    canvas.project.deactivateAll()
+    canvas.project.deactiveAll()
     clipboard.current.forEach((item) => {
       console.log(activedItems.current)
       // item.insertChild()
@@ -158,7 +161,7 @@ export const ManagementTool = (props: ManagementToolProps) => {
         cloneController(true)
 
         canvas.project.emit(['selection:updated', 'object:created'], {
-          items: canvas.project.activeItems
+          items: canvas.project.activatedItems
         })
       }
     })
@@ -168,7 +171,7 @@ export const ManagementTool = (props: ManagementToolProps) => {
         ['delete', 'backspace'].includes(event.key) &&
         get(event, 'event.target.tagName') !== 'INPUT'
       ) {
-        let items = [...canvas.project.activeItems]
+        let items = canvas.project.activatedItems
 
         items.forEach((item) => item.remove())
         canvas.project.emit('selection:cleared', { items })

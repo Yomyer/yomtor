@@ -31,13 +31,13 @@ export const AlignmentsControls = (props: AlignmentsControlsProps) => {
   ) => {
     if (!canvas) return
 
-    let limits = canvas.project.activeItems[0]?.artboard?.bounds
+    let limits = canvas.project.activatedItems[0]?.artboard?.bounds
 
-    if (canvas.project.activeItems.length > 1) {
+    if (canvas.project.activatedCount > 1) {
       limits = canvas.project.selector.bounds
     }
 
-    canvas.project.activeItems.forEach((item) => {
+    canvas.project.activatedItems.forEach((item) => {
       switch (position) {
         case 'horizontal-center':
           item.bounds.center.x = limits.center.x
@@ -57,7 +57,7 @@ export const AlignmentsControls = (props: AlignmentsControlsProps) => {
 
     canvas.project.on('changed', (type) => {
       if (type & ChangeFlag.ACTIVE) {
-        const actives = canvas.project.activeItems
+        const actives = canvas.project.activatedItems
         setActive(
           actives.length > 1 || !!(actives.length === 1 && actives[0].artboard)
         )

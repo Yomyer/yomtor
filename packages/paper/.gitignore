@@ -10,4 +10,5 @@
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+!lib
 .pnp.js

@@ -47,7 +47,7 @@ export const TransformTool = (props: TransformToolProps) => {
     angle: number
     corner?: Item
   }>(null)
-  const activeItems = useRef<Item[]>([])
+  const activatedItems = useRef<Item[]>([])
   const cursorAngle = useRef<number>(null)
   const data = useRef<{
     pivot: Point
@@ -168,7 +168,7 @@ export const TransformTool = (props: TransformToolProps) => {
     if (helper) {
       canvas.project.emit('object:rotating', e)
     }
-    setCursor(canvas.project.activeItems.length > 1 && delta)
+    setCursor(canvas.project.activatedCount > 1 && delta)
   }
 
   const setCursor = (angle = 0) => {
@@ -225,7 +225,7 @@ export const TransformTool = (props: TransformToolProps) => {
 
         control.removeChildren()
 
-        if (canvas.project.activeItems.length) {
+        if (canvas.project.activatedCount) {
           Object.keys(rotates).forEach((corner) => {
             control.addChild(
               new Shape.Rectangle({
@@ -303,9 +303,9 @@ export const TransformTool = (props: TransformToolProps) => {
     tool.onMouseUp = (e: ToolEvent) => {
       tool.showOtherTools()
       tool.hide = false
-      canvas.project.deactivateAll()
+      canvas.project.deactiveAll()
       activeHelpers.current.forEach((item) => item.remove())
-      activeItems.current.forEach((item) =>
+      activatedItems.current.forEach((item) =>
         item.set({ visible: true, actived: true })
       )
 
@@ -401,7 +401,7 @@ export const TransformTool = (props: TransformToolProps) => {
 
         tool.activate()
 
-        activeItems.current = [...canvas.project.activeItems]
+        activatedItems.current = canvas.project.activatedItems
         cornerName.current = e.target.name
           .replace('rotateB', 'b')
           .replace('rotateT', 't')

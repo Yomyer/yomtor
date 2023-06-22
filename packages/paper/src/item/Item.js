@@ -62,10 +62,10 @@ var Item = Base.extend(Emitter, /** @lends Item# */{
     _uid: null,
     _angle: 0,
     _blocked: false,
-    _actived: false,
     _highlighted: false,
     _clipMask: false,
     _selection: 0,
+    _activation: 0,
     _selectionCache: null,
     _getItemsInChildrens: false,
     _transformType: null,
@@ -74,6 +74,7 @@ var Item = Base.extend(Emitter, /** @lends Item# */{
     // selected separately by setting item.bounds.selected = true;
     _selectBounds: true,
     _selectChildren: false,
+    _activeChildren: false,
     _serializeStyle: true,
     _flipped: {x: 1, y: 1},
     _constraintsPivot: null,
@@ -96,11 +97,11 @@ var Item = Base.extend(Emitter, /** @lends Item# */{
         guide: false,
         clipMask: false,
         selected: false,
+        actived: false,
         data: {},
         flipped: null,
         uid: null,
         angle: null,
-        actived: false,
         constraints: {},
         borderRadius: null,
         constraintProportions: false,
@@ -763,20 +764,6 @@ new function() { // Injection scope for various item event handlers
         return !!(this._selection & /*#=*/ItemSelection.ITEM);
     },
 
-    /**
-     * @name Item#isActived
-     * @function
-     * @return {Boolean}
-     * @default false
-     */
-    isActived: function(){
-        if(!this._actived && this._parent && this._parent instanceof Item){
-            return this._parent.isActived();
-        }
-
-        return this._actived;
-    },
-
     setSelected: function(selected) {
         if (this._selectChildren) {
             var children = this._children;
@@ -787,10 +774,43 @@ new function() { // Injection scope for various item event handlers
     },
 
     /**
+     * @name Item#isActived
+     * @function
+     * @return {Boolean}
+     * @default false
+     */
+    isActived: function(){
+        if (this._activeChildren) {
+            var children = this._children;
+            for (var i = 0, l = children.length; i < l; i++)
+                if (children[i].isActived())
+                    return true;
+        }
+        return !!(this._activation & /*#=*/ItemSelection.ITEM);
+    },
+
+    setActived: function(actived) {
+        if(actived){
+            var children = this._children;
+            if(children && children.length){
+                for (var i = 0, l = children.length; i < l; i++)
+                    children[i].setActived(false);
+            }
+    
+            if(this._parent && this._actived){
+                this._parent.collapsed = false
+            }
+        }
+
+        this._changeActivation(/*#=*/ItemSelection.ITEM, actived);
+    },
+
+
+    /**
      * @bean
      * @type Boolean
      */
-   getCollapsed: function () {
+    getCollapsed: function () {
         return this._collapsed;
     },
 
@@ -825,6 +845,28 @@ new function() { // Injection scope for various item event handlers
                 children[i].setFullySelected(selected);
         }
         this._changeSelection(/*#=*/ItemSelection.ITEM, selected);
+    },
+
+    isFullyActived: function() {
+        var children = this._children,
+            actived = !!(this._activation & /*#=*/ItemSelection.ITEM);
+        if (children && actived) {
+            for (var i = 0, l = children.length; i < l; i++)
+                if (!children[i].isFullyActived())
+                    return false;
+            return true;
+        }
+        // If there are no children, this is the same as #selected
+        return actived;
+    },
+
+    setFullyActived: function(actived) {
+        var children = this._children;
+        if (children) {
+            for (var i = 0, l = children.length; i < l; i++)
+                children[i].setFullyActived(actived);
+        }
+        this._changeActivation(/*#=*/ItemSelection.ITEM, actived);
     },
 
     /**
@@ -2103,6 +2145,7 @@ new function() { // Injection scope for various item event handlers
         // Copy over the selection state, use setSelection so the item
         // is also added to Project#_selectionItems if it is selected.
         this.setSelection(source._selection);
+        this.setActivation(source._activation);
         // Copy over data and name as well.
         var data = source._data,
             name = source._name;
@@ -2303,41 +2346,32 @@ new function() { // Injection scope for various item event handlers
      * @type Boolean
      *
     */
-    getActived: function(){
-        return this._actived;
+    getActivation: function(){
+        return this._activation;
     },
 
-    setActived: function(actived){
-        const before = Object.keys(this._project._activeItems)
-
-        if(actived && !this._project._activeItems[this.uid] && !this._project._activeItems[this._parent && this._parent.uid]){
-            this._project._activeItems.push(this);
-            this._project._activeItems[this.uid] = this;
-            this._actived = true;
-        } else if (!actived){
-            var index = this._project._activeItems.indexOf(this);
-
-            if(index !== -1){
-                this._project._activeItems.splice(index, 1);
+    setActivation: function(activation){
+        if (activation !== this._activation) {
+            this._activation = activation;
+            var project = this._project;
+            if (project) {
+                project._updateActivation(this);
+                this._changed(/*#=*/Change.ACTIVE);
             }
-
-            delete this._project._activeItems[this.uid];
-            this._actived = false;
         }
 
+        /*
         var children = this._children;
         if(children && children.length){
             for (var i = 0, l = children.length; i < l; i++)
                 children[i].setActived(false);
         }
+        */
+    },
 
-        if(this._parent && this._actived){
-            this._parent.collapsed = false
-        }
-
-        if(!Base.equals(before, Object.keys(this._project._activeItems))){
-            this._changed(/*#=*/Change.ACTIVE);
-        }
+    _changeActivation: function(flag, activated) {
+        var activation = this._activation;
+        this.setActivation(activated ? activation | flag : activation & ~flag);
     },
 
     /**
@@ -2368,11 +2402,11 @@ new function() { // Injection scope for various item event handlers
     /**
      * The if item children is actived.
      *
-     * @name Item#activeItems
+     * @name Item#activatedItems
      * @type Boolean
      *
     */
-    getActiveItems: function(){
+    getActivatedItems: function(){
         var children = this._children,
             activedItems = [];
 
@@ -2382,7 +2416,7 @@ new function() { // Injection scope for various item event handlers
                 if (item.actived){
                     activedItems.push(item);
                 }
-                activedItems = activedItems.concat(item.getActiveItems());
+                activedItems = activedItems.concat(item.getActivatedItems());
             }
         }
 
@@ -2414,7 +2448,7 @@ new function() { // Injection scope for hit-test functions shared with project
 
         if(this instanceof Project){
             var controls = this._selector && this._selector._children;
-            if(controls && this._activeItems.length){
+            if(controls && this._activationCount){
                 children = children.concat(controls);
             }
         }
@@ -5051,7 +5085,7 @@ new function() { // Injection scope for hit-test functions shared with project
                 ctx.translate(-offset.x, -offset.y);
         }
         this._draw(ctx, param, viewMatrix, strokeMatrix);
-
+       
         if(this._grid){
             this._grid.draw(ctx, matrix, pixelRatio);
         }
@@ -5109,9 +5143,10 @@ new function() { // Injection scope for hit-test functions shared with project
             positionSelected = selection & /*#=*/ItemSelection.POSITION;
         if (!this._drawSelected)
             itemSelected = false;
+
         if ((itemSelected || boundsSelected || positionSelected)
                 && this._isUpdated(updateVersion)) {
-
+           
             // Allow definition of selected color on a per item and per
             // layer level, with a fallback to #009dec
             var layer,
@@ -5160,6 +5195,39 @@ new function() { // Injection scope for hit-test functions shared with project
                     ctx.fillRect(coords[i] - half, coords[++i] - half,
                             size, size);
                 }
+            }
+        }
+    },
+
+    _drawActived: function(ctx, matrix, updateVersion){
+        var selection = this._activation,
+            itemSelected = selection & /*#=*/ItemSelection.ITEM,
+            boundsSelected = selection & /*#=*/ItemSelection.BOUNDS
+                    || itemSelected && this._selectBounds,
+            positionSelected = selection & /*#=*/ItemSelection.POSITION;
+        if (!this._drawSelected)
+            itemSelected = false;
+        
+        if ((itemSelected || boundsSelected || positionSelected)
+            && this._isUpdated(updateVersion)) {
+        
+            var layer,
+                mx = matrix.appended(this.getGlobalMatrix(true)),
+                half = 0;
+
+            if (itemSelected)
+                this._drawSelected(ctx, mx, this._project.activedItems);
+
+            if (boundsSelected) {
+                var coords = mx._transformCorners(this.getInternalBounds());
+                // Now draw a rectangle that connects the transformed
+                // bounds corners, and draw the corners.
+                ctx.beginPath();
+                for (var i = 0; i < 8; i++) {
+                    ctx[!i ? 'moveTo' : 'lineTo'](coords[i], coords[++i]);
+                }
+                ctx.closePath();
+                ctx.stroke();
             }
         }
     },
@@ -5324,6 +5392,20 @@ new function() { // Injection scope for hit-test functions shared with project
             }
         }
         return this;
+    },
+
+    /**
+     * Removes the item when the next {@link Tool#onMouseUp} event is fired.
+     *
+     * @name Item#drawActived
+     * @param {CanvasRenderingContext2D} ctx
+     * @param {Matrix} matrix
+     * @param {Number} updateVersion
+     * @function
+     *
+     */
+    drawActived: function(ctx, matrix, updateVersion){
+        this._drawActived(ctx, matrix, updateVersion)
     }
 }), /** @lends Item# */{
     /**

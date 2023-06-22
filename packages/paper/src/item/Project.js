@@ -37,7 +37,6 @@ var Project = PaperScopeItem.extend(
     _reference: 'project',
     _compactSerialize: true, // Never include the class name for Project
     _insertMode: false,
-    _activeItems: [],
     _highlightedItem: null,
     _mainTool: null,
     _artboards: [],
@@ -73,7 +72,9 @@ var Project = PaperScopeItem.extend(
       // (e.g. PointText#_getBounds)
       this._view = View.create(this, element || CanvasProvider.getCanvas(1, 1))
       this._selectionItems = {}
+      this._activationItems = {}
       this._selectionCount = 0
+      this._activationCount = 0
       // See Item#draw() for an explanation of _updateVersion
       this._updateVersion = 0
       // Change tracking, not in use for now. Activate once required:
@@ -348,22 +349,53 @@ var Project = PaperScopeItem.extend(
     },
 
     /**
-     * The activeItems
+     * The activated items contained within the project.
      *
      * @bean
      * @type Item[]
      */
-    getActiveItems: function () {
-      return this._activeItems
+    getActivatedItems: function () {
+      var activationItems = this._activationItems,
+        items = []
+      for (var id in activationItems) {
+        var item = activationItems[id],
+          activation = item._activation
+        if (activation & /*#=*/ ItemSelection.ITEM && item.isInserted()) {
+          items.push(item)
+        } else if (!activation) {
+          this._updateActivation(item)
+        }
+      }
+      return items
     },
 
-    setActiveItems: function (items) {
-      this.deactivateAll()
+    // TODO: Implement setSelectedItems?
 
-      if (items && items.length) {
-        for (var i = 0, l = items.length; i < l; i++) items[i].setActived(true)
+    /**
+     * The activated items contained within the project.
+     *
+     * @bean
+     * @type Number
+     */
+    getActivatedCount: function(){
+        return this._activationCount;
+    },
+
+    _updateActivation: function (item) {
+      var id = item._id,
+        activationItems = this._activationItems
+      if (item._activation) {
+        if (activationItems[id] !== item && !activationItems[item._parent && item._parent.uid]) {
+          this._activationCount++
+          activationItems[id] = item
+        }
+      } else if (activationItems[id] === item) {
+        this._activationCount--
+        delete activationItems[id]
       }
     },
+
+
 
     /**
      * The Highlighted
@@ -920,26 +952,23 @@ var Project = PaperScopeItem.extend(
     },
 
     /**
-     * Deactive all items
-     *
-     */
-    deactivateAll: function () {
-      var activeItems = this._activeItems
-      for (var i in activeItems) activeItems[i].actived = false
-
-      this._activeItems = []
-    },
-
-    /**
      * active all items of project
      *
      */
     activeAll: function () {
-      var children = this._activeLayer._children
+      var children = this._children
       for (var i = 0, l = children.length; i < l; i++)
-        children[i].actived = true
+        children[i].setFullyActived(true)
     },
 
+    /**
+     * Deactive all items
+     *
+     */
+    deactiveAll: function () {
+      var activationItems = this._activationItems
+      for (var i in activationItems) activationItems[i].setFullyActived(false)
+    },
 
     /**
      * 
@@ -1063,7 +1092,7 @@ var Project = PaperScopeItem.extend(
       }
 
       if (options && !options.items) {
-          options.items = this.getActiveItems();
+          options.items = this.getActivatedItems();
       }
 
       var listenersForEvent = this._eventListeners[eventName];
@@ -1336,9 +1365,21 @@ var Project = PaperScopeItem.extend(
         ctx.restore()
       }
       
+      if (this._activationCount > 0) {
+        ctx.save()
+        ctx.strokeWidth = 1
+        ctx.strokeStyle = 'red'
+        var items = this._activationItems,
+          version = this._updateVersion
+        for (var id in items) {
+          items[id]._drawActived(ctx, matrix, version)
+        }
+        ctx.restore()
+      }
+
       if (this._selector) {
         ctx.save()
-        this._selector.draw(ctx, matrix, pixelRatio)
+        this._selector.draw(ctx, matrix, pixelRatio, this._updateVersion)
         ctx.restore()
       }
 

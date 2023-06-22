@@ -1201,8 +1201,19 @@ export const App = () => {
           <Import />
           <AppShell
             padding={0}
-            navbar={<Navbar resize>a</Navbar>}
-            aside={<Aside resize>a</Aside>}
+            navbar={
+              <Navbar resize>
+                <ObjectControls />
+              </Navbar>
+            }
+            aside={
+              <Aside resize>
+                <AlignmentsControls visible />
+                <TransformsControls />
+                <ConstraintsControls />
+                <LayerControls />
+              </Aside>
+            }
             header={
               <Header height={40}>
                 <RectangleTool>
@@ -1223,7 +1234,10 @@ export const App = () => {
             <Canvas>
               <ViewTool />
               <ZoomTool />
+              <GroupTool />
               <SelectorTool />
+              <ManagementTool />
+              <ConstraintsTool />
               <TransformTool />
             </Canvas>
           </AppShell>
