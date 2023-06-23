@@ -4165,17 +4165,6 @@ var Project = PaperScopeItem.extend(
 		this._grid.draw(ctx, matrix, pixelRatio)
 		ctx.restore()
 	  }
-	  if (this._activationCount > 0) {
-		ctx.save()
-		ctx.strokeWidth = 1
-		ctx.strokeStyle = 'red'
-		var items = this._activationItems,
-		  version = this._updateVersion
-		for (var id in items) {
-		  items[id]._drawActived(ctx, matrix, version)
-		}
-		ctx.restore()
-	  }
 
 	  if (this._selector) {
 		ctx.save()
@@ -4553,7 +4542,7 @@ new function() {
 				for (var i = 0, l = children.length; i < l; i++)
 					children[i].setActived(false);
 			}
-			if(this._parent && this._actived){
+			if(this._parent && this.isActived()){
 				this._parent.collapsed = false
 			}
 		}
@@ -6293,24 +6282,26 @@ new function() {
 		}
 	},
 
-	_drawActived: function(ctx, matrix, updateVersion){
+	_drawActivation: function(ctx, matrix, updateVersion){
 		var selection = this._activation,
 			itemSelected = selection & 1,
 			boundsSelected = selection & 2
-					|| itemSelected && this._selectBounds,
-			positionSelected = selection & 4;
-		if (!this._drawSelected)
+					|| itemSelected && this._selectBounds;
+
+		if (!this._drawActived)
 			itemSelected = false;
-		if ((itemSelected || boundsSelected || positionSelected)
+		if ((itemSelected || boundsSelected)
 			&& this._isUpdated(updateVersion)) {
+
 			var layer,
 				mx = matrix.appended(this.getGlobalMatrix(true)),
 				half = 0;
 
-			if (itemSelected)
-				this._drawSelected(ctx, mx, this._project.activedItems);
-
-			if (boundsSelected) {
+			if (itemSelected){
+				console.log(this._class)
+				this._drawActived(ctx, mx, this._project.activedItems);
+			}
+			else if (boundsSelected) {
 				var coords = mx._transformCorners(this.getInternalBounds());
 				ctx.beginPath();
 				for (var i = 0; i < 8; i++) {
@@ -6356,8 +6347,8 @@ new function() {
 		return this;
 	},
 
-	drawActived: function(ctx, matrix, updateVersion){
-		this._drawActived(ctx, matrix, updateVersion)
+	drawActivation: function(ctx, matrix, updateVersion){
+		this._drawActivation(ctx, matrix, updateVersion)
 	}
 }), {
 	tween: function(from, to, options) {
@@ -6577,6 +6568,17 @@ var Group = Item.extend(
 			);
 		},
 
+		_drawActived: function(ctx, matrix) {
+			var bounds = this.getInfo();
+			console.log(bounds)
+			ctx.beginPath();
+			ctx.moveTo(bounds.topLeft.x, bounds.topLeft.y)
+			ctx.lineTo(bounds.topRight.x, bounds.topRight.y)
+			ctx.lineTo(bounds.bottomRight.x, bounds.bottomRight.y)
+			ctx.lineTo(bounds.bottomLeft.x, bounds.bottomLeft.y)
+			ctx.closePath()
+			ctx.stroke();
+		},
 		_draw: function (ctx, param) {
 			var clip = param.clip,
 				clipItem = !clip && this._getClipItem();
@@ -6945,7 +6947,7 @@ var Artboard = Group.extend(
 				})
 			);
 
-			if (options.legacy || this._actived || !this._children.length) {
+			if (options.legacy || this.isActived() || !this._children.length) {
 				if (hit) {
 					var hit = new HitResult("fill", this);
 					var match = options.match;
@@ -8414,6 +8416,18 @@ var Selector = Item.extend(
 			if (this._info) {
 				this._info.draw(ctx, matrix, pixelRatio);
 			}
+		},
+
+		_drawActived: function(ctx, matrix) {
+			var bounds = this.getInfo();
+			console.log(bounds)
+			ctx.beginPath();
+			ctx.moveTo(bounds.topLeft.x, bounds.topLeft.y)
+			ctx.lineTo(bounds.topRight.x, bounds.topRight.y)
+			ctx.lineTo(bounds.bottomRight.x, bounds.bottomRight.y)
+			ctx.lineTo(bounds.bottomLeft.x, bounds.bottomLeft.y)
+			ctx.closePath()
+			ctx.stroke();
 		},
 	},
 	{
@@ -12480,6 +12494,12 @@ new function() {
 			drawSegments(ctx, this, matrix);
 			ctx.stroke();
 			drawHandles(ctx, this._segments, matrix, paper.settings.handleSize);
+		},
+
+		_drawActived: function(ctx, matrix) {
+			ctx.beginPath();
+			drawSegments(ctx, this, matrix);
+			ctx.stroke();
 		},
 
 		_getHighlightItem: function() {

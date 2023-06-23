@@ -621,6 +621,18 @@ var Selector = Item.extend(
                 this._info.draw(ctx, matrix, pixelRatio);
             }
         },
+
+        _drawActived: function(ctx, matrix) {
+            var bounds = this.getInfo();
+            console.log(bounds)
+            ctx.beginPath();
+            ctx.moveTo(bounds.topLeft.x, bounds.topLeft.y)
+            ctx.lineTo(bounds.topRight.x, bounds.topRight.y)
+            ctx.lineTo(bounds.bottomRight.x, bounds.bottomRight.y)
+            ctx.lineTo(bounds.bottomLeft.x, bounds.bottomLeft.y)
+            ctx.closePath()
+            ctx.stroke();
+        },
     },
     {
         statics: {

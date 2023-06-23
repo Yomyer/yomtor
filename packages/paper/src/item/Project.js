@@ -1365,6 +1365,7 @@ var Project = PaperScopeItem.extend(
         ctx.restore()
       }
       
+      /*
       if (this._activationCount > 0) {
         ctx.save()
         ctx.strokeWidth = 1
@@ -1372,10 +1373,11 @@ var Project = PaperScopeItem.extend(
         var items = this._activationItems,
           version = this._updateVersion
         for (var id in items) {
-          items[id]._drawActived(ctx, matrix, version)
+          items[id]._drawActivation(ctx, matrix, version)
         }
         ctx.restore()
       }
+      */
 
       if (this._selector) {
         ctx.save()

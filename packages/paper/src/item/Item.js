@@ -797,7 +797,7 @@ new function() { // Injection scope for various item event handlers
                     children[i].setActived(false);
             }
     
-            if(this._parent && this._actived){
+            if(this._parent && this.isActived()){
                 this._parent.collapsed = false
             }
         }
@@ -5063,7 +5063,7 @@ new function() { // Injection scope for hit-test functions shared with project
             if (nativeBlend)
                 ctx.globalCompositeOperation = blendMode;
         } else if (transform) {
-            // Translate the context so the topLeft of the item is at (0, 0)
+            //slate the context so the topLeft of the item is at (0, 0)
             // on the temporary canvas.
             ctx.translate(-itemOffset.x, -itemOffset.y);
         }
@@ -5199,26 +5199,28 @@ new function() { // Injection scope for hit-test functions shared with project
         }
     },
 
-    _drawActived: function(ctx, matrix, updateVersion){
+    _drawActivation: function(ctx, matrix, updateVersion){
         var selection = this._activation,
             itemSelected = selection & /*#=*/ItemSelection.ITEM,
             boundsSelected = selection & /*#=*/ItemSelection.BOUNDS
-                    || itemSelected && this._selectBounds,
-            positionSelected = selection & /*#=*/ItemSelection.POSITION;
-        if (!this._drawSelected)
+                    || itemSelected && this._selectBounds;
+
+        if (!this._drawActived)
             itemSelected = false;
         
-        if ((itemSelected || boundsSelected || positionSelected)
+        if ((itemSelected || boundsSelected)
             && this._isUpdated(updateVersion)) {
-        
+
             var layer,
                 mx = matrix.appended(this.getGlobalMatrix(true)),
                 half = 0;
 
-            if (itemSelected)
-                this._drawSelected(ctx, mx, this._project.activedItems);
-
-            if (boundsSelected) {
+            if (itemSelected){
+                console.log(this._class)
+                this._drawActived(ctx, mx, this._project.activedItems);
+            }
+                
+            else if (boundsSelected) {
                 var coords = mx._transformCorners(this.getInternalBounds());
                 // Now draw a rectangle that connects the transformed
                 // bounds corners, and draw the corners.
@@ -5397,15 +5399,15 @@ new function() { // Injection scope for hit-test functions shared with project
     /**
      * Removes the item when the next {@link Tool#onMouseUp} event is fired.
      *
-     * @name Item#drawActived
+     * @name Item#drawActivation
      * @param {CanvasRenderingContext2D} ctx
      * @param {Matrix} matrix
      * @param {Number} updateVersion
      * @function
      *
      */
-    drawActived: function(ctx, matrix, updateVersion){
-        this._drawActived(ctx, matrix, updateVersion)
+    drawActivation: function(ctx, matrix, updateVersion){
+        this._drawActivation(ctx, matrix, updateVersion)
     }
 }), /** @lends Item# */{
     /**

@@ -377,7 +377,7 @@ var Artboard = Group.extend(
                 })
             );
 
-            if (options.legacy || this._actived || !this._children.length) {
+            if (options.legacy || this.isActived() || !this._children.length) {
                 if (hit) {
                     var hit = new HitResult("fill", this);
                     var match = options.match;

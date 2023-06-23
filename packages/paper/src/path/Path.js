@@ -2497,6 +2497,13 @@ new function() { // Scope for drawing
             drawHandles(ctx, this._segments, matrix, paper.settings.handleSize);
         },
 
+        _drawActived: function(ctx, matrix) {
+            ctx.beginPath();
+            drawSegments(ctx, this, matrix);
+            // Now stroke it and draw its handles:
+            ctx.stroke();
+        },
+
         _getHighlightItem: function() {
             return new Path.Rectangle({
                 insert: false,

@@ -35,11 +35,6 @@ declare namespace paper {
          */
         clipped: boolean
 
-        /** 
-         * The name of the artboard.
-         */
-        actived: boolean
-
 
         /** 
          * Transform the item so that its {@link #bounds} fit within the specified
@@ -2071,7 +2066,7 @@ declare namespace paper {
         /** 
          * The if item children is actived.
          */
-        activedItems: boolean
+        activatedItems: boolean
 
         
         grid: Grid
@@ -3157,7 +3152,7 @@ declare namespace paper {
         /** 
          * Removes the item when the next {@link Tool#onMouseUp} event is fired.
          */
-        drawActived(ctx: CanvasRenderingContext2D, matrix: Matrix, updateVersion: number): void
+        drawActivation(ctx: CanvasRenderingContext2D, matrix: Matrix, updateVersion: number): void
 
         /** 
          * Tween item between two states.

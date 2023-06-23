@@ -33,6 +33,34 @@ const Import = () => {
   useEffect(() => {
     if (!canvas) return
 
+    const artboard = new Artboard({
+      from: [200, 200],
+      to: [600, 600],
+      fillColor: 'white'
+    })
+
+    const group = new Group([
+      new Path.Rectangle({
+        from: [350, 350],
+        to: [550, 550],
+        fillColor: '#D9D9D9',
+        name: 'Rectangle'
+        // constraints: ['center', 'both']
+      }),
+      new Path.Rectangle({
+        from: [250, 250],
+        to: [400, 400],
+        fillColor: 'red',
+        name: 'Rectangle'
+        // constraints: ['center', 'both']
+      })
+    ])
+
+    artboard.addChild(group)
+    group.actived = true
+    group.set({ constraints: ['start', 'start'] })
+
+    /*
     canvas.project.importSVG(
       `
       <svg width="32768" height="25454" viewBox="0 0 32768 25454" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1157,43 +1185,13 @@ const Import = () => {
     
       `
     )
+    */
   }, [canvas])
 
   return null
 }
 
 export const App = () => {
-  /*
-  useEffect(() => {
-    const artboard = new Artboard({
-      from: [200, 200],
-      to: [600, 600],
-      fillColor: 'white'
-    })
-
-    const group = new Group([
-      new Path.Rectangle({
-        from: [350, 350],
-        to: [550, 550],
-        fillColor: '#D9D9D9',
-        name: 'Rectangle'
-        // constraints: ['center', 'both']
-      }),
-      new Path.Rectangle({
-        from: [250, 250],
-        to: [400, 400],
-        fillColor: 'red',
-        name: 'Rectangle'
-        // constraints: ['center', 'both']
-      })
-    ])
-
-    artboard.addChild(group)
-    group.actived = true
-    group.set({ constraints: ['start', 'start'] })
-  }, [])
-  */
-
   return (
     <YomtorProvider theme={{ colorScheme: 'dark' }}>
       <EditorProvider>

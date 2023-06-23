@@ -315,18 +315,19 @@ export const SelectorTool = (props: SelectorToolProps) => {
           const actives = canvas.project.activatedItems
           const higthlight = canvas.project.highlightedItem
 
-          ctx.strokeStyle = 'rgba(0, 142, 252, 1)'
+          //ctx.strokeStyle = 'rgba(0, 142, 252, 1)'
+          ctx.strokeStyle = 'red'
           ctx.lineWidth = 0.5 / zoom
 
           if (actives.length) {
             //if (actives.length < 200) {
 
             actives.forEach((item) => {
-              // item.drawActived(ctx, matrix, updateVersion)
+              item.drawActivation(ctx, matrix, updateVersion)
             })
             // }
 
-            // selector.drawActived(ctx, matrix, updateVersion)
+            selector.drawActivation(ctx, matrix, updateVersion)
           }
 
           if (higthlight && !actives.includes(higthlight)) {
