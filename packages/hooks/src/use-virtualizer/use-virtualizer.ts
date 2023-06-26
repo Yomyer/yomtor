@@ -32,7 +32,7 @@ function useVirtualizerBase<
 >(
   options: VirtualizerOptions<TScrollElement, TItemElement>
 ): UseVirtualizer<TScrollElement, TItemElement> {
-  const rerender = useForceUpdate
+  const rerender = useForceUpdate()
 
   const resolvedOptions: VirtualizerOptions<TScrollElement, TItemElement> = {
     ...options,

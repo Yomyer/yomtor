@@ -27,7 +27,13 @@ export const ObjectControls = (props: ObjectControlsProps) => {
   }, [canvas])
 
   return (
-    <TreeView<Item> data={data} multiple reverse>
+    <TreeView<Item>
+      data={data}
+      multiple
+      reverse
+      sortabled
+      onSort={(info) => alert(JSON.stringify(info))}
+    >
       {(node, item) => <div>{node.name}</div>}
     </TreeView>
   )

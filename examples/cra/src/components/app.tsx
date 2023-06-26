@@ -1197,12 +1197,12 @@ export const App = () => {
           <Import />
           <AppShell
             padding={0}
-            /*
             navbar={
               <Navbar resize>
                 <ObjectControls />
               </Navbar>
             }
+            /*
             aside={
               <Aside resize>
                 <AlignmentsControls visible />

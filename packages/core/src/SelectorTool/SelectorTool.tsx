@@ -318,11 +318,9 @@ export const SelectorTool = (props: SelectorToolProps) => {
           ctx.lineWidth = 0.5 / zoom
 
           if (actives.length) {
-            //if (actives.length < 200) {
             actives.forEach((item) => {
               item.drawActivation(ctx, matrix, updateVersion)
             })
-            // }
 
             selector.drawActivation(ctx, matrix, updateVersion)
           }

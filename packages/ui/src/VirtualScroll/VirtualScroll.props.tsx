@@ -14,6 +14,7 @@ export interface VirtualScrollProps
   horizontal?: boolean
   virtualizerRef?: React.MutableRefObject<UseVirtualizer<Element, Element>>
   behavior?: boolean
+  viewportRef?: React.MutableRefObject<Element>
   forced?: number[]
   wrapper?:
     | React.ReactNode

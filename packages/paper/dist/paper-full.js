@@ -6297,8 +6297,7 @@ new function() {
 			var layer,
 				mx = matrix.appended(this.getGlobalMatrix(true)),
 				half = 0;
-
-			if (itemSelected || (itemSelected && itemHighlighted)){
+			if (itemSelected || (this._drawActived && itemHighlighted)){
 				this._drawActived(ctx, mx, this._project.activedItems);
 			}
 			else if (boundsSelected || itemHighlighted) {

@@ -16,6 +16,9 @@ export const useHeight = ({
   const [height, setHeight] = useState<number>(0)
 
   useEffect(() => {
+    if (element?.scrollTop < element?.clientHeight) {
+      setHeight(value)
+    }
     if (
       height &&
       height > value &&

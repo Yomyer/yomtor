@@ -12,9 +12,8 @@ import { VirtualScrollProps } from './VirtualScroll.props'
 import useStyles from './VirtualScroll.styles'
 import { Box } from '../Box'
 import { ScrollArea } from '../ScrollArea'
-import { usePrevious, useMergedRef, useVirtualizer } from '@yomtor/hooks'
+import { useMergedRef, useVirtualizer } from '@yomtor/hooks'
 import { isFunction } from 'lodash'
-import { useDetectionScrollEnd } from '../../../hooks/src/use-detection-scroll-end/use-detection-scroll-end'
 import { useHeight } from './use-height'
 
 const defaultProps: Partial<VirtualScrollProps> = {
@@ -53,6 +52,7 @@ export const _VirtualScroll = forwardRef<HTMLDivElement, VirtualScrollProps>(
       children,
       node,
       forced,
+      viewportRef: externalvieportRef,
       onScrolling,
       ...others
     } = useComponentDefaultProps('VirtualScroll', defaultProps, props)
@@ -65,7 +65,7 @@ export const _VirtualScroll = forwardRef<HTMLDivElement, VirtualScrollProps>(
     const virtualizer = useVirtualizer({
       count,
       estimateSize: useCallback(() => size, []),
-      getScrollElement: () => scrollRef.current,
+      getScrollElement: () => viewportRef.current,
       enableSmoothScroll: behavior,
       horizontal
     })
@@ -81,7 +81,7 @@ export const _VirtualScroll = forwardRef<HTMLDivElement, VirtualScrollProps>(
 
     const height = useHeight({
       height: virtualizer.getTotalSize(),
-      element: scrollRef.current
+      element: viewportRef.current
     })
 
     useEffect(() => {
@@ -104,6 +104,7 @@ export const _VirtualScroll = forwardRef<HTMLDivElement, VirtualScrollProps>(
       <Element
         {...others}
         ref={useMergedRef(ref, scrollRef)}
+        viewportRef={useMergedRef(viewportRef, externalvieportRef)}
         className={cx(className, classes.root)}
         type='hover'
       >
@@ -111,7 +112,6 @@ export const _VirtualScroll = forwardRef<HTMLDivElement, VirtualScrollProps>(
           style={{
             height: `${height}px`
           }}
-          ref={viewportRef}
           className={classes.viewport}
         >
           <>

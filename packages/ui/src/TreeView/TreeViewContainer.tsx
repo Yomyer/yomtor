@@ -5,8 +5,6 @@ import { VirtualScroll } from '../VirtualScroll'
 import { Node } from './Node'
 import useStyles from './TreeView.styles'
 import { Sortable } from './Sortable'
-import { useMergedRef } from '@yomtor/hooks'
-import { isUndefined } from 'lodash'
 import { useTreeViewContext } from './TreeViewContext'
 
 const defaultProps: Partial<TreeViewProps> = {
@@ -43,7 +41,7 @@ export const TreeViewContainer = forwardRef<HTMLDivElement, TreeViewProps>(
     } = useTreeViewContext()
 
     const lineRef = useRef<HTMLDivElement>()
-    const scrollRef = useRef<HTMLElement>()
+    const viewportRef = useRef<HTMLElement>()
     const { classes, cx } = useStyles(
       { ...others },
       { name: 'TreeView', unstyled }
@@ -59,8 +57,8 @@ export const TreeViewContainer = forwardRef<HTMLDivElement, TreeViewProps>(
         if (lineRef.current) {
           const top =
             (position === 'above' ? rect.top : rect.bottom) +
-            scrollRef.current.scrollTop -
-            scrollRef.current.getBoundingClientRect().top
+            viewportRef.current.scrollTop -
+            viewportRef.current.getBoundingClientRect().top
 
           lineRef.current.style.top = `${top}px`
           lineRef.current.style.left = `${indent * (depths[current] + 1)}px`
@@ -74,7 +72,8 @@ export const TreeViewContainer = forwardRef<HTMLDivElement, TreeViewProps>(
         className={cx(className, classes.root)}
         size={size}
         count={nodes.length}
-        ref={useMergedRef(ref, scrollRef)}
+        ref={ref}
+        viewportRef={viewportRef}
         forced={items}
         onScrolling={handlerScrolling}
         node={(item) =>

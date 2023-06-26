@@ -1,9 +1,9 @@
 import React from 'react'
 import { TreeView, TreeViewProps, Group } from '@yomtor/ui'
-import { YomtorDemo } from '@yomtor/ds'
+import { PropsType, YomtorDemo } from '@yomtor/ds'
 import { Data } from './_data'
 
-const codeTemplate = (props: string, children: string) => `
+const codeTemplate = (props: PropsType<TreeViewProps>, children: string) => `
 import { TreeView } from '@yomtor/ui';git pu
 import { Data } from './_data'
 

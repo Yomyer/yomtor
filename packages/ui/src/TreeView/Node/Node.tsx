@@ -1,7 +1,7 @@
 import React, { forwardRef, MouseEvent, useContext, useEffect } from 'react'
 import { useComponentDefaultProps } from '@yomtor/styles'
 import { Box } from '../../Box'
-import { NodeProps } from './Node.props'
+import { NodeData, NodeProps } from './Node.props'
 import useStyles from './Node.styles'
 import { isArray, isFunction, isUndefined } from 'lodash'
 import { PlayIcon } from '@yomtor/icons'
@@ -41,8 +41,18 @@ export const _Node = forwardRef<HTMLDivElement, NodeProps>((props, ref) => {
     others.onMouseDown = (event) => setActive(node, event)
   }
 
+  const highligthHandler = (
+    node: NodeData,
+    status: boolean,
+    event?: MouseEvent
+  ) => {
+    if (!dragging) {
+      setHighligth(node, status, event)
+    }
+  }
+
   useEffect(() => {
-    return () => setHighligth(node, false)
+    return () => highligthHandler(node, false)
   }, [])
 
   return (
@@ -57,8 +67,8 @@ export const _Node = forwardRef<HTMLDivElement, NodeProps>((props, ref) => {
           !disableDrops[item.index],
         [classes.parentActived]: childActiveds[item.index]
       })}
-      onMouseEnter={(event) => setHighligth(node, true, event)}
-      onMouseLeave={(event) => setHighligth(node, false, event)}
+      onMouseEnter={(event) => highligthHandler(node, true, event)}
+      onMouseLeave={(event) => highligthHandler(node, false, event)}
     >
       <div className={classes.indents}>
         {[...Array(depth + 1)].map((_, i) => (
