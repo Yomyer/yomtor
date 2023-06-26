@@ -310,7 +310,7 @@ var Group = Item.extend(
 
         _drawActived: function(ctx, matrix) {
             var bounds = this.getInfo();
-            console.log(bounds)
+            
             ctx.beginPath();
             ctx.moveTo(bounds.topLeft.x, bounds.topLeft.y)
             ctx.lineTo(bounds.topRight.x, bounds.topRight.y)

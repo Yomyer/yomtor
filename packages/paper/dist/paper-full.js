@@ -6286,22 +6286,22 @@ new function() {
 		var selection = this._activation,
 			itemSelected = selection & 1,
 			boundsSelected = selection & 2
-					|| itemSelected && this._selectBounds;
+					|| itemSelected && this._selectBounds,
+			itemHighlighted = this.getHighlighted()
 
 		if (!this._drawActived)
 			itemSelected = false;
-		if ((itemSelected || boundsSelected)
+		if ((itemSelected || boundsSelected || itemHighlighted)
 			&& this._isUpdated(updateVersion)) {
 
 			var layer,
 				mx = matrix.appended(this.getGlobalMatrix(true)),
 				half = 0;
 
-			if (itemSelected){
-				console.log(this._class)
+			if (itemSelected || (itemSelected && itemHighlighted)){
 				this._drawActived(ctx, mx, this._project.activedItems);
 			}
-			else if (boundsSelected) {
+			else if (boundsSelected || itemHighlighted) {
 				var coords = mx._transformCorners(this.getInternalBounds());
 				ctx.beginPath();
 				for (var i = 0; i < 8; i++) {
@@ -6570,7 +6570,6 @@ var Group = Item.extend(
 
 		_drawActived: function(ctx, matrix) {
 			var bounds = this.getInfo();
-			console.log(bounds)
 			ctx.beginPath();
 			ctx.moveTo(bounds.topLeft.x, bounds.topLeft.y)
 			ctx.lineTo(bounds.topRight.x, bounds.topRight.y)
@@ -8418,9 +8417,8 @@ var Selector = Item.extend(
 			}
 		},
 
-		_drawActived: function(ctx, matrix) {
+		_drawActivation: function(ctx, matrix, updateVersion){
 			var bounds = this.getInfo();
-			console.log(bounds)
 			ctx.beginPath();
 			ctx.moveTo(bounds.topLeft.x, bounds.topLeft.y)
 			ctx.lineTo(bounds.topRight.x, bounds.topRight.y)
@@ -8428,7 +8426,7 @@ var Selector = Item.extend(
 			ctx.lineTo(bounds.bottomLeft.x, bounds.bottomLeft.y)
 			ctx.closePath()
 			ctx.stroke();
-		},
+		}
 	},
 	{
 		statics: {
@@ -19017,8 +19015,10 @@ new function() {
 	}
 
 	function importNode(node, options, isRoot) {
+
 		var type = node.nodeName.toLowerCase(),
 			isElement = type !== '#document',
+			expandShapes = Base.pick(options ? options.expandShapes : undefined, true),
 			body = document.body,
 			container,
 			parent,
@@ -19052,7 +19052,7 @@ new function() {
 				data = isElement && node.getAttribute('data-paper-data');
 			if (onImport)
 				item = onImport(node, item, options) || item;
-			if (options.expandShapes && item instanceof Shape) {
+			if (expandShapes && item instanceof Shape) {
 				item.remove();
 				item = item.toPath();
 				item.name = 'Path';

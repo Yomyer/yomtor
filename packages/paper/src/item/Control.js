@@ -113,6 +113,11 @@ var Control = Item.extend(
         },
 
     
+        /**
+         *
+         * @name Control#isSmallZoom
+         * @type {Boolean}
+         */
         isSmallZoom: function () {
             if(!this._project._activationCount){
                 return false;

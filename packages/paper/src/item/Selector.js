@@ -622,9 +622,9 @@ var Selector = Item.extend(
             }
         },
 
-        _drawActived: function(ctx, matrix) {
+        _drawActivation: function(ctx, matrix, updateVersion){
             var bounds = this.getInfo();
-            console.log(bounds)
+            
             ctx.beginPath();
             ctx.moveTo(bounds.topLeft.x, bounds.topLeft.y)
             ctx.lineTo(bounds.topRight.x, bounds.topRight.y)
@@ -632,7 +632,7 @@ var Selector = Item.extend(
             ctx.lineTo(bounds.bottomLeft.x, bounds.bottomLeft.y)
             ctx.closePath()
             ctx.stroke();
-        },
+        }
     },
     {
         statics: {

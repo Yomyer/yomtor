@@ -225,6 +225,10 @@ export const TransformTool = (props: TransformToolProps) => {
 
         control.removeChildren()
 
+        if (control.isSmallZoom()) {
+          return
+        }
+
         if (canvas.project.activatedCount) {
           Object.keys(rotates).forEach((corner) => {
             control.addChild(

@@ -1224,7 +1224,7 @@ var Project = PaperScopeItem.extend(
      * @name Project#importSVG
      * @function
      *
-     * @option [options.expandShapes=false] {Boolean} whether imported shape
+     * @option [options.expandShapes=true] {Boolean} whether imported shape
      *     items should be expanded to path items
      * @option options.onLoad {Function} the callback function to call once the
      *     SVG content is loaded from the given URL receiving two arguments: the

@@ -658,8 +658,11 @@ new function() {
 
     function importNode(node, options, isRoot) {
         // jsdom in Node.js uses uppercase values for nodeName...
+
+
         var type = node.nodeName.toLowerCase(),
             isElement = type !== '#document',
+            expandShapes = Base.pick(options ? options.expandShapes : undefined, true),
             body = document.body,
             container,
             parent,
@@ -711,7 +714,7 @@ new function() {
                 data = isElement && node.getAttribute('data-paper-data');
             if (onImport)
                 item = onImport(node, item, options) || item;
-            if (options.expandShapes && item instanceof Shape) {
+            if (expandShapes && item instanceof Shape) {
                 item.remove();
                 item = item.toPath();
                 item.name = 'Path';

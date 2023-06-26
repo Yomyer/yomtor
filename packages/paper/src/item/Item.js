@@ -2980,7 +2980,7 @@ new function() { // Injection scope for hit-test functions shared with project
      * @name Item#importSVG
      * @function
      *
-     * @option [options.expandShapes=false] {Boolean} whether imported shape
+     * @option [options.expandShapes=true] {Boolean} whether imported shape
      *     items should be expanded to path items
      * @option options.onLoad {Function} the callback function to call once the
      *     SVG content is loaded from the given URL receiving two arguments: the
@@ -5203,24 +5203,24 @@ new function() { // Injection scope for hit-test functions shared with project
         var selection = this._activation,
             itemSelected = selection & /*#=*/ItemSelection.ITEM,
             boundsSelected = selection & /*#=*/ItemSelection.BOUNDS
-                    || itemSelected && this._selectBounds;
+                    || itemSelected && this._selectBounds,
+            itemHighlighted = this.getHighlighted()
 
         if (!this._drawActived)
             itemSelected = false;
-        
-        if ((itemSelected || boundsSelected)
+           
+        if ((itemSelected || boundsSelected || itemHighlighted)
             && this._isUpdated(updateVersion)) {
 
             var layer,
                 mx = matrix.appended(this.getGlobalMatrix(true)),
                 half = 0;
 
-            if (itemSelected){
-                console.log(this._class)
+            if (itemSelected || (itemSelected && itemHighlighted)){
                 this._drawActived(ctx, mx, this._project.activedItems);
             }
                 
-            else if (boundsSelected) {
+            else if (boundsSelected || itemHighlighted) {
                 var coords = mx._transformCorners(this.getInternalBounds());
                 // Now draw a rectangle that connects the transformed
                 // bounds corners, and draw the corners.

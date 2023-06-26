@@ -666,6 +666,9 @@ declare namespace paper {
         
         getChild: any
 
+        
+        isSmallZoom: any
+
 
         
         constructor(name: string, draw?: (event: DrawControlEvent) => void)
@@ -2595,7 +2598,7 @@ declare namespace paper {
          * the this item's children list. Note that the item is not cleared first.
          * You can call {@link Item#removeChildren} to do so.
          * 
-         * @option [options.expandShapes=false] {Boolean} whether imported shape
+         * @option [options.expandShapes=true] {Boolean} whether imported shape
          *     items should be expanded to path items
          * @option options.onLoad {Function} the callback function to call once the
          *     SVG content is loaded from the given URL receiving two arguments: the
@@ -5961,7 +5964,7 @@ declare namespace paper {
          * Note that the project is not cleared first. You can call
          * {@link Project#clear} to do so.
          * 
-         * @option [options.expandShapes=false] {Boolean} whether imported shape
+         * @option [options.expandShapes=true] {Boolean} whether imported shape
          *     items should be expanded to path items
          * @option options.onLoad {Function} the callback function to call once the
          *     SVG content is loaded from the given URL receiving two arguments: the

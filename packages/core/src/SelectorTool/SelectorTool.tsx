@@ -310,18 +310,15 @@ export const SelectorTool = (props: SelectorToolProps) => {
     tool.addControl(
       new Control(
         'selector',
-        ({ control, params, selector, ctx, matrix, zoom, updateVersion }) => {
-          // control.removeChildren()
+        ({ selector, ctx, matrix, zoom, updateVersion }) => {
           const actives = canvas.project.activatedItems
           const higthlight = canvas.project.highlightedItem
 
-          //ctx.strokeStyle = 'rgba(0, 142, 252, 1)'
-          ctx.strokeStyle = 'red'
+          ctx.strokeStyle = 'rgba(0, 142, 252, 1)'
           ctx.lineWidth = 0.5 / zoom
 
           if (actives.length) {
             //if (actives.length < 200) {
-
             actives.forEach((item) => {
               item.drawActivation(ctx, matrix, updateVersion)
             })
@@ -332,31 +329,8 @@ export const SelectorTool = (props: SelectorToolProps) => {
 
           if (higthlight && !actives.includes(higthlight)) {
             ctx.lineWidth = 2 / zoom
-            // drawRect(ctx, higthlight)
+            higthlight.drawActivation(ctx, matrix, updateVersion)
           }
-
-          /*
-        const config = {
-          strokeWidth: 0.5,
-          strokeColor: 'rgba(0, 142, 252, 1)'
-        }
-
-        if (actives.length) {
-          actives.forEach((item) => {
-            control.addChild(item.highlightItem.set(config))
-          })
-
-          control.addChild(selector.highlightItem.set(config))
-        }
-        if (higthlight && !actives.includes(higthlight)) {
-          control.addChild(
-            higthlight.highlightItem.set({
-              ...config,
-              strokeWidth: 2
-            })
-          )
-        }
-        */
         }
       )
     )
