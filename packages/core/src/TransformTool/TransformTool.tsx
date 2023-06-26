@@ -288,8 +288,8 @@ export const TransformTool = (props: TransformToolProps) => {
     tool.onMouseDrag = (e: ToolEvent) => {
       transform(e)
 
-      //tool.hideOtherTools()
-      //tool.hide = true
+      // tool.hideOtherTools()
+      // tool.hide = true
 
       lastPoint.current = e.point
     }

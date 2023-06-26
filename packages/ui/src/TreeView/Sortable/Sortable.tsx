@@ -118,8 +118,9 @@ export const Sortable = forwardRef<HTMLDivElement, SortableProps>(
               index = nodes.findIndex((node) => node === closets[0])
             }
           } else if (depths[index + 1] > depths[index]) {
-            // console.log(depths[index + 1], depths[index])
             index = index + 1
+            position = 'above'
+            setTarget(target.parentElement.nextElementSibling.children[0])
           }
         }
 
@@ -144,11 +145,8 @@ export const Sortable = forwardRef<HTMLDivElement, SortableProps>(
       if (isUndefined(current) || disableDrops[current]) return
 
       setInfo({
-        drag: Object.keys(items).length
-          ? Object.keys(items).map((index) => nodes[index])
-          : undefined,
+        drag: items.length ? items.map((index) => nodes[index]) : undefined,
         drop: nodes[current],
-
         position
       })
     }

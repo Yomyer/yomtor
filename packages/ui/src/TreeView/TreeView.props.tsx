@@ -6,9 +6,9 @@ import { ForwardRefWithStaticComponents } from '@yomtor/utils'
 
 export type TreeViewPositions = 'below' | 'above' | 'in'
 
-export type TreeViewDropInfo = {
-  drag: NodeData[]
-  drop: NodeData
+export type TreeViewDropInfo<T = NodeData> = {
+  drag: T[]
+  drop: T
   position: TreeViewPositions
 }
 
@@ -28,7 +28,7 @@ export interface TreeViewProps<T = NodeData> extends DefaultProps {
   nodes?: NodeData[]
   indent?: number
   reverse?: boolean
-  onSort?: (info: TreeViewDropInfo) => void
+  onSort?: (info: TreeViewDropInfo<T>) => void
 }
 
 export type TreeViewComponent =

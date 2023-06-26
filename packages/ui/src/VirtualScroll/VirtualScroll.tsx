@@ -117,6 +117,7 @@ export const _VirtualScroll = forwardRef<HTMLDivElement, VirtualScrollProps>(
           <>
             {virtualizer
               .getForcedVirtualItems(forced)
+              .filter((row) => row)
               .map((row) =>
                 isFunction(wrapper) ? wrapper(row, node, classes.node) : wrapper
               )}
