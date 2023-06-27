@@ -22,7 +22,7 @@ function Wrapper(props: TreeViewProps) {
         {...props}
         data={Data}
         style={{ height: 300 }}
-        onSort={(info) => alert(JSON.stringify(info))}
+        onSort={(info) => console.log(info)}
       >
         {(node, item) => <div>{node.label}</div>}
       </TreeView>
@@ -39,10 +39,14 @@ export const configurator: YomtorDemo = {
       type: 'boolean'
     },
     {
+      initialValue: true,
+      defaultValue: true,
       name: 'sortabled',
       type: 'boolean'
     },
     {
+      initialValue: true,
+      defaultValue: true,
       name: 'multiple',
       type: 'boolean'
     }

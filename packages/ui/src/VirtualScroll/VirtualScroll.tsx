@@ -26,6 +26,7 @@ const defaultProps: Partial<VirtualScrollProps> = {
     <div
       key={item.index}
       className={className}
+      data-virtaulscroll-node='true'
       style={{
         height: `${item.size}px`,
         transform: `translateY(${item.start}px)`

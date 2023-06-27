@@ -86,7 +86,7 @@ export const TreeViewContainer = forwardRef<HTMLDivElement, TreeViewProps>(
           )
         }
       >
-        {position && position !== 'in' && !disableDrops[current] && (
+        {position && position !== 'in' && (
           <div ref={lineRef} className={classes.line} />
         )}
       </Component>
