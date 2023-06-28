@@ -6,6 +6,7 @@ import { Node } from './Node'
 import useStyles from './TreeView.styles'
 import { Sortable } from './Sortable'
 import { useTreeViewContext } from './TreeViewContext'
+import { useMergedRef } from '@mantine/hooks'
 
 const defaultProps: Partial<TreeViewProps> = {
   component: VirtualScroll,
@@ -37,7 +38,7 @@ export const TreeViewContainer = forwardRef<HTMLDivElement, TreeViewProps>(
       current,
       depths,
       indent,
-      disableDrops
+      viewportRef: wrapperRef
     } = useTreeViewContext()
 
     const lineRef = useRef<HTMLDivElement>()
@@ -73,9 +74,10 @@ export const TreeViewContainer = forwardRef<HTMLDivElement, TreeViewProps>(
         size={size}
         count={nodes.length}
         ref={ref}
-        viewportRef={viewportRef}
+        viewportRef={useMergedRef(viewportRef, wrapperRef)}
         forced={items}
         onScrolling={handlerScrolling}
+        classNames={{ viewport: classes.viewport }}
         node={(item) =>
           sortabled || items.includes(item.index) ? (
             <Sortable item={item}>

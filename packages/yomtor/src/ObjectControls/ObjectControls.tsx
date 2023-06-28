@@ -28,13 +28,17 @@ export const ObjectControls = (props: ObjectControlsProps) => {
   }, [canvas])
 
   const sortHandler = (data: TreeViewDropInfo<Item>) => {
-    data.drag.forEach((item) => item.insertAbove(data.drop))
+    const child = data.drop.children && data.drop.children[0]
 
     data.drag.forEach((item) => {
       if (['above', 'below'].includes(data.position)) {
         item['insert' + startCase(data.position)](data.drop)
       } else {
-        data.drop.insertChild(data.drop.children.length, item)
+        if (child) {
+          item.insertAbove(child)
+        } else {
+          data.drop.insertChild(0, item)
+        }
       }
 
       item.actived = true
@@ -44,7 +48,14 @@ export const ObjectControls = (props: ObjectControlsProps) => {
   }
 
   return (
-    <TreeView<Item> data={data} multiple reverse sortabled onSort={sortHandler}>
+    <TreeView<Item>
+      data={data}
+      multiple
+      reverse
+      sortabled
+      overflowed
+      onSort={sortHandler}
+    >
       {(node, item) => <div>{node.name}</div>}
     </TreeView>
   )

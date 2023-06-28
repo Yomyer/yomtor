@@ -3,8 +3,14 @@ import { TreeViewProps } from './TreeView.props'
 
 export default createStyles((theme, {}: Partial<TreeViewProps>) => ({
   root: {
-    minHeight: '400px',
-    width: '100%'
+    width: '100%',
+    position: 'relative',
+    maxHeight: '100%',
+    overflow: 'hidden',
+    display: 'flex'
+  },
+  viewport: {
+    marginBottom: 3
   },
   line: {
     position: 'absolute',

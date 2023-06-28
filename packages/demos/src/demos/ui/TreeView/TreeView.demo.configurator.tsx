@@ -36,19 +36,27 @@ export const configurator: YomtorDemo = {
   configurator: [
     {
       name: 'collapsed',
-      type: 'boolean'
+      type: 'boolean',
+      initialValue: false,
+      defaultValue: false
     },
     {
-      initialValue: true,
-      defaultValue: true,
       name: 'sortabled',
-      type: 'boolean'
+      type: 'boolean',
+      initialValue: false,
+      defaultValue: false
     },
     {
-      initialValue: true,
-      defaultValue: true,
+      name: 'overflowed',
+      type: 'boolean',
+      initialValue: false,
+      defaultValue: false
+    },
+    {
       name: 'multiple',
-      type: 'boolean'
+      type: 'boolean',
+      initialValue: false,
+      defaultValue: false
     }
   ]
 }

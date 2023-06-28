@@ -24,6 +24,7 @@ export interface TreeViewProps<T = NodeData> extends DefaultProps {
   indentWitdh?: number
   sortabled?: boolean
   draggable?: boolean
+  overflowed?: boolean
   multiple?: boolean
   nodes?: NodeData[]
   indent?: number

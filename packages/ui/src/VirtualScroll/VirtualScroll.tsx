@@ -26,7 +26,7 @@ const defaultProps: Partial<VirtualScrollProps> = {
     <div
       key={item.index}
       className={className}
-      data-virtaulscroll-node='true'
+      data-index={item.index}
       style={{
         height: `${item.size}px`,
         transform: `translateY(${item.start}px)`
@@ -51,6 +51,8 @@ export const _VirtualScroll = forwardRef<HTMLDivElement, VirtualScrollProps>(
       virtualizerRef,
       wrapper,
       children,
+      classNames,
+      styles,
       node,
       forced,
       viewportRef: externalvieportRef,
@@ -73,7 +75,7 @@ export const _VirtualScroll = forwardRef<HTMLDivElement, VirtualScrollProps>(
 
     const { classes, cx } = useStyles(
       { ...others, events: !scrolling },
-      { name: 'VirtualScroll', unstyled }
+      { name: 'VirtualScroll', unstyled, classNames, styles }
     )
 
     if (virtualizerRef) {

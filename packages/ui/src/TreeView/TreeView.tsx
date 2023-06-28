@@ -16,7 +16,7 @@ import {
 
 import { TreeViewContainer } from './TreeViewContainer'
 import { NodeData } from './Node'
-import { useNodeTree } from './use-node-tree'
+import { UseNodeTreeData, useNodeTree } from './use-node-tree'
 import { isUndefined, range } from 'lodash'
 import { TreeViewContext } from './TreeViewContext'
 import { useForceUpdate } from '@mantine/hooks'
@@ -36,6 +36,7 @@ export const TreeView: TreeViewComponent = forwardRef<
     indent,
     onSort,
     sortabled: isSortabled,
+    overflowed: isOverflowed,
     multiple,
     reverse,
     ...others
@@ -44,6 +45,7 @@ export const TreeView: TreeViewComponent = forwardRef<
   const rerender = useForceUpdate()
   const [position, setPosition] = useState<TreeViewPositions>()
   const [sortabled, setSortabled] = useState<boolean>(isSortabled)
+  const [overflowed, setOverflowed] = useState<boolean>(isOverflowed)
   const [dragging, setDragging] = useState(false)
   const [items, setItems] = useState<number[]>([])
   const [current, setCurrent] = useState<number>()
@@ -53,6 +55,7 @@ export const TreeView: TreeViewComponent = forwardRef<
   const distance = useRef<number>(0)
   const activeds = useRef<Record<number, NodeData>>({})
   const prev = useRef<number>()
+  // const [cache, setCache] = useState<Partial<UseNodeTreeData>>({ nodes: [] })
 
   useEffect(() => {
     if (!info) return
@@ -63,6 +66,14 @@ export const TreeView: TreeViewComponent = forwardRef<
     setSortabled(isSortabled)
   }, [isSortabled])
 
+  useEffect(() => {
+    setOverflowed(isOverflowed)
+  }, [isOverflowed])
+
+  useEffect(() => {
+    // setCache(cache)
+  }, [data])
+
   const cache = useNodeTree({
     data,
     collapsed,
@@ -70,7 +81,6 @@ export const TreeView: TreeViewComponent = forwardRef<
     items: activeds.current,
     reverse
   })
-
   activeds.current = cache.activeds
 
   const setActive = (node: NodeData, event: MouseEvent) => {
@@ -134,6 +144,8 @@ export const TreeView: TreeViewComponent = forwardRef<
     setCollapse,
     sortabled,
     setSortabled,
+    overflowed,
+    setOverflowed,
     dragging,
     setDragging,
     position,
@@ -149,7 +161,8 @@ export const TreeView: TreeViewComponent = forwardRef<
     info,
     setInfo,
     distance,
-    reverse
+    reverse,
+    viewportRef: useRef<Element>()
   }
 
   return (

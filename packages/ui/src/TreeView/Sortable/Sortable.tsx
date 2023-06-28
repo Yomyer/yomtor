@@ -11,11 +11,13 @@ import { TreeViewPositions } from '../TreeView.props'
 import { isUndefined } from 'lodash'
 import { useTreeViewContext } from '../TreeViewContext'
 
-const defaultProps: Partial<SortableProps> = {}
+const defaultProps: Partial<SortableProps> = {
+  offset: 6
+}
 
 export const Sortable = forwardRef<HTMLDivElement, SortableProps>(
   (props, ref) => {
-    const { unstyled, children, className, item, ...others } =
+    const { unstyled, children, className, offset, item, ...others } =
       useComponentDefaultProps('Sortable', defaultProps, props)
 
     const {
@@ -32,6 +34,7 @@ export const Sortable = forwardRef<HTMLDivElement, SortableProps>(
       current,
       distance,
       nodes,
+      overflowed,
       activeds,
       nexts,
       depths,
@@ -39,6 +42,7 @@ export const Sortable = forwardRef<HTMLDivElement, SortableProps>(
       setInfo,
       indent,
       disableDrops,
+      viewportRef,
       setParentHighlighted
     } = useTreeViewContext()
 
@@ -57,7 +61,6 @@ export const Sortable = forwardRef<HTMLDivElement, SortableProps>(
       setDeactive(nodes[item.index], event as React.MouseEvent)
       setDragging(false)
       setPosition(undefined)
-      // setCurrent(undefined)
       setParentHighlighted(undefined)
       distance.current = 0
     }
@@ -155,69 +158,95 @@ export const Sortable = forwardRef<HTMLDivElement, SortableProps>(
         position
       })
     }
+
     const dragHandler = useCallback(
       (event: DraggableEvent, data: DraggableData) => {
-        const target = document
-          .elementFromPoint(data.x, data.y)
-          .closest('[data-virtaulscroll-node]')
+        const rectWrapper = viewportRef.current.getBoundingClientRect()
 
-        setTarget(target)
+        const targets = document
+          .elementsFromPoint(
+            Math.max(
+              Math.min(data.x, rectWrapper.right - offset),
+              rectWrapper.left + offset
+            ),
+            Math.max(
+              Math.min(data.y, rectWrapper.bottom - offset),
+              rectWrapper.top + offset
+            )
+          )
+          .filter((target) => target.closest<HTMLElement>('[data-index]'))
 
-        const node = nodes[item.index]
-        const rect = target.getBoundingClientRect()
-        const height = node.children ? 10 : rect.height / 2
-        const y = data.y
+        if (targets.length) {
+          const target = targets[0].closest<HTMLElement>('[data-index]')
 
-        let index = item.index
-        let position: TreeViewPositions = 'in'
-        let parent!: number
+          setTarget(target)
 
-        distance.current += event instanceof MouseEvent && event.movementX
-        console.log(distance.current)
-        if (rect.top + height >= y) {
-          position = 'above'
-        }
-        if (rect.bottom - height <= y) {
-          position = 'below'
+          let position: TreeViewPositions = 'in'
+          let parent!: number
+          let index = +target.dataset.index
 
-          const closets = getAllParents(index).reverse()
+          const node = nodes[index]
+          const rect = target.getBoundingClientRect()
+          const height = node.children ? 10 : rect.height / 2
+          const y = data.y
 
-          if (closets.length) {
-            closets.push(node)
-            let indexX =
-              closets.length - (Math.ceil(distance.current / indent) - 2) * -1
+          distance.current += event instanceof MouseEvent && event.movementX
 
-            if (indexX > -1) {
-              indexX = Math.max(Math.min(indexX, closets.length - 1), 0)
-
-              index = nodes.findIndex((node) => node === closets[indexX])
-            } else {
-              index = nodes.findIndex((node) => node === closets[0])
-            }
-          } else if (depths[index + 1] > depths[index]) {
-            index = index + 1
+          if (rect.top + height >= y) {
             position = 'above'
-            setTarget(target.parentElement.nextElementSibling.children[0])
           }
+          if (rect.bottom - height <= y) {
+            position = 'below'
+
+            const closets = getAllParents(index).reverse()
+
+            if (closets.length) {
+              closets.push(node)
+              let indexX =
+                closets.length - Math.ceil(distance.current / indent) * -1
+
+              if (indexX > -1) {
+                indexX = Math.max(Math.min(indexX, closets.length - 1), 0)
+
+                index = nodes.findIndex((node) => node === closets[indexX])
+              } else {
+                index = nodes.findIndex((node) => node === closets[0])
+              }
+            } else if (depths[index + 1] > depths[index]) {
+              index = index + 1
+              position = 'above'
+
+              setTarget(target.nextElementSibling)
+            }
+          }
+
+          if (parents[index] && position !== 'in') {
+            parent = nodes.findIndex((node) => node === parents[index])
+          } else if (position === 'in') {
+            parent = index
+          }
+
+          setCurrent(index)
+          setPosition(position)
+          setParentHighlighted(parent)
+
+          info.current = { current: index, position }
         }
-
-        if (parents[index] && position !== 'in') {
-          parent = nodes.findIndex((node) => node === parents[index])
-        } else if (position === 'in') {
-          parent = index
-        }
-
-        setCurrent(index)
-        setPosition(position)
-        setParentHighlighted(parent)
-
-        info.current = { current: index, position }
       },
       [position, current]
     )
 
+    let draggableEvents = {}
+    let droppableEvents = {}
+
+    if (overflowed) {
+      draggableEvents = { onStop: dropHandler, onDrag: dragHandler }
+    } else {
+      droppableEvents = { onMove: moveHandler, onDrop: dropHandler }
+    }
+
     return (
-      <Droppable onDrop={dropHandler}>
+      <Droppable {...droppableEvents}>
         {() => (
           <Draggable
             phantom={false}
@@ -225,7 +254,7 @@ export const Sortable = forwardRef<HTMLDivElement, SortableProps>(
             onStart={startHandler}
             onMouseDown={mouseDownHandler}
             onMouseUp={mouseUpHandler}
-            onDrag={dragHandler}
+            {...draggableEvents}
           >
             {children}
           </Draggable>

@@ -8,4 +8,5 @@ export interface SortableProps
   extends DefaultProps<SortableStylesNames, SortableStylesParams> {
   children: React.ReactElement
   item: VirtualItem
+  offset?: number
 }

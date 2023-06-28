@@ -8,10 +8,12 @@ export interface TreeViewProviderContextType extends UseNodeTreeData {
   padding?: number
   sortabled?: boolean
   dragging?: boolean
+  overflowed?: boolean
   position?: TreeViewPositions
   items?: number[]
   current?: number
   target?: Element
+  viewportRef?: React.MutableRefObject<Element>
   indent?: number
   multiple?: boolean
   parentHighlighted?: number
@@ -25,6 +27,7 @@ export interface TreeViewProviderContextType extends UseNodeTreeData {
   setCollapse: (node: NodeData, event?: MouseEvent) => void
   setSortabled: (status: boolean) => void
   setDragging: (status: boolean) => void
+  setOverflowed: (status: boolean) => void
   setPosition: (position: TreeViewPositions) => void
   setItems: (items: number[]) => void
   setCurrent: (index: number) => void
