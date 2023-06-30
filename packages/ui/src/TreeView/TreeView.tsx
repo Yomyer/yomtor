@@ -55,7 +55,6 @@ export const TreeView: TreeViewComponent = forwardRef<
   const distance = useRef<number>(0)
   const activeds = useRef<Record<number, NodeData>>({})
   const prev = useRef<number>()
-  // const [cache, setCache] = useState<Partial<UseNodeTreeData>>({ nodes: [] })
 
   useEffect(() => {
     if (!info) return
@@ -70,10 +69,6 @@ export const TreeView: TreeViewComponent = forwardRef<
     setOverflowed(isOverflowed)
   }, [isOverflowed])
 
-  useEffect(() => {
-    // setCache(cache)
-  }, [data])
-
   const cache = useNodeTree({
     data,
     collapsed,
@@ -81,13 +76,14 @@ export const TreeView: TreeViewComponent = forwardRef<
     items: activeds.current,
     reverse
   })
+
   activeds.current = cache.activeds
 
   const setActive = (node: NodeData, event: MouseEvent) => {
     const ctrl = event.ctrlKey || event.metaKey
     const shift = event.shiftKey
     const index = cache.nodes.findIndex((n) => n === node)
-
+    console.log(shift)
     if (
       (!ctrl && !shift && !Object.values(cache.activeds).includes(node)) ||
       !multiple
@@ -112,8 +108,9 @@ export const TreeView: TreeViewComponent = forwardRef<
 
   const setDeactive = (node: NodeData, event: MouseEvent) => {
     const ctrl = event.ctrlKey || event.metaKey
+    const shift = event.shiftKey
 
-    if (!dragging && !ctrl) {
+    if (!dragging && !ctrl && !shift) {
       Object.values(cache.activeds)
         .filter((n) => n !== node)
         .forEach((n) => (n.actived = false))
