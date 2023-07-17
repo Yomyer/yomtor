@@ -59,7 +59,7 @@ const Import = () => {
     artboard.addChild(group)
     group.actived = true
     group.set({ constraints: ['start', 'start'] })
-    /*
+
     canvas.project.importSVG(
       `
       <svg width="32768" height="25454" viewBox="0 0 32768 25454" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1184,7 +1184,6 @@ const Import = () => {
     
       `
     )
-    */
   }, [canvas])
 
   return null
@@ -1198,21 +1197,7 @@ export const App = () => {
           <Import />
           <AppShell
             padding={0}
-            navbar={
-              <Navbar resize>
-                <ObjectControls />
-              </Navbar>
-            }
-            /*
-            aside={
-              <Aside resize>
-                <AlignmentsControls visible />
-                <TransformsControls />
-                <ConstraintsControls />
-                <LayerControls />
-              </Aside>
-            }
-            */
+            navbar={<Navbar resize>a</Navbar>}
             header={
               <Header height={40}>
                 <RectangleTool>
@@ -1237,7 +1222,6 @@ export const App = () => {
               <SelectorTool />
               <ManagementTool />
               <ConstraintsTool />
-              <TransformTool />
             </Canvas>
           </AppShell>
         </>

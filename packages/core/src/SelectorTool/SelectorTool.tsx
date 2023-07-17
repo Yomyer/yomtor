@@ -322,7 +322,7 @@ export const SelectorTool = (props: SelectorToolProps) => {
               item.drawActivation(ctx, matrix, updateVersion)
             })
 
-            selector.drawActivation(ctx, matrix, updateVersion)
+            // selector.drawActivation(ctx, matrix, updateVersion)
           }
 
           if (higthlight && !actives.includes(higthlight)) {
@@ -394,7 +394,6 @@ export const SelectorTool = (props: SelectorToolProps) => {
 
       canvas.project.clearHighlightedItem()
 
-      // Todo aquí verificamos si hace click en un control :D
       if (selector.current) {
         action = selector.current.hitTest(e.downPoint, {
           stroke: false,

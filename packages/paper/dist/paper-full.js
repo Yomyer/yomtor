@@ -3490,16 +3490,13 @@ var Info = Base.extend({
 	},
 	getCorners: function(unrotated) {
 		var owner = this._owner
-		var data = Base.set({
+		var data = {
 			angle: owner.getInheritedAngle(),
 			bounds: owner.bounds,
 			center: owner.bounds.center,
 			unrotated: unrotated
-		})
-		var key = JSON.stringify(Base.serialize(data))
-		if(this._cache[key]){
-		  return JSON.parse(JSON.stringify(this._cache[key]));
 		}
+
 		if (data.angle !== 0 && !unrotated) {
 			owner.transform(new Matrix().rotate(-data.angle, data.center), false, false, true);
 			data.bounds = owner.bounds;
@@ -3508,7 +3505,7 @@ var Info = Base.extend({
 		var matrix = new Matrix().rotate(!unrotated && data.angle, data.center);
 		var corners = matrix._transformCorners(data.bounds);
 
-		return this._cache[key] = JSON.parse(JSON.stringify(corners));
+		return corners;
 	},
 
 	_setInfoSize: function(){

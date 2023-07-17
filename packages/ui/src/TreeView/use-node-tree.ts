@@ -39,7 +39,7 @@ export const useNodeTree = ({
   const childActiveds: Record<number, NodeData> = {}
   const highlighteds: Record<number, NodeData> = {}
   const disableDrops: Record<number, NodeData> = {}
-
+  console.log('fu')
   const recursive = (
     data: NodeData[] = [],
     depth = 0,

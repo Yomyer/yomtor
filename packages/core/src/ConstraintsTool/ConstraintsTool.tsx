@@ -57,8 +57,8 @@ export const ConstraintsTool = (props: ConstraintsToolProps) => {
       artboardRect.bounds.center
     )
 
-    const selectorNormalize = selectorRect.clone().transform(rotateNormalize)
-    const artboardNormalize = artboardRect.clone().transform(rotateNormalize)
+    const selectorNormalize = selectorRect.transform(rotateNormalize)
+    const artboardNormalize = artboardRect.transform(rotateNormalize)
     const unite = selectorNormalize.unite(artboardNormalize)
     const uniteBounds = unite.info
 
@@ -132,7 +132,11 @@ export const ConstraintsTool = (props: ConstraintsToolProps) => {
       new Control('constraints', ({ control, selector }) => {
         const items = canvas.project.activatedItems
         control.removeChildren()
-        if (items.length !== 1 || (items.length && !items[0].artboard)) return
+        if (
+          canvas.project.activatedCount !== 1 ||
+          (canvas.project.activatedCount && !items[0].artboard)
+        )
+          return
 
         const item = items[0]
         const constraints = item.constraints

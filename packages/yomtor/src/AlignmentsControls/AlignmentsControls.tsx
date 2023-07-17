@@ -58,6 +58,7 @@ export const AlignmentsControls = (props: AlignmentsControlsProps) => {
     canvas.project.on('changed', (type) => {
       if (type & ChangeFlag.ACTIVE) {
         const actives = canvas.project.activatedItems
+        console.log('a')
         setActive(
           actives.length > 1 || !!(actives.length === 1 && actives[0].artboard)
         )

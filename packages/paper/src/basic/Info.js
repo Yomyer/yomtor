@@ -344,16 +344,16 @@ var Info = Base.extend(/** @lends Info# */{
     */
     getCorners: function(unrotated) {
         var owner = this._owner
-        var data = Base.set({
+        var data = {
             angle: owner.getInheritedAngle(),
             bounds: owner.bounds,
             center: owner.bounds.center,
             unrotated: unrotated
-        })
+        }
         var key = JSON.stringify(Base.serialize(data))
         
         if(this._cache[key]){
-          return JSON.parse(JSON.stringify(this._cache[key]));
+          return this._cache[key];
         }
         
         if (data.angle !== 0 && !unrotated) {    
